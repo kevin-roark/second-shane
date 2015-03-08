@@ -84,6 +84,8 @@ module.exports = function (camera, options) {
 	var moveBackward = false;
 	var moveLeft = false;
 	var moveRight = false;
+	var moveUp = false;
+	var moveDown = false;
 
 	var prevTime = performance.now();
 
@@ -135,6 +137,16 @@ module.exports = function (camera, options) {
 				// d
 				moveRight = true;
 				break;
+
+			case 82:
+				// r
+				moveUp = true;
+				break;
+
+			case 70:
+				// f
+				moveDown = true;
+				break;
 		}
 	};
 
@@ -162,6 +174,16 @@ module.exports = function (camera, options) {
 			case 68:
 				// d
 				moveRight = false;
+				break;
+
+			case 82:
+				// r
+				moveUp = false;
+				break;
+
+			case 70:
+				// f
+				moveDown = false;
 				break;
 		}
 	};
@@ -199,15 +221,21 @@ module.exports = function (camera, options) {
 		var delta = (time - prevTime) / 1000;
 
 		velocity.x -= velocity.x * 10 * delta;
+		velocity.y -= velocity.y * 10 * delta;
 		velocity.z -= velocity.z * 10 * delta;
 
-		//velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
+		var velDelta = velocityStep * delta;
 
-		if (moveForward) velocity.z -= velocityStep * delta;
-		if (moveBackward) velocity.z += velocityStep * delta;
+		if (moveForward) velocity.z -= velDelta;
+		if (moveBackward) velocity.z += velDelta;
 
-		if (moveLeft) velocity.x -= velocityStep * delta;
-		if (moveRight) velocity.x += velocityStep * delta;
+		if (moveLeft) velocity.x -= velDelta;
+		if (moveRight) velocity.x += velDelta;
+
+		if (moveUp) velocity.y += velDelta;
+		if (moveDown) velocity.y -= velDelta;
+
+		// var orientedCamera = this.getDirection(camera.position.clone());
 
 		yawObject.translateX(velocity.x * delta);
 		yawObject.translateY(velocity.y * delta);
