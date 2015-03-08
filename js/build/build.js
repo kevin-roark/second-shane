@@ -1,11 +1,423 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 "use strict";
 
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
 var $ = require("jquery");
 var THREE = require("three");
-var kt = require("kutility");
 
-},{"jquery":2,"kutility":3,"three":4}],2:[function(require,module,exports){
+var ThreeBoiler = require("./three-boiler.es6").ThreeBoiler;
+
+var PointerControls = require("./pointer-freeform-controls");
+
+var SecondShane = (function (_ThreeBoiler) {
+  function SecondShane() {
+    var _this = this;
+
+    _classCallCheck(this, SecondShane);
+
+    _get(Object.getPrototypeOf(SecondShane.prototype), "constructor", this).call(this);
+
+    this.controls = new PointerControls(this.camera);
+    this.scene.add(this.controls.getObject());
+
+    $(document).click(function () {
+      _this.controls.requestPointerlock();
+      _this.controls.enabled = true;
+    });
+
+    var mesh = new THREE.Mesh(new THREE.BoxGeometry(5, 5, 5), new THREE.MeshBasicMaterial({ color: 16711680 }));
+    mesh.position.set(-5, 0, -25);
+    this.scene.add(mesh);
+  }
+
+  _inherits(SecondShane, _ThreeBoiler);
+
+  _createClass(SecondShane, {
+    render: {
+      value: function render() {
+        _get(Object.getPrototypeOf(SecondShane.prototype), "render", this).call(this);
+
+        this.controls.update();
+      }
+    }
+  });
+
+  return SecondShane;
+})(ThreeBoiler);
+
+$(function () {
+  var me = new SecondShane();
+  me.activate();
+});
+
+},{"./pointer-freeform-controls":2,"./three-boiler.es6":3,"jquery":4,"three":5}],2:[function(require,module,exports){
+"use strict";
+
+/**
+ * Modified from mrdoob's THREE.PointerLockControls
+ */
+
+var THREE = require("three");
+
+module.exports = function (camera, options) {
+	if (!options) options = {};
+
+	var scope = this;
+
+	camera.rotation.set(0, 0, 0);
+
+	var pitchObject = new THREE.Object3D();
+	pitchObject.add(camera);
+
+	var yawObject = new THREE.Object3D();
+	yawObject.position.y = 10;
+	yawObject.add(pitchObject);
+
+	var moveForward = false;
+	var moveBackward = false;
+	var moveLeft = false;
+	var moveRight = false;
+
+	var prevTime = performance.now();
+
+	var velocity = new THREE.Vector3();
+	var velocityStep = options.velocityStep || 800;
+
+	var PI_2 = Math.PI / 2;
+
+	var havePointerLock = "pointerLockElement" in document || "mozPointerLockElement" in document || "webkitPointerLockElement" in document;
+	var pointerlockElement = document.body;
+	var canRequestPointerlock = false;
+	var currentlyHasPointerlock = false;
+	addPointerlockListeners();
+
+	var onMouseMove = function onMouseMove(event) {
+		if (!currentlyHasPointerlock || !scope.enabled) {
+			return;
+		}var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
+		var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
+
+		yawObject.rotation.y -= movementX * 0.002;
+		pitchObject.rotation.x += movementY * 0.002;
+
+		pitchObject.rotation.x = Math.max(-PI_2, Math.min(PI_2, pitchObject.rotation.x));
+	};
+
+	var onKeyDown = function onKeyDown(event) {
+		switch (event.keyCode) {
+			case 38: // up
+			case 87:
+				// w
+				moveForward = true;
+				break;
+
+			case 37: // left
+			case 65:
+				// a
+				moveLeft = true;
+				break;
+
+			case 40: // down
+			case 83:
+				// s
+				moveBackward = true;
+				break;
+
+			case 39: // right
+			case 68:
+				// d
+				moveRight = true;
+				break;
+		}
+	};
+
+	var onKeyUp = function onKeyUp(event) {
+		switch (event.keyCode) {
+			case 38: // up
+			case 87:
+				// w
+				moveForward = false;
+				break;
+
+			case 37: // left
+			case 65:
+				// a
+				moveLeft = false;
+				break;
+
+			case 40: // down
+			case 83:
+				// s
+				moveBackward = false;
+				break;
+
+			case 39: // right
+			case 68:
+				// d
+				moveRight = false;
+				break;
+		}
+	};
+
+	document.addEventListener("mousemove", onMouseMove, false);
+	document.addEventListener("keydown", onKeyDown, false);
+	document.addEventListener("keyup", onKeyUp, false);
+
+	this.enabled = false;
+
+	this.getObject = function () {
+		return yawObject;
+	};
+
+	this.isIdle = function () {
+		return !(moveForward || moveBackward || moveLeft || moveRight);
+	};
+
+	this.getDirection = (function () {
+		// assumes the camera itself is not rotated
+		var direction = new THREE.Vector3(0, 0, -1);
+		var rotation = new THREE.Euler(0, 0, 0, "YXZ");
+
+		return function (v) {
+			rotation.set(pitchObject.rotation.x, yawObject.rotation.y, 0);
+			v.copy(direction).applyEuler(rotation);
+			return v;
+		};
+	})();
+
+	this.update = function () {
+		if (scope.enabled === false) return;
+
+		var time = performance.now();
+		var delta = (time - prevTime) / 1000;
+
+		velocity.x -= velocity.x * 10 * delta;
+		velocity.z -= velocity.z * 10 * delta;
+
+		//velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
+
+		if (moveForward) velocity.z -= velocityStep * delta;
+		if (moveBackward) velocity.z += velocityStep * delta;
+
+		if (moveLeft) velocity.x -= velocityStep * delta;
+		if (moveRight) velocity.x += velocityStep * delta;
+
+		yawObject.translateX(velocity.x * delta);
+		yawObject.translateY(velocity.y * delta);
+		yawObject.translateZ(velocity.z * delta);
+
+		prevTime = time;
+	};
+
+	this.requestPointerlock = function () {
+		canRequestPointerlock = true;
+
+		if (/Firefox/i.test(navigator.userAgent)) {
+			var fullscreenchange = (function (_fullscreenchange) {
+				var _fullscreenchangeWrapper = function fullscreenchange() {
+					return _fullscreenchange.apply(this, arguments);
+				};
+
+				_fullscreenchangeWrapper.toString = function () {
+					return _fullscreenchange.toString();
+				};
+
+				return _fullscreenchangeWrapper;
+			})(function () {
+				if (document.fullscreenElement === pointerlockElement || document.mozFullscreenElement === pointerlockElement || document.mozFullScreenElement === pointerlockElement) {
+					document.removeEventListener("fullscreenchange", fullscreenchange);
+					document.removeEventListener("mozfullscreenchange", fullscreenchange);
+
+					pointerlockElement.requestPointerLock();
+				}
+			});
+
+			document.addEventListener("fullscreenchange", fullscreenchange, false);
+			document.addEventListener("mozfullscreenchange", fullscreenchange, false);
+
+			pointerlockElement.requestFullscreen = pointerlockElement.requestFullscreen || pointerlockElement.mozRequestFullScreen || pointerlockElement.webkitRequestFullscreen;
+			pointerlockElement.requestFullscreen();
+		} else {
+			pointerlockElement.requestPointerLock = pointerlockElement.requestPointerLock || pointerlockElement.mozRequestPointerLock || pointerlockElement.webkitRequestPointerLock;
+
+			if (pointerlockElement.requestPointerLock) {
+				pointerlockElement.requestPointerLock();
+			}
+		}
+	};
+
+	this.exitPointerlock = function () {
+		pointerlockElement.exitPointerLock = pointerlockElement.exitPointerLock || pointerlockElement.mozExitPointerLock || pointerlockElement.webkitExitPointerLock;
+
+		if (pointerlockElement.exitPointerLock) {
+			pointerlockElement.exitPointerLock();
+		}
+
+		canRequestPointerlock = false;
+	};
+
+	function pointerlockchange() {
+		if (document.pointerLockElement === pointerlockElement || document.mozPointerLockElement === pointerlockElement || document.webkitPointerLockElement === pointerlockElement) {
+			currentlyHasPointerlock = true;
+		} else {
+			currentlyHasPointerlock = false;
+		}
+	}
+
+	function pointerlockerror(event) {
+		console.log("POINTER LOCK ERROR:");
+		console.log(event);
+	}
+
+	function addPointerlockListeners() {
+		if (havePointerLock) {
+			// Hook pointer lock state change events
+			document.addEventListener("pointerlockchange", function () {
+				pointerlockchange();
+			}, false);
+			document.addEventListener("mozpointerlockchange", function () {
+				pointerlockchange();
+			}, false);
+			document.addEventListener("webkitpointerlockchange", function () {
+				pointerlockchange();
+			}, false);
+
+			document.addEventListener("pointerlockerror", function (ev) {
+				pointerlockerror(ev);
+			}, false);
+			document.addEventListener("mozpointerlockerror", function (ev) {
+				pointerlockerror(ev);
+			}, false);
+			document.addEventListener("webkitpointerlockerror", function (ev) {
+				pointerlockerror(ev);
+			}, false);
+		}
+	}
+};
+
+},{"three":5}],3:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+var $ = require("jquery");
+var THREE = require("three");
+
+var ThreeBoiler = exports.ThreeBoiler = (function () {
+  function ThreeBoiler() {
+    var _this = this;
+
+    _classCallCheck(this, ThreeBoiler);
+
+    try {
+      this.renderer = new THREE.WebGLRenderer({ antialias: true });
+      this.renderMode = "webgl";
+    } catch (e) {
+      $(".error").show();
+      setTimeout(function () {
+        $(".error").fadeOut();
+      }, 6666);
+      this.renderer = new THREE.CanvasRenderer();
+      this.renderMode = "canvas";
+    }
+
+    this.renderer.setClearColor(16777215, 1);
+    document.body.appendChild(this.renderer.domElement);
+
+    this.scene = new THREE.Scene();
+
+    this.camera = this.createCamera();
+    this.scene.add(this.camera);
+
+    this.ambientLight = this.createAmbientLight();
+    this.scene.add(this.ambientLight);
+
+    $(window).resize(function () {
+      _this.resize();
+    });
+    this.resize();
+  }
+
+  _createClass(ThreeBoiler, {
+    createCamera: {
+      value: function createCamera() {
+        return new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 3000);
+      }
+    },
+    createAmbientLight: {
+      value: function createAmbientLight() {
+        return new THREE.AmbientLight(4210752);
+      }
+    },
+    activate: {
+      value: function activate() {
+        this.frame = 0;
+        this.render();
+      }
+    },
+    render: {
+      value: function render() {
+        var _this = this;
+
+        requestAnimationFrame(function () {
+          _this.render();
+        });
+
+        this.frame += 1;
+
+        this.renderer.render(this.scene, this.camera);
+      }
+    },
+    resize: {
+      value: function resize() {
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+
+        this.camera.aspect = window.innerWidth / window.innerHeight;
+        this.camera.updateProjectionMatrix();
+      }
+    }
+  });
+
+  return ThreeBoiler;
+})();
+
+// request animation frame shim
+(function () {
+  var lastTime = 0;
+  var vendors = ["ms", "moz", "webkit", "o"];
+  for (var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+    window.requestAnimationFrame = window[vendors[x] + "RequestAnimationFrame"];
+    window.cancelAnimationFrame = window[vendors[x] + "CancelAnimationFrame"] || window[vendors[x] + "CancelRequestAnimationFrame"];
+  }
+
+  if (!window.requestAnimationFrame) window.requestAnimationFrame = function (callback) {
+    var currTime = new Date().getTime();
+    var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+    var id = window.setTimeout(function () {
+      callback(currTime + timeToCall);
+    }, timeToCall);
+    lastTime = currTime + timeToCall;
+    return id;
+  };
+
+  if (!window.cancelAnimationFrame) window.cancelAnimationFrame = function (id) {
+    clearTimeout(id);
+  };
+})();
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+},{"jquery":4,"three":5}],4:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.3
  * http://jquery.com/
@@ -9212,581 +9624,7 @@ return jQuery;
 
 }));
 
-},{}],3:[function(require,module,exports){
-
-/* export something */
-module.exports = new Kutility();
-
-/* constructor does nothing at this point */
-function Kutility() {}
-
-/**
- * get a random object from the array arr
- *
- * @api public
- */
-
-Kutility.prototype.choice = function(arr) {
-    var i = Math.floor(Math.random() * arr.length);
-    return arr[i];
-};
-
-/**
- * return shuffled version of an array.
- *
- * adapted from css tricks
- *
- * @api public
- */
-Kutility.prototype.shuffle = function(arr) {
-  var newArray = new Array(arr.length);
-  for (var i = 0; i < arr.length; i++)
-    newArray[i] = arr[i];
-
-  newArray.sort(function() { return 0.5 - Math.random(); });
-  return newArray;
-};
-
-/**
- * returns a random color as an 'rgb(x, y, z)' string
- *
- * @api public
- */
-Kutility.prototype.randColor = function() {
-    var r = Math.floor(Math.random() * 256);
-    var g = Math.floor(Math.random() * 256);
-    var b = Math.floor(Math.random() * 256);
-    return 'rgb(' + r + ',' + g + ',' + b + ')';
-};
-
-Kutility.prototype.randInt = function(num1, num2) {
-  var min, max;
-  if (num1 !== undefined && num2 !== undefined) {
-    min = num1;
-    max = num2;
-  } else if (num1 !== undefined) {
-    max = num1;
-  } else {
-    max = 0;
-  }
-
-  if (min) {
-    return Math.floor(Math.random() * (max - min)) + min;
-  } else {
-    return Math.floor(Math.random() * (max));
-  }
-};
-
-/**
- * Color wheel 1 -> 1536.
- *
- * Written by Henry Van Dusen, all attribution to the big boy.
- * Slightly modified by Kev.
- *
- * @api public
- */
- Kutility.prototype.colorWheel = function(num) {
-    var text = "rgb(";
-    var entry = num % 1536;
-    num = entry % 256;
-
-    if(entry < 256 * 1)
-    	return text + "0,255," + num + ")";
-    else if(entry < 256 * 2)
-    	return text + "0," + (255 - num) + ",255)";
-    else if(entry < 256 * 3)
-      return text + num + ",0,255)";
-    else if(entry < 256 * 4)
-      return text + "255,0," + (255 - num) + ")";
-    else if(entry < 256 * 5)
-      return text + "255," + num + ",0)";
-    else
-      return text + (255 - num) + ",255,0)";
- };
-
- /**
-  * Make an rbg() color string an rgba() color string
-  *
-  * @api public
-  */
-Kutility.prototype.alphize = function(color, alpha) {
-  color.replace('rgb', 'rgba');
-  color.replace(')', ', ' + alpha + ')');
-  return color;
-};
-
-/**
- * Get an array of two random contrasting colors.
- *
- * @api public
- */
-Kutility.prototype.contrasters = function() {
-  var num = Math.floor(Math.random() * 1536);
-  var fg = this.colorWheel(num);
-  var bg = this.colorWheel(num + 650);
-  return [fg, bg];
-};
-
-/**
- * Add a random shadow to a jquery element
- *
- * @api public
- */
-Kutility.prototype.randomShadow = function(el, size) {
-  var s = size + 'px';
-  var shadow = '0px 0px ' + s + ' ' + s + ' ' + this.randColor();
-  addShadow(el, shadow);
-};
-
-/**
- * Add shadow with offset x and y pixels, z pixels of blur radius,
- * w pizels of spread radius, and cool color
- *
- * @api public
- */
-Kutility.prototype.shadow = function(el, x, y, z, w, color) {
-  var xp = x + "px";
-  var yp = y + "px";
-  var zp = z + "px";
-  var wp = w + "px";
-
-  var shadow = xp + " " + yp + " " + zp + " " + wp + " " + color;
-  addShadow(el, shadow);
-};
-
-function addShadow(el, shadow) {
-  el.css('-webkit-box-shadow', shadow);
-  el.css('-moz-box-shadow', shadow);
-  el.css('box-shadow', shadow);
-}
-
-/**
- * Add transform to element with all the lame browser prefixes.
- *
- * @api public
- */
-Kutility.prototype.addTransform = function(el, transform) {
-  var curTransform = this.getTransform(el);
-  curTransform = curTransform.replace('none', '');
-  var newTransform = curTransform + transform;
-  this.setTransform(el, newTransform);
-};
-
-/**
- * Set transform of element with all the lame browser prefixes.
- *
- * @api public
- */
-Kutility.prototype.setTransform = function(el, transform) {
-  el.css('-webkit-transform', transform);
-  el.css('-moz-transform', transform);
-  el.css('-ms-transform', transform);
-  el.css('-o-transform', transform);
-  el.css('transform', transform);
-};
-
-/**
- * Check an elements tansform.
- *
- * @api public
- */
-Kutility.prototype.getTransform = function(el) {
-  var possible = ['transform', '-webkit-transform', '-moz-transform', '-ms-transform', '-o-transform'];
-
-  for (var i = 0; i < possible.length; i++) {
-    var f = el.css(possible[i]);
-    if (f === 'none' && i + 1 < possible.length) {
-      var pf = el.css(possible[i + 1]);
-      if (pf)
-        continue;
-    }
-    return f;
-  }
-};
-
-/**
- * Remove all transforms from element.
- *
- * @api public
- */
-Kutility.prototype.clearTransforms = function(el) {
-  el.css('-webkit-transform', '');
-  el.css('-moz-transform', '');
-  el.css('-ms-transform', '');
-  el.css('-o-transform', '');
-  el.css('transform', '');
-};
-
-/**
- * Rotate an element by x degrees.
- *
- * @api public
- */
-Kutility.prototype.rotate = function(el, x) {
-  var ct = this.getTransform(el);
-  ct = ct.replace(/matrix\(.*?\)/, '').replace('none', '');
-
-  var t = ' rotate(' + x + 'deg)';
-  this.setTransform(el, ct  + t);
-};
-
-/**
- * Scale an element by x (no units);
- *
- * @api public
- */
-Kutility.prototype.scale = function(el, x) {
-  var ct = this.getTransform(el);
-  ct = ct.replace(/matrix\(.*?\)/, '').replace('none', '');
-
-  var t = ' scale(' + x + ',' + x + ')';
-  this.setTransform(el, ct + t);
-};
-
-/**
- * Translate an element by x, y (include your own units);
- *
- * @api public
- */
-Kutility.prototype.translate = function(el, x, y) {
-  var ct = this.getTransform(el);
-  ct = ct.replace(/matrix\(.*?\)/, '').replace('none', '');
-
-  var t = ' translate(' + x + ', '  + y + ')';
-  this.setTransform(el, ct + t);
-};
-
-/**
- * Skew an element by x, y degrees;
- *
- * @api public
- */
-Kutility.prototype.skew = function(el, x, y) {
-  var ct = this.getTransform(el);
-  ct = ct.replace(/skew\(.*?\)/, '').replace(/matrix\(.*?\)/, '').replace('none', '');
-
-  var xd = x + 'deg';
-  var yd = y + 'deg';
-  var t = ' skew(' + xd + ', ' + yd + ')';
-  this.setTransform(el, ct + t);
-};
-
-/**
- * Warp an element by rotating and skewing it.
- *
- * @api public
- */
-Kutility.prototype.warp = function(el, d, x, y) {
-  var ct = this.getTransform(el);
-  ct = ct.replace(/matrix\(.*?\)/, '').replace('none', '');
-
-  var r = ' rotate(' + d + 'deg)';
-  var xd = x + 'deg';
-  var yd = y + 'deg';
-  var s = ' skew(' + xd + ', ' + yd + ')';
-
-  this.setTransform(el, ct + r + s);
-};
-
-/**
- * scale by w, translate x y
- *
- * @api public
- */
-Kutility.prototype.slaw = function(el, w, x, y) {
-  var ct = this.getTransform(el);
-  ct = ct.replace(/matrix\(.*?\)/, '').replace('none', '');
-
-  var s = ' scale(' + w + ',' + w + ')';
-  var t = ' translate(' + x + ', '  + y + ')';
-  this.setTransform(el, ct + s + t);
-};
-
-/**
- * scale by w, rotate by x
- *
- * @api public
- */
-Kutility.prototype.straw = function(el, w, x) {
-  var ct = this.getTransform(el);
-  ct = ct.replace(/matrix\(.*?\)/, '').replace('none', '');
-
-  var s = ' scale(' + w + ',' + w + ')';
-  var r = ' rotate(' + x + 'deg)';
-  this.setTransform(el, ct + s + r);
-};
-
-/**
- * Set perspective to x pixels
- *
- * @api public
- */
-Kutility.prototype.perp = function(el, x) {
-  var p = x + 'px';
-  el.css('-webkit-perspective', p);
-  el.css('-moz-perspective', p);
-  el.css('-ms-perspective', p);
-  el.css('-o-perspective', p);
-  el.css('perspective', p);
-};
-
-/**
- * Set perspective-origin to x and y percents.
- *
- * @api public
- */
-Kutility.prototype.perpo = function(el, x, y) {
-  var p = x + "% " + y + "%";
-  el.css('-webkit-perspective-origin', p);
-  el.css('-moz-perspective-origin', p);
-  el.css('-ms-perspective-origin', p);
-  el.css('-o-perspective-origin', p);
-  el.css('perspective-origin', p);
-};
-
-/**
- * Translate an element by x, y, z pixels
- *
- * @api public
- */
-Kutility.prototype.trans3d = function(el, x, y, z) {
-  var ct = this.getTransform(el);
-  ct = ct.replace(/matrix3d\(.*?\)/, '').replace('none', '');
-
-  var t = ' translate3d(' + x + 'px, ' + y + 'px, ' + z + 'px)';
-  this.setTransform(el, ct + t);
-};
-
-/**
- * Scale an element by x (no units)
- *
- * @api public
- */
-Kutility.prototype.scale3d = function(el, x) {
-  var ct = this.getTransform(el);
-  ct = ct.replace(/matrix3d\(.*?\)/, '').replace('none', '');
-
-  var t = ' scale3d(' + x + ', ' + x + ', ' + x + ')';
-  this.setTransform(el, ct + t);
-};
-
-/**
- * Rotate an element about <x, y, z> by d degrees
- *
- * @api public
- */
-Kutility.prototype.rotate3d = function(el, x, y, z, d) {
-  var ct = this.getTransform(el);
-  ct = ct.replace(/matrix3d\(.*?\)/, '').replace('none', '');
-
-  var t = ' rotate3d(' + x + ', ' + y + ', ' + z + ', ' + d + 'deg)';
-  this.setTransform(el, ct + t);
-};
-
-/**
- * Rotate an element about x axis by d degrees
- *
- * @api public
- */
-Kutility.prototype.rotate3dx = function(el, d) {
-  this.rotate3d(el, 1, 0, 0, d);
-};
-
-/**
- * Rotate an element about y axis by d degrees
- *
- * @api public
- */
-Kutility.prototype.rotate3dy = function(el, d) {
-  this.rotate3d(el, 0, 1, 0, d);
-};
-
-/**
- * Rotate an element about z axis by d degrees
- *
- * @api public
- */
-Kutility.prototype.rotate3dz = function(el, d) {
-  this.rotate3d(el, 0, 0, 1, d);
-};
-
-/**
- * Add filter to element with all the lame browser prefixes.
- *
- * @api public
- */
-Kutility.prototype.addFilter = function(el, filter) {
-  var curFilter = this.getFilter(el);
-  curFilter = curFilter.replace('none', '');
-  var newFilter = curFilter + ' ' + filter;
-  this.setFilter(el, newFilter);
-};
-
-/**
- * Set filter to element with all lame prefixes.
- *
- * @api public
- */
-Kutility.prototype.setFilter = function(el, filter) {
-  el.css('-webkit-filter', filter);
-  el.css('-moz-filter', filter);
-  el.css('-ms-filter', filter);
-  el.css('-o-filter', filter);
-  el.css('filter', filter);
-};
-
-/**
- * Check an elements filter.
- *
- * @api public
- */
-Kutility.prototype.getFilter = function(el) {
-  var possible = ['filter', '-webkit-filter', '-moz-filter', '-ms-filter', '-o-filter'];
-
-  for (var i = 0; i < possible.length; i++) {
-    var f = el.css(possible[i]);
-    if (f === 'none' && i + 1 < possible.length) {
-      var pf = el.css(possible[i + 1]);
-      if (pf)
-        continue;
-    }
-    return f;
-  }
-};
-
-/**
- * Remove all filters from element.
- *
- * @api public
- */
-Kutility.prototype.clearFilters = function(el) {
-  el.css('-webkit-filter', '');
-  el.css('-moz-filter', '');
-  el.css('-ms-filter', '');
-  el.css('-o-filter', '');
-  el.css('filter', '');
-};
-
-/**
-
-/**
- * Grayscale an element by x percent.
- *
- * @api public
- */
-Kutility.prototype.grayscale = function(el, x) {
-  var cf = this.getFilter(el);
-  cf = cf.replace(/grayscale\(.*?\)/, '').replace('none', '');
-
-  var f = ' grayscale(' + x + '%)';
-  this.setFilter(el, cf  + f);
-};
-
-/**
- * Sepia an element by x percent.
- *
- * @api public
- */
-Kutility.prototype.sepia = function(el, x) {
-  var cf = this.getFilter(el);
-  cf = cf.replace(/sepia\(.*?\)/, '').replace('none', '');
-
-  var f = ' sepia(' + x + '%)';
-  this.setFilter(el, cf + f);
-};
-
-/**
- * Saturate an element by x percent.
- *
- * @api public
- */
-Kutility.prototype.saturate = function(el, x) {
-  var cf = this.getFilter(el);
-  cf = cf.replace(/saturate\(.*?\)/, '').replace('none', '');
-
-  var f = ' saturate(' + x + '%)';
-  this.setFilter(el, cf + f);
-};
-
-/**
- * Invert an element by x percent.
- *
- * @api public
- */
-Kutility.prototype.invert = function(el, x) {
-  var cf = this.getFilter(el);
-  cf = cf.replace(/invert\(.*?\)/, '').replace('none', '');
-
-  var f = ' invert(' + x + '%)';
-  this.setFilter(el, cf + f);
-};
-
-/**
- * Hue-rotate an element by x degrees.
- *
- * @api public
- */
-Kutility.prototype.hutate = function(el, x) {
-  var cf = this.getFilter(el);
-  cf = cf.replace(/hue-rotate\(.*?\)/, '').replace('none', '');
-
-  var f = ' hue-rotate(' + x + 'deg)';
-  this.setFilter(el, cf + f);
-};
-
-/**
- * Set opacity of an element to x percent.
- *
- * @api public
- */
-Kutility.prototype.opace = function(el, x) {
-  var cf = this.getFilter(el);
-  cf = cf.replace(/opacity\(.*?\)/, '').replace('none', '');
-
-  var f = ' opacity(' + x + '%)';
-  this.setFilter(el, cf + f);
-};
-
-/**
- * Set brightness of an element to x percent.
- *
- * @api public
- */
-Kutility.prototype.brightness = function(el, x) {
-  var cf = this.getFilter(el);
-  cf = cf.replace(/brightness\(.*?\)/, '').replace('none', '');
-
-  var f = ' brightness(' + x + '%)';
-  this.setFilter(el, cf + f);
-};
-
-/**
- * Set contrast of an element to x percent.
- *
- * @api public
- */
-Kutility.prototype.contrast = function(el, x) {
-  var cf = this.getFilter(el);
-  cf = cf.replace(/contrast\(.*?\)/, '').replace('none', '');
-
-  var f = ' contrast(' + x + '%)';
-  this.setFilter(el, cf + f);
-};
-
-/**
- * Blur an element by x pixels.
- *
- * @api public
- */
-Kutility.prototype.blur = function(el, x) {
-  var cf = this.getFilter(el);
-  cf = cf.replace(/blur\(.*?\)/, '').replace('none', '');
-
-  var f = ' blur(' + x + 'px)';
-  this.setFilter(el, cf + f);
-};
-
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 // File:src/Three.js
 
 /**

@@ -3,9 +3,7 @@ let THREE = require('three');
 
 let talismanLoader = new THREE.JSONLoader();
 
-module.exports = Talisman;
-
-class Talisman {
+export class Talisman {
   constructor(options) {
     if (!options) options = {};
 

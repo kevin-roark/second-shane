@@ -1,10 +1,8 @@
 
 let THREE = require('three');
-let Talisman = require('./talisman');
+import {Talisman} from './talisman';
 
-module.exports = ShaneScene;
-
-class ShaneScene {
+export class ShaneScene {
   constructor(renderer, camera, options) {
     this.renderer = renderer;
     this.camera = camera;
