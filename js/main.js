@@ -1,4 +1,4 @@
 
-var $ = require('jquery');
-var THREE = require('three');
-var kt = require('kutility');
+let $ = require('jquery');
+let THREE = require('three');
+let kt = require('kutility');
