@@ -14,9 +14,12 @@ module.exports = function (camera, options) {
 	var pitchObject = new THREE.Object3D();
 	pitchObject.add(camera);
 
+	var rollObject = new THREE.Object3D();
+	rollObject.add(pitchObject);
+
 	var yawObject = new THREE.Object3D();
 	yawObject.position.y = 10;
-	yawObject.add(pitchObject);
+	yawObject.add(rollObject);
 
 	var moveForward = false;
 	var moveBackward = false;
@@ -24,6 +27,8 @@ module.exports = function (camera, options) {
 	var moveRight = false;
 	var moveUp = false;
 	var moveDown = false;
+	var rollLeft = false;
+	var rollRight = false;
 
 	var prevTime = performance.now();
 
@@ -72,13 +77,12 @@ module.exports = function (camera, options) {
 				moveRight = true;
 				break;
 
-			case 82: // r
-				moveUp = true;
-				break;
+			case 82: /*R*/ moveUp = true; break;
 
-			case 70: // f
-				moveDown = true;
-				break;
+			case 70: /*F*/ moveDown = true; break;
+
+			case 81: /*Q*/ rollLeft = true; break;
+			case 69: /*E*/ rollRight = true; break;
 		}
 	};
 
@@ -104,19 +108,18 @@ module.exports = function (camera, options) {
 				moveRight = false;
 				break;
 
-			case 82: // r
-				moveUp = false;
-				break;
+			case 82: /*R*/ moveUp = false; break;
 
-			case 70: // f
-				moveDown = false;
-				break;
+			case 70: /*F*/ moveDown = false; break;
+
+			case 81: /*Q*/ rollLeft = false; break;
+			case 69: /*E*/ rollRight = false; break;
 		}
 	};
 
-	document.addEventListener( 'mousemove', onMouseMove, false );
-	document.addEventListener( 'keydown', onKeyDown, false );
-	document.addEventListener( 'keyup', onKeyUp, false );
+	document.addEventListener('mousemove', onMouseMove, false);
+	document.addEventListener('keydown', onKeyDown, false);
+	document.addEventListener('keyup', onKeyUp, false);
 
 	this.enabled = false;
 
@@ -161,7 +164,8 @@ module.exports = function (camera, options) {
 		if (moveUp) velocity.y += velDelta;
 		if (moveDown) velocity.y -= velDelta;
 
-		// var orientedCamera = this.getDirection(camera.position.clone());
+		if (rollLeft) rollObject.rotation.z -= 0.02;
+		if (rollRight) rollObject.rotation.z += 0.02;
 
 		yawObject.translateX(velocity.x * delta);
 		yawObject.translateY(velocity.y * delta);

@@ -5,16 +5,19 @@ let THREE = require('three');
 import {ThreeBoiler} from './three-boiler.es6';
 
 let PointerControls = require('./pointer-freeform-controls');
+let FlyControls = require('./fly-controls');
 
 class SecondShane extends ThreeBoiler {
   constructor() {
     super();
 
-    this.controls = new PointerControls(this.camera);
+    this.controls = new FlyControls(this.camera);
     this.scene.add(this.controls.getObject());
 
     $(document).click(() => {
-      this.controls.requestPointerlock();
+      if (this.controls.requestPointerlock) {
+        this.controls.requestPointerlock();
+      }
       this.controls.enabled = true;
     });
 
