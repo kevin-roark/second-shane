@@ -2,21 +2,17 @@
 "use strict";
 
 /**
- * @author James Baicoianu / http://www.baicoianu.com/
+ * Originally by James Baicoianu / http://www.baicoianu.com/
+ * Modified by Kevin Roark (porkf.at) to meld with pointerlock controls
  */
 
 var THREE = require("three");
+var Pointerlocker = require("./pointerlocker");
 
 module.exports = function (camera, options) {
 	if (!options) options = {};
 
 	this.object = camera;
-
-	var havePointerLock = "pointerLockElement" in document || "mozPointerLockElement" in document || "webkitPointerLockElement" in document;
-	var pointerlockElement = document.body;
-	var canRequestPointerlock = false;
-	var currentlyHasPointerlock = false;
-	addPointerlockListeners();
 
 	// API
 
@@ -33,8 +29,14 @@ module.exports = function (camera, options) {
 
 	this.enabled = false;
 
+	this.locker = new Pointerlocker();
+
 	this.getObject = function () {
 		return this.object;
+	};
+
+	this.requestPointerlock = function () {
+		this.locker.requestPointerlock();
 	};
 
 	// internals
@@ -144,7 +146,7 @@ module.exports = function (camera, options) {
 	};
 
 	this.mousedown = function (event) {
-		if (!this.enabled) return;
+		if (!this.enabled || !this.locker.currentlyHasPointerlock) return;
 
 		if (this.domElement !== document) {
 			this.domElement.focus();
@@ -168,35 +170,20 @@ module.exports = function (camera, options) {
 	};
 
 	this.mousemove = function (event) {
-		if (!this.enabled || !currentlyHasPointerlock) return;
+		if (!this.enabled || !this.locker.currentlyHasPointerlock) return;
 
 		if (!this.dragToLook || this.mouseStatus > 0) {
-			// var container = this.getContainerDimensions();
-			// var halfWidth  = container.size[ 0 ] / 2;
-			// var halfHeight = container.size[ 1 ] / 2;
-
 			var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
 			var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
 
 			this.object.rotation.y -= movementX * 0.002;
 			this.object.rotation.x += movementY * 0.002;
-
-			// this.moveState.yawLeft -= movementX * 0.1;
-			// if (this.moveState.yawLeft < -1) this.moveState.yawLeft = -1;
-			// else if (this.moveState.yawLeft > 1) this.moveState.yawLeft = 1;
-			//
-			// this.moveState.pitchDown -= movementY * 0.1;
-			// if (this.moveState.pitchDown < -1) this.moveState.pitchDown = -1;
-			// else if (this.moveState.pitchDown > 1) this.moveState.pitchDown = 1;
-
-			//this.moveState.yawLeft   = - ( ( event.pageX - container.offset[ 0 ] ) - halfWidth  ) / halfWidth;
-			//this.moveState.pitchDown =   ( ( event.pageY - container.offset[ 1 ] ) - halfHeight ) / halfHeight;
-
-			//this.updateRotationVector();
 		}
 	};
 
 	this.mouseup = function (event) {
+		if (!this.enabled || !this.locker.currentlyHasPointerlock) return;
+
 		event.preventDefault();
 		event.stopPropagation();
 
@@ -284,96 +271,9 @@ module.exports = function (camera, options) {
 
 	this.updateMovementVector();
 	this.updateRotationVector();
-
-	// pointer lock stuff
-
-	this.requestPointerlock = function () {
-		canRequestPointerlock = true;
-
-		if (/Firefox/i.test(navigator.userAgent)) {
-			var fullscreenchange = (function (_fullscreenchange) {
-				var _fullscreenchangeWrapper = function fullscreenchange() {
-					return _fullscreenchange.apply(this, arguments);
-				};
-
-				_fullscreenchangeWrapper.toString = function () {
-					return _fullscreenchange.toString();
-				};
-
-				return _fullscreenchangeWrapper;
-			})(function () {
-				if (document.fullscreenElement === pointerlockElement || document.mozFullscreenElement === pointerlockElement || document.mozFullScreenElement === pointerlockElement) {
-					document.removeEventListener("fullscreenchange", fullscreenchange);
-					document.removeEventListener("mozfullscreenchange", fullscreenchange);
-
-					pointerlockElement.requestPointerLock();
-				}
-			});
-
-			document.addEventListener("fullscreenchange", fullscreenchange, false);
-			document.addEventListener("mozfullscreenchange", fullscreenchange, false);
-
-			pointerlockElement.requestFullscreen = pointerlockElement.requestFullscreen || pointerlockElement.mozRequestFullScreen || pointerlockElement.webkitRequestFullscreen;
-			pointerlockElement.requestFullscreen();
-		} else {
-			pointerlockElement.requestPointerLock = pointerlockElement.requestPointerLock || pointerlockElement.mozRequestPointerLock || pointerlockElement.webkitRequestPointerLock;
-
-			if (pointerlockElement.requestPointerLock) {
-				pointerlockElement.requestPointerLock();
-			}
-		}
-	};
-
-	this.exitPointerlock = function () {
-		pointerlockElement.exitPointerLock = pointerlockElement.exitPointerLock || pointerlockElement.mozExitPointerLock || pointerlockElement.webkitExitPointerLock;
-
-		if (pointerlockElement.exitPointerLock) {
-			pointerlockElement.exitPointerLock();
-		}
-
-		canRequestPointerlock = false;
-	};
-
-	function pointerlockchange() {
-		if (document.pointerLockElement === pointerlockElement || document.mozPointerLockElement === pointerlockElement || document.webkitPointerLockElement === pointerlockElement) {
-			currentlyHasPointerlock = true;
-		} else {
-			currentlyHasPointerlock = false;
-		}
-	}
-
-	function pointerlockerror(event) {
-		console.log("POINTER LOCK ERROR:");
-		console.log(event);
-	}
-
-	function addPointerlockListeners() {
-		if (havePointerLock) {
-			// Hook pointer lock state change events
-			document.addEventListener("pointerlockchange", function () {
-				pointerlockchange();
-			}, false);
-			document.addEventListener("mozpointerlockchange", function () {
-				pointerlockchange();
-			}, false);
-			document.addEventListener("webkitpointerlockchange", function () {
-				pointerlockchange();
-			}, false);
-
-			document.addEventListener("pointerlockerror", function (ev) {
-				pointerlockerror(ev);
-			}, false);
-			document.addEventListener("mozpointerlockerror", function (ev) {
-				pointerlockerror(ev);
-			}, false);
-			document.addEventListener("webkitpointerlockerror", function (ev) {
-				pointerlockerror(ev);
-			}, false);
-		}
-	}
 };
 
-},{"three":6}],2:[function(require,module,exports){
+},{"./pointerlocker":4,"three":7}],2:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -400,7 +300,7 @@ var SecondShane = (function (_ThreeBoiler) {
 
     _get(Object.getPrototypeOf(SecondShane.prototype), "constructor", this).call(this);
 
-    this.controls = new FlyControls(this.camera);
+    this.controls = new PointerControls(this.camera);
     this.scene.add(this.controls.getObject());
 
     $(document).click(function () {
@@ -435,7 +335,7 @@ $(function () {
   me.activate();
 });
 
-},{"./fly-controls":1,"./pointer-freeform-controls":3,"./three-boiler.es6":4,"jquery":5,"three":6}],3:[function(require,module,exports){
+},{"./fly-controls":1,"./pointer-freeform-controls":3,"./three-boiler.es6":5,"jquery":6,"three":7}],3:[function(require,module,exports){
 "use strict";
 
 /**
@@ -443,6 +343,7 @@ $(function () {
  */
 
 var THREE = require("three");
+var Pointerlocker = require("./pointerlocker");
 
 module.exports = function (camera, options) {
 	if (!options) options = {};
@@ -450,6 +351,8 @@ module.exports = function (camera, options) {
 	var scope = this;
 
 	camera.rotation.set(0, 0, 0);
+
+	var locker = new Pointerlocker();
 
 	var pitchObject = new THREE.Object3D();
 	pitchObject.add(camera);
@@ -477,14 +380,8 @@ module.exports = function (camera, options) {
 
 	var PI_2 = Math.PI / 2;
 
-	var havePointerLock = "pointerLockElement" in document || "mozPointerLockElement" in document || "webkitPointerLockElement" in document;
-	var pointerlockElement = document.body;
-	var canRequestPointerlock = false;
-	var currentlyHasPointerlock = false;
-	addPointerlockListeners();
-
 	var onMouseMove = function onMouseMove(event) {
-		if (!currentlyHasPointerlock || !scope.enabled) {
+		if (!locker.currentlyHasPointerlock || !scope.enabled) {
 			return;
 		}var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
 		var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
@@ -631,92 +528,111 @@ module.exports = function (camera, options) {
 	};
 
 	this.requestPointerlock = function () {
-		canRequestPointerlock = true;
-
-		if (/Firefox/i.test(navigator.userAgent)) {
-			var fullscreenchange = (function (_fullscreenchange) {
-				var _fullscreenchangeWrapper = function fullscreenchange() {
-					return _fullscreenchange.apply(this, arguments);
-				};
-
-				_fullscreenchangeWrapper.toString = function () {
-					return _fullscreenchange.toString();
-				};
-
-				return _fullscreenchangeWrapper;
-			})(function () {
-				if (document.fullscreenElement === pointerlockElement || document.mozFullscreenElement === pointerlockElement || document.mozFullScreenElement === pointerlockElement) {
-					document.removeEventListener("fullscreenchange", fullscreenchange);
-					document.removeEventListener("mozfullscreenchange", fullscreenchange);
-
-					pointerlockElement.requestPointerLock();
-				}
-			});
-
-			document.addEventListener("fullscreenchange", fullscreenchange, false);
-			document.addEventListener("mozfullscreenchange", fullscreenchange, false);
-
-			pointerlockElement.requestFullscreen = pointerlockElement.requestFullscreen || pointerlockElement.mozRequestFullScreen || pointerlockElement.webkitRequestFullscreen;
-			pointerlockElement.requestFullscreen();
-		} else {
-			pointerlockElement.requestPointerLock = pointerlockElement.requestPointerLock || pointerlockElement.mozRequestPointerLock || pointerlockElement.webkitRequestPointerLock;
-
-			if (pointerlockElement.requestPointerLock) {
-				pointerlockElement.requestPointerLock();
-			}
-		}
+		locker.requestPointerlock();
 	};
-
-	this.exitPointerlock = function () {
-		pointerlockElement.exitPointerLock = pointerlockElement.exitPointerLock || pointerlockElement.mozExitPointerLock || pointerlockElement.webkitExitPointerLock;
-
-		if (pointerlockElement.exitPointerLock) {
-			pointerlockElement.exitPointerLock();
-		}
-
-		canRequestPointerlock = false;
-	};
-
-	function pointerlockchange() {
-		if (document.pointerLockElement === pointerlockElement || document.mozPointerLockElement === pointerlockElement || document.webkitPointerLockElement === pointerlockElement) {
-			currentlyHasPointerlock = true;
-		} else {
-			currentlyHasPointerlock = false;
-		}
-	}
-
-	function pointerlockerror(event) {
-		console.log("POINTER LOCK ERROR:");
-		console.log(event);
-	}
-
-	function addPointerlockListeners() {
-		if (havePointerLock) {
-			// Hook pointer lock state change events
-			document.addEventListener("pointerlockchange", function () {
-				pointerlockchange();
-			}, false);
-			document.addEventListener("mozpointerlockchange", function () {
-				pointerlockchange();
-			}, false);
-			document.addEventListener("webkitpointerlockchange", function () {
-				pointerlockchange();
-			}, false);
-
-			document.addEventListener("pointerlockerror", function (ev) {
-				pointerlockerror(ev);
-			}, false);
-			document.addEventListener("mozpointerlockerror", function (ev) {
-				pointerlockerror(ev);
-			}, false);
-			document.addEventListener("webkitpointerlockerror", function (ev) {
-				pointerlockerror(ev);
-			}, false);
-		}
-	}
 };
 
-},{"three":6}],4:[function(require,module,exports){
+},{"./pointerlocker":4,"three":7}],4:[function(require,module,exports){
+"use strict";
+
+module.exports = function () {
+  var scope = this;
+
+  var havePointerLock = "pointerLockElement" in document || "mozPointerLockElement" in document || "webkitPointerLockElement" in document;
+  var pointerlockElement = document.body;
+
+  this.canRequestPointerlock = false;
+  this.currentlyHasPointerlock = false;
+
+  addPointerlockListeners();
+
+  this.requestPointerlock = function () {
+    scope.canRequestPointerlock = true;
+
+    if (/Firefox/i.test(navigator.userAgent)) {
+      var fullscreenchange = (function (_fullscreenchange) {
+        var _fullscreenchangeWrapper = function fullscreenchange() {
+          return _fullscreenchange.apply(this, arguments);
+        };
+
+        _fullscreenchangeWrapper.toString = function () {
+          return _fullscreenchange.toString();
+        };
+
+        return _fullscreenchangeWrapper;
+      })(function () {
+        if (document.fullscreenElement === pointerlockElement || document.mozFullscreenElement === pointerlockElement || document.mozFullScreenElement === pointerlockElement) {
+          document.removeEventListener("fullscreenchange", fullscreenchange);
+          document.removeEventListener("mozfullscreenchange", fullscreenchange);
+
+          pointerlockElement.requestPointerLock();
+        }
+      });
+
+      document.addEventListener("fullscreenchange", fullscreenchange, false);
+      document.addEventListener("mozfullscreenchange", fullscreenchange, false);
+
+      pointerlockElement.requestFullscreen = pointerlockElement.requestFullscreen || pointerlockElement.mozRequestFullScreen || pointerlockElement.webkitRequestFullscreen;
+      pointerlockElement.requestFullscreen();
+    } else {
+      pointerlockElement.requestPointerLock = pointerlockElement.requestPointerLock || pointerlockElement.mozRequestPointerLock || pointerlockElement.webkitRequestPointerLock;
+
+      if (pointerlockElement.requestPointerLock) {
+        pointerlockElement.requestPointerLock();
+      }
+    }
+  };
+
+  this.exitPointerlock = function () {
+    pointerlockElement.exitPointerLock = pointerlockElement.exitPointerLock || pointerlockElement.mozExitPointerLock || pointerlockElement.webkitExitPointerLock;
+
+    if (pointerlockElement.exitPointerLock) {
+      pointerlockElement.exitPointerLock();
+    }
+
+    scope.canRequestPointerlock = false;
+  };
+
+  function pointerlockchange() {
+    if (document.pointerLockElement === pointerlockElement || document.mozPointerLockElement === pointerlockElement || document.webkitPointerLockElement === pointerlockElement) {
+      scope.currentlyHasPointerlock = true;
+    } else {
+      scope.currentlyHasPointerlock = false;
+    }
+  }
+
+  function pointerlockerror(event) {
+    console.log("POINTER LOCK ERROR:");
+    console.log(event);
+  }
+
+  function addPointerlockListeners() {
+    if (havePointerLock) {
+      // Hook pointer lock state change events
+      document.addEventListener("pointerlockchange", function () {
+        pointerlockchange();
+      }, false);
+      document.addEventListener("mozpointerlockchange", function () {
+        pointerlockchange();
+      }, false);
+      document.addEventListener("webkitpointerlockchange", function () {
+        pointerlockchange();
+      }, false);
+
+      document.addEventListener("pointerlockerror", function (ev) {
+        pointerlockerror(ev);
+      }, false);
+      document.addEventListener("mozpointerlockerror", function (ev) {
+        pointerlockerror(ev);
+      }, false);
+      document.addEventListener("webkitpointerlockerror", function (ev) {
+        pointerlockerror(ev);
+      }, false);
+    }
+  }
+};
+
+},{}],5:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -831,7 +747,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"jquery":5,"three":6}],5:[function(require,module,exports){
+},{"jquery":6,"three":7}],6:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.3
  * http://jquery.com/
@@ -10038,7 +9954,7 @@ return jQuery;
 
 }));
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 // File:src/Three.js
 
 /**

@@ -4,17 +4,12 @@
  */
 
 var THREE = require('three');
+var Pointerlocker = require('./pointerlocker');
 
 module.exports = function (camera, options) {
 	if (!options) options = {};
 
 	this.object = camera;
-
-	var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
-	var pointerlockElement = document.body;
-	var canRequestPointerlock = false;
-	var currentlyHasPointerlock = false;
-	addPointerlockListeners();
 
 	// API
 
@@ -31,8 +26,14 @@ module.exports = function (camera, options) {
 
 	this.enabled = false;
 
+	this.locker = new Pointerlocker();
+
 	this.getObject = function() {
 		return this.object;
+	};
+
+	this.requestPointerlock = function() {
+		this.locker.requestPointerlock();
 	};
 
 	// internals
@@ -116,7 +117,7 @@ module.exports = function (camera, options) {
 	};
 
 	this.mousedown = function( event ) {
-		if (!this.enabled) return;
+		if (!this.enabled || !this.locker.currentlyHasPointerlock) return;
 
 		if ( this.domElement !== document ) {
 			this.domElement.focus();
@@ -138,7 +139,7 @@ module.exports = function (camera, options) {
 	};
 
 	this.mousemove = function( event ) {
-		if (!this.enabled || !currentlyHasPointerlock) return;
+		if (!this.enabled || !this.locker.currentlyHasPointerlock) return;
 
 		if ( !this.dragToLook || this.mouseStatus > 0 ) {
 			var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
@@ -150,6 +151,8 @@ module.exports = function (camera, options) {
 	};
 
 	this.mouseup = function( event ) {
+		if (!this.enabled || !this.locker.currentlyHasPointerlock) return;
+
 		event.preventDefault();
 		event.stopPropagation();
 
@@ -233,85 +236,4 @@ module.exports = function (camera, options) {
 
 	this.updateMovementVector();
 	this.updateRotationVector();
-
-	// pointer lock stuff
-
-	this.requestPointerlock = function() {
-		canRequestPointerlock = true;
-
-		if (/Firefox/i.test( navigator.userAgent)) {
-			var fullscreenchange = function() {
-				if ( document.fullscreenElement === pointerlockElement || document.mozFullscreenElement === pointerlockElement || document.mozFullScreenElement === pointerlockElement ) {
-					document.removeEventListener( 'fullscreenchange', fullscreenchange );
-					document.removeEventListener( 'mozfullscreenchange', fullscreenchange );
-
-					pointerlockElement.requestPointerLock();
-				}
-			};
-
-			document.addEventListener('fullscreenchange', fullscreenchange, false);
-			document.addEventListener('mozfullscreenchange', fullscreenchange, false);
-
-			pointerlockElement.requestFullscreen = pointerlockElement.requestFullscreen || pointerlockElement.mozRequestFullScreen || pointerlockElement.webkitRequestFullscreen;
-			pointerlockElement.requestFullscreen();
-		} else {
-			pointerlockElement.requestPointerLock = pointerlockElement.requestPointerLock ||
-																							pointerlockElement.mozRequestPointerLock ||
-																							pointerlockElement.webkitRequestPointerLock;
-
-			if (pointerlockElement.requestPointerLock) {
-				pointerlockElement.requestPointerLock();
-			}
-		}
-	};
-
-	this.exitPointerlock = function() {
-		pointerlockElement.exitPointerLock =  pointerlockElement.exitPointerLock    ||
-																					pointerlockElement.mozExitPointerLock ||
-																					pointerlockElement.webkitExitPointerLock;
-
-		if (pointerlockElement.exitPointerLock) {
-			pointerlockElement.exitPointerLock();
-		}
-
-		canRequestPointerlock = false;
-	};
-
-	function pointerlockchange() {
-		if (document.pointerLockElement === pointerlockElement || document.mozPointerLockElement === pointerlockElement || document.webkitPointerLockElement === pointerlockElement ) {
-			currentlyHasPointerlock = true;
-		} else {
-			currentlyHasPointerlock = false;
-		}
-	}
-
-	function pointerlockerror(event) {
-		console.log('POINTER LOCK ERROR:');
-		console.log(event);
-	}
-
-	function addPointerlockListeners() {
-		if (havePointerLock) {
-			// Hook pointer lock state change events
-			document.addEventListener('pointerlockchange', function() {
-				pointerlockchange();
-			}, false);
-			document.addEventListener('mozpointerlockchange', function() {
-				pointerlockchange();
-			}, false);
-			document.addEventListener('webkitpointerlockchange', function() {
-				pointerlockchange();
-			}, false);
-
-			document.addEventListener('pointerlockerror', function(ev) {
-				pointerlockerror(ev);
-			}, false);
-			document.addEventListener('mozpointerlockerror', function(ev) {
-				pointerlockerror(ev);
-			}, false);
-			document.addEventListener('webkitpointerlockerror', function(ev) {
-				pointerlockerror(ev);
-			}, false);
-		}
-	}
 };

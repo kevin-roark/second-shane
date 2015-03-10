@@ -4,7 +4,6 @@ let THREE = require('three');
 
 import {ThreeBoiler} from './three-boiler.es6';
 
-let PointerControls = require('./pointer-freeform-controls');
 let FlyControls = require('./fly-controls');
 
 class SecondShane extends ThreeBoiler {
