@@ -13,4 +13,5 @@ body {
 
 video {
   position: absolute;
+  object-fit: fill;
 }
