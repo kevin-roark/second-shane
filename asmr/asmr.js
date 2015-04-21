@@ -3,6 +3,16 @@ $(function() {
   var isLive = true;
   var totalLength = 60000 * 3;
 
+  if (isLive) {
+    $(document).keypress(function(ev) {
+      if (ev.which === 115) { // s
+        go();
+      }
+    });
+  } else {
+    go();
+  }
+
   function makeVideo(name) {
     var video = document.createElement('video');
 
@@ -63,8 +73,6 @@ $(function() {
     {name: 'mcdonalds', onset: 120000},
     {name: 'real_hookah', onset: 126000},
   ];
-
-  go();
 
   function go() {
     var videos = [];
