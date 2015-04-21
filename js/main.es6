@@ -4,10 +4,10 @@ let THREE = require('three');
 
 import {ThreeBoiler} from './three-boiler.es6';
 
-let FlyControls = require('./fly-controls');
+let FlyControls = require('./controls/fly-controls');
 
-import {oneOffs} from './shared-space/one-offs';
-import {createShaneScenes} from './scenes';
+import {oneOffs} from './one-offs.es6';
+import {createShaneScenes} from './scenes.es6';
 
 let $sceneOverlay = $('#scene-overlay');
 

@@ -273,7 +273,107 @@ module.exports = function (camera, options) {
 	this.updateRotationVector();
 };
 
-},{"./pointerlocker":3,"three":11}],2:[function(require,module,exports){
+},{"./pointerlocker":2,"three":11}],2:[function(require,module,exports){
+"use strict";
+
+module.exports = function () {
+  var scope = this;
+
+  var havePointerLock = "pointerLockElement" in document || "mozPointerLockElement" in document || "webkitPointerLockElement" in document;
+  var pointerlockElement = document.body;
+
+  this.canRequestPointerlock = false;
+  this.currentlyHasPointerlock = false;
+
+  addPointerlockListeners();
+
+  this.requestPointerlock = function () {
+    scope.canRequestPointerlock = true;
+
+    if (/Firefox/i.test(navigator.userAgent)) {
+      var fullscreenchange = (function (_fullscreenchange) {
+        var _fullscreenchangeWrapper = function fullscreenchange() {
+          return _fullscreenchange.apply(this, arguments);
+        };
+
+        _fullscreenchangeWrapper.toString = function () {
+          return _fullscreenchange.toString();
+        };
+
+        return _fullscreenchangeWrapper;
+      })(function () {
+        if (document.fullscreenElement === pointerlockElement || document.mozFullscreenElement === pointerlockElement || document.mozFullScreenElement === pointerlockElement) {
+          document.removeEventListener("fullscreenchange", fullscreenchange);
+          document.removeEventListener("mozfullscreenchange", fullscreenchange);
+
+          pointerlockElement.requestPointerLock();
+        }
+      });
+
+      document.addEventListener("fullscreenchange", fullscreenchange, false);
+      document.addEventListener("mozfullscreenchange", fullscreenchange, false);
+
+      pointerlockElement.requestFullscreen = pointerlockElement.requestFullscreen || pointerlockElement.mozRequestFullScreen || pointerlockElement.webkitRequestFullscreen;
+      pointerlockElement.requestFullscreen();
+    } else {
+      pointerlockElement.requestPointerLock = pointerlockElement.requestPointerLock || pointerlockElement.mozRequestPointerLock || pointerlockElement.webkitRequestPointerLock;
+
+      if (pointerlockElement.requestPointerLock) {
+        pointerlockElement.requestPointerLock();
+      }
+    }
+  };
+
+  this.exitPointerlock = function () {
+    pointerlockElement.exitPointerLock = pointerlockElement.exitPointerLock || pointerlockElement.mozExitPointerLock || pointerlockElement.webkitExitPointerLock;
+
+    if (pointerlockElement.exitPointerLock) {
+      pointerlockElement.exitPointerLock();
+    }
+
+    scope.canRequestPointerlock = false;
+  };
+
+  function pointerlockchange() {
+    if (document.pointerLockElement === pointerlockElement || document.mozPointerLockElement === pointerlockElement || document.webkitPointerLockElement === pointerlockElement) {
+      scope.currentlyHasPointerlock = true;
+    } else {
+      scope.currentlyHasPointerlock = false;
+    }
+  }
+
+  function pointerlockerror(event) {
+    console.log("POINTER LOCK ERROR:");
+    console.log(event);
+  }
+
+  function addPointerlockListeners() {
+    if (havePointerLock) {
+      // Hook pointer lock state change events
+      document.addEventListener("pointerlockchange", function () {
+        pointerlockchange();
+      }, false);
+      document.addEventListener("mozpointerlockchange", function () {
+        pointerlockchange();
+      }, false);
+      document.addEventListener("webkitpointerlockchange", function () {
+        pointerlockchange();
+      }, false);
+
+      document.addEventListener("pointerlockerror", function (ev) {
+        pointerlockerror(ev);
+      }, false);
+      document.addEventListener("mozpointerlockerror", function (ev) {
+        pointerlockerror(ev);
+      }, false);
+      document.addEventListener("webkitpointerlockerror", function (ev) {
+        pointerlockerror(ev);
+      }, false);
+    }
+  }
+};
+
+},{}],3:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -289,11 +389,11 @@ var THREE = require("three");
 
 var ThreeBoiler = require("./three-boiler.es6").ThreeBoiler;
 
-var FlyControls = require("./fly-controls");
+var FlyControls = require("./controls/fly-controls");
 
-var oneOffs = require("./shared-space/one-offs").oneOffs;
+var oneOffs = require("./one-offs.es6").oneOffs;
 
-var createShaneScenes = require("./scenes").createShaneScenes;
+var createShaneScenes = require("./scenes.es6").createShaneScenes;
 
 var $sceneOverlay = $("#scene-overlay");
 
@@ -464,191 +564,7 @@ $(function () {
   shane.activate();
 });
 
-},{"./fly-controls":1,"./scenes":4,"./shared-space/one-offs":6,"./three-boiler.es6":8,"jquery":10,"three":11}],3:[function(require,module,exports){
-"use strict";
-
-module.exports = function () {
-  var scope = this;
-
-  var havePointerLock = "pointerLockElement" in document || "mozPointerLockElement" in document || "webkitPointerLockElement" in document;
-  var pointerlockElement = document.body;
-
-  this.canRequestPointerlock = false;
-  this.currentlyHasPointerlock = false;
-
-  addPointerlockListeners();
-
-  this.requestPointerlock = function () {
-    scope.canRequestPointerlock = true;
-
-    if (/Firefox/i.test(navigator.userAgent)) {
-      var fullscreenchange = (function (_fullscreenchange) {
-        var _fullscreenchangeWrapper = function fullscreenchange() {
-          return _fullscreenchange.apply(this, arguments);
-        };
-
-        _fullscreenchangeWrapper.toString = function () {
-          return _fullscreenchange.toString();
-        };
-
-        return _fullscreenchangeWrapper;
-      })(function () {
-        if (document.fullscreenElement === pointerlockElement || document.mozFullscreenElement === pointerlockElement || document.mozFullScreenElement === pointerlockElement) {
-          document.removeEventListener("fullscreenchange", fullscreenchange);
-          document.removeEventListener("mozfullscreenchange", fullscreenchange);
-
-          pointerlockElement.requestPointerLock();
-        }
-      });
-
-      document.addEventListener("fullscreenchange", fullscreenchange, false);
-      document.addEventListener("mozfullscreenchange", fullscreenchange, false);
-
-      pointerlockElement.requestFullscreen = pointerlockElement.requestFullscreen || pointerlockElement.mozRequestFullScreen || pointerlockElement.webkitRequestFullscreen;
-      pointerlockElement.requestFullscreen();
-    } else {
-      pointerlockElement.requestPointerLock = pointerlockElement.requestPointerLock || pointerlockElement.mozRequestPointerLock || pointerlockElement.webkitRequestPointerLock;
-
-      if (pointerlockElement.requestPointerLock) {
-        pointerlockElement.requestPointerLock();
-      }
-    }
-  };
-
-  this.exitPointerlock = function () {
-    pointerlockElement.exitPointerLock = pointerlockElement.exitPointerLock || pointerlockElement.mozExitPointerLock || pointerlockElement.webkitExitPointerLock;
-
-    if (pointerlockElement.exitPointerLock) {
-      pointerlockElement.exitPointerLock();
-    }
-
-    scope.canRequestPointerlock = false;
-  };
-
-  function pointerlockchange() {
-    if (document.pointerLockElement === pointerlockElement || document.mozPointerLockElement === pointerlockElement || document.webkitPointerLockElement === pointerlockElement) {
-      scope.currentlyHasPointerlock = true;
-    } else {
-      scope.currentlyHasPointerlock = false;
-    }
-  }
-
-  function pointerlockerror(event) {
-    console.log("POINTER LOCK ERROR:");
-    console.log(event);
-  }
-
-  function addPointerlockListeners() {
-    if (havePointerLock) {
-      // Hook pointer lock state change events
-      document.addEventListener("pointerlockchange", function () {
-        pointerlockchange();
-      }, false);
-      document.addEventListener("mozpointerlockchange", function () {
-        pointerlockchange();
-      }, false);
-      document.addEventListener("webkitpointerlockchange", function () {
-        pointerlockchange();
-      }, false);
-
-      document.addEventListener("pointerlockerror", function (ev) {
-        pointerlockerror(ev);
-      }, false);
-      document.addEventListener("mozpointerlockerror", function (ev) {
-        pointerlockerror(ev);
-      }, false);
-      document.addEventListener("webkitpointerlockerror", function (ev) {
-        pointerlockerror(ev);
-      }, false);
-    }
-  }
-};
-
-},{}],4:[function(require,module,exports){
-"use strict";
-
-var LiveAtJJs = require("../live-at-jjs/scene").LiveAtJJs;
-
-var createShaneScenes = function (exitCallback, renderer, camera, scene) {
-  var scenes = [new LiveAtJJs(renderer, camera, scene, {})];
-
-  scenes.forEach(function (scene) {
-    scene.exitCallback = exitCallback;
-  });
-
-  return scenes;
-};
-exports.createShaneScenes = createShaneScenes;
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-},{"../live-at-jjs/scene":9}],5:[function(require,module,exports){
-"use strict";
-
-var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
-
-var THREE = require("three");
-
-var Talisman = require("./talisman.es6").Talisman;
-
-var ShaneScene = exports.ShaneScene = (function () {
-  function ShaneScene(renderer, camera, scene, options) {
-    _classCallCheck(this, ShaneScene);
-
-    this.renderer = renderer;
-    this.camera = camera;
-    this.scene = scene;
-    this.options = options;
-
-    this.talisman = this.createTalisman();
-    this.talisman.addTo(scene);
-
-    this.camera.position.set(0, 0, 0);
-  }
-
-  _createClass(ShaneScene, {
-    update: {
-      value: function update() {
-        if (this.talisman) {
-          this.talisman.update();
-        }
-      }
-    },
-    enter: {
-      value: function enter() {}
-    },
-    exit: {
-      value: function exit() {
-        var children = this.children();
-        for (var i = 0; i < children.length; i++) {
-          var child = children[i];
-          this.scene.remove(child);
-        }
-      }
-    },
-    createTalisman: {
-      value: function createTalisman() {
-        return new Talisman();
-      }
-    },
-    children: {
-      value: function children() {
-        return [];
-      }
-    }
-  });
-
-  return ShaneScene;
-})();
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-},{"./talisman.es6":7,"three":11}],6:[function(require,module,exports){
+},{"./controls/fly-controls":1,"./one-offs.es6":4,"./scenes.es6":5,"./three-boiler.es6":8,"jquery":10,"three":11}],4:[function(require,module,exports){
 "use strict";
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
@@ -764,7 +680,91 @@ Object.defineProperty(exports, "__esModule", {
 
 // override for frame-ly updates
 
-},{"three":11}],7:[function(require,module,exports){
+},{"three":11}],5:[function(require,module,exports){
+"use strict";
+
+var LiveAtJJs = require("../live-at-jjs/scene.es6").LiveAtJJs;
+
+var createShaneScenes = function (exitCallback, renderer, camera, scene) {
+  var scenes = [new LiveAtJJs(renderer, camera, scene, {})];
+
+  scenes.forEach(function (scene) {
+    scene.exitCallback = exitCallback;
+  });
+
+  return scenes;
+};
+exports.createShaneScenes = createShaneScenes;
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+},{"../live-at-jjs/scene.es6":9}],6:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+var THREE = require("three");
+
+var Talisman = require("./talisman.es6").Talisman;
+
+var ShaneScene = exports.ShaneScene = (function () {
+  function ShaneScene(renderer, camera, scene, options) {
+    _classCallCheck(this, ShaneScene);
+
+    this.renderer = renderer;
+    this.camera = camera;
+    this.scene = scene;
+    this.options = options;
+
+    this.talisman = this.createTalisman();
+    this.talisman.addTo(scene);
+
+    this.camera.position.set(0, 0, 0);
+  }
+
+  _createClass(ShaneScene, {
+    update: {
+      value: function update() {
+        if (this.talisman) {
+          this.talisman.update();
+        }
+      }
+    },
+    enter: {
+      value: function enter() {}
+    },
+    exit: {
+      value: function exit() {
+        var children = this.children();
+        for (var i = 0; i < children.length; i++) {
+          var child = children[i];
+          this.scene.remove(child);
+        }
+      }
+    },
+    createTalisman: {
+      value: function createTalisman() {
+        return new Talisman();
+      }
+    },
+    children: {
+      value: function children() {
+        return [];
+      }
+    }
+  });
+
+  return ShaneScene;
+})();
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+},{"./talisman.es6":7,"three":11}],7:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1073,7 +1073,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../js/shane-scene.es6":5,"../js/talisman.es6":7,"three":11}],10:[function(require,module,exports){
+},{"../js/shane-scene.es6":6,"../js/talisman.es6":7,"three":11}],10:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.3
  * http://jquery.com/
@@ -44826,4 +44826,4 @@ THREE.MorphBlendMesh.prototype.update = function ( delta ) {
 
 };
 
-},{}]},{},[2]);
+},{}]},{},[3]);
