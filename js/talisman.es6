@@ -16,10 +16,10 @@ export class Talisman {
     } else {
       this.talismanType = 'geometric';
       this.materialType = options.materialType || 'basic';
-      this.materialOptions = options.materialOptions || {color: 0xffffff};
+      this.materialOptions = options.materialOptions || {color: 0x000000};
 
       this.geometryCreator = options.geometryCreator || () => {
-        return new THREE.SphereGeometry(2);
+        return new THREE.SphereGeometry(3);
       };
     }
 
@@ -42,9 +42,14 @@ export class Talisman {
   addTo(scene) {
     this.createMesh(() => {
       this.mesh.position.copy(this.position);
-
       scene.add(this.mesh);
     });
+  }
+
+  removeFrom(scene) {
+    if (this.mesh) {
+      scene.remove(this.mesh);
+    }
   }
 
   createMesh(callback) {

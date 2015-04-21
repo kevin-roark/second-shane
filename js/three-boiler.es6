@@ -29,6 +29,8 @@ export class ThreeBoiler {
 
     $(window).resize(() => {this.resize();});
     this.resize();
+
+    $('body').keypress((ev) => {this.keypress(ev.which);});
   }
 
   createCamera() {

@@ -10,6 +10,10 @@ class OneOff {
     // just do it
   }
 
+  deactivate(scene) {
+    // ok
+  }
+
   update() {
     // override for frame-ly updates
   }
@@ -27,6 +31,10 @@ class MeshedOneOff extends OneOff {
 
   activate(scene) {
     scene.add(this.mesh);
+  }
+
+  deactivate(scene) {
+    scene.remove(this.mesh);
   }
 
   createMesh() {

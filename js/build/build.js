@@ -273,7 +273,7 @@ module.exports = function (camera, options) {
 	this.updateRotationVector();
 };
 
-},{"./pointerlocker":3,"three":7}],2:[function(require,module,exports){
+},{"./pointerlocker":3,"three":11}],2:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -291,7 +291,11 @@ var ThreeBoiler = require("./three-boiler.es6").ThreeBoiler;
 
 var FlyControls = require("./fly-controls");
 
-var oneOffs = require("./shared-space/one-offs.js").oneOffs;
+var oneOffs = require("./shared-space/one-offs").oneOffs;
+
+var createShaneScenes = require("./scenes").createShaneScenes;
+
+var $sceneOverlay = $("#scene-overlay");
 
 var SecondShane = (function (_ThreeBoiler) {
   function SecondShane() {
@@ -311,9 +315,14 @@ var SecondShane = (function (_ThreeBoiler) {
       _this.controls.enabled = true;
     });
 
+    this.oneOffs = oneOffs;
     for (var i = 0; i < oneOffs.length; i++) {
-      oneOffs[i].activate(this.scene);
+      this.oneOffs[i].activate(this.scene);
     }
+
+    this.shaneScenes = createShaneScenes(this.transitionFromScene.bind(this), this.renderer, this.camera, this.scene);
+
+    this.sharedCameraPosition = new THREE.Vector3(0, 0, 0);
   }
 
   _inherits(SecondShane, _ThreeBoiler);
@@ -325,9 +334,124 @@ var SecondShane = (function (_ThreeBoiler) {
 
         this.controls.update();
 
-        for (var i = 0; i < oneOffs.length; i++) {
-          oneOffs[i].update();
+        for (var i = 0; i < this.oneOffs.length; i++) {
+          this.oneOffs[i].update();
         }
+
+        for (var j = 0; j < this.shaneScenes.length; j++) {
+          this.shaneScenes[j].update();
+        }
+      }
+    },
+    keypress: {
+      value: function keypress(keycode) {
+        switch (keycode) {
+          case 32:
+            this.attemptToEnterScene();
+            break;
+        }
+      }
+    },
+    talismans: {
+      value: function talismans() {
+        return this.shaneScenes.map(function (scene) {
+          return scene.talisman;
+        });
+      }
+    },
+    searchForTalisman: {
+      value: function searchForTalisman() {
+        var requiredDistanceSquared = 20 * 20;
+        var cameraPosition = this.camera.position;
+        var shaneScenes = this.shaneScenes;
+        var minDistanceSquared = 100000000000;
+        var sceneOfNearestTalisman = null;
+
+        for (var i = 0; i < shaneScenes.length; i++) {
+          var talisman = shaneScenes[i].talisman;
+          var distSquared = talisman.mesh.position.distanceToSquared(cameraPosition);
+          if (distSquared < minDistanceSquared) {
+            minDistanceSquared = distSquared;
+            sceneOfNearestTalisman = shaneScenes[i];
+          }
+        }
+
+        return minDistanceSquared <= requiredDistanceSquared ? sceneOfNearestTalisman : null;
+      }
+    },
+    attemptToEnterScene: {
+
+      /// Transitions
+
+      value: function attemptToEnterScene() {
+        var scene = this.searchForTalisman();
+        if (scene) {
+          console.log(scene);
+          this.transitionToScene(scene);
+        }
+      }
+    },
+    transitionFromScene: {
+      value: function transitionFromScene(shaneScene) {
+        var _this = this;
+
+        this.fadeSceneOverlay(function () {
+          shaneScene.exit();
+          _this.addSharedObjects();
+          _this.camera.position.copy(_this.sharedCameraPosition);
+        });
+      }
+    },
+    transitionToScene: {
+      value: function transitionToScene(shaneScene) {
+        var _this = this;
+
+        this.sharedCameraPosition.copy(this.camera.position);
+
+        this.fadeSceneOverlay(function () {
+          _this.removeSharedObjects();
+
+          shaneScene.enter();
+        });
+      }
+    },
+    fadeSceneOverlay: {
+      value: function fadeSceneOverlay(behavior) {
+        var duration = 1000;
+
+        $sceneOverlay.fadeIn(duration, function () {
+          behavior();
+
+          $sceneOverlay.fadeOut(duration);
+        });
+      }
+    },
+    addSharedObjects: {
+      value: function addSharedObjects() {
+        var _this = this;
+
+        var talismans = this.talismans();
+        talismans.forEach(function (talisman) {
+          talisman.addTo(_this.scene);
+        });
+
+        this.oneOffs.forEach(function (oneOff) {
+          oneOff.activate(_this.scene);
+        });
+      }
+    },
+    removeSharedObjects: {
+      value: function removeSharedObjects() {
+        var _this = this;
+
+        var talismans = this.talismans();
+        talismans.forEach(function (talisman) {
+          talisman.removeFrom(_this.scene);
+        });
+
+        this.oneOffs.forEach(function (oneOff) {
+          oneOff.deactivate(_this.scene);
+        });
       }
     }
   });
@@ -340,7 +464,7 @@ $(function () {
   shane.activate();
 });
 
-},{"./fly-controls":1,"./shared-space/one-offs.js":4,"./three-boiler.es6":5,"jquery":6,"three":7}],3:[function(require,module,exports){
+},{"./fly-controls":1,"./scenes":4,"./shared-space/one-offs":6,"./three-boiler.es6":8,"jquery":10,"three":11}],3:[function(require,module,exports){
 "use strict";
 
 module.exports = function () {
@@ -443,6 +567,90 @@ module.exports = function () {
 },{}],4:[function(require,module,exports){
 "use strict";
 
+var LiveAtJJs = require("../live-at-jjs/scene").LiveAtJJs;
+
+var createShaneScenes = function (exitCallback, renderer, camera, scene) {
+  var scenes = [new LiveAtJJs(renderer, camera, scene, {})];
+
+  scenes.forEach(function (scene) {
+    scene.exitCallback = exitCallback;
+  });
+
+  return scenes;
+};
+exports.createShaneScenes = createShaneScenes;
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+},{"../live-at-jjs/scene":9}],5:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+var THREE = require("three");
+
+var Talisman = require("./talisman.es6").Talisman;
+
+var ShaneScene = exports.ShaneScene = (function () {
+  function ShaneScene(renderer, camera, scene, options) {
+    _classCallCheck(this, ShaneScene);
+
+    this.renderer = renderer;
+    this.camera = camera;
+    this.scene = scene;
+    this.options = options;
+
+    this.talisman = this.createTalisman();
+    this.talisman.addTo(scene);
+
+    this.camera.position.set(0, 0, 0);
+  }
+
+  _createClass(ShaneScene, {
+    update: {
+      value: function update() {
+        if (this.talisman) {
+          this.talisman.update();
+        }
+      }
+    },
+    enter: {
+      value: function enter() {}
+    },
+    exit: {
+      value: function exit() {
+        var children = this.children();
+        for (var i = 0; i < children.length; i++) {
+          var child = children[i];
+          this.scene.remove(child);
+        }
+      }
+    },
+    createTalisman: {
+      value: function createTalisman() {
+        return new Talisman();
+      }
+    },
+    children: {
+      value: function children() {
+        return [];
+      }
+    }
+  });
+
+  return ShaneScene;
+})();
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+},{"./talisman.es6":7,"three":11}],6:[function(require,module,exports){
+"use strict";
+
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
@@ -463,6 +671,9 @@ var OneOff = (function () {
   _createClass(OneOff, {
     activate: {
       value: function activate(scene) {}
+    },
+    deactivate: {
+      value: function deactivate(scene) {}
     },
     update: {
       value: function update() {}
@@ -490,6 +701,11 @@ var MeshedOneOff = (function (_OneOff) {
     activate: {
       value: function activate(scene) {
         scene.add(this.mesh);
+      }
+    },
+    deactivate: {
+      value: function deactivate(scene) {
+        scene.remove(this.mesh);
       }
     },
     createMesh: {
@@ -544,9 +760,143 @@ Object.defineProperty(exports, "__esModule", {
 
 // just do it
 
+// ok
+
 // override for frame-ly updates
 
-},{"three":7}],5:[function(require,module,exports){
+},{"three":11}],7:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+var THREE = require("three");
+
+var talismanLoader = new THREE.JSONLoader();
+
+var Talisman = exports.Talisman = (function () {
+  function Talisman(options) {
+    _classCallCheck(this, Talisman);
+
+    if (!options) options = {};
+
+    this.position = options.position || new THREE.Vector3(0, 0, 0);
+
+    if (options.modelPath) {
+      this.talismanType = "model";
+      this.modelPath = options.modelPath;
+      this.modelScale = options.modelScale || 1;
+    } else {
+      this.talismanType = "geometric";
+      this.materialType = options.materialType || "basic";
+      this.materialOptions = options.materialOptions || { color: 0 };
+
+      this.geometryCreator = options.geometryCreator || function () {
+        return new THREE.SphereGeometry(3);
+      };
+    }
+
+    this.updater = options.updater;
+    this.postInit = options.postInit;
+
+    this.hasMesh = false;
+  }
+
+  _createClass(Talisman, {
+    update: {
+      value: function update() {
+        if (this.hasMesh) {}
+
+        if (this.updater) {
+          this.updater();
+        }
+      }
+    },
+    addTo: {
+      value: function addTo(scene) {
+        var _this = this;
+
+        this.createMesh(function () {
+          _this.mesh.position.copy(_this.position);
+          scene.add(_this.mesh);
+        });
+      }
+    },
+    removeFrom: {
+      value: function removeFrom(scene) {
+        if (this.mesh) {
+          scene.remove(this.mesh);
+        }
+      }
+    },
+    createMesh: {
+      value: function createMesh(callback) {
+        var _this = this;
+
+        var cb = function () {
+          _this.hasMesh = true;
+
+          if (_this.postInit) {
+            _this.postInit();
+          }
+
+          callback();
+        };
+
+        if (this.talismanType === "model") {
+          this.createModelMesh(cb);
+        } else {
+          this.createGeometricMesh(cb);
+        }
+      }
+    },
+    createModelMesh: {
+      value: function createModelMesh(callback) {
+        var _this = this;
+
+        talismanLoader.load(this.modelPath, function (geometry, materials) {
+          _this.geometry = geometry;
+          _this.materials = materials;
+          _this.material = new THREE.MeshFaceMaterial(materials);
+
+          _this.mesh = new THREE.SkinnedMesh(geometry, _this.material);
+          _this.mesh.scale.set(_this.modelScale, _this.modelScale, _this.modelScale);
+
+          callback();
+        });
+      }
+    },
+    createGeometricMesh: {
+      value: function createGeometricMesh(callback) {
+        switch (this.materialType) {
+          case "phong":
+            this.material = new THREE.MeshPhongMaterial(this.materialOptions);
+            break;
+
+          default:
+            this.material = new THREE.MeshBasicMaterial(this.materialOptions);
+        }
+        this.materials = [this.material];
+
+        this.geometry = this.geometryCreator();
+
+        this.mesh = new THREE.Mesh(this.geometry, this.material);
+        callback();
+      }
+    }
+  });
+
+  return Talisman;
+})();
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+// do stuff with mesh
+
+},{"three":11}],8:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -589,6 +939,10 @@ var ThreeBoiler = exports.ThreeBoiler = (function () {
       _this.resize();
     });
     this.resize();
+
+    $("body").keypress(function (ev) {
+      _this.keypress(ev.which);
+    });
   }
 
   _createClass(ThreeBoiler, {
@@ -661,7 +1015,65 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"jquery":6,"three":7}],6:[function(require,module,exports){
+},{"jquery":10,"three":11}],9:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+var THREE = require("three");
+
+var Talisman = require("../js/talisman.es6").Talisman;
+
+var ShaneScene = require("../js/shane-scene.es6").ShaneScene;
+
+var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
+  function LiveAtJJs(renderer, camera, scene, options) {
+    _classCallCheck(this, LiveAtJJs);
+
+    _get(Object.getPrototypeOf(LiveAtJJs.prototype), "constructor", this).call(this, renderer, camera, scene, options);
+  }
+
+  _inherits(LiveAtJJs, _ShaneScene);
+
+  _createClass(LiveAtJJs, {
+    enter: {
+      value: function enter() {
+        var _this = this;
+
+        _get(Object.getPrototypeOf(LiveAtJJs.prototype), "enter", this).call(this);
+
+        console.log("dying in 3000");
+        setTimeout(function () {
+          if (_this.exitCallback) {
+            _this.exitCallback(_this);
+          }
+        }, 3000);
+      }
+    },
+    createTalisman: {
+      value: function createTalisman() {
+        var talisman = new Talisman({
+          position: new THREE.Vector3(0, 0, -50)
+        });
+        return talisman;
+      }
+    }
+  });
+
+  return LiveAtJJs;
+})(ShaneScene);
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+},{"../js/shane-scene.es6":5,"../js/talisman.es6":7,"three":11}],10:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.3
  * http://jquery.com/
@@ -9868,7 +10280,7 @@ return jQuery;
 
 }));
 
-},{}],7:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 // File:src/Three.js
 
 /**

@@ -1,18 +1,18 @@
 
 let THREE = require('three');
-import {Talisman} from './talisman';
+import {Talisman} from './talisman.es6';
 
 export class ShaneScene {
-  constructor(renderer, camera, options) {
+  constructor(renderer, camera, scene, options) {
     this.renderer = renderer;
     this.camera = camera;
+    this.scene = scene;
     this.options = options;
 
     this.talisman = this.createTalisman();
+    this.talisman.addTo(scene);
 
-    this.createTalisman(talisman => {
-      this.talisman = talisman;
-    });
+    this.camera.position.set(0, 0, 0);
   }
 
   update() {
@@ -21,7 +21,23 @@ export class ShaneScene {
     }
   }
 
+  enter() {
+
+  }
+
+  exit() {
+    let children = this.children();
+    for (var i = 0; i < children.length; i++) {
+      let child = children[i];
+      this.scene.remove(child);
+    }
+  }
+
   createTalisman() {
     return new Talisman();
+  }
+
+  children() {
+    return [];
   }
 }
