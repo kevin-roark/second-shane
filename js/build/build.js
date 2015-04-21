@@ -1,6 +1,64 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 "use strict";
 
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+var THREE = require("three");
+
+var Talisman = require("../../js/talisman.es6").Talisman;
+
+var ShaneScene = require("../../js/shane-scene.es6").ShaneScene;
+
+var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
+  function LiveAtJJs(renderer, camera, scene, options) {
+    _classCallCheck(this, LiveAtJJs);
+
+    _get(Object.getPrototypeOf(LiveAtJJs.prototype), "constructor", this).call(this, renderer, camera, scene, options);
+  }
+
+  _inherits(LiveAtJJs, _ShaneScene);
+
+  _createClass(LiveAtJJs, {
+    enter: {
+      value: function enter() {
+        var _this = this;
+
+        _get(Object.getPrototypeOf(LiveAtJJs.prototype), "enter", this).call(this);
+
+        console.log("dying in 3000");
+        setTimeout(function () {
+          if (_this.exitCallback) {
+            _this.exitCallback(_this);
+          }
+        }, 3000);
+      }
+    },
+    createTalisman: {
+      value: function createTalisman() {
+        var talisman = new Talisman({
+          position: new THREE.Vector3(0, 0, -50)
+        });
+        return talisman;
+      }
+    }
+  });
+
+  return LiveAtJJs;
+})(ShaneScene);
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+},{"../../js/shane-scene.es6":7,"../../js/talisman.es6":8,"three":13}],2:[function(require,module,exports){
+"use strict";
+
 /**
  * Originally by James Baicoianu / http://www.baicoianu.com/
  * Modified by Kevin Roark (porkf.at) to meld with pointerlock controls
@@ -273,7 +331,7 @@ module.exports = function (camera, options) {
 	this.updateRotationVector();
 };
 
-},{"./pointerlocker":2,"three":11}],2:[function(require,module,exports){
+},{"./pointerlocker":3,"three":13}],3:[function(require,module,exports){
 "use strict";
 
 module.exports = function () {
@@ -373,7 +431,7 @@ module.exports = function () {
   }
 };
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -394,6 +452,8 @@ var FlyControls = require("./controls/fly-controls");
 var oneOffs = require("./one-offs.es6").oneOffs;
 
 var createShaneScenes = require("./scenes.es6").createShaneScenes;
+
+var currentTheme = require("./theme.es6").currentTheme;
 
 var $sceneOverlay = $("#scene-overlay");
 
@@ -421,6 +481,9 @@ var SecondShane = (function (_ThreeBoiler) {
     }
 
     this.shaneScenes = createShaneScenes(this.transitionFromScene.bind(this), this.renderer, this.camera, this.scene);
+
+    this.theme = currentTheme;
+    this.theme.applyTo(this.scene);
 
     this.sharedCameraPosition = new THREE.Vector3(0, 0, 0);
   }
@@ -538,6 +601,8 @@ var SecondShane = (function (_ThreeBoiler) {
         this.oneOffs.forEach(function (oneOff) {
           oneOff.activate(_this.scene);
         });
+
+        this.theme.applyTo(this.scene);
       }
     },
     removeSharedObjects: {
@@ -552,6 +617,8 @@ var SecondShane = (function (_ThreeBoiler) {
         this.oneOffs.forEach(function (oneOff) {
           oneOff.deactivate(_this.scene);
         });
+
+        this.theme.removeFrom(this.scene);
       }
     }
   });
@@ -564,7 +631,7 @@ $(function () {
   shane.activate();
 });
 
-},{"./controls/fly-controls":1,"./one-offs.es6":4,"./scenes.es6":5,"./three-boiler.es6":8,"jquery":10,"three":11}],4:[function(require,module,exports){
+},{"./controls/fly-controls":2,"./one-offs.es6":5,"./scenes.es6":6,"./theme.es6":9,"./three-boiler.es6":10,"jquery":12,"three":13}],5:[function(require,module,exports){
 "use strict";
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
@@ -680,10 +747,10 @@ Object.defineProperty(exports, "__esModule", {
 
 // override for frame-ly updates
 
-},{"three":11}],5:[function(require,module,exports){
+},{"three":13}],6:[function(require,module,exports){
 "use strict";
 
-var LiveAtJJs = require("../live-at-jjs/scene.es6").LiveAtJJs;
+var LiveAtJJs = require("../artifacts/live-at-jjs/scene.es6").LiveAtJJs;
 
 var createShaneScenes = function (exitCallback, renderer, camera, scene) {
   var scenes = [new LiveAtJJs(renderer, camera, scene, {})];
@@ -699,7 +766,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../live-at-jjs/scene.es6":9}],6:[function(require,module,exports){
+},{"../artifacts/live-at-jjs/scene.es6":1}],7:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -764,7 +831,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"./talisman.es6":7,"three":11}],7:[function(require,module,exports){
+},{"./talisman.es6":8,"three":13}],8:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -790,7 +857,7 @@ var Talisman = exports.Talisman = (function () {
     } else {
       this.talismanType = "geometric";
       this.materialType = options.materialType || "basic";
-      this.materialOptions = options.materialOptions || { color: 0 };
+      this.materialOptions = options.materialOptions || { color: 7829367 };
 
       this.geometryCreator = options.geometryCreator || function () {
         return new THREE.SphereGeometry(3);
@@ -896,7 +963,53 @@ Object.defineProperty(exports, "__esModule", {
 
 // do stuff with mesh
 
-},{"three":11}],8:[function(require,module,exports){
+},{"three":13}],9:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+var createSkybox = require("./util/skybox").create;
+
+var ShaneTheme = (function () {
+  function ShaneTheme(options) {
+    _classCallCheck(this, ShaneTheme);
+
+    this.skyboxURL = options.skyboxURL || null;
+
+    this.skybox = createSkybox({
+      textureURL: this.skyboxURL
+    });
+  }
+
+  _createClass(ShaneTheme, {
+    applyTo: {
+      value: function applyTo(scene) {
+        scene.add(this.skybox);
+      }
+    },
+    removeFrom: {
+      value: function removeFrom(scene) {
+        scene.remove(this.skybox);
+      }
+    }
+  });
+
+  return ShaneTheme;
+})();
+
+var universeTheme = new ShaneTheme({
+  skyboxURL: "/media/theme-images/universe/main.jpg"
+});
+
+var currentTheme = universeTheme;
+exports.currentTheme = currentTheme;
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+},{"./util/skybox":11}],10:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -948,7 +1061,7 @@ var ThreeBoiler = exports.ThreeBoiler = (function () {
   _createClass(ThreeBoiler, {
     createCamera: {
       value: function createCamera() {
-        return new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 3000);
+        return new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 5000);
       }
     },
     createAmbientLight: {
@@ -1015,65 +1128,77 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"jquery":10,"three":11}],9:[function(require,module,exports){
+},{"jquery":12,"three":13}],11:[function(require,module,exports){
 "use strict";
-
-var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
-var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
-
-var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
 var THREE = require("three");
 
-var Talisman = require("../js/talisman.es6").Talisman;
+var girlRoomPath = "/images/girl_room.jpg";
 
-var ShaneScene = require("../js/shane-scene.es6").ShaneScene;
+function cubify(url) {
+  return [url, url, url, url, url, url];
+}
 
-var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
-  function LiveAtJJs(renderer, camera, scene, options) {
-    _classCallCheck(this, LiveAtJJs);
+function makeCubemap(textureURL, repeatX, repeatY) {
+  if (!textureURL) {
+    return;
+  }if (!repeatX) repeatX = 4;
+  if (!repeatY) repeatY = 4;
 
-    _get(Object.getPrototypeOf(LiveAtJJs.prototype), "constructor", this).call(this, renderer, camera, scene, options);
-  }
+  var textureCube = cubify(textureURL);
 
-  _inherits(LiveAtJJs, _ShaneScene);
+  var cubemap = THREE.ImageUtils.loadTextureCube(textureCube); // load textures
+  cubemap.format = THREE.RGBFormat;
+  cubemap.wrapS = THREE.RepeatWrapping;
+  cubemap.wrapT = THREE.RepeatWrapping;
+  cubemap.repeat.set(repeatX, repeatY);
 
-  _createClass(LiveAtJJs, {
-    enter: {
-      value: function enter() {
-        var _this = this;
+  return cubemap;
+}
 
-        _get(Object.getPrototypeOf(LiveAtJJs.prototype), "enter", this).call(this);
+function makeShader(cubemap) {
+  var shader = THREE.ShaderLib.cube; // init cube shader from built-in lib
+  shader.uniforms.tCube.value = cubemap; // apply textures to shader
+  return shader;
+}
 
-        console.log("dying in 3000");
-        setTimeout(function () {
-          if (_this.exitCallback) {
-            _this.exitCallback(_this);
-          }
-        }, 3000);
-      }
-    },
-    createTalisman: {
-      value: function createTalisman() {
-        var talisman = new Talisman({
-          position: new THREE.Vector3(0, 0, -50)
-        });
-        return talisman;
-      }
-    }
+function skyboxMaterial(textureURL) {
+  var cubemap = makeCubemap(textureURL);
+  var shader = makeShader(cubemap);
+
+  return new THREE.ShaderMaterial({
+    fragmentShader: shader.fragmentShader,
+    vertexShader: shader.vertexShader,
+    uniforms: shader.uniforms,
+    depthWrite: false,
+    side: THREE.BackSide,
+    opacity: 0.5
   });
+}
 
-  return LiveAtJJs;
-})(ShaneScene);
+module.exports.create = function (options) {
+  var size = options.size || { x: 6000, y: 6000, z: 6000 };
+  var textureURL = options.textureURL || girlRoomPath;
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+  var geometry = new THREE.BoxGeometry(size.x, size.y, size.z);
+  var material = skyboxMaterial(textureURL);
+  return new THREE.Mesh(geometry, material);
+};
 
-},{"../js/shane-scene.es6":6,"../js/talisman.es6":7,"three":11}],10:[function(require,module,exports){
+module.exports.blocker = function (size) {
+  if (!size) size = { x: 19500, y: 19500, z: 19500 };
+
+  var geometry = new THREE.BoxGeometry(size.x, size.y, size.z);
+  var material = new THREE.MeshBasicMaterial({
+    color: 0,
+    side: THREE.DoubleSide,
+    opacity: 1,
+    transparent: true
+  });
+  return new THREE.Mesh(geometry, material);
+};
+
+},{"three":13}],12:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.3
  * http://jquery.com/
@@ -10280,7 +10405,7 @@ return jQuery;
 
 }));
 
-},{}],11:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 // File:src/Three.js
 
 /**
@@ -44826,4 +44951,4 @@ THREE.MorphBlendMesh.prototype.update = function ( delta ) {
 
 };
 
-},{}]},{},[3]);
+},{}]},{},[4]);

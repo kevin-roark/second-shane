@@ -1,7 +1,7 @@
 
 let THREE = require('three');
-import {Talisman} from '../js/talisman.es6';
-import {ShaneScene} from '../js/shane-scene.es6';
+import {Talisman} from '../../js/talisman.es6';
+import {ShaneScene} from '../../js/shane-scene.es6';
 
 export class LiveAtJJs extends ShaneScene {
 

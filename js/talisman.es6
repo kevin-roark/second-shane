@@ -16,7 +16,7 @@ export class Talisman {
     } else {
       this.talismanType = 'geometric';
       this.materialType = options.materialType || 'basic';
-      this.materialOptions = options.materialOptions || {color: 0x000000};
+      this.materialOptions = options.materialOptions || {color: 0x777777};
 
       this.geometryCreator = options.geometryCreator || () => {
         return new THREE.SphereGeometry(3);

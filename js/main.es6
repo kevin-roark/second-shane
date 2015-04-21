@@ -8,6 +8,7 @@ let FlyControls = require('./controls/fly-controls');
 
 import {oneOffs} from './one-offs.es6';
 import {createShaneScenes} from './scenes.es6';
+import {currentTheme} from './theme.es6';
 
 let $sceneOverlay = $('#scene-overlay');
 
@@ -31,6 +32,9 @@ class SecondShane extends ThreeBoiler {
     }
 
     this.shaneScenes = createShaneScenes(this.transitionFromScene.bind(this), this.renderer, this.camera, this.scene);
+
+    this.theme = currentTheme;
+    this.theme.applyTo(this.scene);
 
     this.sharedCameraPosition = new THREE.Vector3(0, 0, 0);
   }
@@ -127,6 +131,8 @@ class SecondShane extends ThreeBoiler {
     this.oneOffs.forEach(oneOff => {
       oneOff.activate(this.scene);
     });
+
+    this.theme.applyTo(this.scene);
   }
 
   removeSharedObjects() {
@@ -138,6 +144,8 @@ class SecondShane extends ThreeBoiler {
     this.oneOffs.forEach(oneOff => {
       oneOff.deactivate(this.scene);
     });
+
+    this.theme.removeFrom(this.scene);
   }
 }
 
