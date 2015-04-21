@@ -146,7 +146,7 @@ module.exports = function (camera, options) {
 			var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
 
 			this.object.rotation.y -= movementX * 0.002;
-			this.object.rotation.x += movementY * 0.002;
+			this.object.rotation.x -= movementY * 0.002;
 		}
 	};
 

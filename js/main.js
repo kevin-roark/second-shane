@@ -6,6 +6,8 @@ import {ThreeBoiler} from './three-boiler.es6';
 
 let FlyControls = require('./fly-controls');
 
+import {oneOffs} from './shared-space/one-offs.js';
+
 class SecondShane extends ThreeBoiler {
   constructor() {
     super();
@@ -20,19 +22,23 @@ class SecondShane extends ThreeBoiler {
       this.controls.enabled = true;
     });
 
-    var mesh = new THREE.Mesh(new THREE.BoxGeometry(5, 5, 5), new THREE.MeshBasicMaterial({color: 0xff0000}));
-    mesh.position.set(-5, 0, -25);
-    this.scene.add(mesh);
+    for (var i = 0; i < oneOffs.length; i++) {
+      oneOffs[i].activate(this.scene);
+    }
   }
 
   render() {
     super.render();
 
     this.controls.update();
+
+    for (var i = 0; i < oneOffs.length; i++) {
+      oneOffs[i].update();
+    }
   }
 }
 
 $(function() {
-  var me = new SecondShane();
-  me.activate();
+  var shane = new SecondShane();
+  shane.activate();
 });

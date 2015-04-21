@@ -177,7 +177,7 @@ module.exports = function (camera, options) {
 			var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
 
 			this.object.rotation.y -= movementX * 0.002;
-			this.object.rotation.x += movementY * 0.002;
+			this.object.rotation.x -= movementY * 0.002;
 		}
 	};
 
@@ -273,7 +273,7 @@ module.exports = function (camera, options) {
 	this.updateRotationVector();
 };
 
-},{"./pointerlocker":3,"three":6}],2:[function(require,module,exports){
+},{"./pointerlocker":3,"three":7}],2:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -290,6 +290,8 @@ var THREE = require("three");
 var ThreeBoiler = require("./three-boiler.es6").ThreeBoiler;
 
 var FlyControls = require("./fly-controls");
+
+var oneOffs = require("./shared-space/one-offs.js").oneOffs;
 
 var SecondShane = (function (_ThreeBoiler) {
   function SecondShane() {
@@ -309,9 +311,9 @@ var SecondShane = (function (_ThreeBoiler) {
       _this.controls.enabled = true;
     });
 
-    var mesh = new THREE.Mesh(new THREE.BoxGeometry(5, 5, 5), new THREE.MeshBasicMaterial({ color: 16711680 }));
-    mesh.position.set(-5, 0, -25);
-    this.scene.add(mesh);
+    for (var i = 0; i < oneOffs.length; i++) {
+      oneOffs[i].activate(this.scene);
+    }
   }
 
   _inherits(SecondShane, _ThreeBoiler);
@@ -322,6 +324,10 @@ var SecondShane = (function (_ThreeBoiler) {
         _get(Object.getPrototypeOf(SecondShane.prototype), "render", this).call(this);
 
         this.controls.update();
+
+        for (var i = 0; i < oneOffs.length; i++) {
+          oneOffs[i].update();
+        }
       }
     }
   });
@@ -330,11 +336,11 @@ var SecondShane = (function (_ThreeBoiler) {
 })(ThreeBoiler);
 
 $(function () {
-  var me = new SecondShane();
-  me.activate();
+  var shane = new SecondShane();
+  shane.activate();
 });
 
-},{"./fly-controls":1,"./three-boiler.es6":4,"jquery":5,"three":6}],3:[function(require,module,exports){
+},{"./fly-controls":1,"./shared-space/one-offs.js":4,"./three-boiler.es6":5,"jquery":6,"three":7}],3:[function(require,module,exports){
 "use strict";
 
 module.exports = function () {
@@ -435,6 +441,112 @@ module.exports = function () {
 };
 
 },{}],4:[function(require,module,exports){
+"use strict";
+
+var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+var THREE = require("three");
+
+var OneOff = (function () {
+  function OneOff(options) {
+    _classCallCheck(this, OneOff);
+
+    this.name = options.name || Math.random() * 10000 + "";
+  }
+
+  _createClass(OneOff, {
+    activate: {
+      value: function activate(scene) {}
+    },
+    update: {
+      value: function update() {}
+    }
+  });
+
+  return OneOff;
+})();
+
+var MeshedOneOff = (function (_OneOff) {
+  function MeshedOneOff(options) {
+    _classCallCheck(this, MeshedOneOff);
+
+    _get(Object.getPrototypeOf(MeshedOneOff.prototype), "constructor", this).call(this, options);
+
+    this.initPosition = options.position || { x: 0, y: 0, z: 0 };
+
+    this.mesh = this.createMesh();
+    this.mesh.position.copy(this.initPosition);
+  }
+
+  _inherits(MeshedOneOff, _OneOff);
+
+  _createClass(MeshedOneOff, {
+    activate: {
+      value: function activate(scene) {
+        scene.add(this.mesh);
+      }
+    },
+    createMesh: {
+      value: function createMesh() {
+        return new THREE.Mesh();
+      }
+    }
+  });
+
+  return MeshedOneOff;
+})(OneOff);
+
+var Cube = (function (_MeshedOneOff) {
+  function Cube(options) {
+    _classCallCheck(this, Cube);
+
+    this.size = options.size || 5;
+    this.color = options.color || 0;
+
+    _get(Object.getPrototypeOf(Cube.prototype), "constructor", this).call(this, options);
+  }
+
+  _inherits(Cube, _MeshedOneOff);
+
+  _createClass(Cube, {
+    createMesh: {
+      value: function createMesh() {
+        var geometry = new THREE.BoxGeometry(this.size, this.size, this.size);
+        var material = new THREE.MeshBasicMaterial({ color: this.color });
+        return new THREE.Mesh(geometry, material);
+      }
+    }
+  });
+
+  return Cube;
+})(MeshedOneOff);
+
+var oneOffs = [new Cube({
+  position: { x: -20, y: 0, z: -25 },
+  color: 16711680
+}), new Cube({
+  position: { x: 0, y: 0, z: -25 },
+  color: 65280
+}), new Cube({
+  position: { x: 20, y: 0, z: -25 },
+  color: 255
+})];
+exports.oneOffs = oneOffs;
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+// just do it
+
+// override for frame-ly updates
+
+},{"three":7}],5:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -549,7 +661,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"jquery":5,"three":6}],5:[function(require,module,exports){
+},{"jquery":6,"three":7}],6:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.3
  * http://jquery.com/
@@ -9756,7 +9868,7 @@ return jQuery;
 
 }));
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 // File:src/Three.js
 
 /**
