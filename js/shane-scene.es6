@@ -74,6 +74,8 @@ export class ShaneScene {
 
     if (fullscreen) {
       $(video).addClass('full-screen-video');
+    } else {
+      $(video).addClass('video-overlay');
     }
 
     return video;

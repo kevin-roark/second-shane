@@ -31,6 +31,12 @@ body {
   z-index: 999;
 }
 
+.video-overlay {
+  position: fixed;
+  background-color: black;
+  z-index: 100;
+}
+
 .full-screen-video {
   position: fixed;
   object-fit: fill;
@@ -41,3 +47,5 @@ body {
   background-color: black;
   z-index: 100;
 }
+
+/** GOD IS A MAN */
