@@ -21,13 +21,14 @@ export class GodIsAMan extends ShaneScene {
     this.highwayVideo = this.makeVideo(this.videoBase + 'mojave_cycle', true);
     this.highwayVideo.play();
 
-    setTimeout(this.createVin.bind(this), 2000);
-
     setTimeout(this.vegasTime.bind(this), 10000);
     setTimeout(this.papaTime.bind(this), 20000); // this should be ~ 6 minutes
     setTimeout(this.cowboyTime.bind(this), 30000); // this should be ~ 8 minutes
     setTimeout(this.game2Time.bind(this), 40000); // ~ 11 minutes?
     setTimeout(this.game1Time.bind(this), 50000); // ~11.5 minutes?
+
+    setTimeout(this.createVin.bind(this), 2000);
+    setTimeout(this.createWhitey.bind(this), 8000);
   }
 
   exit() {
@@ -146,7 +147,29 @@ export class GodIsAMan extends ShaneScene {
 
     setTimeout(() => {
       $(this.vin).animate({opacity: 0}, kt.randInt(4444, 6666), () => {
+        this.vin.src = '';
         $(this.vin).remove();
+      });
+    }, kt.randInt(25000, 35000));
+  }
+
+  createWhitey() {
+    this.whitey = this.makeVideo(this.videoBase + 'whitey');
+    this.stylizeVision(this.whitey);
+
+    this.whitey.style.left = '60px';
+    this.whitey.style.bottom = '40px';
+    this.whitey.style.width = '45%';
+
+    this.whitey.style.opacity = 0;
+    $(this.whitey).animate({opacity: 0.8}, kt.randInt(4444, 6666));
+
+    this.whitey.play();
+
+    setTimeout(() => {
+      $(this.whitey).animate({opacity: 0}, kt.randInt(4444, 6666), () => {
+        this.whitey.src = '';
+        $(this.whitey).remove();
       });
     }, kt.randInt(25000, 35000));
   }
