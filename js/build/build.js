@@ -40,7 +40,11 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
 
         setTimeout(this.createVin.bind(this), 2000);
 
-        setTimeout(this.vegasTime.bind(this), 20000);
+        setTimeout(this.vegasTime.bind(this), 10000);
+        setTimeout(this.papaTime.bind(this), 20000); // this should be ~ 6 minutes
+        setTimeout(this.cowboyTime.bind(this), 30000); // this should be ~ 8 minutes
+        setTimeout(this.game2Time.bind(this), 40000); // ~ 11 minutes?
+        setTimeout(this.game1Time.bind(this), 50000); // ~11.5 minutes?
       }
     },
     exit: {
@@ -73,12 +77,92 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
       /// Timed Actions
 
       value: function vegasTime() {
-        console.log("vegas time!");
+        var _this = this;
+
         this.vegasVideo = this.makeVideo(this.videoBase + "vegas", true);
         this.vegasVideo.play();
 
         this.vegasVideo.style.opacity = 0;
-        $(this.vegasVideo).animate({ opacity: 0.67 }, 10000, function () {});
+        $(this.vegasVideo).animate({ opacity: 0.67 }, 10000);
+
+        setTimeout(function () {
+          $(_this.vegasVideo).animate({ opacity: 0 }, 10000, function () {
+            _this.vegasVideo.src = "";
+            $(_this.vegasVideo).remove();
+          });
+        }, 320 * 1000); // thats the vegas length dummy
+      }
+    },
+    papaTime: {
+      value: function papaTime() {
+        var _this = this;
+
+        this.papaVideo = this.makeVideo(this.videoBase + "softypapa", true);
+        this.papaVideo.play();
+
+        this.papaVideo.style.opacity = 0;
+        $(this.papaVideo).animate({ opacity: 0.67 }, 10000);
+
+        setTimeout(function () {
+          $(_this.papaVideo).animate({ opacity: 0 }, 10000, function () {
+            _this.papaVideo.src = "";
+            $(_this.papaVideo).remove();
+          });
+        }, 100 * 1000); // thats the papa length dummy
+      }
+    },
+    cowboyTime: {
+      value: function cowboyTime() {
+        var _this = this;
+
+        this.cowboyVideo = this.makeVideo(this.videoBase + "lonely_cowboy", true);
+        this.cowboyVideo.play();
+
+        this.cowboyVideo.style.opacity = 0;
+        $(this.cowboyVideo).animate({ opacity: 0.67 }, 10000);
+
+        setTimeout(function () {
+          $(_this.cowboyVideo).animate({ opacity: 0 }, 10000, function () {
+            _this.cowboyVideo.src = "";
+            $(_this.cowboyVideo).remove();
+          });
+        }, 145 * 1000); // thats the cowboy length dummy
+      }
+    },
+    game2Time: {
+      value: function game2Time() {
+        var _this = this;
+
+        this.game2Video = this.makeVideo(this.videoBase + "game_2", true);
+        this.game2Video.play();
+
+        this.game2Video.style.opacity = 0;
+        $(this.game2Video).animate({ opacity: 0.67 }, 10000);
+
+        setTimeout(function () {
+          $(_this.game2Video).animate({ opacity: 0 }, 10000, function () {
+            _this.game2Video.src = "";
+            $(_this.game2Video).remove();
+          });
+        }, 66 * 1000);
+      }
+    },
+    game1Time: {
+      value: function game1Time() {
+        var _this = this;
+
+        this.game1Video = this.makeVideo(this.videoBase + "game_1", true);
+        this.game1Video.play();
+
+        this.game1Video.style.opacity = 0;
+        $(this.game1Video).animate({ opacity: 0.67 }, 10000);
+
+        setTimeout(function () {
+          $(_this.game1Video).animate({ opacity: 0 }, 10000, function () {
+            _this.game1Video.src = "";
+            $(_this.game1Video).remove();
+          });
+        }, 44 * 1000); // thats the vegas length dummy
       }
     },
     createVin: {
@@ -122,8 +206,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 //      this.exitCallback(this);
-
-// this.highwayVideo.pause();
 
 },{"../../js/shane-scene.es6":8,"../../js/talisman.es6":9,"../../js/web":13,"jquery":14,"kutility":15,"three":16}],2:[function(require,module,exports){
 "use strict";

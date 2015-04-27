@@ -23,7 +23,11 @@ export class GodIsAMan extends ShaneScene {
 
     setTimeout(this.createVin.bind(this), 2000);
 
-    setTimeout(this.vegasTime.bind(this), 20000);
+    setTimeout(this.vegasTime.bind(this), 10000);
+    setTimeout(this.papaTime.bind(this), 20000); // this should be ~ 6 minutes
+    setTimeout(this.cowboyTime.bind(this), 30000); // this should be ~ 8 minutes
+    setTimeout(this.game2Time.bind(this), 40000); // ~ 11 minutes?
+    setTimeout(this.game1Time.bind(this), 50000); // ~11.5 minutes?
   }
 
   exit() {
@@ -53,14 +57,78 @@ export class GodIsAMan extends ShaneScene {
   /// Timed Actions
 
   vegasTime() {
-    console.log('vegas time!');
     this.vegasVideo = this.makeVideo(this.videoBase + 'vegas', true);
     this.vegasVideo.play();
 
     this.vegasVideo.style.opacity = 0.0;
-    $(this.vegasVideo).animate({opacity: 0.67}, 10000, () => {
-      // this.highwayVideo.pause();
-    });
+    $(this.vegasVideo).animate({opacity: 0.67}, 10000);
+
+    setTimeout(() => {
+      $(this.vegasVideo).animate({opacity: 0.0}, 10000, () => {
+        this.vegasVideo.src = '';
+        $(this.vegasVideo).remove();
+      });
+    }, 320 * 1000); // thats the vegas length dummy
+  }
+
+  papaTime() {
+    this.papaVideo = this.makeVideo(this.videoBase + 'softypapa', true);
+    this.papaVideo.play();
+
+    this.papaVideo.style.opacity = 0.0;
+    $(this.papaVideo).animate({opacity: 0.67}, 10000);
+
+    setTimeout(() => {
+      $(this.papaVideo).animate({opacity: 0.0}, 10000, () => {
+        this.papaVideo.src = '';
+        $(this.papaVideo).remove();
+      });
+    }, 100 * 1000); // thats the papa length dummy
+  }
+
+  cowboyTime() {
+    this.cowboyVideo = this.makeVideo(this.videoBase + 'lonely_cowboy', true);
+    this.cowboyVideo.play();
+
+    this.cowboyVideo.style.opacity = 0.0;
+    $(this.cowboyVideo).animate({opacity: 0.67}, 10000);
+
+    setTimeout(() => {
+      $(this.cowboyVideo).animate({opacity: 0.0}, 10000, () => {
+        this.cowboyVideo.src = '';
+        $(this.cowboyVideo).remove();
+      });
+    }, 145 * 1000); // thats the cowboy length dummy
+  }
+
+  game2Time() {
+    this.game2Video = this.makeVideo(this.videoBase + 'game_2', true);
+    this.game2Video.play();
+
+    this.game2Video.style.opacity = 0.0;
+    $(this.game2Video).animate({opacity: 0.67}, 10000);
+
+    setTimeout(() => {
+      $(this.game2Video).animate({opacity: 0.0}, 10000, () => {
+        this.game2Video.src = '';
+        $(this.game2Video).remove();
+      });
+    }, 66 * 1000);
+  }
+
+  game1Time() {
+    this.game1Video = this.makeVideo(this.videoBase + 'game_1', true);
+    this.game1Video.play();
+
+    this.game1Video.style.opacity = 0.0;
+    $(this.game1Video).animate({opacity: 0.67}, 10000);
+
+    setTimeout(() => {
+      $(this.game1Video).animate({opacity: 0.0}, 10000, () => {
+        this.game1Video.src = '';
+        $(this.game1Video).remove();
+      });
+    }, 44 * 1000); // thats the vegas length dummy
   }
 
   createVin() {
