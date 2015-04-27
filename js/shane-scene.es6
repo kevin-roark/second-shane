@@ -78,6 +78,8 @@ export class ShaneScene {
       $(video).addClass('video-overlay');
     }
 
+    this.domContainer.append(video);
+
     return video;
   }
 }

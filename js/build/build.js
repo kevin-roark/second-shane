@@ -36,10 +36,11 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
         _get(Object.getPrototypeOf(GodIsAMan.prototype), "enter", this).call(this);
 
         this.highwayVideo = this.makeVideo(this.videoBase + "mojave_cycle", true);
-        this.domContainer.append(this.highwayVideo);
         this.highwayVideo.play();
 
-        setTimeout(this.vin.bind(this), 2000);
+        setTimeout(this.createVin.bind(this), 2000);
+
+        setTimeout(this.vegasTime.bind(this), 20000);
       }
     },
     exit: {
@@ -55,9 +56,7 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
           return;
         }
 
-        if (this.exitCallback) {
-          this.exitCallback(this);
-        }
+        if (this.exitCallback) {}
       }
     },
     createTalisman: {
@@ -69,11 +68,21 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
         return talisman;
       }
     },
-    vin: {
+    vegasTime: {
 
       /// Timed Actions
 
-      value: function vin() {
+      value: function vegasTime() {
+        console.log("vegas time!");
+        this.vegasVideo = this.makeVideo(this.videoBase + "vegas", true);
+        this.vegasVideo.play();
+
+        this.vegasVideo.style.opacity = 0;
+        $(this.vegasVideo).animate({ opacity: 0.67 }, 10000, function () {});
+      }
+    },
+    createVin: {
+      value: function createVin() {
         var _this = this;
 
         this.vin = this.makeVideo(this.videoBase + "vin_diesel");
@@ -87,7 +96,6 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
         $(this.vin).animate({ opacity: 0.8 }, kt.randInt(4444, 6666));
 
         this.vin.play();
-        this.domContainer.append(this.vin);
 
         setTimeout(function () {
           $(_this.vin).animate({ opacity: 0 }, kt.randInt(4444, 6666), function () {
@@ -112,6 +120,10 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+//      this.exitCallback(this);
+
+// this.highwayVideo.pause();
 
 },{"../../js/shane-scene.es6":8,"../../js/talisman.es6":9,"../../js/web":13,"jquery":14,"kutility":15,"three":16}],2:[function(require,module,exports){
 "use strict";
@@ -983,6 +995,8 @@ var ShaneScene = exports.ShaneScene = (function () {
         } else {
           $(video).addClass("video-overlay");
         }
+
+        this.domContainer.append(video);
 
         return video;
       }

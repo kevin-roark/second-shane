@@ -19,10 +19,11 @@ export class GodIsAMan extends ShaneScene {
     super.enter();
 
     this.highwayVideo = this.makeVideo(this.videoBase + 'mojave_cycle', true);
-    this.domContainer.append(this.highwayVideo);
     this.highwayVideo.play();
 
-    setTimeout(this.vin.bind(this), 2000);
+    setTimeout(this.createVin.bind(this), 2000);
+
+    setTimeout(this.vegasTime.bind(this), 20000);
   }
 
   exit() {
@@ -37,7 +38,7 @@ export class GodIsAMan extends ShaneScene {
     }
 
     if (this.exitCallback) {
-      this.exitCallback(this);
+//      this.exitCallback(this);
     }
   }
 
@@ -51,7 +52,18 @@ export class GodIsAMan extends ShaneScene {
 
   /// Timed Actions
 
-  vin() {
+  vegasTime() {
+    console.log('vegas time!');
+    this.vegasVideo = this.makeVideo(this.videoBase + 'vegas', true);
+    this.vegasVideo.play();
+
+    this.vegasVideo.style.opacity = 0.0;
+    $(this.vegasVideo).animate({opacity: 0.67}, 10000, () => {
+      // this.highwayVideo.pause();
+    });
+  }
+
+  createVin() {
     this.vin = this.makeVideo(this.videoBase + 'vin_diesel');
     this.stylizeVision(this.vin);
 
@@ -63,7 +75,6 @@ export class GodIsAMan extends ShaneScene {
     $(this.vin).animate({opacity: 0.8}, kt.randInt(4444, 6666));
 
     this.vin.play();
-    this.domContainer.append(this.vin);
 
     setTimeout(() => {
       $(this.vin).animate({opacity: 0}, kt.randInt(4444, 6666), () => {
