@@ -1,6 +1,139 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 "use strict";
 
+var $ = require("jquery");
+
+var defaultLineLength = 8000;
+var defaultTimeBetweenLines = 2000;
+var defaultTimeBetweenBlocks = 4000;
+
+var verse1 = [{ text: "It's alright", length: 1 }, { text: "Everything is fine", length: 1 }, { text: "You live the perfect life", length: 1 }, { text: "Never one immoral thought inside your mind", length: 2 }];
+
+var chorusBlock1 = [{ text: "What they say", length: 1 }, { text: "Does it make you feel ashamed?", length: 1 }, { text: "Isn't everyone the same?", length: 1 }, { text: "Does it matter that it wasn't your idea", length: 2 }];
+
+var chorusBlock2 = [{ text: "God is a man", length: 1 }, { text: "You know for certain", length: 1 }, { text: "The knowledge in and of itself", length: 1 }, { text: "Is more than we deserve", length: 1 }];
+
+var verse2 = [{ text: "So you've tried", length: 1 }, { text: "And you've made up your mind", length: 1 }, { text: "Something's still not right", length: 1 }, { text: "The devil you don't know is still outside", length: 2 }];
+
+var karaokeWithDomContainer = function (domContainer) {
+
+  var karaokeDomContainer = karaokeDiv([]);
+  domContainer.append(karaokeDomContainer);
+
+  processBlock(verse1, function () {
+    setTimeout(function () {
+      processBlock(chorusBlock1, function () {
+        processBlock(chorusBlock2, function () {
+          setTimeout(function () {
+            processBlock(verse2, function () {
+              processBlock(chorusBlock1, function () {
+                processBlock(chorusBlock2);
+              });
+            });
+          }, defaultTimeBetweenBlocks);
+        });
+      });
+    }, defaultTimeBetweenBlocks);
+  });
+
+  function processBlock(block, callback) {
+    doLine(0);
+
+    function doLine(lineIndex) {
+      processLine(block[lineIndex], function () {
+        if (lineIndex + 1 < block.length) {
+          setTimeout(function () {
+            doLine(lineIndex + 1);
+          }, defaultTimeBetweenLines);
+        } else {
+          if (callback) {
+            callback();
+          }
+        }
+      });
+    }
+  }
+
+  function processLine(line, callback) {
+    var characters = line.text.split("");
+    var charSpans = [];
+    for (var i = 0; i < characters.length; i++) {
+      charSpans.push(span(characters[i], "character-" + i));
+    }
+
+    emptyKaraokeDom();
+    karaokeDomContainer.append($(spanView(charSpans)));
+
+    var children = karaokeDomContainer.children();
+    var letterLength = defaultLineLength / children.length;
+
+    setTimeout(function () {
+      activateLetter(0);
+    }, letterLength);
+
+    function activateLetter(i) {
+      var letter = $(children[i]);
+      activate(letter);
+
+      if (i + 1 < children.length) {
+        setTimeout(function () {
+          activateLetter(i + 1);
+        }, letterLength);
+      } else {
+        setTimeout(function () {
+          emptyKaraokeDom();
+          if (callback) {
+            callback();
+          }
+        }, letterLength);
+      }
+    }
+  }
+
+  function emptyKaraokeDom() {
+    karaokeDomContainer.empty();
+  }
+
+  function span(text, id) {
+    return "<span id=\"" + id + "\">" + text + "</span>";
+  }
+
+  function spanView(charSpans) {
+    var view = "";
+    for (var i = 0; i < charSpans.length; i++) {
+      view += charSpans[i];
+    }
+    return view;
+  }
+
+  function karaokeDiv(charSpans) {
+    var view = spanView(charSpans);
+
+    var div = $("<div>" + view + "</div>");
+    div.css("position", "absolute");
+    div.css("bottom", "20px");
+    div.css("left", "0px");
+    div.css("width", "100%");
+    div.css("text-align", "center");
+    div.css("color", "white");
+    div.css("font-size", "72px");
+    div.css("z-index", "1000000");
+
+    return div;
+  }
+
+  function activate(span) {
+    span.css("color", "#fdd700");
+  }
+};
+exports.karaokeWithDomContainer = karaokeWithDomContainer;
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+},{"jquery":15}],2:[function(require,module,exports){
+"use strict";
+
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
@@ -19,6 +152,8 @@ var Talisman = require("../../js/talisman.es6").Talisman;
 
 var ShaneScene = require("../../js/shane-scene.es6").ShaneScene;
 
+var karaokeWithDomContainer = require("./karaoke.es6").karaokeWithDomContainer;
+
 var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
   function GodIsAMan(renderer, camera, scene, options) {
     _classCallCheck(this, GodIsAMan);
@@ -33,6 +168,8 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
   _createClass(GodIsAMan, {
     enter: {
       value: function enter() {
+        var _this = this;
+
         _get(Object.getPrototypeOf(GodIsAMan.prototype), "enter", this).call(this);
 
         this.highwayVideo = this.makeVideo(this.videoBase + "mojave_cycle", true);
@@ -46,6 +183,11 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
 
         setTimeout(this.createVin.bind(this), 2000);
         setTimeout(this.createWhitey.bind(this), 8000);
+        setTimeout(this.createPapaJohn.bind(this), 15000);
+
+        setTimeout(function () {
+          karaokeWithDomContainer(_this.domContainer);
+        }, 2000);
       }
     },
     exit: {
@@ -178,9 +320,9 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
         this.vin.style.width = "45%";
 
         this.vin.style.opacity = 0;
-        $(this.vin).animate({ opacity: 0.8 }, kt.randInt(4444, 6666));
-
         this.vin.play();
+
+        $(this.vin).animate({ opacity: 0.8 }, kt.randInt(4444, 6666));
 
         setTimeout(function () {
           $(_this.vin).animate({ opacity: 0 }, kt.randInt(4444, 6666), function () {
@@ -202,9 +344,9 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
         this.whitey.style.width = "45%";
 
         this.whitey.style.opacity = 0;
-        $(this.whitey).animate({ opacity: 0.8 }, kt.randInt(4444, 6666));
-
         this.whitey.play();
+
+        $(this.whitey).animate({ opacity: 0.8 }, kt.randInt(4444, 6666));
 
         setTimeout(function () {
           $(_this.whitey).animate({ opacity: 0 }, kt.randInt(4444, 6666), function () {
@@ -214,12 +356,36 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
         }, kt.randInt(25000, 35000));
       }
     },
+    createPapaJohn: {
+      value: function createPapaJohn() {
+        var _this = this;
+
+        this.papaJohn = this.makeVideo(this.videoBase + "papajohn");
+        this.stylizeVision(this.papaJohn);
+
+        this.papaJohn.style.left = "25%";
+        this.papaJohn.style.top = "0px";
+        this.papaJohn.style.width = "50%";
+
+        this.papaJohn.style.opacity = 0;
+        this.papaJohn.play();
+
+        $(this.papaJohn).animate({ opacity: 0.8 }, kt.randInt(4444, 6666));
+
+        setTimeout(function () {
+          $(_this.papaJohn).animate({ opacity: 0 }, kt.randInt(4444, 6666), function () {
+            _this.papaJohn.src = "";
+            $(_this.papaJohn).remove();
+          });
+        }, kt.randInt(25000, 35000));
+      }
+    },
     stylizeVision: {
 
       /// Vision Animations
 
       value: function stylizeVision(vision) {
-        $(vision).css("box-shadow", "10px 10px 30px 7px rgba(0, 0, 0, 0.9)");
+        $(vision).css("box-shadow", "10px 10px 30px 7px rgba(0, 0, 0, 0.95)");
       }
     }
   });
@@ -233,7 +399,7 @@ Object.defineProperty(exports, "__esModule", {
 
 //      this.exitCallback(this);
 
-},{"../../js/shane-scene.es6":8,"../../js/talisman.es6":9,"../../js/web":13,"jquery":14,"kutility":15,"three":16}],2:[function(require,module,exports){
+},{"../../js/shane-scene.es6":9,"../../js/talisman.es6":10,"../../js/web":14,"./karaoke.es6":1,"jquery":15,"kutility":16,"three":17}],3:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -291,7 +457,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../js/shane-scene.es6":8,"../../js/talisman.es6":9,"three":16}],3:[function(require,module,exports){
+},{"../../js/shane-scene.es6":9,"../../js/talisman.es6":10,"three":17}],4:[function(require,module,exports){
 "use strict";
 
 /**
@@ -566,7 +732,7 @@ module.exports = function (camera, options) {
 	this.updateRotationVector();
 };
 
-},{"./pointerlocker":4,"three":16}],4:[function(require,module,exports){
+},{"./pointerlocker":5,"three":17}],5:[function(require,module,exports){
 "use strict";
 
 module.exports = function () {
@@ -666,7 +832,7 @@ module.exports = function () {
   }
 };
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -866,7 +1032,7 @@ $(function () {
   shane.activate();
 });
 
-},{"./controls/fly-controls":3,"./one-offs.es6":6,"./scenes.es6":7,"./theme.es6":10,"./three-boiler.es6":11,"jquery":14,"three":16}],6:[function(require,module,exports){
+},{"./controls/fly-controls":4,"./one-offs.es6":7,"./scenes.es6":8,"./theme.es6":11,"./three-boiler.es6":12,"jquery":15,"three":17}],7:[function(require,module,exports){
 "use strict";
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
@@ -982,7 +1148,7 @@ Object.defineProperty(exports, "__esModule", {
 
 // override for frame-ly updates
 
-},{"three":16}],7:[function(require,module,exports){
+},{"three":17}],8:[function(require,module,exports){
 "use strict";
 
 var LiveAtJJs = require("../artifacts/live-at-jjs/scene.es6").LiveAtJJs;
@@ -1003,7 +1169,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../artifacts/god-is-a-man/scene.es6":1,"../artifacts/live-at-jjs/scene.es6":2}],8:[function(require,module,exports){
+},{"../artifacts/god-is-a-man/scene.es6":2,"../artifacts/live-at-jjs/scene.es6":3}],9:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1118,7 +1284,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"./talisman.es6":9,"jquery":14,"three":16}],9:[function(require,module,exports){
+},{"./talisman.es6":10,"jquery":15,"three":17}],10:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1250,7 +1416,7 @@ Object.defineProperty(exports, "__esModule", {
 
 // do stuff with mesh
 
-},{"three":16}],10:[function(require,module,exports){
+},{"three":17}],11:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1296,7 +1462,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"./util/skybox":12}],11:[function(require,module,exports){
+},{"./util/skybox":13}],12:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1415,7 +1581,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"jquery":14,"three":16}],12:[function(require,module,exports){
+},{"jquery":15,"three":17}],13:[function(require,module,exports){
 "use strict";
 
 var THREE = require("three");
@@ -1485,7 +1651,7 @@ module.exports.blocker = function (size) {
   return new THREE.Mesh(geometry, material);
 };
 
-},{"three":16}],13:[function(require,module,exports){
+},{"three":17}],14:[function(require,module,exports){
 "use strict";
 
 module.exports.liveBase = {
@@ -1497,7 +1663,7 @@ module.exports.webBase = {
   asmr: "http://kevin-roark.github.io/second-shane-asmr/",
   godIsAMan: "http://kevin-roark.github.io/second-shane-god-man/" };
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.3
  * http://jquery.com/
@@ -10704,7 +10870,7 @@ return jQuery;
 
 }));
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 
 /* export something */
 module.exports = new Kutility();
@@ -11278,7 +11444,7 @@ Kutility.prototype.blur = function(el, x) {
   this.setFilter(el, cf + f);
 };
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 // File:src/Three.js
 
 /**
@@ -45824,4 +45990,4 @@ THREE.MorphBlendMesh.prototype.update = function ( delta ) {
 
 };
 
-},{}]},{},[5]);
+},{}]},{},[6]);

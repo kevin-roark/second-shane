@@ -7,6 +7,8 @@ let web = require('../../js/web');
 import {Talisman} from '../../js/talisman.es6';
 import {ShaneScene} from '../../js/shane-scene.es6';
 
+import {karaokeWithDomContainer} from './karaoke.es6';
+
 export class GodIsAMan extends ShaneScene {
 
   constructor(renderer, camera, scene, options) {
@@ -29,6 +31,11 @@ export class GodIsAMan extends ShaneScene {
 
     setTimeout(this.createVin.bind(this), 2000);
     setTimeout(this.createWhitey.bind(this), 8000);
+    setTimeout(this.createPapaJohn.bind(this), 15000);
+
+    setTimeout(() => {
+      karaokeWithDomContainer(this.domContainer);
+    }, 2000);
   }
 
   exit() {
@@ -141,9 +148,9 @@ export class GodIsAMan extends ShaneScene {
     this.vin.style.width = '45%';
 
     this.vin.style.opacity = 0;
-    $(this.vin).animate({opacity: 0.8}, kt.randInt(4444, 6666));
-
     this.vin.play();
+
+    $(this.vin).animate({opacity: 0.8}, kt.randInt(4444, 6666));
 
     setTimeout(() => {
       $(this.vin).animate({opacity: 0}, kt.randInt(4444, 6666), () => {
@@ -162,9 +169,9 @@ export class GodIsAMan extends ShaneScene {
     this.whitey.style.width = '45%';
 
     this.whitey.style.opacity = 0;
-    $(this.whitey).animate({opacity: 0.8}, kt.randInt(4444, 6666));
-
     this.whitey.play();
+
+    $(this.whitey).animate({opacity: 0.8}, kt.randInt(4444, 6666));
 
     setTimeout(() => {
       $(this.whitey).animate({opacity: 0}, kt.randInt(4444, 6666), () => {
@@ -174,10 +181,31 @@ export class GodIsAMan extends ShaneScene {
     }, kt.randInt(25000, 35000));
   }
 
+  createPapaJohn() {
+    this.papaJohn = this.makeVideo(this.videoBase + 'papajohn');
+    this.stylizeVision(this.papaJohn);
+
+    this.papaJohn.style.left = '25%';
+    this.papaJohn.style.top = '0px';
+    this.papaJohn.style.width = '50%';
+
+    this.papaJohn.style.opacity = 0;
+    this.papaJohn.play();
+
+    $(this.papaJohn).animate({opacity: 0.8}, kt.randInt(4444, 6666));
+
+    setTimeout(() => {
+      $(this.papaJohn).animate({opacity: 0}, kt.randInt(4444, 6666), () => {
+        this.papaJohn.src = '';
+        $(this.papaJohn).remove();
+      });
+    }, kt.randInt(25000, 35000));
+  }
+
   /// Vision Animations
 
   stylizeVision(vision) {
-    $(vision).css('box-shadow', '10px 10px 30px 7px rgba(0, 0, 0, 0.9)');
+    $(vision).css('box-shadow', '10px 10px 30px 7px rgba(0, 0, 0, 0.95)');
   }
 
 }
