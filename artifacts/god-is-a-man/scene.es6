@@ -29,9 +29,14 @@ export class GodIsAMan extends ShaneScene {
     setTimeout(this.game2Time.bind(this), 40000); // ~ 11 minutes?
     setTimeout(this.game1Time.bind(this), 50000); // ~11.5 minutes?
 
-    setTimeout(this.createVin.bind(this), 2000);
-    setTimeout(this.createWhitey.bind(this), 8000);
-    setTimeout(this.createPapaJohn.bind(this), 15000);
+    //setTimeout(this.createVin.bind(this), 2000);
+    //setTimeout(this.createWhitey.bind(this), 2000);
+    //setTimeout(this.createPapaJohn.bind(this), 2000);
+    //setTimeout(this.createGodManVideo.bind(this), 2000);
+    //setTimeout(this.createJohnCena.bind(this), 2000);
+    //setTimeout(this.createBruceWillis.bind(this), 2000);
+    //setTimeout(this.createGodSistene.bind(this), 2000);
+    //setTimeout(this.createHulkHogan.bind(this), 2000);
 
     setTimeout(() => {
       karaokeWithDomContainer(this.domContainer);
@@ -62,7 +67,7 @@ export class GodIsAMan extends ShaneScene {
     return talisman;
   }
 
-  /// Timed Actions
+  /// Highway Manipulation
 
   vegasTime() {
     this.vegasVideo = this.makeVideo(this.videoBase + 'vegas', true);
@@ -139,9 +144,10 @@ export class GodIsAMan extends ShaneScene {
     }, 44 * 1000); // thats the vegas length dummy
   }
 
+  /// Vision Creation
+
   createVin() {
-    this.vin = this.makeVideo(this.videoBase + 'vin_diesel');
-    this.stylizeVision(this.vin);
+    this.vin = this.makeVision('vin_diesel');
 
     this.vin.style.left = '54%';
     this.vin.style.top = '100px';
@@ -153,16 +159,12 @@ export class GodIsAMan extends ShaneScene {
     $(this.vin).animate({opacity: 0.8}, kt.randInt(4444, 6666));
 
     setTimeout(() => {
-      $(this.vin).animate({opacity: 0}, kt.randInt(4444, 6666), () => {
-        this.vin.src = '';
-        $(this.vin).remove();
-      });
+      this.destroyVision(this.vin);
     }, kt.randInt(25000, 35000));
   }
 
   createWhitey() {
-    this.whitey = this.makeVideo(this.videoBase + 'whitey');
-    this.stylizeVision(this.whitey);
+    this.whitey = this.makeVision('whitey');
 
     this.whitey.style.left = '60px';
     this.whitey.style.bottom = '40px';
@@ -174,16 +176,12 @@ export class GodIsAMan extends ShaneScene {
     $(this.whitey).animate({opacity: 0.8}, kt.randInt(4444, 6666));
 
     setTimeout(() => {
-      $(this.whitey).animate({opacity: 0}, kt.randInt(4444, 6666), () => {
-        this.whitey.src = '';
-        $(this.whitey).remove();
-      });
+      this.destroyVision(this.whitey);
     }, kt.randInt(25000, 35000));
   }
 
   createPapaJohn() {
-    this.papaJohn = this.makeVideo(this.videoBase + 'papajohn');
-    this.stylizeVision(this.papaJohn);
+    this.papaJohn = this.makeVision('papajohn');
 
     this.papaJohn.style.left = '25%';
     this.papaJohn.style.top = '0px';
@@ -195,17 +193,112 @@ export class GodIsAMan extends ShaneScene {
     $(this.papaJohn).animate({opacity: 0.8}, kt.randInt(4444, 6666));
 
     setTimeout(() => {
-      $(this.papaJohn).animate({opacity: 0}, kt.randInt(4444, 6666), () => {
-        this.papaJohn.src = '';
-        $(this.papaJohn).remove();
-      });
+      this.destroyVision(this.papaJohn);
     }, kt.randInt(25000, 35000));
   }
 
-  /// Vision Animations
+  createGodManVideo() {
+    this.godMan = this.makeVision('godmanvideo');
+
+    this.godMan.style.left = '25%';
+    this.godMan.style.top = '40px';
+    this.godMan.style.width = '50%';
+
+    this.godMan.style.opacity = 0;
+    this.godMan.play();
+
+    $(this.godMan).animate({opacity: 0.8}, kt.randInt(4444, 6666));
+
+    setTimeout(() => {
+      this.destroyVision(this.godMan);
+    }, kt.randInt(25000, 35000));
+  }
+
+  createJohnCena() {
+    this.johnCena = this.makeVision('johncena');
+
+    this.johnCena.style.left = '25%';
+    this.johnCena.style.top = '40px';
+    this.johnCena.style.width = '50%';
+
+    this.johnCena.style.opacity = 0;
+    this.johnCena.play();
+
+    $(this.johnCena).animate({opacity: 0.8}, kt.randInt(4444, 6666));
+
+    setTimeout(() => {
+      this.destroyVision(this.johnCena);
+    }, kt.randInt(25000, 35000));
+  }
+
+  createBruceWillis() {
+    this.bruceWillis = this.makeVision('brucewillis');
+
+    this.bruceWillis.style.left = '25%';
+    this.bruceWillis.style.top = '40px';
+    this.bruceWillis.style.width = '50%';
+
+    this.bruceWillis.style.opacity = 0;
+    this.bruceWillis.play();
+
+    $(this.bruceWillis).animate({opacity: 0.8}, kt.randInt(4444, 6666));
+
+    setTimeout(() => {
+      this.destroyVision(this.bruceWillis);
+    }, kt.randInt(25000, 35000));
+  }
+
+  createGodSistene() {
+    this.godSistene = this.makeVision('godsistene');
+
+    this.godSistene.style.left = '25%';
+    this.godSistene.style.top = '40px';
+    this.godSistene.style.width = '50%';
+
+    this.godSistene.style.opacity = 0;
+    this.godSistene.play();
+
+    $(this.godSistene).animate({opacity: 0.8}, kt.randInt(4444, 6666));
+
+    setTimeout(() => {
+      this.destroyVision(this.godSistene);
+    }, kt.randInt(25000, 35000));
+  }
+
+  createHulkHogan() {
+    this.hulkHogan = this.makeVision('hulkhogan');
+
+    this.hulkHogan.style.left = '25%';
+    this.hulkHogan.style.top = '40px';
+    this.hulkHogan.style.width = '50%';
+
+    this.hulkHogan.style.opacity = 0;
+    this.hulkHogan.play();
+
+    $(this.hulkHogan).animate({opacity: 0.8}, kt.randInt(4444, 6666));
+
+    setTimeout(() => {
+      this.destroyVision(this.hulkHogan);
+    }, kt.randInt(25000, 35000));
+  }
+
+  /// Vision Utility
 
   stylizeVision(vision) {
-    $(vision).css('box-shadow', '10px 10px 30px 7px rgba(0, 0, 0, 0.95)');
+    $(vision).css('box-shadow', '0px 0px 30px 16px rgba(255, 255, 255, 0.95)');
+  }
+
+  makeVision(name) {
+    var vision = this.makeVideo(this.videoBase + name);
+    this.stylizeVision(vision);
+    return vision;
+  }
+
+  destroyVision(vision) {
+    $(vision).animate({opacity: 0}, kt.randInt(4444, 6666), () => {
+      vision.src = '';
+      $(vision).remove();
+    });
   }
 
 }

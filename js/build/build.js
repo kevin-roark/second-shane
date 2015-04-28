@@ -181,9 +181,14 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
         setTimeout(this.game2Time.bind(this), 40000); // ~ 11 minutes?
         setTimeout(this.game1Time.bind(this), 50000); // ~11.5 minutes?
 
-        setTimeout(this.createVin.bind(this), 2000);
-        setTimeout(this.createWhitey.bind(this), 8000);
-        setTimeout(this.createPapaJohn.bind(this), 15000);
+        //setTimeout(this.createVin.bind(this), 2000);
+        //setTimeout(this.createWhitey.bind(this), 2000);
+        //setTimeout(this.createPapaJohn.bind(this), 2000);
+        //setTimeout(this.createGodManVideo.bind(this), 2000);
+        //setTimeout(this.createJohnCena.bind(this), 2000);
+        //setTimeout(this.createBruceWillis.bind(this), 2000);
+        //setTimeout(this.createGodSistene.bind(this), 2000);
+        //setTimeout(this.createHulkHogan.bind(this), 2000);
 
         setTimeout(function () {
           karaokeWithDomContainer(_this.domContainer);
@@ -217,7 +222,7 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
     },
     vegasTime: {
 
-      /// Timed Actions
+      /// Highway Manipulation
 
       value: function vegasTime() {
         var _this = this;
@@ -309,11 +314,13 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
       }
     },
     createVin: {
+
+      /// Vision Creation
+
       value: function createVin() {
         var _this = this;
 
-        this.vin = this.makeVideo(this.videoBase + "vin_diesel");
-        this.stylizeVision(this.vin);
+        this.vin = this.makeVision("vin_diesel");
 
         this.vin.style.left = "54%";
         this.vin.style.top = "100px";
@@ -325,10 +332,7 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
         $(this.vin).animate({ opacity: 0.8 }, kt.randInt(4444, 6666));
 
         setTimeout(function () {
-          $(_this.vin).animate({ opacity: 0 }, kt.randInt(4444, 6666), function () {
-            _this.vin.src = "";
-            $(_this.vin).remove();
-          });
+          _this.destroyVision(_this.vin);
         }, kt.randInt(25000, 35000));
       }
     },
@@ -336,8 +340,7 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
       value: function createWhitey() {
         var _this = this;
 
-        this.whitey = this.makeVideo(this.videoBase + "whitey");
-        this.stylizeVision(this.whitey);
+        this.whitey = this.makeVision("whitey");
 
         this.whitey.style.left = "60px";
         this.whitey.style.bottom = "40px";
@@ -349,10 +352,7 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
         $(this.whitey).animate({ opacity: 0.8 }, kt.randInt(4444, 6666));
 
         setTimeout(function () {
-          $(_this.whitey).animate({ opacity: 0 }, kt.randInt(4444, 6666), function () {
-            _this.whitey.src = "";
-            $(_this.whitey).remove();
-          });
+          _this.destroyVision(_this.whitey);
         }, kt.randInt(25000, 35000));
       }
     },
@@ -360,8 +360,7 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
       value: function createPapaJohn() {
         var _this = this;
 
-        this.papaJohn = this.makeVideo(this.videoBase + "papajohn");
-        this.stylizeVision(this.papaJohn);
+        this.papaJohn = this.makeVision("papajohn");
 
         this.papaJohn.style.left = "25%";
         this.papaJohn.style.top = "0px";
@@ -373,19 +372,131 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
         $(this.papaJohn).animate({ opacity: 0.8 }, kt.randInt(4444, 6666));
 
         setTimeout(function () {
-          $(_this.papaJohn).animate({ opacity: 0 }, kt.randInt(4444, 6666), function () {
-            _this.papaJohn.src = "";
-            $(_this.papaJohn).remove();
-          });
+          _this.destroyVision(_this.papaJohn);
+        }, kt.randInt(25000, 35000));
+      }
+    },
+    createGodManVideo: {
+      value: function createGodManVideo() {
+        var _this = this;
+
+        this.godMan = this.makeVision("godmanvideo");
+
+        this.godMan.style.left = "25%";
+        this.godMan.style.top = "40px";
+        this.godMan.style.width = "50%";
+
+        this.godMan.style.opacity = 0;
+        this.godMan.play();
+
+        $(this.godMan).animate({ opacity: 0.8 }, kt.randInt(4444, 6666));
+
+        setTimeout(function () {
+          _this.destroyVision(_this.godMan);
+        }, kt.randInt(25000, 35000));
+      }
+    },
+    createJohnCena: {
+      value: function createJohnCena() {
+        var _this = this;
+
+        this.johnCena = this.makeVision("johncena");
+
+        this.johnCena.style.left = "25%";
+        this.johnCena.style.top = "40px";
+        this.johnCena.style.width = "50%";
+
+        this.johnCena.style.opacity = 0;
+        this.johnCena.play();
+
+        $(this.johnCena).animate({ opacity: 0.8 }, kt.randInt(4444, 6666));
+
+        setTimeout(function () {
+          _this.destroyVision(_this.johnCena);
+        }, kt.randInt(25000, 35000));
+      }
+    },
+    createBruceWillis: {
+      value: function createBruceWillis() {
+        var _this = this;
+
+        this.bruceWillis = this.makeVision("brucewillis");
+
+        this.bruceWillis.style.left = "25%";
+        this.bruceWillis.style.top = "40px";
+        this.bruceWillis.style.width = "50%";
+
+        this.bruceWillis.style.opacity = 0;
+        this.bruceWillis.play();
+
+        $(this.bruceWillis).animate({ opacity: 0.8 }, kt.randInt(4444, 6666));
+
+        setTimeout(function () {
+          _this.destroyVision(_this.bruceWillis);
+        }, kt.randInt(25000, 35000));
+      }
+    },
+    createGodSistene: {
+      value: function createGodSistene() {
+        var _this = this;
+
+        this.godSistene = this.makeVision("godsistene");
+
+        this.godSistene.style.left = "25%";
+        this.godSistene.style.top = "40px";
+        this.godSistene.style.width = "50%";
+
+        this.godSistene.style.opacity = 0;
+        this.godSistene.play();
+
+        $(this.godSistene).animate({ opacity: 0.8 }, kt.randInt(4444, 6666));
+
+        setTimeout(function () {
+          _this.destroyVision(_this.godSistene);
+        }, kt.randInt(25000, 35000));
+      }
+    },
+    createHulkHogan: {
+      value: function createHulkHogan() {
+        var _this = this;
+
+        this.hulkHogan = this.makeVision("hulkhogan");
+
+        this.hulkHogan.style.left = "25%";
+        this.hulkHogan.style.top = "40px";
+        this.hulkHogan.style.width = "50%";
+
+        this.hulkHogan.style.opacity = 0;
+        this.hulkHogan.play();
+
+        $(this.hulkHogan).animate({ opacity: 0.8 }, kt.randInt(4444, 6666));
+
+        setTimeout(function () {
+          _this.destroyVision(_this.hulkHogan);
         }, kt.randInt(25000, 35000));
       }
     },
     stylizeVision: {
 
-      /// Vision Animations
+      /// Vision Utility
 
       value: function stylizeVision(vision) {
-        $(vision).css("box-shadow", "10px 10px 30px 7px rgba(0, 0, 0, 0.95)");
+        $(vision).css("box-shadow", "0px 0px 30px 16px rgba(255, 255, 255, 0.95)");
+      }
+    },
+    makeVision: {
+      value: function makeVision(name) {
+        var vision = this.makeVideo(this.videoBase + name);
+        this.stylizeVision(vision);
+        return vision;
+      }
+    },
+    destroyVision: {
+      value: function destroyVision(vision) {
+        $(vision).animate({ opacity: 0 }, kt.randInt(4444, 6666), function () {
+          vision.src = "";
+          $(vision).remove();
+        });
       }
     }
   });
