@@ -9,7 +9,7 @@ var defaultTimeBetweenBlocks = 4000;
 
 var verse1 = [{ text: "It's alright", length: 1 }, { text: "Everything is fine", length: 1 }, { text: "You live the perfect life", length: 1 }, { text: "Never one immoral thought inside your mind", length: 2 }];
 
-var chorusBlock1 = [{ text: "What they say", length: 1 }, { text: "Does it make you feel ashamed?", length: 1 }, { text: "Isn't everyone the same?", length: 1 }, { text: "Does it matter that it wasn't your idea", length: 2 }];
+var chorusBlock1 = [{ text: "What they say", length: 1 }, { text: "Does it make you feel ashamed?", length: 1 }, { text: "Isn't everyone the same?", length: 1 }, { text: "Does it matter that it wasn't your idea?", length: 2 }];
 
 var chorusBlock2 = [{ text: "God is a man", length: 1 }, { text: "You know for certain", length: 1 }, { text: "The knowledge in and of itself", length: 1 }, { text: "Is more than we deserve", length: 1 }];
 
@@ -65,7 +65,7 @@ var karaokeWithDomContainer = function (domContainer) {
     karaokeDomContainer.append($(spanView(charSpans)));
 
     var children = karaokeDomContainer.children();
-    var letterLength = defaultLineLength / children.length;
+    var letterLength = defaultLineLength * line.length / children.length;
 
     setTimeout(function () {
       activateLetter(0);
