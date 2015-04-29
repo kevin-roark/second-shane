@@ -7,7 +7,7 @@ let web = require('../../js/web');
 import {Talisman} from '../../js/talisman.es6';
 import {ShaneScene} from '../../js/shane-scene.es6';
 
-import {karaokeWithDomContainer} from './karaoke.es6';
+import {doKaraoke} from './karaoke.es6';
 
 export class GodIsAMan extends ShaneScene {
 
@@ -15,6 +15,7 @@ export class GodIsAMan extends ShaneScene {
     super(renderer, camera, scene, options);
 
     this.videoBase = (this.isLive? web.liveBase.godIsAMan : web.webBase.godIsAMan) + 'video/';
+    this.imageBase = (this.isLive? web.liveBase.godIsAMan : web.webBase.godIsAMan) + 'images/';
   }
 
   enter() {
@@ -40,11 +41,11 @@ export class GodIsAMan extends ShaneScene {
     //setTimeout(this.createLebron.bind(this), 2000);
     //setTimeout(this.createJordan.bind(this), 2000);
     //setTimeout(this.createBigSean.bind(this), 2000);
-    setTimeout(this.createLilWayne.bind(this), 2000);
+    //setTimeout(this.createLilWayne.bind(this), 2000);
 
     setTimeout(() => {
-      karaokeWithDomContainer(this.domContainer);
-    }, 2000);
+      doKaraoke(this.domContainer, this.imageBase + 'basketball.png');
+    }, 1000);
   }
 
   exit() {
