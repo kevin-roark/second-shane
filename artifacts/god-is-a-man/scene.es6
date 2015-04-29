@@ -37,6 +37,10 @@ export class GodIsAMan extends ShaneScene {
     //setTimeout(this.createBruceWillis.bind(this), 2000);
     //setTimeout(this.createGodSistene.bind(this), 2000);
     //setTimeout(this.createHulkHogan.bind(this), 2000);
+    //setTimeout(this.createLebron.bind(this), 2000);
+    //setTimeout(this.createJordan.bind(this), 2000);
+    //setTimeout(this.createBigSean.bind(this), 2000);
+    setTimeout(this.createLilWayne.bind(this), 2000);
 
     setTimeout(() => {
       karaokeWithDomContainer(this.domContainer);
@@ -153,14 +157,7 @@ export class GodIsAMan extends ShaneScene {
     this.vin.style.top = '100px';
     this.vin.style.width = '45%';
 
-    this.vin.style.opacity = 0;
-    this.vin.play();
-
-    $(this.vin).animate({opacity: 0.8}, kt.randInt(4444, 6666));
-
-    setTimeout(() => {
-      this.destroyVision(this.vin);
-    }, kt.randInt(25000, 35000));
+    this.animateVision(this.vin);
   }
 
   createWhitey() {
@@ -170,14 +167,7 @@ export class GodIsAMan extends ShaneScene {
     this.whitey.style.bottom = '40px';
     this.whitey.style.width = '45%';
 
-    this.whitey.style.opacity = 0;
-    this.whitey.play();
-
-    $(this.whitey).animate({opacity: 0.8}, kt.randInt(4444, 6666));
-
-    setTimeout(() => {
-      this.destroyVision(this.whitey);
-    }, kt.randInt(25000, 35000));
+    this.animateVision(this.whitey);
   }
 
   createPapaJohn() {
@@ -187,14 +177,7 @@ export class GodIsAMan extends ShaneScene {
     this.papaJohn.style.top = '0px';
     this.papaJohn.style.width = '50%';
 
-    this.papaJohn.style.opacity = 0;
-    this.papaJohn.play();
-
-    $(this.papaJohn).animate({opacity: 0.8}, kt.randInt(4444, 6666));
-
-    setTimeout(() => {
-      this.destroyVision(this.papaJohn);
-    }, kt.randInt(25000, 35000));
+    this.animateVision(this.papaJohn);
   }
 
   createGodManVideo() {
@@ -204,14 +187,7 @@ export class GodIsAMan extends ShaneScene {
     this.godMan.style.top = '40px';
     this.godMan.style.width = '50%';
 
-    this.godMan.style.opacity = 0;
-    this.godMan.play();
-
-    $(this.godMan).animate({opacity: 0.8}, kt.randInt(4444, 6666));
-
-    setTimeout(() => {
-      this.destroyVision(this.godMan);
-    }, kt.randInt(25000, 35000));
+    this.animateVision(this.godMan);
   }
 
   createJohnCena() {
@@ -221,14 +197,7 @@ export class GodIsAMan extends ShaneScene {
     this.johnCena.style.top = '40px';
     this.johnCena.style.width = '50%';
 
-    this.johnCena.style.opacity = 0;
-    this.johnCena.play();
-
-    $(this.johnCena).animate({opacity: 0.8}, kt.randInt(4444, 6666));
-
-    setTimeout(() => {
-      this.destroyVision(this.johnCena);
-    }, kt.randInt(25000, 35000));
+    this.animateVision(this.johnCena);
   }
 
   createBruceWillis() {
@@ -238,14 +207,7 @@ export class GodIsAMan extends ShaneScene {
     this.bruceWillis.style.top = '40px';
     this.bruceWillis.style.width = '50%';
 
-    this.bruceWillis.style.opacity = 0;
-    this.bruceWillis.play();
-
-    $(this.bruceWillis).animate({opacity: 0.8}, kt.randInt(4444, 6666));
-
-    setTimeout(() => {
-      this.destroyVision(this.bruceWillis);
-    }, kt.randInt(25000, 35000));
+    this.animateVision(this.bruceWillis);
   }
 
   createGodSistene() {
@@ -255,14 +217,7 @@ export class GodIsAMan extends ShaneScene {
     this.godSistene.style.top = '40px';
     this.godSistene.style.width = '50%';
 
-    this.godSistene.style.opacity = 0;
-    this.godSistene.play();
-
-    $(this.godSistene).animate({opacity: 0.8}, kt.randInt(4444, 6666));
-
-    setTimeout(() => {
-      this.destroyVision(this.godSistene);
-    }, kt.randInt(25000, 35000));
+    this.animateVision(this.godSistene);
   }
 
   createHulkHogan() {
@@ -272,14 +227,47 @@ export class GodIsAMan extends ShaneScene {
     this.hulkHogan.style.top = '40px';
     this.hulkHogan.style.width = '50%';
 
-    this.hulkHogan.style.opacity = 0;
-    this.hulkHogan.play();
+    this.animateVision(this.hulkHogan);
+  }
 
-    $(this.hulkHogan).animate({opacity: 0.8}, kt.randInt(4444, 6666));
+  createLebron() {
+    this.lebron = this.makeVision('lebron');
 
-    setTimeout(() => {
-      this.destroyVision(this.hulkHogan);
-    }, kt.randInt(25000, 35000));
+    this.lebron.style.left = '25%';
+    this.lebron.style.top = '40px';
+    this.lebron.style.width = '50%';
+
+    this.animateVision(this.lebron);
+  }
+
+  createJordan() {
+    this.jordan = this.makeVision('jordan');
+
+    this.jordan.style.left = '25%';
+    this.jordan.style.top = '40px';
+    this.jordan.style.width = '50%';
+
+    this.animateVision(this.jordan);
+  }
+
+  createBigSean() {
+    this.bigSean = this.makeVision('bigsean');
+
+    this.bigSean.style.left = '25%';
+    this.bigSean.style.top = '40px';
+    this.bigSean.style.width = '50%';
+
+    this.animateVision(this.bigSean);
+  }
+
+  createLilWayne() {
+    this.lilWayne = this.makeVision('lilwayne');
+
+    this.lilWayne.style.left = '30px';
+    this.lilWayne.style.top = '8%';
+    this.lilWayne.style.height = '70%';
+
+    this.animateVision(this.lilWayne);
   }
 
   /// Vision Utility
@@ -292,6 +280,17 @@ export class GodIsAMan extends ShaneScene {
     var vision = this.makeVideo(this.videoBase + name);
     this.stylizeVision(vision);
     return vision;
+  }
+
+  animateVision(vision) {
+    vision.style.opacity = 0;
+    vision.play();
+
+    $(vision).animate({opacity: 0.8}, kt.randInt(4444, 6666));
+
+    setTimeout(() => {
+      this.destroyVision(vision);
+    }, kt.randInt(25000, 35000));
   }
 
   destroyVision(vision) {

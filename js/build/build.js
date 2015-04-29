@@ -189,6 +189,10 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
         //setTimeout(this.createBruceWillis.bind(this), 2000);
         //setTimeout(this.createGodSistene.bind(this), 2000);
         //setTimeout(this.createHulkHogan.bind(this), 2000);
+        //setTimeout(this.createLebron.bind(this), 2000);
+        //setTimeout(this.createJordan.bind(this), 2000);
+        //setTimeout(this.createBigSean.bind(this), 2000);
+        setTimeout(this.createLilWayne.bind(this), 2000);
 
         setTimeout(function () {
           karaokeWithDomContainer(_this.domContainer);
@@ -318,162 +322,134 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
       /// Vision Creation
 
       value: function createVin() {
-        var _this = this;
-
         this.vin = this.makeVision("vin_diesel");
 
         this.vin.style.left = "54%";
         this.vin.style.top = "100px";
         this.vin.style.width = "45%";
 
-        this.vin.style.opacity = 0;
-        this.vin.play();
-
-        $(this.vin).animate({ opacity: 0.8 }, kt.randInt(4444, 6666));
-
-        setTimeout(function () {
-          _this.destroyVision(_this.vin);
-        }, kt.randInt(25000, 35000));
+        this.animateVision(this.vin);
       }
     },
     createWhitey: {
       value: function createWhitey() {
-        var _this = this;
-
         this.whitey = this.makeVision("whitey");
 
         this.whitey.style.left = "60px";
         this.whitey.style.bottom = "40px";
         this.whitey.style.width = "45%";
 
-        this.whitey.style.opacity = 0;
-        this.whitey.play();
-
-        $(this.whitey).animate({ opacity: 0.8 }, kt.randInt(4444, 6666));
-
-        setTimeout(function () {
-          _this.destroyVision(_this.whitey);
-        }, kt.randInt(25000, 35000));
+        this.animateVision(this.whitey);
       }
     },
     createPapaJohn: {
       value: function createPapaJohn() {
-        var _this = this;
-
         this.papaJohn = this.makeVision("papajohn");
 
         this.papaJohn.style.left = "25%";
         this.papaJohn.style.top = "0px";
         this.papaJohn.style.width = "50%";
 
-        this.papaJohn.style.opacity = 0;
-        this.papaJohn.play();
-
-        $(this.papaJohn).animate({ opacity: 0.8 }, kt.randInt(4444, 6666));
-
-        setTimeout(function () {
-          _this.destroyVision(_this.papaJohn);
-        }, kt.randInt(25000, 35000));
+        this.animateVision(this.papaJohn);
       }
     },
     createGodManVideo: {
       value: function createGodManVideo() {
-        var _this = this;
-
         this.godMan = this.makeVision("godmanvideo");
 
         this.godMan.style.left = "25%";
         this.godMan.style.top = "40px";
         this.godMan.style.width = "50%";
 
-        this.godMan.style.opacity = 0;
-        this.godMan.play();
-
-        $(this.godMan).animate({ opacity: 0.8 }, kt.randInt(4444, 6666));
-
-        setTimeout(function () {
-          _this.destroyVision(_this.godMan);
-        }, kt.randInt(25000, 35000));
+        this.animateVision(this.godMan);
       }
     },
     createJohnCena: {
       value: function createJohnCena() {
-        var _this = this;
-
         this.johnCena = this.makeVision("johncena");
 
         this.johnCena.style.left = "25%";
         this.johnCena.style.top = "40px";
         this.johnCena.style.width = "50%";
 
-        this.johnCena.style.opacity = 0;
-        this.johnCena.play();
-
-        $(this.johnCena).animate({ opacity: 0.8 }, kt.randInt(4444, 6666));
-
-        setTimeout(function () {
-          _this.destroyVision(_this.johnCena);
-        }, kt.randInt(25000, 35000));
+        this.animateVision(this.johnCena);
       }
     },
     createBruceWillis: {
       value: function createBruceWillis() {
-        var _this = this;
-
         this.bruceWillis = this.makeVision("brucewillis");
 
         this.bruceWillis.style.left = "25%";
         this.bruceWillis.style.top = "40px";
         this.bruceWillis.style.width = "50%";
 
-        this.bruceWillis.style.opacity = 0;
-        this.bruceWillis.play();
-
-        $(this.bruceWillis).animate({ opacity: 0.8 }, kt.randInt(4444, 6666));
-
-        setTimeout(function () {
-          _this.destroyVision(_this.bruceWillis);
-        }, kt.randInt(25000, 35000));
+        this.animateVision(this.bruceWillis);
       }
     },
     createGodSistene: {
       value: function createGodSistene() {
-        var _this = this;
-
         this.godSistene = this.makeVision("godsistene");
 
         this.godSistene.style.left = "25%";
         this.godSistene.style.top = "40px";
         this.godSistene.style.width = "50%";
 
-        this.godSistene.style.opacity = 0;
-        this.godSistene.play();
-
-        $(this.godSistene).animate({ opacity: 0.8 }, kt.randInt(4444, 6666));
-
-        setTimeout(function () {
-          _this.destroyVision(_this.godSistene);
-        }, kt.randInt(25000, 35000));
+        this.animateVision(this.godSistene);
       }
     },
     createHulkHogan: {
       value: function createHulkHogan() {
-        var _this = this;
-
         this.hulkHogan = this.makeVision("hulkhogan");
 
         this.hulkHogan.style.left = "25%";
         this.hulkHogan.style.top = "40px";
         this.hulkHogan.style.width = "50%";
 
-        this.hulkHogan.style.opacity = 0;
-        this.hulkHogan.play();
+        this.animateVision(this.hulkHogan);
+      }
+    },
+    createLebron: {
+      value: function createLebron() {
+        this.lebron = this.makeVision("lebron");
 
-        $(this.hulkHogan).animate({ opacity: 0.8 }, kt.randInt(4444, 6666));
+        this.lebron.style.left = "25%";
+        this.lebron.style.top = "40px";
+        this.lebron.style.width = "50%";
 
-        setTimeout(function () {
-          _this.destroyVision(_this.hulkHogan);
-        }, kt.randInt(25000, 35000));
+        this.animateVision(this.lebron);
+      }
+    },
+    createJordan: {
+      value: function createJordan() {
+        this.jordan = this.makeVision("jordan");
+
+        this.jordan.style.left = "25%";
+        this.jordan.style.top = "40px";
+        this.jordan.style.width = "50%";
+
+        this.animateVision(this.jordan);
+      }
+    },
+    createBigSean: {
+      value: function createBigSean() {
+        this.bigSean = this.makeVision("bigsean");
+
+        this.bigSean.style.left = "25%";
+        this.bigSean.style.top = "40px";
+        this.bigSean.style.width = "50%";
+
+        this.animateVision(this.bigSean);
+      }
+    },
+    createLilWayne: {
+      value: function createLilWayne() {
+        this.lilWayne = this.makeVision("lilwayne");
+
+        this.lilWayne.style.left = "30px";
+        this.lilWayne.style.top = "8%";
+        this.lilWayne.style.height = "70%";
+
+        this.animateVision(this.lilWayne);
       }
     },
     stylizeVision: {
@@ -489,6 +465,20 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
         var vision = this.makeVideo(this.videoBase + name);
         this.stylizeVision(vision);
         return vision;
+      }
+    },
+    animateVision: {
+      value: function animateVision(vision) {
+        var _this = this;
+
+        vision.style.opacity = 0;
+        vision.play();
+
+        $(vision).animate({ opacity: 0.8 }, kt.randInt(4444, 6666));
+
+        setTimeout(function () {
+          _this.destroyVision(vision);
+        }, kt.randInt(25000, 35000));
       }
     },
     destroyVision: {
