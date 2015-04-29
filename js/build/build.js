@@ -580,14 +580,40 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
   _createClass(LiveAtJJs, {
     enter: {
       value: function enter() {
+        var _this = this;
+
         _get(Object.getPrototypeOf(LiveAtJJs.prototype), "enter", this).call(this);
 
+        this.renderer.setClearColor(0);
+
+        this.curtainBackdrop = this.makeImage(this.imageBase + "curtain_backdrop.jpg");
+        this.curtainBackdrop.css("max-height", "666px");
+        this.curtainBackdrop.css("left", "50%");
+        this.curtainBackdrop.css("top", "10px");
+        setTimeout(function () {
+          _this.resize();
+        }, 500);
+
         this.dvd = this.makeVideo(this.videoBase + "liveatjjs");
+        this.dvd.style.height = "365px";
+        this.dvd.style.top = "135px";
+        this.dvd.style.left = "50%";
+        $(this.dvd).css("box-shadow", "10px 10px 30px 30px rgba(0, 0, 0, 0.8)");
 
-        this.curtainBackdrop = this.makeImage("curtain_backdrop.jpg");
+        this.leftCurtain = this.makeCurtain("left_curtain.jpg");
+        this.leftCurtain.css("left", "0px");
 
-        this.leftCurtain = this.makeImage("left_curtain.jpg");
-        this.rightCurtain = this.makeImage("right_curtain.jpg");
+        this.rightCurtain = this.makeCurtain("right_curtain.jpg");
+        this.rightCurtain.css("right", "0px");
+
+        setTimeout(this.animateCurtains.bind(this), 2000);
+      }
+    },
+    exit: {
+      value: function exit() {
+        _get(Object.getPrototypeOf(LiveAtJJs.prototype), "exit", this).call(this);
+
+        this.renderer.setClearColor(16777215);
       }
     },
     createTalisman: {
@@ -598,14 +624,26 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
         return talisman;
       }
     },
-    makeImage: {
-      value: function makeImage(name) {
-        var img = $("img src=\"" + this.imageBase + name + "\"");
+    resize: {
+      value: function resize() {
+        var curtainWidth = this.curtainBackdrop.width();
+        this.curtainBackdrop.css("margin-left", -curtainWidth / 2 + "px");
 
-        img.css("position", "absolute");
-
-        this.domContainer.append(img);
-        return img;
+        var dvdWidth = $(this.dvd).width();
+        this.dvd.style.marginLeft = -dvdWidth / 2 + "px";
+      }
+    },
+    makeCurtain: {
+      value: function makeCurtain(name) {
+        var curtain = this.makeImage(this.imageBase + name);
+        curtain.css("width", "50%");
+        return curtain;
+      }
+    },
+    animateCurtains: {
+      value: function animateCurtains() {
+        this.leftCurtain.animate({ left: -this.leftCurtain.width() }, 11000);
+        this.rightCurtain.animate({ right: -this.rightCurtain.width() }, 11000);
       }
     }
   });
@@ -1343,8 +1381,6 @@ var Talisman = require("./talisman.es6").Talisman;
 
 var ShaneScene = exports.ShaneScene = (function () {
   function ShaneScene(renderer, camera, scene, options) {
-    var _this = this;
-
     _classCallCheck(this, ShaneScene);
 
     this.renderer = renderer;
@@ -1359,9 +1395,8 @@ var ShaneScene = exports.ShaneScene = (function () {
 
     this.domContainer = $("body");
 
-    $("body").click(function () {
-      _this.click();
-    });
+    $("body").click(this.click.bind(this));
+    $(window).resize(this.resize.bind(this));
 
     this.isLive = true;
   }
@@ -1390,8 +1425,18 @@ var ShaneScene = exports.ShaneScene = (function () {
         }
       }
     },
+    iWantOut: {
+      value: function iWantOut() {
+        if (this.exitCallback) {
+          this.exitCallback();
+        }
+      }
+    },
     click: {
       value: function click() {}
+    },
+    resize: {
+      value: function resize() {}
     },
     createTalisman: {
 
@@ -1433,6 +1478,15 @@ var ShaneScene = exports.ShaneScene = (function () {
         this.domContainer.append(video);
 
         return video;
+      }
+    },
+    makeImage: {
+      value: function makeImage(basedFilename) {
+        var img = $("<img src=\"" + basedFilename + "\" class=\"image-overlay\"/>");
+
+        this.domContainer.append(img);
+
+        return img;
       }
     }
   });

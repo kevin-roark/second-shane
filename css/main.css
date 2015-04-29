@@ -31,7 +31,7 @@ body {
   z-index: 999;
 }
 
-.video-overlay {
+.video-overlay, .image-overlay {
   position: fixed;
   background-color: black;
   z-index: 200;

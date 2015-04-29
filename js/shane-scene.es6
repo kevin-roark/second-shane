@@ -17,7 +17,8 @@ export class ShaneScene {
 
     this.domContainer = $('body');
 
-    $('body').click(() => {this.click();});
+    $('body').click(this.click.bind(this));
+    $(window).resize(this.resize.bind(this));
 
     this.isLive = true;
   }
@@ -42,8 +43,18 @@ export class ShaneScene {
     }
   }
 
+  iWantOut() {
+    if (this.exitCallback) {
+      this.exitCallback();
+    }
+  }
+
   click() {
 
+  }
+
+  resize() {
+    
   }
 
   /// Protected overrides
@@ -82,4 +93,13 @@ export class ShaneScene {
 
     return video;
   }
+
+  makeImage(basedFilename) {
+    var img = $('<img src="' + basedFilename + '" class="image-overlay"/>');
+
+    this.domContainer.append(img);
+
+    return img;
+  }
+
 }

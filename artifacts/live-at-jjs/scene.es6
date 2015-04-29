@@ -18,12 +18,35 @@ export class LiveAtJJs extends ShaneScene {
   enter() {
     super.enter();
 
+    this.renderer.setClearColor(0x000000);
+
+    this.curtainBackdrop = this.makeImage(this.imageBase + 'curtain_backdrop.jpg');
+    this.curtainBackdrop.css('max-height', '666px');
+    this.curtainBackdrop.css('left', '50%');
+    this.curtainBackdrop.css('top', '10px');
+    setTimeout(() => {
+      this.resize();
+    }, 500);
+
     this.dvd = this.makeVideo(this.videoBase + 'liveatjjs');
+    this.dvd.style.height = '365px';
+    this.dvd.style.top = '135px';
+    this.dvd.style.left = '50%';
+    $(this.dvd).css('box-shadow', '10px 10px 30px 30px rgba(0, 0, 0, 0.8)');
 
-    this.curtainBackdrop = this.makeImage('curtain_backdrop.jpg');
+    this.leftCurtain = this.makeCurtain('left_curtain.jpg');
+    this.leftCurtain.css('left', '0px');
 
-    this.leftCurtain = this.makeImage('left_curtain.jpg');
-    this.rightCurtain = this.makeImage('right_curtain.jpg');
+    this.rightCurtain = this.makeCurtain('right_curtain.jpg');
+    this.rightCurtain.css('right', '0px');
+
+    setTimeout(this.animateCurtains.bind(this), 2000);
+  }
+
+  exit() {
+    super.exit();
+
+    this.renderer.setClearColor(0xffffff);
   }
 
   createTalisman() {
@@ -33,13 +56,23 @@ export class LiveAtJJs extends ShaneScene {
     return talisman;
   }
 
-  makeImage(name) {
-    var img = $('img src="' + this.imageBase + name + '"');
+  resize() {
+    var curtainWidth = this.curtainBackdrop.width();
+    this.curtainBackdrop.css('margin-left', (-curtainWidth / 2) + 'px');
 
-    img.css('position', 'absolute');
+    var dvdWidth = $(this.dvd).width();
+    this.dvd.style.marginLeft = (-dvdWidth / 2) + 'px';
+  }
 
-    this.domContainer.append(img);
-    return img;
+  makeCurtain(name) {
+    var curtain = this.makeImage(this.imageBase + name);
+    curtain.css('width', '50%');
+    return curtain;
+  }
+
+  animateCurtains() {
+    this.leftCurtain.animate({left: -this.leftCurtain.width()}, 11000);
+    this.rightCurtain.animate({right: -this.rightCurtain.width()}, 11000);
   }
 
 }
