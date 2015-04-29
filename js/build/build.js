@@ -204,8 +204,8 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
 
     _get(Object.getPrototypeOf(GodIsAMan.prototype), "constructor", this).call(this, renderer, camera, scene, options);
 
-    this.videoBase = (this.isLive ? web.liveBase.godIsAMan : web.webBase.godIsAMan) + "video/";
-    this.imageBase = (this.isLive ? web.liveBase.godIsAMan : web.webBase.godIsAMan) + "images/";
+    this.videoBase = (this.isLive ? web.godIsAMan.live : web.godIsAMan.web) + "video/";
+    this.imageBase = (this.isLive ? web.godIsAMan.live : web.godIsAMan.web) + "images/";
   }
 
   _inherits(GodIsAMan, _ShaneScene);
@@ -557,6 +557,9 @@ var _inherits = function (subClass, superClass) { if (typeof superClass !== "fun
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
 var THREE = require("three");
+var $ = require("jquery");
+
+var web = require("../../js/web");
 
 var Talisman = require("../../js/talisman.es6").Talisman;
 
@@ -567,6 +570,9 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
     _classCallCheck(this, LiveAtJJs);
 
     _get(Object.getPrototypeOf(LiveAtJJs.prototype), "constructor", this).call(this, renderer, camera, scene, options);
+
+    this.videoBase = (this.isLive ? web.godIsAMan.live : web.godIsAMan.web) + "video/";
+    this.imageBase = (this.isLive ? web.godIsAMan.live : web.godIsAMan.web) + "images/";
   }
 
   _inherits(LiveAtJJs, _ShaneScene);
@@ -574,24 +580,32 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
   _createClass(LiveAtJJs, {
     enter: {
       value: function enter() {
-        var _this = this;
-
         _get(Object.getPrototypeOf(LiveAtJJs.prototype), "enter", this).call(this);
 
-        console.log("dying in 3000");
-        setTimeout(function () {
-          if (_this.exitCallback) {
-            _this.exitCallback(_this);
-          }
-        }, 3000);
+        this.dvd = this.makeVideo(this.videoBase + "liveatjjs");
+
+        this.curtainBackdrop = this.makeImage("curtain_backdrop.jpg");
+
+        this.leftCurtain = this.makeImage("left_curtain.jpg");
+        this.rightCurtain = this.makeImage("right_curtain.jpg");
       }
     },
     createTalisman: {
       value: function createTalisman() {
         var talisman = new Talisman({
-          position: new THREE.Vector3(0, 0, -50)
+          position: new THREE.Vector3(0, 0, -40)
         });
         return talisman;
+      }
+    },
+    makeImage: {
+      value: function makeImage(name) {
+        var img = $("img src=\"" + this.imageBase + name + "\"");
+
+        img.css("position", "absolute");
+
+        this.domContainer.append(img);
+        return img;
       }
     }
   });
@@ -603,7 +617,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../js/shane-scene.es6":9,"../../js/talisman.es6":10,"three":17}],4:[function(require,module,exports){
+},{"../../js/shane-scene.es6":9,"../../js/talisman.es6":10,"../../js/web":14,"jquery":15,"three":17}],4:[function(require,module,exports){
 "use strict";
 
 /**
@@ -1800,14 +1814,20 @@ module.exports.blocker = function (size) {
 },{"three":17}],14:[function(require,module,exports){
 "use strict";
 
-module.exports.liveBase = {
-  asmr: "http://localhost:5555/",
-  godIsAMan: "http://localhost:5555/"
+module.exports.godIsAMan = {
+  web: "http://kevin-roark.github.io/second-shane-god-man/",
+  live: "http://localhost:5555/"
 };
 
-module.exports.webBase = {
-  asmr: "http://kevin-roark.github.io/second-shane-asmr/",
-  godIsAMan: "http://kevin-roark.github.io/second-shane-god-man/" };
+module.exports.asmr = {
+  web: "http://kevin-roark.github.io/second-shane-asmr/",
+  live: "http://localhost:5555/"
+};
+
+module.exports.liveAtJJs = {
+  web: "http://kevin-roark.github.io/second-shane-live-at-jjs/",
+  live: "http://localhost:5555/"
+};
 
 },{}],15:[function(require,module,exports){
 /*!

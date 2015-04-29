@@ -14,8 +14,8 @@ export class GodIsAMan extends ShaneScene {
   constructor(renderer, camera, scene, options) {
     super(renderer, camera, scene, options);
 
-    this.videoBase = (this.isLive? web.liveBase.godIsAMan : web.webBase.godIsAMan) + 'video/';
-    this.imageBase = (this.isLive? web.liveBase.godIsAMan : web.webBase.godIsAMan) + 'images/';
+    this.videoBase = (this.isLive? web.godIsAMan.live : web.godIsAMan.web) + 'video/';
+    this.imageBase = (this.isLive? web.godIsAMan.live : web.godIsAMan.web) + 'images/';
   }
 
   enter() {
