@@ -105,7 +105,7 @@ ShaneMesh.prototype.addTo = function(scene, callback) {
   });
 };
 
-ShaneMesh.prototype.render = function() {
+ShaneMesh.prototype.update = function() {
   if (this.twitching) {
     this.twitch(this.twitchIntensity || 1);
   }

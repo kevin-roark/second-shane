@@ -13,8 +13,6 @@ export class ShaneScene {
     this.talisman = this.createTalisman();
     this.talisman.addTo(scene);
 
-    this.camera.position.set(0, 0, 0);
-
     this.domContainer = $('body');
 
     $('body').click(this.click.bind(this));
@@ -31,6 +29,9 @@ export class ShaneScene {
 
   enter() {
     this.active = true;
+
+    this.camera.position.set(0, 0, 0);
+    this.camera.rotation.x = 0; this.camera.rotation.y = 0; this.camera.rotation.z = 0;
   }
 
   exit() {
@@ -54,7 +55,7 @@ export class ShaneScene {
   }
 
   resize() {
-    
+
   }
 
   /// Protected overrides

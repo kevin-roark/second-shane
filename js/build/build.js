@@ -626,6 +626,8 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
         this.rightCurtain = this.makeCurtain("right_curtain.jpg");
         this.rightCurtain.css("right", "0px");
 
+        var firstHuman = this.makeHuman({ x: -11, z: -10, y: -5 });
+
         setTimeout(this.animateCurtains.bind(this), 2000);
       }
     },
@@ -638,11 +640,22 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
     },
     resize: {
       value: function resize() {
-        var curtainWidth = this.curtainBackdrop.width();
-        this.curtainBackdrop.css("margin-left", -curtainWidth / 2 + "px");
+        if (this.active) {
+          var curtainWidth = this.curtainBackdrop.width();
+          this.curtainBackdrop.css("margin-left", -curtainWidth / 2 + "px");
 
-        var dvdWidth = $(this.dvd).width();
-        this.dvd.style.marginLeft = -dvdWidth / 2 + "px";
+          var dvdWidth = $(this.dvd).width();
+          this.dvd.style.marginLeft = -dvdWidth / 2 + "px";
+        }
+      }
+    },
+    update: {
+      value: function update() {
+        _get(Object.getPrototypeOf(LiveAtJJs.prototype), "update", this).call(this);
+
+        for (var i = 0; i < this.humans.length; i++) {
+          this.humans[i].update();
+        }
       }
     },
     makeCurtain: {
@@ -670,10 +683,14 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
 
         var human = new ShaneMesh({
           modelName: "/js/models/male.js",
-          position: position
+          position: position,
+          scale: 0.25
         });
 
-        human.addTo(this.scene);
+        human.addTo(this.scene, function () {
+          human.twitching = true;
+          human.twitchIntensity = 0.05;
+        });
 
         this.humans.push(human);
 
@@ -1195,12 +1212,15 @@ var SecondShane = (function (_ThreeBoiler) {
           shaneScene.exit();
           _this.addSharedObjects();
           _this.camera.position.copy(_this.sharedCameraPosition);
+          _this.controls.enabled = true;
         });
       }
     },
     transitionToScene: {
       value: function transitionToScene(shaneScene) {
         var _this = this;
+
+        this.controls.enabled = false;
 
         this.sharedCameraPosition.copy(this.camera.position);
 
@@ -1509,7 +1529,7 @@ ShaneMesh.prototype.addTo = function (scene, callback) {
   });
 };
 
-ShaneMesh.prototype.render = function () {
+ShaneMesh.prototype.update = function () {
   if (this.twitching) {
     this.twitch(this.twitchIntensity || 1);
   }
@@ -1579,8 +1599,6 @@ var ShaneScene = exports.ShaneScene = (function () {
     this.talisman = this.createTalisman();
     this.talisman.addTo(scene);
 
-    this.camera.position.set(0, 0, 0);
-
     this.domContainer = $("body");
 
     $("body").click(this.click.bind(this));
@@ -1600,6 +1618,9 @@ var ShaneScene = exports.ShaneScene = (function () {
     enter: {
       value: function enter() {
         this.active = true;
+
+        this.camera.position.set(0, 0, 0);
+        this.camera.rotation.x = 0;this.camera.rotation.y = 0;this.camera.rotation.z = 0;
       }
     },
     exit: {

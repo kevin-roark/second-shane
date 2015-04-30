@@ -55,6 +55,8 @@ export class LiveAtJJs extends ShaneScene {
     this.rightCurtain = this.makeCurtain('right_curtain.jpg');
     this.rightCurtain.css('right', '0px');
 
+    var firstHuman = this.makeHuman({x: -11, z: -10, y: -5});
+
     setTimeout(this.animateCurtains.bind(this), 2000);
   }
 
@@ -65,11 +67,21 @@ export class LiveAtJJs extends ShaneScene {
   }
 
   resize() {
-    var curtainWidth = this.curtainBackdrop.width();
-    this.curtainBackdrop.css('margin-left', (-curtainWidth / 2) + 'px');
+    if (this.active) {
+      var curtainWidth = this.curtainBackdrop.width();
+      this.curtainBackdrop.css('margin-left', (-curtainWidth / 2) + 'px');
 
-    var dvdWidth = $(this.dvd).width();
-    this.dvd.style.marginLeft = (-dvdWidth / 2) + 'px';
+      var dvdWidth = $(this.dvd).width();
+      this.dvd.style.marginLeft = (-dvdWidth / 2) + 'px';
+    }
+  }
+
+  update() {
+    super.update();
+
+    for (var i = 0; i < this.humans.length; i++) {
+      this.humans[i].update();
+    }
   }
 
   /// Curtains
@@ -92,10 +104,14 @@ export class LiveAtJJs extends ShaneScene {
 
     var human = new ShaneMesh({
       modelName: '/js/models/male.js',
-      position: position
+      position: position,
+      scale: 0.25
     });
 
-    human.addTo(this.scene);
+    human.addTo(this.scene, function() {
+      human.twitching = true;
+      human.twitchIntensity = 0.05;
+    });
 
     this.humans.push(human);
 

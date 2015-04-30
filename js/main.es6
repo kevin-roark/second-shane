@@ -99,10 +99,13 @@ class SecondShane extends ThreeBoiler {
       shaneScene.exit();
       this.addSharedObjects();
       this.camera.position.copy(this.sharedCameraPosition);
+      this.controls.enabled = true;
     });
   }
 
   transitionToScene(shaneScene) {
+    this.controls.enabled = false;
+
     this.sharedCameraPosition.copy(this.camera.position);
 
     this.fadeSceneOverlay(() => {
