@@ -19,6 +19,14 @@ export class GodIsAMan extends ShaneScene {
     this.imageBase = host + 'images/';
   }
 
+  createTalisman() {
+    // TODO: make this a basketball
+    let talisman = new Talisman({
+      position: new THREE.Vector3(0, 0, -10)
+    });
+    return talisman;
+  }
+
   enter() {
     super.enter();
 
@@ -63,14 +71,6 @@ export class GodIsAMan extends ShaneScene {
     if (this.exitCallback) {
 //      this.exitCallback(this);
     }
-  }
-
-  createTalisman() {
-    // TODO: make this a cactus
-    let talisman = new Talisman({
-      position: new THREE.Vector3(0, 0, -10)
-    });
-    return talisman;
   }
 
   /// Highway Manipulation

@@ -86,7 +86,6 @@ ShaneMesh.prototype.createMesh = function(callback) {
 
 ShaneMesh.prototype.addTo = function(scene, callback) {
   var self = this;
-
   self.createMesh(function() {
     self.scaleBody(self.scale);
 
