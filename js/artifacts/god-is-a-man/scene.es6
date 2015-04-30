@@ -3,9 +3,9 @@ let THREE = require('three');
 let $ = require('jquery');
 let kt = require('kutility');
 
-let web = require('../../js/web');
-import {Talisman} from '../../js/talisman.es6';
-import {ShaneScene} from '../../js/shane-scene.es6';
+let urls = require('../../urls');
+import {Talisman} from '../../talisman.es6';
+import {ShaneScene} from '../../shane-scene.es6';
 
 import {doKaraoke} from './karaoke.es6';
 
@@ -14,8 +14,9 @@ export class GodIsAMan extends ShaneScene {
   constructor(renderer, camera, scene, options) {
     super(renderer, camera, scene, options);
 
-    this.videoBase = (this.isLive? web.godIsAMan.live : web.godIsAMan.web) + 'video/';
-    this.imageBase = (this.isLive? web.godIsAMan.live : web.godIsAMan.web) + 'images/';
+    var host = (this.isLive? urls.godIsAMan.live : urls.godIsAMan.web);
+    this.videoBase = host + 'video/';
+    this.imageBase = host + 'images/';
   }
 
   enter() {

@@ -190,11 +190,11 @@ var THREE = require("three");
 var $ = require("jquery");
 var kt = require("kutility");
 
-var web = require("../../js/web");
+var urls = require("../../urls");
 
-var Talisman = require("../../js/talisman.es6").Talisman;
+var Talisman = require("../../talisman.es6").Talisman;
 
-var ShaneScene = require("../../js/shane-scene.es6").ShaneScene;
+var ShaneScene = require("../../shane-scene.es6").ShaneScene;
 
 var doKaraoke = require("./karaoke.es6").doKaraoke;
 
@@ -204,8 +204,9 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
 
     _get(Object.getPrototypeOf(GodIsAMan.prototype), "constructor", this).call(this, renderer, camera, scene, options);
 
-    this.videoBase = (this.isLive ? web.godIsAMan.live : web.godIsAMan.web) + "video/";
-    this.imageBase = (this.isLive ? web.godIsAMan.live : web.godIsAMan.web) + "images/";
+    var host = this.isLive ? urls.godIsAMan.live : urls.godIsAMan.web;
+    this.videoBase = host + "video/";
+    this.imageBase = host + "images/";
   }
 
   _inherits(GodIsAMan, _ShaneScene);
@@ -545,7 +546,7 @@ Object.defineProperty(exports, "__esModule", {
 
 //      this.exitCallback(this);
 
-},{"../../js/shane-scene.es6":9,"../../js/talisman.es6":10,"../../js/web":14,"./karaoke.es6":1,"jquery":15,"kutility":16,"three":17}],3:[function(require,module,exports){
+},{"../../shane-scene.es6":9,"../../talisman.es6":10,"../../urls":13,"./karaoke.es6":1,"jquery":15,"kutility":16,"three":17}],3:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -559,11 +560,11 @@ var _classCallCheck = function (instance, Constructor) { if (!(instance instance
 var THREE = require("three");
 var $ = require("jquery");
 
-var web = require("../../js/web");
+var urls = require("../../urls");
 
-var Talisman = require("../../js/talisman.es6").Talisman;
+var Talisman = require("../../talisman.es6").Talisman;
 
-var ShaneScene = require("../../js/shane-scene.es6").ShaneScene;
+var ShaneScene = require("../../shane-scene.es6").ShaneScene;
 
 var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
   function LiveAtJJs(renderer, camera, scene, options) {
@@ -571,8 +572,9 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
 
     _get(Object.getPrototypeOf(LiveAtJJs.prototype), "constructor", this).call(this, renderer, camera, scene, options);
 
-    this.videoBase = (this.isLive ? web.godIsAMan.live : web.godIsAMan.web) + "video/";
-    this.imageBase = (this.isLive ? web.godIsAMan.live : web.godIsAMan.web) + "images/";
+    var host = this.isLive ? urls.liveAtJJs.live : urls.liveAtJJs.web;
+    this.videoBase = host + "video/";
+    this.imageBase = host + "images/";
   }
 
   _inherits(LiveAtJJs, _ShaneScene);
@@ -655,7 +657,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../js/shane-scene.es6":9,"../../js/talisman.es6":10,"../../js/web":14,"jquery":15,"three":17}],4:[function(require,module,exports){
+},{"../../shane-scene.es6":9,"../../talisman.es6":10,"../../urls":13,"jquery":15,"three":17}],4:[function(require,module,exports){
 "use strict";
 
 /**
@@ -1349,9 +1351,9 @@ Object.defineProperty(exports, "__esModule", {
 },{"three":17}],8:[function(require,module,exports){
 "use strict";
 
-var LiveAtJJs = require("../artifacts/live-at-jjs/scene.es6").LiveAtJJs;
+var LiveAtJJs = require("./artifacts/live-at-jjs/scene.es6").LiveAtJJs;
 
-var GodIsAMan = require("../artifacts/god-is-a-man/scene.es6").GodIsAMan;
+var GodIsAMan = require("./artifacts/god-is-a-man/scene.es6").GodIsAMan;
 
 var createShaneScenes = function (exitCallback, renderer, camera, scene) {
   var scenes = [new LiveAtJJs(renderer, camera, scene, {}), new GodIsAMan(renderer, camera, scene, {})];
@@ -1367,7 +1369,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../artifacts/god-is-a-man/scene.es6":2,"../artifacts/live-at-jjs/scene.es6":3}],9:[function(require,module,exports){
+},{"./artifacts/god-is-a-man/scene.es6":2,"./artifacts/live-at-jjs/scene.es6":3}],9:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1676,7 +1678,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"./util/skybox":13}],12:[function(require,module,exports){
+},{"./util/skybox":14}],12:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1798,6 +1800,24 @@ Object.defineProperty(exports, "__esModule", {
 },{"jquery":15,"three":17}],13:[function(require,module,exports){
 "use strict";
 
+module.exports.godIsAMan = {
+  web: "http://kevin-roark.github.io/second-shane-god-man/",
+  live: "http://localhost:5555/"
+};
+
+module.exports.asmr = {
+  web: "http://kevin-roark.github.io/second-shane-asmr/",
+  live: "http://localhost:5555/"
+};
+
+module.exports.liveAtJJs = {
+  web: "http://kevin-roark.github.io/second-shane-live-at-jjs/",
+  live: "http://localhost:5555/"
+};
+
+},{}],14:[function(require,module,exports){
+"use strict";
+
 var THREE = require("three");
 
 var girlRoomPath = "/images/girl_room.jpg";
@@ -1865,25 +1885,7 @@ module.exports.blocker = function (size) {
   return new THREE.Mesh(geometry, material);
 };
 
-},{"three":17}],14:[function(require,module,exports){
-"use strict";
-
-module.exports.godIsAMan = {
-  web: "http://kevin-roark.github.io/second-shane-god-man/",
-  live: "http://localhost:5555/"
-};
-
-module.exports.asmr = {
-  web: "http://kevin-roark.github.io/second-shane-asmr/",
-  live: "http://localhost:5555/"
-};
-
-module.exports.liveAtJJs = {
-  web: "http://kevin-roark.github.io/second-shane-live-at-jjs/",
-  live: "http://localhost:5555/"
-};
-
-},{}],15:[function(require,module,exports){
+},{"three":17}],15:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.3
  * http://jquery.com/
