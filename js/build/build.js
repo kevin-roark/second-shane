@@ -600,8 +600,6 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
       /// Overrides
 
       value: function enter() {
-        var _this = this;
-
         _get(Object.getPrototypeOf(LiveAtJJs.prototype), "enter", this).call(this);
 
         this.renderer.setClearColor(0);
@@ -612,10 +610,6 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
         this.curtainBackdrop.css("left", "50%");
         this.curtainBackdrop.css("top", "10px");
         this.curtainBackdrop.css("opacity", "0.75");
-
-        setTimeout(function () {
-          _this.resize();
-        }, 500);
 
         this.dvd = this.makeVideo(this.videoBase + "liveatjjs");
         this.dvd.style.height = "365px";
@@ -634,7 +628,12 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
           this.makeHuman({ x: x, z: -3, y: -1.5 });
         }
 
+        setTimeout(this.resize.bind(this), 500);
+        setTimeout(this.popcornTimer.bind(this), 13000);
         setTimeout(this.animateCurtains.bind(this), 2000);
+
+        var videoLength = 5 * 60 * 1000;
+        setTimeout(this.iWantOut.bind(this), videoLength);
       }
     },
     exit: {
@@ -647,8 +646,8 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
     resize: {
       value: function resize() {
         if (this.active) {
-          var curtainWidth = this.curtainBackdrop.width();
-          this.curtainBackdrop.css("margin-left", -curtainWidth / 2 + "px");
+          this.curtainWidth = this.curtainBackdrop.width();
+          this.curtainBackdrop.css("margin-left", -this.curtainWidth / 2 + "px");
 
           var dvdWidth = $(this.dvd).width();
           this.dvd.style.marginLeft = -dvdWidth / 2 + "px";
@@ -676,9 +675,44 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
     },
     animateCurtains: {
       value: function animateCurtains() {
-        var duration = 1000;
+        var duration = 12000;
         this.leftCurtain.animate({ left: -this.leftCurtain.width() }, duration);
         this.rightCurtain.animate({ right: -this.rightCurtain.width() }, duration);
+      }
+    },
+    popcornTimer: {
+
+      /// Popcorn
+
+      value: function popcornTimer() {
+        if (!this.active) {
+          return;
+        }
+
+        if (Math.random() > 0.64) {
+          this.addPopcorn();
+        }
+
+        setTimeout(this.popcornTimer.bind(this), 1600);
+      }
+    },
+    addPopcorn: {
+      value: function addPopcorn() {
+        var corn = this.makeImage(this.imageBase + "popcorn.png");
+
+        var cornWidth = Math.round(Math.random() * 100) + 20;
+        corn.css("width", cornWidth + "px");
+        corn.css("top", "-50px");
+
+        var widthSansCurtain = window.innerWidth - this.curtainWidth;
+        var left = Math.random() > 0.5;
+        var offset = 30 + Math.round(Math.random() * (widthSansCurtain / 2 - 60));
+        corn.css(left ? "left" : "right", offset + "px");
+
+        var dur = Math.round(Math.random() * 10000) + 6666;
+        corn.animate({ top: window.innerHeight + 20 + "px" }, dur, function () {
+          corn.remove();
+        });
       }
     },
     makeHuman: {

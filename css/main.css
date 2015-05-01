@@ -33,8 +33,11 @@ body {
 
 .video-overlay, .image-overlay {
   position: fixed;
-  background-color: black;
   z-index: 200;
+}
+
+.video-overlay {
+  background-color: black;
 }
 
 .full-screen-video {
