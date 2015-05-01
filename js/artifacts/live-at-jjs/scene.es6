@@ -38,7 +38,6 @@ export class LiveAtJJs extends ShaneScene {
     this.curtainBackdrop = this.makeImage(this.imageBase + 'curtain_backdrop.jpg');
     this.curtainBackdrop.css('max-height', '666px');
     //this.curtainBackdrop.css('width', '90%');
-    this.curtainBackdrop.css('left', '50%');
     this.curtainBackdrop.css('top', '10px');
     this.curtainBackdrop.css('opacity', '0.75');
 
@@ -76,7 +75,7 @@ export class LiveAtJJs extends ShaneScene {
   resize() {
     if (this.active) {
       this.curtainWidth = this.curtainBackdrop.width();
-      this.curtainBackdrop.css('margin-left', (-this.curtainWidth / 2) + 'px');
+      this.curtainBackdrop.css('left', (window.innerWidth / 2 - this.curtainWidth / 2) + 'px');
 
       var dvdWidth = $(this.dvd).width();
       this.dvd.style.marginLeft = (-dvdWidth / 2) + 'px';
@@ -129,10 +128,17 @@ export class LiveAtJJs extends ShaneScene {
     let widthSansCurtain = window.innerWidth - this.curtainWidth;
     let left = Math.random() > 0.5;
     let offset = 30 + Math.round(Math.random() * (widthSansCurtain / 2 - 60));
+
+    if (!left) {
+      offset += cornWidth;
+    }
+
+    console.log('offset: ' + offset);
+
     corn.css(left? 'left' : 'right', offset + 'px');
 
     let dur = Math.round(Math.random() * 10000) + 6666;
-    corn.animate({top: (window.innerHeight + 20) + 'px'}, dur, function() {
+    corn.animate({top: (window.innerHeight + 175) + 'px'}, dur, function() {
       corn.remove();
     });
   }
