@@ -99,8 +99,15 @@ export class ShaneScene {
     return video;
   }
 
-  makeImage(basedFilename) {
+  makeImage(basedFilename, fullscreen) {
     var img = $('<img src="' + basedFilename + '" class="image-overlay"/>');
+
+    if (fullscreen) {
+      img.css('top', '0px');
+      img.css('left', '0px');
+      img.css('width', '100%');
+      img.css('height', '100%');
+    }
 
     this.domContainer.append(img);
 

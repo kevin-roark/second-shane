@@ -175,7 +175,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"jquery":16}],2:[function(require,module,exports){
+},{"jquery":17}],2:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -546,7 +546,83 @@ Object.defineProperty(exports, "__esModule", {
 
 //      this.exitCallback(this);
 
-},{"../../shane-scene.es6":10,"../../talisman.es6":11,"../../urls":14,"./karaoke.es6":1,"jquery":16,"kutility":17,"three":18}],3:[function(require,module,exports){
+},{"../../shane-scene.es6":11,"../../talisman.es6":12,"../../urls":15,"./karaoke.es6":1,"jquery":17,"kutility":18,"three":19}],3:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+var THREE = require("three");
+var $ = require("jquery");
+
+var urls = require("../../urls");
+
+var Talisman = require("../../talisman.es6").Talisman;
+
+var ShaneScene = require("../../shane-scene.es6").ShaneScene;
+
+var ShaneMesh = require("../../shane-mesh");
+
+var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
+
+  /// Init
+
+  function iFeltTheFoot(renderer, camera, scene, options) {
+    _classCallCheck(this, iFeltTheFoot);
+
+    _get(Object.getPrototypeOf(iFeltTheFoot.prototype), "constructor", this).call(this, renderer, camera, scene, options);
+
+    var host = this.isLive ? urls.iFeltTheFoot.live : urls.iFeltTheFoot.web;
+    this.videoBase = host + "video/";
+    this.imageBase = host + "images/";
+  }
+
+  _inherits(iFeltTheFoot, _ShaneScene);
+
+  _createClass(iFeltTheFoot, {
+    createTalisman: {
+      value: function createTalisman() {
+        var talisman = new Talisman({
+          position: new THREE.Vector3(-15, 0, -10)
+        });
+        return talisman;
+      }
+    },
+    enter: {
+
+      /// Shane System
+
+      value: function enter() {
+        _get(Object.getPrototypeOf(iFeltTheFoot.prototype), "enter", this).call(this);
+
+        this.marble = this.makeImage(this.imageBase + "marble.jpg", true);
+      }
+    },
+    exit: {
+      value: function exit() {
+        _get(Object.getPrototypeOf(iFeltTheFoot.prototype), "exit", this).call(this);
+      }
+    },
+    update: {
+      value: function update() {
+        _get(Object.getPrototypeOf(iFeltTheFoot.prototype), "update", this).call(this);
+      }
+    }
+  });
+
+  return iFeltTheFoot;
+})(ShaneScene);
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+},{"../../shane-mesh":10,"../../shane-scene.es6":11,"../../talisman.es6":12,"../../urls":15,"jquery":17,"three":19}],4:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -757,7 +833,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../shane-mesh":9,"../../shane-scene.es6":10,"../../talisman.es6":11,"../../urls":14,"jquery":16,"three":18}],4:[function(require,module,exports){
+},{"../../shane-mesh":10,"../../shane-scene.es6":11,"../../talisman.es6":12,"../../urls":15,"jquery":17,"three":19}],5:[function(require,module,exports){
 "use strict";
 
 /**
@@ -1032,7 +1108,7 @@ module.exports = function (camera, options) {
 	this.updateRotationVector();
 };
 
-},{"./pointerlocker":5,"three":18}],5:[function(require,module,exports){
+},{"./pointerlocker":6,"three":19}],6:[function(require,module,exports){
 "use strict";
 
 module.exports = function () {
@@ -1132,7 +1208,7 @@ module.exports = function () {
   }
 };
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1335,7 +1411,7 @@ $(function () {
   shane.activate();
 });
 
-},{"./controls/fly-controls":4,"./one-offs.es6":7,"./scenes.es6":8,"./theme.es6":12,"./three-boiler.es6":13,"jquery":16,"three":18}],7:[function(require,module,exports){
+},{"./controls/fly-controls":5,"./one-offs.es6":8,"./scenes.es6":9,"./theme.es6":13,"./three-boiler.es6":14,"jquery":17,"three":19}],8:[function(require,module,exports){
 "use strict";
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
@@ -1451,15 +1527,17 @@ Object.defineProperty(exports, "__esModule", {
 
 // override for frame-ly updates
 
-},{"three":18}],8:[function(require,module,exports){
+},{"three":19}],9:[function(require,module,exports){
 "use strict";
 
 var LiveAtJJs = require("./artifacts/live-at-jjs/scene.es6").LiveAtJJs;
 
 var GodIsAMan = require("./artifacts/god-is-a-man/scene.es6").GodIsAMan;
 
+var iFeltTheFoot = require("./artifacts/i-felt-the-foot/scene.es6").iFeltTheFoot;
+
 var createShaneScenes = function (exitCallback, renderer, camera, scene) {
-  var scenes = [new LiveAtJJs(renderer, camera, scene, {}), new GodIsAMan(renderer, camera, scene, {})];
+  var scenes = [new LiveAtJJs(renderer, camera, scene, {}), new GodIsAMan(renderer, camera, scene, {}), new iFeltTheFoot(renderer, camera, scene, {})];
 
   scenes.forEach(function (scene) {
     scene.exitCallback = exitCallback;
@@ -1472,7 +1550,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"./artifacts/god-is-a-man/scene.es6":2,"./artifacts/live-at-jjs/scene.es6":3}],9:[function(require,module,exports){
+},{"./artifacts/god-is-a-man/scene.es6":2,"./artifacts/i-felt-the-foot/scene.es6":3,"./artifacts/live-at-jjs/scene.es6":4}],10:[function(require,module,exports){
 "use strict";
 
 var THREE = require("three");
@@ -1641,7 +1719,7 @@ ShaneMesh.prototype.fallToFloor = function (threshold, speed) {
 ShaneMesh.prototype.additionalInit = function () {};
 ShaneMesh.prototype.additionalRender = function () {};
 
-},{"kutility":17,"three":18}],10:[function(require,module,exports){
+},{"kutility":18,"three":19}],11:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1759,8 +1837,15 @@ var ShaneScene = exports.ShaneScene = (function () {
       }
     },
     makeImage: {
-      value: function makeImage(basedFilename) {
+      value: function makeImage(basedFilename, fullscreen) {
         var img = $("<img src=\"" + basedFilename + "\" class=\"image-overlay\"/>");
+
+        if (fullscreen) {
+          img.css("top", "0px");
+          img.css("left", "0px");
+          img.css("width", "100%");
+          img.css("height", "100%");
+        }
 
         this.domContainer.append(img);
 
@@ -1776,7 +1861,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"./talisman.es6":11,"jquery":16,"three":18}],11:[function(require,module,exports){
+},{"./talisman.es6":12,"jquery":17,"three":19}],12:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1908,7 +1993,7 @@ Object.defineProperty(exports, "__esModule", {
 
 // do stuff with mesh
 
-},{"three":18}],12:[function(require,module,exports){
+},{"three":19}],13:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1954,7 +2039,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"./util/skybox":15}],13:[function(require,module,exports){
+},{"./util/skybox":16}],14:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2073,7 +2158,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"jquery":16,"three":18}],14:[function(require,module,exports){
+},{"jquery":17,"three":19}],15:[function(require,module,exports){
 "use strict";
 
 module.exports.godIsAMan = {
@@ -2091,7 +2176,12 @@ module.exports.liveAtJJs = {
   live: "http://localhost:5555/"
 };
 
-},{}],15:[function(require,module,exports){
+module.exports.iFeltTheFoot = {
+  web: "http://kevin-roark.github.io/second-shane-i-felt-the-foot/",
+  live: "http://localhost:5555/"
+};
+
+},{}],16:[function(require,module,exports){
 "use strict";
 
 var THREE = require("three");
@@ -2161,7 +2251,7 @@ module.exports.blocker = function (size) {
   return new THREE.Mesh(geometry, material);
 };
 
-},{"three":18}],16:[function(require,module,exports){
+},{"three":19}],17:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.3
  * http://jquery.com/
@@ -11368,7 +11458,7 @@ return jQuery;
 
 }));
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 
 /* export something */
 module.exports = new Kutility();
@@ -11942,7 +12032,7 @@ Kutility.prototype.blur = function(el, x) {
   this.setFilter(el, cf + f);
 };
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 // File:src/Three.js
 
 /**
@@ -46488,4 +46578,4 @@ THREE.MorphBlendMesh.prototype.update = function ( delta ) {
 
 };
 
-},{}]},{},[6]);
+},{}]},{},[7]);

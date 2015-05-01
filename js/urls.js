@@ -13,3 +13,8 @@ module.exports.liveAtJJs = {
   web: 'http://kevin-roark.github.io/second-shane-live-at-jjs/',
   live: 'http://localhost:5555/'
 };
+
+module.exports.iFeltTheFoot = {
+  web: 'http://kevin-roark.github.io/second-shane-i-felt-the-foot/',
+  live: 'http://localhost:5555/'
+};
