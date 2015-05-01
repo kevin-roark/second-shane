@@ -590,7 +590,7 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
     createTalisman: {
       value: function createTalisman() {
         var talisman = new Talisman({
-          position: new THREE.Vector3(0, 0, -40)
+          position: new THREE.Vector3(0, 0, -15)
         });
         return talisman;
       }
@@ -608,8 +608,11 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
 
         this.curtainBackdrop = this.makeImage(this.imageBase + "curtain_backdrop.jpg");
         this.curtainBackdrop.css("max-height", "666px");
+        //this.curtainBackdrop.css('width', '90%');
         this.curtainBackdrop.css("left", "50%");
         this.curtainBackdrop.css("top", "10px");
+        this.curtainBackdrop.css("opacity", "0.75");
+
         setTimeout(function () {
           _this.resize();
         }, 500);
@@ -626,7 +629,10 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
         this.rightCurtain = this.makeCurtain("right_curtain.jpg");
         this.rightCurtain.css("right", "0px");
 
-        var firstHuman = this.makeHuman({ x: -11, z: -10, y: -5 });
+        for (var i = 0; i < 10; i++) {
+          var x = -2.5 + 0.5 * i;
+          this.makeHuman({ x: x, z: -3, y: -1.5 });
+        }
 
         setTimeout(this.animateCurtains.bind(this), 2000);
       }
@@ -670,8 +676,9 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
     },
     animateCurtains: {
       value: function animateCurtains() {
-        this.leftCurtain.animate({ left: -this.leftCurtain.width() }, 11000);
-        this.rightCurtain.animate({ right: -this.rightCurtain.width() }, 11000);
+        var duration = 1000;
+        this.leftCurtain.animate({ left: -this.leftCurtain.width() }, duration);
+        this.rightCurtain.animate({ right: -this.rightCurtain.width() }, duration);
       }
     },
     makeHuman: {
@@ -684,12 +691,16 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
         var human = new ShaneMesh({
           modelName: "/js/models/male.js",
           position: position,
-          scale: 0.25
+          scale: 0.1
         });
 
         human.addTo(this.scene, function () {
           human.twitching = true;
-          human.twitchIntensity = 0.05;
+          human.twitchIntensity = 0.015;
+
+          human.rotate(0, Math.PI, 0);
+
+          human.setMeshColor(16777215);
         });
 
         this.humans.push(human);
@@ -1529,6 +1540,21 @@ ShaneMesh.prototype.addTo = function (scene, callback) {
   });
 };
 
+ShaneMesh.prototype.setMeshColor = function (hex) {
+  if (!this.mesh) {
+    return;
+  }
+
+  var materials = this.mesh.material.materials || [this.mesh.material];
+  for (var i = 0; i < materials.length; i++) {
+    var mat = materials[i];
+    mat.color = new THREE.Color(hex);
+    mat.ambient = new THREE.Color(hex);
+    mat.emissive = new THREE.Color(hex);
+    mat.needsUpdate = true;
+  }
+};
+
 ShaneMesh.prototype.update = function () {
   if (this.twitching) {
     this.twitch(this.twitchIntensity || 1);
@@ -1640,6 +1666,9 @@ var ShaneScene = exports.ShaneScene = (function () {
           this.exitCallback();
         }
       }
+    },
+    addMesh: {
+      value: function addMesh() {}
     },
     click: {
       value: function click() {}

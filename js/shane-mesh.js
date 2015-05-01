@@ -105,6 +105,21 @@ ShaneMesh.prototype.addTo = function(scene, callback) {
   });
 };
 
+ShaneMesh.prototype.setMeshColor = function(hex) {
+  if (!this.mesh) {
+    return;
+  }
+
+  var materials = this.mesh.material.materials || [this.mesh.material];
+  for (var i = 0; i < materials.length; i++) {
+    var mat = materials[i];
+    mat.color = new THREE.Color(hex);
+    mat.ambient = new THREE.Color(hex);
+    mat.emissive = new THREE.Color(hex);
+    mat.needsUpdate = true;
+  }
+};
+
 ShaneMesh.prototype.update = function() {
   if (this.twitching) {
     this.twitch(this.twitchIntensity || 1);

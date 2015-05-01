@@ -23,7 +23,7 @@ export class LiveAtJJs extends ShaneScene {
 
   createTalisman() {
     let talisman = new Talisman({
-      position: new THREE.Vector3(0, 0, -40)
+      position: new THREE.Vector3(0, 0, -15)
     });
     return talisman;
   }
@@ -37,8 +37,11 @@ export class LiveAtJJs extends ShaneScene {
 
     this.curtainBackdrop = this.makeImage(this.imageBase + 'curtain_backdrop.jpg');
     this.curtainBackdrop.css('max-height', '666px');
+    //this.curtainBackdrop.css('width', '90%');
     this.curtainBackdrop.css('left', '50%');
     this.curtainBackdrop.css('top', '10px');
+    this.curtainBackdrop.css('opacity', '0.75');
+
     setTimeout(() => {
       this.resize();
     }, 500);
@@ -55,7 +58,10 @@ export class LiveAtJJs extends ShaneScene {
     this.rightCurtain = this.makeCurtain('right_curtain.jpg');
     this.rightCurtain.css('right', '0px');
 
-    var firstHuman = this.makeHuman({x: -11, z: -10, y: -5});
+    for (let i = 0; i < 10; i++) {
+      var x = -2.5 + (0.5 * i);
+      this.makeHuman({x: x, z: -3, y: -1.5});
+    }
 
     setTimeout(this.animateCurtains.bind(this), 2000);
   }
@@ -93,8 +99,9 @@ export class LiveAtJJs extends ShaneScene {
   }
 
   animateCurtains() {
-    this.leftCurtain.animate({left: -this.leftCurtain.width()}, 11000);
-    this.rightCurtain.animate({right: -this.rightCurtain.width()}, 11000);
+    var duration = 1000;
+    this.leftCurtain.animate({left: -this.leftCurtain.width()}, duration);
+    this.rightCurtain.animate({right: -this.rightCurtain.width()}, duration);
   }
 
   /// Humans
@@ -105,12 +112,16 @@ export class LiveAtJJs extends ShaneScene {
     var human = new ShaneMesh({
       modelName: '/js/models/male.js',
       position: position,
-      scale: 0.25
+      scale: 0.1
     });
 
     human.addTo(this.scene, function() {
       human.twitching = true;
-      human.twitchIntensity = 0.05;
+      human.twitchIntensity = 0.015;
+
+      human.rotate(0, Math.PI, 0);
+
+      human.setMeshColor(0xffffff);
     });
 
     this.humans.push(human);

@@ -50,6 +50,10 @@ export class ShaneScene {
     }
   }
 
+  addMesh() {
+
+  }
+
   click() {
 
   }
