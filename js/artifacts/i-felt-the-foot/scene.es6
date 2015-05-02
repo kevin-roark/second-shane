@@ -50,6 +50,8 @@ export class iFeltTheFoot extends ShaneScene {
 
     this.renderer.setClearColor(0xffffff, 1);
 
+    this.marble.remove();
+
     this.scene.remove(this.spotLight);
   }
 
@@ -126,7 +128,7 @@ export class iFeltTheFoot extends ShaneScene {
     $(video).remove();
   }
 
-  /// Models
+  /// Body Models
 
   doFootModel() {
     this.footModel = new ShaneMesh({
