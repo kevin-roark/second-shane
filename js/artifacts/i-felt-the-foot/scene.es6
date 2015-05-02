@@ -36,10 +36,13 @@ export class iFeltTheFoot extends ShaneScene {
 
     this.marble = this.makeImage(this.imageBase + 'marble.jpg', true, -10);
 
+    this.makeSpotlight();
+
     setTimeout(this.doFootMassage.bind(this), 6666);
     setTimeout(this.doRotatingFoot.bind(this), 38666);
     setTimeout(this.doFootBone.bind(this), 60666);
     setTimeout(this.doFootModel.bind(this), 86666);
+    setTimeout(this.doCadFootImage.bind(this), 1000);
   }
 
   exit() {
@@ -47,9 +50,7 @@ export class iFeltTheFoot extends ShaneScene {
 
     this.renderer.setClearColor(0xffffff, 1);
 
-    if (this.spotLight) {
-      this.scene.remove(this.spotLight);
-    }
+    this.scene.remove(this.spotLight);
   }
 
   update() {
@@ -58,6 +59,11 @@ export class iFeltTheFoot extends ShaneScene {
     if (this.footModel) {
       this.footModel.rotate(0, 0.02, 0);
       this.footModel.update();
+    }
+
+    if (this.cadFootImage) {
+      this.cadFootImage.__rotation += 1;
+      kt.rotate3dy(this.cadFootImage, this.cadFootImage.__rotation);
     }
   }
 
@@ -120,7 +126,7 @@ export class iFeltTheFoot extends ShaneScene {
     $(video).remove();
   }
 
-  /// Body Models
+  /// Models
 
   doFootModel() {
     this.footModel = new ShaneMesh({
@@ -132,7 +138,6 @@ export class iFeltTheFoot extends ShaneScene {
       // human.twitching = true;
       // human.twitchIntensity = 0.015;
 
-      this.makeSpotlight();
       this.spotLight.target = this.footModel.mesh;
 
       this.footModel.mesh.castShadow = true;
@@ -155,6 +160,26 @@ export class iFeltTheFoot extends ShaneScene {
 
     this.scene.add(spotLight);
     this.spotLight = spotLight;
+  }
+
+  /// Body Images
+
+  doCadFootImage() {
+    this.cadFootImage = this.makeBodyImage('cad_foot.jpg');
+
+    this.cadFootImage.css('bottom', '40px');
+    this.cadFootImage.css('right', '40px');
+    this.cadFootImage.css('width', '300px');
+
+    this.cadFootImage.__rotation = 0;
+  }
+
+  makeBodyImage(name) {
+    var image = this.makeImage(this.imageBase + name, false, -10);
+
+    image.css('box-shadow', '0px 0px 30px 16px rgba(0, 0, 0, 0.75)');
+
+    return image;
   }
 
 }
