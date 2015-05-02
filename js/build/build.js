@@ -559,6 +559,7 @@ var _classCallCheck = function (instance, Constructor) { if (!(instance instance
 
 var THREE = require("three");
 var $ = require("jquery");
+var kt = require("kutility");
 
 var urls = require("../../urls");
 
@@ -601,6 +602,10 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
         _get(Object.getPrototypeOf(iFeltTheFoot.prototype), "enter", this).call(this);
 
         this.marble = this.makeImage(this.imageBase + "marble.jpg", true);
+
+        setTimeout(this.doFootMassage.bind(this), 6666);
+        setTimeout(this.doRotatingFoot.bind(this), 38666);
+        setTimeout(this.doFootBone.bind(this), 60666);
       }
     },
     exit: {
@@ -612,6 +617,79 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
       value: function update() {
         _get(Object.getPrototypeOf(iFeltTheFoot.prototype), "update", this).call(this);
       }
+    },
+    doRotatingFoot: {
+
+      /// Body Videos
+
+      value: function doRotatingFoot() {
+        var _this = this;
+
+        this.rotatingFoot = this.makeBodyVideo("rotating_foot");
+
+        this.rotatingFoot.style.height = "60%";
+        this.rotatingFoot.style.right = "100px";
+        this.rotatingFoot.style.top = "15%";
+
+        $(this.rotatingFoot).hide();
+        this.rotatingFoot.play();
+        setTimeout(function () {
+          $(_this.rotatingFoot).show();
+        }, 100);
+
+        setTimeout(function () {
+          _this.removeVideo(_this.rotatingFoot);
+        }, 15666);
+      }
+    },
+    doFootMassage: {
+      value: function doFootMassage() {
+        var _this = this;
+
+        this.footMassage = this.makeBodyVideo("foot_massage");
+
+        this.footMassage.style.width = "33%";
+        this.footMassage.style.left = "16%";
+        this.footMassage.style.bottom = "200px";
+
+        this.footMassage.play();
+
+        setTimeout(function () {
+          _this.removeVideo(_this.footMassage);
+        }, 18666);
+      }
+    },
+    doFootBone: {
+      value: function doFootBone() {
+        var _this = this;
+
+        this.footBone = this.makeBodyVideo("foot_bone");
+
+        this.footBone.style.width = "40%";
+        this.footBone.style.left = "30%";
+        this.footBone.style.top = "40%";
+
+        this.footBone.play();
+
+        setTimeout(function () {
+          _this.removeVideo(_this.footBone);
+        }, 29666);
+      }
+    },
+    makeBodyVideo: {
+      value: function makeBodyVideo(name) {
+        var vid = this.makeVideo(this.videoBase + name);
+
+        $(vid).css("box-shadow", "0px 0px 30px 16px rgba(0, 0, 0, 0.75)");
+
+        return vid;
+      }
+    },
+    removeVideo: {
+      value: function removeVideo(video) {
+        video.src = "";
+        $(video).remove();
+      }
     }
   });
 
@@ -622,7 +700,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../shane-mesh":10,"../../shane-scene.es6":11,"../../talisman.es6":12,"../../urls":15,"jquery":17,"three":19}],4:[function(require,module,exports){
+},{"../../shane-mesh":10,"../../shane-scene.es6":11,"../../talisman.es6":12,"../../urls":15,"jquery":17,"kutility":18,"three":19}],4:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
