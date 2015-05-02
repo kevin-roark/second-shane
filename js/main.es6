@@ -14,7 +14,10 @@ let $sceneOverlay = $('#scene-overlay');
 
 class SecondShane extends ThreeBoiler {
   constructor() {
-    super();
+    super({
+      antialias: true,
+      alpha: true
+    });
 
     this.controls = new FlyControls(this.camera);
     this.scene.add(this.controls.getObject());

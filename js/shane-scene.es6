@@ -74,7 +74,7 @@ export class ShaneScene {
 
   /// Utility
 
-  makeVideo(basedFilename, fullscreen) {
+  makeVideo(basedFilename, fullscreen, z) {
     var video = document.createElement('video');
 
     var videoURL;
@@ -94,12 +94,16 @@ export class ShaneScene {
       $(video).addClass('video-overlay');
     }
 
+    if (z !== undefined) {
+      $(video).css('z-index', z);
+    }
+
     this.domContainer.append(video);
 
     return video;
   }
 
-  makeImage(basedFilename, fullscreen) {
+  makeImage(basedFilename, fullscreen, z) {
     var img = $('<img src="' + basedFilename + '" class="image-overlay"/>');
 
     if (fullscreen) {
@@ -107,6 +111,10 @@ export class ShaneScene {
       img.css('left', '0px');
       img.css('width', '100%');
       img.css('height', '100%');
+    }
+
+    if (z !== undefined) {
+      img.css('z-index', z);
     }
 
     this.domContainer.append(img);

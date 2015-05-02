@@ -105,6 +105,12 @@ ShaneMesh.prototype.addTo = function(scene, callback) {
   });
 };
 
+ShaneMesh.prototype.removeFrom = function(scene) {
+  if (this.mesh) {
+    scene.remove(this.mesh);
+  }
+}
+
 ShaneMesh.prototype.setMeshColor = function(hex) {
   if (!this.mesh) {
     return;

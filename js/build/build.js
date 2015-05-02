@@ -601,21 +601,35 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
       value: function enter() {
         _get(Object.getPrototypeOf(iFeltTheFoot.prototype), "enter", this).call(this);
 
-        this.marble = this.makeImage(this.imageBase + "marble.jpg", true);
+        this.renderer.setClearColor(0, 0);
+
+        this.marble = this.makeImage(this.imageBase + "marble.jpg", true, -10);
 
         setTimeout(this.doFootMassage.bind(this), 6666);
         setTimeout(this.doRotatingFoot.bind(this), 38666);
         setTimeout(this.doFootBone.bind(this), 60666);
+        setTimeout(this.doFootModel.bind(this), 86666);
       }
     },
     exit: {
       value: function exit() {
         _get(Object.getPrototypeOf(iFeltTheFoot.prototype), "exit", this).call(this);
+
+        this.renderer.setClearColor(16777215, 1);
+
+        if (this.spotLight) {
+          this.scene.remove(this.spotLight);
+        }
       }
     },
     update: {
       value: function update() {
         _get(Object.getPrototypeOf(iFeltTheFoot.prototype), "update", this).call(this);
+
+        if (this.footModel) {
+          this.footModel.rotate(0, 0.02, 0);
+          this.footModel.update();
+        }
       }
     },
     doRotatingFoot: {
@@ -678,7 +692,7 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
     },
     makeBodyVideo: {
       value: function makeBodyVideo(name) {
-        var vid = this.makeVideo(this.videoBase + name);
+        var vid = this.makeVideo(this.videoBase + name, false, -10);
 
         $(vid).css("box-shadow", "0px 0px 30px 16px rgba(0, 0, 0, 0.75)");
 
@@ -689,6 +703,48 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
       value: function removeVideo(video) {
         video.src = "";
         $(video).remove();
+      }
+    },
+    doFootModel: {
+
+      /// Body Models
+
+      value: function doFootModel() {
+        var _this = this;
+
+        this.footModel = new ShaneMesh({
+          modelName: "/js/models/good_foot.json",
+          position: new THREE.Vector3(-15, -4, -20)
+        });
+
+        this.footModel.addTo(this.scene, function () {
+          // human.twitching = true;
+          // human.twitchIntensity = 0.015;
+
+          _this.makeSpotlight();
+          _this.spotLight.target = _this.footModel.mesh;
+
+          _this.footModel.mesh.castShadow = true;
+          _this.footModel.mesh.receiveShadow = true;
+
+          //this.footModel.setMeshColor(0xff0000);
+
+          setTimeout(function () {
+            _this.footModel.removeFrom(_this.scene);
+          }, 30666);
+        });
+      }
+    },
+    makeSpotlight: {
+      value: function makeSpotlight() {
+        var spotLight = new THREE.SpotLight(16777215);
+        spotLight.position.set(-10, 200, -20);
+
+        spotLight.castShadow = true;
+        spotLight.shadowDarkness = 0.75;
+
+        this.scene.add(spotLight);
+        this.spotLight = spotLight;
       }
     }
   });
@@ -1318,7 +1374,10 @@ var SecondShane = (function (_ThreeBoiler) {
 
     _classCallCheck(this, SecondShane);
 
-    _get(Object.getPrototypeOf(SecondShane.prototype), "constructor", this).call(this);
+    _get(Object.getPrototypeOf(SecondShane.prototype), "constructor", this).call(this, {
+      antialias: true,
+      alpha: true
+    });
 
     this.controls = new FlyControls(this.camera);
     this.scene.add(this.controls.getObject());
@@ -1736,6 +1795,12 @@ ShaneMesh.prototype.addTo = function (scene, callback) {
   });
 };
 
+ShaneMesh.prototype.removeFrom = function (scene) {
+  if (this.mesh) {
+    scene.remove(this.mesh);
+  }
+};
+
 ShaneMesh.prototype.setMeshColor = function (hex) {
   if (!this.mesh) {
     return;
@@ -1889,7 +1954,7 @@ var ShaneScene = exports.ShaneScene = (function () {
 
       /// Utility
 
-      value: function makeVideo(basedFilename, fullscreen) {
+      value: function makeVideo(basedFilename, fullscreen, z) {
         var video = document.createElement("video");
 
         var videoURL;
@@ -1909,13 +1974,17 @@ var ShaneScene = exports.ShaneScene = (function () {
           $(video).addClass("video-overlay");
         }
 
+        if (z !== undefined) {
+          $(video).css("z-index", z);
+        }
+
         this.domContainer.append(video);
 
         return video;
       }
     },
     makeImage: {
-      value: function makeImage(basedFilename, fullscreen) {
+      value: function makeImage(basedFilename, fullscreen, z) {
         var img = $("<img src=\"" + basedFilename + "\" class=\"image-overlay\"/>");
 
         if (fullscreen) {
@@ -1923,6 +1992,10 @@ var ShaneScene = exports.ShaneScene = (function () {
           img.css("left", "0px");
           img.css("width", "100%");
           img.css("height", "100%");
+        }
+
+        if (z !== undefined) {
+          img.css("z-index", z);
         }
 
         this.domContainer.append(img);
@@ -2128,13 +2201,13 @@ var $ = require("jquery");
 var THREE = require("three");
 
 var ThreeBoiler = exports.ThreeBoiler = (function () {
-  function ThreeBoiler() {
+  function ThreeBoiler(rendererOptions) {
     var _this = this;
 
     _classCallCheck(this, ThreeBoiler);
 
     try {
-      this.renderer = new THREE.WebGLRenderer({ antialias: true });
+      this.renderer = new THREE.WebGLRenderer(rendererOptions);
       this.renderMode = "webgl";
     } catch (e) {
       $(".error").show();

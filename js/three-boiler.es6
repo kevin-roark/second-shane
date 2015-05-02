@@ -3,9 +3,9 @@ let $ = require('jquery');
 let THREE = require('three');
 
 export class ThreeBoiler {
-  constructor() {
+  constructor(rendererOptions) {
     try {
-      this.renderer = new THREE.WebGLRenderer({antialias: true});
+      this.renderer = new THREE.WebGLRenderer(rendererOptions);
       this.renderMode = 'webgl';
     } catch(e) {
       $('.error').show();

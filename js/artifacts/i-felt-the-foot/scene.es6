@@ -32,19 +32,33 @@ export class iFeltTheFoot extends ShaneScene {
   enter() {
     super.enter();
 
-    this.marble = this.makeImage(this.imageBase + 'marble.jpg', true);
+    this.renderer.setClearColor(0x000000, 0);
+
+    this.marble = this.makeImage(this.imageBase + 'marble.jpg', true, -10);
 
     setTimeout(this.doFootMassage.bind(this), 6666);
     setTimeout(this.doRotatingFoot.bind(this), 38666);
     setTimeout(this.doFootBone.bind(this), 60666);
+    setTimeout(this.doFootModel.bind(this), 86666);
   }
 
   exit() {
     super.exit();
+
+    this.renderer.setClearColor(0xffffff, 1);
+
+    if (this.spotLight) {
+      this.scene.remove(this.spotLight);
+    }
   }
 
   update() {
     super.update();
+
+    if (this.footModel) {
+      this.footModel.rotate(0, 0.02, 0);
+      this.footModel.update();
+    }
   }
 
   /// Body Videos
@@ -94,7 +108,7 @@ export class iFeltTheFoot extends ShaneScene {
   }
 
   makeBodyVideo(name) {
-    let vid = this.makeVideo(this.videoBase + name);
+    let vid = this.makeVideo(this.videoBase + name, false, -10);
 
     $(vid).css('box-shadow', '0px 0px 30px 16px rgba(0, 0, 0, 0.75)');
 
@@ -104,6 +118,43 @@ export class iFeltTheFoot extends ShaneScene {
   removeVideo(video) {
     video.src = '';
     $(video).remove();
+  }
+
+  /// Body Models
+
+  doFootModel() {
+    this.footModel = new ShaneMesh({
+      modelName: '/js/models/foot.json',
+      position: new THREE.Vector3(-15, -4, -20)
+    });
+
+    this.footModel.addTo(this.scene, () => {
+      // human.twitching = true;
+      // human.twitchIntensity = 0.015;
+
+      this.makeSpotlight();
+      this.spotLight.target = this.footModel.mesh;
+
+      this.footModel.mesh.castShadow = true;
+      this.footModel.mesh.receiveShadow = true;
+
+      //this.footModel.setMeshColor(0xff0000);
+
+      setTimeout(() => {
+        this.footModel.removeFrom(this.scene);
+      }, 30666);
+    });
+  }
+
+  makeSpotlight() {
+    var spotLight = new THREE.SpotLight(0xffffff);
+    spotLight.position.set(-10, 200, -20);
+
+    spotLight.castShadow = true;
+    spotLight.shadowDarkness = 0.75;
+
+    this.scene.add(spotLight);
+    this.spotLight = spotLight;
   }
 
 }
