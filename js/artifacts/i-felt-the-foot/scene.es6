@@ -42,7 +42,7 @@ export class iFeltTheFoot extends ShaneScene {
     setTimeout(this.doRotatingFoot.bind(this), 38666);
     setTimeout(this.doFootBone.bind(this), 60666);
     setTimeout(this.doFootModel.bind(this), 86666);
-    setTimeout(this.doCadFootImage.bind(this), 1000);
+    setTimeout(this.doCadFootImage.bind(this), 96666);
   }
 
   exit() {
@@ -56,7 +56,7 @@ export class iFeltTheFoot extends ShaneScene {
   update() {
     super.update();
 
-    if (this.footModel) {
+    if (this.footModel && this.footModel.active) {
       this.footModel.rotate(0, 0.02, 0);
       this.footModel.update();
     }
@@ -146,6 +146,7 @@ export class iFeltTheFoot extends ShaneScene {
       //this.footModel.setMeshColor(0xff0000);
 
       setTimeout(() => {
+        this.footModel.active = false;
         this.footModel.removeFrom(this.scene);
       }, 30666);
     });
@@ -172,6 +173,10 @@ export class iFeltTheFoot extends ShaneScene {
     this.cadFootImage.css('width', '300px');
 
     this.cadFootImage.__rotation = 0;
+
+    setTimeout(() => {
+      this.cadFootImage.remove();
+    }, 16666);
   }
 
   makeBodyImage(name) {

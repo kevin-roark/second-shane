@@ -611,7 +611,7 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
         setTimeout(this.doRotatingFoot.bind(this), 38666);
         setTimeout(this.doFootBone.bind(this), 60666);
         setTimeout(this.doFootModel.bind(this), 86666);
-        setTimeout(this.doCadFootImage.bind(this), 1000);
+        setTimeout(this.doCadFootImage.bind(this), 96666);
       }
     },
     exit: {
@@ -627,7 +627,7 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
       value: function update() {
         _get(Object.getPrototypeOf(iFeltTheFoot.prototype), "update", this).call(this);
 
-        if (this.footModel) {
+        if (this.footModel && this.footModel.active) {
           this.footModel.rotate(0, 0.02, 0);
           this.footModel.update();
         }
@@ -735,6 +735,7 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
           //this.footModel.setMeshColor(0xff0000);
 
           setTimeout(function () {
+            _this.footModel.active = false;
             _this.footModel.removeFrom(_this.scene);
           }, 30666);
         });
@@ -757,6 +758,8 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
       /// Body Images
 
       value: function doCadFootImage() {
+        var _this = this;
+
         this.cadFootImage = this.makeBodyImage("cad_foot.jpg");
 
         this.cadFootImage.css("bottom", "40px");
@@ -764,6 +767,10 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
         this.cadFootImage.css("width", "300px");
 
         this.cadFootImage.__rotation = 0;
+
+        setTimeout(function () {
+          _this.cadFootImage.remove();
+        }, 16666);
       }
     },
     makeBodyImage: {
