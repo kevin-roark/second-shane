@@ -33,6 +33,33 @@ export class PapaJohn extends ShaneScene {
   enter() {
     super.enter();
 
+    this.scene.fog = new THREE.Fog( 0xffffff, 1, 6000);
+		this.scene.fog.color.setHSL( 0.6, 0, 1 );
+
+    this.makeTerrainScene();
+    this.makeHemiLight();
+    this.spreadCactus();
+    this.spreadRocks();
+    this.makeSky();
+  }
+
+  exit() {
+    super.exit();
+
+    this.scene.fog = null;
+
+    this.scene.remove(this.terrainScene);
+    this.scene.remove(this.hemiLight);
+    this.scene.remove(this.sky);
+  }
+
+  update() {
+    super.update();
+  }
+
+  /// Creation
+
+  makeTerrainScene() {
     var terrainTexture = THREE.ImageUtils.loadTexture('/media/textures/sand.jpg');
     terrainTexture.wrapS = THREE.RepeatWrapping;
     terrainTexture.wrapT = THREE.RepeatWrapping;
@@ -57,25 +84,7 @@ export class PapaJohn extends ShaneScene {
       ySize: 1024,
     });
     this.scene.add(this.terrainScene);
-
-    this.makeSpotlight();
-    this.spreadCactus();
-    this.spreadRocks();
   }
-
-  exit() {
-    super.exit();
-
-    this.scene.remove(this.terrainScene);
-
-    this.scene.remove(this.spotLight);
-  }
-
-  update() {
-    super.update();
-  }
-
-  /// Creation
 
   spreadCactus() {
     var cactus = new ShaneMesh({
@@ -119,9 +128,38 @@ export class PapaJohn extends ShaneScene {
     });
   }
 
-  makeSpotlight() {
-    this.spotLight = new THREE.HemisphereLight(0xeeeeff, 0xffffff, 1); // 0xb8e5f8 (blue)
-    this.scene.add(this.spotLight);
+  makeHemiLight() {
+    this.hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.95);
+    this.hemiLight.color.setHSL(0.6, 1, 0.6);
+    this.hemiLight.groundColor.setHSL( 0.095, 1, 0.75 );
+    this.hemiLight.position.set( 0, 500, 0 );
+    this.scene.add(this.hemiLight);
+  }
+
+  // lifted from mrdoob.github.io/three.js/examples/webgl_lights_hemisphere.html
+  makeSky() {
+    var vertexShader = document.getElementById('skyVertexShader').textContent;
+		var fragmentShader = document.getElementById('skyFragmentShader').textContent;
+		var uniforms = {
+			topColor: 	 { type: "c", value: new THREE.Color( 0x0077ff ) },
+			bottomColor: { type: "c", value: new THREE.Color( 0xccccff ) },
+			offset:		 { type: "f", value: 33 },
+			exponent:	 { type: "f", value: 0.75 }
+		};
+		uniforms.topColor.value.copy(this.hemiLight.color);
+
+		this.scene.fog.color.copy(uniforms.bottomColor.value);
+
+		var skyGeo = new THREE.SphereGeometry(4000, 32, 24);
+		var skyMat = new THREE.ShaderMaterial({
+      vertexShader: vertexShader,
+      fragmentShader: fragmentShader,
+      uniforms: uniforms,
+      side: THREE.BackSide
+    });
+
+		this.sky = new THREE.Mesh(skyGeo, skyMat);
+		this.scene.add(this.sky);
   }
 
 }

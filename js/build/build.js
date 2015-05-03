@@ -1060,6 +1060,37 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
       value: function enter() {
         _get(Object.getPrototypeOf(PapaJohn.prototype), "enter", this).call(this);
 
+        this.scene.fog = new THREE.Fog(16777215, 1, 6000);
+        this.scene.fog.color.setHSL(0.6, 0, 1);
+
+        this.makeTerrainScene();
+        this.makeHemiLight();
+        this.spreadCactus();
+        this.spreadRocks();
+        this.makeSky();
+      }
+    },
+    exit: {
+      value: function exit() {
+        _get(Object.getPrototypeOf(PapaJohn.prototype), "exit", this).call(this);
+
+        this.scene.fog = null;
+
+        this.scene.remove(this.terrainScene);
+        this.scene.remove(this.hemiLight);
+        this.scene.remove(this.sky);
+      }
+    },
+    update: {
+      value: function update() {
+        _get(Object.getPrototypeOf(PapaJohn.prototype), "update", this).call(this);
+      }
+    },
+    makeTerrainScene: {
+
+      /// Creation
+
+      value: function makeTerrainScene() {
         var terrainTexture = THREE.ImageUtils.loadTexture("/media/textures/sand.jpg");
         terrainTexture.wrapS = THREE.RepeatWrapping;
         terrainTexture.wrapT = THREE.RepeatWrapping;
@@ -1083,30 +1114,9 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
           ySegments: 63,
           ySize: 1024 });
         this.scene.add(this.terrainScene);
-
-        this.makeSpotlight();
-        this.spreadCactus();
-        this.spreadRocks();
-      }
-    },
-    exit: {
-      value: function exit() {
-        _get(Object.getPrototypeOf(PapaJohn.prototype), "exit", this).call(this);
-
-        this.scene.remove(this.terrainScene);
-
-        this.scene.remove(this.spotLight);
-      }
-    },
-    update: {
-      value: function update() {
-        _get(Object.getPrototypeOf(PapaJohn.prototype), "update", this).call(this);
       }
     },
     spreadCactus: {
-
-      /// Creation
-
       value: function spreadCactus() {
         var _this = this;
 
@@ -1152,10 +1162,42 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
         });
       }
     },
-    makeSpotlight: {
-      value: function makeSpotlight() {
-        this.spotLight = new THREE.HemisphereLight(15658751, 16777215, 1); // 0xb8e5f8 (blue)
-        this.scene.add(this.spotLight);
+    makeHemiLight: {
+      value: function makeHemiLight() {
+        this.hemiLight = new THREE.HemisphereLight(16777215, 16777215, 0.95);
+        this.hemiLight.color.setHSL(0.6, 1, 0.6);
+        this.hemiLight.groundColor.setHSL(0.095, 1, 0.75);
+        this.hemiLight.position.set(0, 500, 0);
+        this.scene.add(this.hemiLight);
+      }
+    },
+    makeSky: {
+
+      // lifted from mrdoob.github.io/three.js/examples/webgl_lights_hemisphere.html
+
+      value: function makeSky() {
+        var vertexShader = document.getElementById("skyVertexShader").textContent;
+        var fragmentShader = document.getElementById("skyFragmentShader").textContent;
+        var uniforms = {
+          topColor: { type: "c", value: new THREE.Color(30719) },
+          bottomColor: { type: "c", value: new THREE.Color(13421823) },
+          offset: { type: "f", value: 33 },
+          exponent: { type: "f", value: 0.75 }
+        };
+        uniforms.topColor.value.copy(this.hemiLight.color);
+
+        this.scene.fog.color.copy(uniforms.bottomColor.value);
+
+        var skyGeo = new THREE.SphereGeometry(4000, 32, 24);
+        var skyMat = new THREE.ShaderMaterial({
+          vertexShader: vertexShader,
+          fragmentShader: fragmentShader,
+          uniforms: uniforms,
+          side: THREE.BackSide
+        });
+
+        this.sky = new THREE.Mesh(skyGeo, skyMat);
+        this.scene.add(this.sky);
       }
     }
   });
@@ -4484,7 +4526,7 @@ var ThreeBoiler = exports.ThreeBoiler = (function () {
   _createClass(ThreeBoiler, {
     createCamera: {
       value: function createCamera() {
-        return new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 5000);
+        return new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 1, 5000);
       }
     },
     createAmbientLight: {
