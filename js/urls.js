@@ -18,3 +18,8 @@ module.exports.iFeltTheFoot = {
   web: 'http://kevin-roark.github.io/second-shane-i-felt-the-foot/',
   live: 'http://localhost:5555/'
 };
+
+module.exports.papaJohn = {
+  web: 'http://kevin-roark.github.io/second-shane-papa-john/',
+  live: 'http://localhost:5555/'
+};
