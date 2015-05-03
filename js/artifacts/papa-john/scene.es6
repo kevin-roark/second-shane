@@ -210,10 +210,18 @@ export class PapaJohn extends ShaneScene {
     });
     this.papaJohnVideoMesh.mesh.castShadow = true;
     this.papaJohnVideoMesh.mesh.receiveShadow = true;
+    this.papaJohnVideoMesh.videoMaterial.opacity = 0.0;
 
     this.papaJohnVideoMesh.moveTo(0, -5, this.papaJohnZ);
     this.papaJohnVideoMesh.rotateTo(0.1, 0, 0);
     this.papaJohnVideoMesh.addTo(this.scene);
+
+    var fadeInterval = setInterval(() => {
+      this.papaJohnVideoMesh.videoMaterial.opacity += 0.0025;
+      if (this.papaJohnVideoMesh.videoMaterial.opacity >= 1) {
+        clearInterval(fadeInterval);
+      }
+    }, 30);
   }
 
 }

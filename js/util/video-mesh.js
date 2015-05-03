@@ -28,7 +28,9 @@ function VideoMesh(options) {
   this.videoMaterial = new THREE.MeshBasicMaterial({
     map: this.videoTexture,
     overdraw: true,
-    side: THREE.DoubleSide
+    //side: THREE.DoubleSide,
+    transparent: true,
+    opacity: 1.0
   });
 
   this.videoGeometry = new THREE.BoxGeometry(this.renderedVideoWidth, this.renderedVideoHeight, 20);

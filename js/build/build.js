@@ -1240,6 +1240,8 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
     },
     makePapaJohn: {
       value: function makePapaJohn() {
+        var _this = this;
+
         this.papaJohnVideo = this.makeVideo(this.videoBase + "papajohn", false, -10);
         $(this.papaJohnVideo).css("display", "none");
         this.papaJohnVideo.play();
@@ -1249,10 +1251,18 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
         });
         this.papaJohnVideoMesh.mesh.castShadow = true;
         this.papaJohnVideoMesh.mesh.receiveShadow = true;
+        this.papaJohnVideoMesh.videoMaterial.opacity = 0;
 
         this.papaJohnVideoMesh.moveTo(0, -5, this.papaJohnZ);
         this.papaJohnVideoMesh.rotateTo(0.1, 0, 0);
         this.papaJohnVideoMesh.addTo(this.scene);
+
+        var fadeInterval = setInterval(function () {
+          _this.papaJohnVideoMesh.videoMaterial.opacity += 0.0025;
+          if (_this.papaJohnVideoMesh.videoMaterial.opacity >= 1) {
+            clearInterval(fadeInterval);
+          }
+        }, 30);
       }
     }
   });
@@ -4784,7 +4794,9 @@ function VideoMesh(options) {
   this.videoMaterial = new THREE.MeshBasicMaterial({
     map: this.videoTexture,
     overdraw: true,
-    side: THREE.DoubleSide
+    //side: THREE.DoubleSide,
+    transparent: true,
+    opacity: 1
   });
 
   this.videoGeometry = new THREE.BoxGeometry(this.renderedVideoWidth, this.renderedVideoHeight, 20);
