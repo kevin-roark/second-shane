@@ -175,7 +175,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"jquery":19}],2:[function(require,module,exports){
+},{"jquery":20}],2:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -546,7 +546,7 @@ Object.defineProperty(exports, "__esModule", {
 
 //      this.exitCallback(this);
 
-},{"../../shane-scene.es6":13,"../../talisman.es6":14,"../../urls":17,"./karaoke.es6":1,"jquery":19,"kutility":20,"three":21}],3:[function(require,module,exports){
+},{"../../shane-scene.es6":13,"../../talisman.es6":14,"../../urls":17,"./karaoke.es6":1,"jquery":20,"kutility":21,"three":22}],3:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -793,7 +793,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../shane-mesh":12,"../../shane-scene.es6":13,"../../talisman.es6":14,"../../urls":17,"jquery":19,"kutility":20,"three":21}],4:[function(require,module,exports){
+},{"../../shane-mesh":12,"../../shane-scene.es6":13,"../../talisman.es6":14,"../../urls":17,"jquery":20,"kutility":21,"three":22}],4:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1004,7 +1004,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../shane-mesh":12,"../../shane-scene.es6":13,"../../talisman.es6":14,"../../urls":17,"jquery":19,"three":21}],5:[function(require,module,exports){
+},{"../../shane-mesh":12,"../../shane-scene.es6":13,"../../talisman.es6":14,"../../urls":17,"jquery":20,"three":22}],5:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1027,6 +1027,7 @@ var Talisman = require("../../talisman.es6").Talisman;
 var ShaneScene = require("../../shane-scene.es6").ShaneScene;
 
 var ShaneMesh = require("../../shane-mesh");
+var VideoMesh = require("../../util/video-mesh");
 
 var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
 
@@ -1040,6 +1041,8 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
     var host = this.isLive ? urls.papaJohn.live : urls.papaJohn.web;
     this.videoBase = host + "video/";
     this.imageBase = host + "images/";
+
+    this.papaJohnZ = -175;
   }
 
   _inherits(PapaJohn, _ShaneScene);
@@ -1063,11 +1066,15 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
         this.scene.fog = new THREE.Fog(16777215, 1, 6000);
         this.scene.fog.color.setHSL(0.6, 0, 1);
 
+        this.camera.position.set(0, -10, 0);
+
         this.makeTerrainScene();
-        this.makeHemiLight();
+        this.makeLights();
         this.spreadCactus();
         this.spreadRocks();
         this.makeSky();
+
+        setTimeout(this.makePapaJohn.bind(this), 3666);
       }
     },
     exit: {
@@ -1077,8 +1084,14 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
         this.scene.fog = null;
 
         this.scene.remove(this.terrainScene);
-        this.scene.remove(this.hemiLight);
         this.scene.remove(this.sky);
+
+        this.scene.remove(this.hemiLight);
+        this.scene.remove(this.dirLight);
+
+        this.papaJohnVideo.src = "";
+        $(this.papaJohnVideo).remove();
+        this.scene.remove(this.papaJohnVideoMesh.mesh);
       }
     },
     update: {
@@ -1102,8 +1115,7 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
           heightmap: Terrain.Hill,
           material: new THREE.MeshBasicMaterial({
             //color: 0xddceaa,
-            map: terrainTexture,
-            side: THREE.DoubleSide
+            map: terrainTexture
           }),
           maxHeight: -3,
           minHeight: -70,
@@ -1114,6 +1126,13 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
           ySegments: 63,
           ySize: 1024 });
         this.scene.add(this.terrainScene);
+
+        this.terrainScene.receiveShadow = true;
+
+        this.terrainMesh = this.terrainScene.children[0];
+        this.terrainMesh.receiveShadow = true;
+
+        this.terrainGeometry = this.terrainMesh.geometry;
       }
     },
     spreadCactus: {
@@ -1127,8 +1146,10 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
         cactus.createMesh(function () {
           cactus.mesh.scale.set(2, 2, 2);
 
-          var terrainGeometry = _this.terrainScene.children[0].geometry;
-          _this.cactusScene = THREE.Terrain.ScatterMeshes(terrainGeometry, {
+          cactus.mesh.castShadow = true;
+          cactus.mesh.receiveShadow = true;
+
+          _this.cactusScene = THREE.Terrain.ScatterMeshes(_this.terrainGeometry, {
             mesh: cactus.mesh,
             w: 63,
             h: 63,
@@ -1149,10 +1170,12 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
         rock.createMesh(function () {
           //rock.mesh.scale.set(2, 2, 2);
 
-          //rock.setMeshColor(0x857023);
+          rock.setMeshColor(7029525);
 
-          var terrainGeometry = _this.terrainScene.children[0].geometry;
-          _this.rockScene = THREE.Terrain.ScatterMeshes(terrainGeometry, {
+          rock.mesh.castShadow = true;
+          rock.mesh.receiveShadow = true;
+
+          _this.rockScene = THREE.Terrain.ScatterMeshes(_this.terrainGeometry, {
             mesh: rock.mesh,
             w: 63,
             h: 63,
@@ -1162,13 +1185,28 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
         });
       }
     },
-    makeHemiLight: {
-      value: function makeHemiLight() {
-        this.hemiLight = new THREE.HemisphereLight(16777215, 16777215, 0.95);
+    makeLights: {
+      value: function makeLights() {
+        this.hemiLight = new THREE.HemisphereLight(16777215, 16777215, 1.15);
         this.hemiLight.color.setHSL(0.6, 1, 0.6);
         this.hemiLight.groundColor.setHSL(0.095, 1, 0.75);
         this.hemiLight.position.set(0, 500, 0);
         this.scene.add(this.hemiLight);
+
+        var dirLight = new THREE.DirectionalLight(16777215, 1);
+        dirLight.color.setHSL(0.1, 1, 0.95);
+        dirLight.position.set(0, 372, 400);
+
+        dirLight.castShadow = true;
+        dirLight.shadowMapWidth = 2048;
+        dirLight.shadowMapHeight = 2048;
+
+        dirLight.shadowCameraFar = 3500;
+        dirLight.shadowBias = -0.0001;
+        dirLight.shadowDarkness = 0.35;
+
+        this.dirLight = dirLight;
+        this.scene.add(dirLight);
       }
     },
     makeSky: {
@@ -1199,6 +1237,23 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
         this.sky = new THREE.Mesh(skyGeo, skyMat);
         this.scene.add(this.sky);
       }
+    },
+    makePapaJohn: {
+      value: function makePapaJohn() {
+        this.papaJohnVideo = this.makeVideo(this.videoBase + "papajohn", false, -10);
+        $(this.papaJohnVideo).css("display", "none");
+        this.papaJohnVideo.play();
+
+        this.papaJohnVideoMesh = new VideoMesh({
+          video: this.papaJohnVideo
+        });
+        this.papaJohnVideoMesh.mesh.castShadow = true;
+        this.papaJohnVideoMesh.mesh.receiveShadow = true;
+
+        this.papaJohnVideoMesh.moveTo(0, -5, this.papaJohnZ);
+        this.papaJohnVideoMesh.rotateTo(0.1, 0, 0);
+        this.papaJohnVideoMesh.addTo(this.scene);
+      }
     }
   });
 
@@ -1209,7 +1264,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../lib/three.terrain":8,"../../shane-mesh":12,"../../shane-scene.es6":13,"../../talisman.es6":14,"../../urls":17,"jquery":19,"kutility":20,"three":21}],6:[function(require,module,exports){
+},{"../../lib/three.terrain":8,"../../shane-mesh":12,"../../shane-scene.es6":13,"../../talisman.es6":14,"../../urls":17,"../../util/video-mesh":19,"jquery":20,"kutility":21,"three":22}],6:[function(require,module,exports){
 "use strict";
 
 /**
@@ -1484,7 +1539,7 @@ module.exports = function (camera, options) {
 	this.updateRotationVector();
 };
 
-},{"./pointerlocker":7,"three":21}],7:[function(require,module,exports){
+},{"./pointerlocker":7,"three":22}],7:[function(require,module,exports){
 "use strict";
 
 module.exports = function () {
@@ -3624,7 +3679,7 @@ THREE.Terrain.Influence = function (g, options, f, x, y, r, h, t, e) {
 
 module.exports = THREE.Terrain;
 
-},{"three":21}],9:[function(require,module,exports){
+},{"three":22}],9:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -3660,6 +3715,12 @@ var SecondShane = (function (_ThreeBoiler) {
       antialias: true,
       alpha: true
     });
+
+    this.renderer.shadowMapEnabled = true;
+    this.renderer.shadowMapCullFace = THREE.CullFaceBack;
+
+    this.renderer.gammaInput = true;
+    this.renderer.gammaOutput = true;
 
     this.controls = new FlyControls(this.camera);
     this.scene.add(this.controls.getObject());
@@ -3830,7 +3891,7 @@ $(function () {
   shane.activate();
 });
 
-},{"./controls/fly-controls":6,"./one-offs.es6":10,"./scenes.es6":11,"./theme.es6":15,"./three-boiler.es6":16,"jquery":19,"three":21}],10:[function(require,module,exports){
+},{"./controls/fly-controls":6,"./one-offs.es6":10,"./scenes.es6":11,"./theme.es6":15,"./three-boiler.es6":16,"jquery":20,"three":22}],10:[function(require,module,exports){
 "use strict";
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
@@ -3946,7 +4007,7 @@ Object.defineProperty(exports, "__esModule", {
 
 // override for frame-ly updates
 
-},{"three":21}],11:[function(require,module,exports){
+},{"three":22}],11:[function(require,module,exports){
 "use strict";
 
 var LiveAtJJs = require("./artifacts/live-at-jjs/scene.es6").LiveAtJJs;
@@ -4146,7 +4207,7 @@ ShaneMesh.prototype.fallToFloor = function (threshold, speed) {
 ShaneMesh.prototype.additionalInit = function () {};
 ShaneMesh.prototype.additionalRender = function () {};
 
-},{"kutility":20,"three":21}],13:[function(require,module,exports){
+},{"kutility":21,"three":22}],13:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -4296,7 +4357,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"./talisman.es6":14,"jquery":19,"three":21}],14:[function(require,module,exports){
+},{"./talisman.es6":14,"jquery":20,"three":22}],14:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -4428,7 +4489,7 @@ Object.defineProperty(exports, "__esModule", {
 
 // do stuff with mesh
 
-},{"three":21}],15:[function(require,module,exports){
+},{"three":22}],15:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -4593,7 +4654,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"jquery":19,"three":21}],17:[function(require,module,exports){
+},{"jquery":20,"three":22}],17:[function(require,module,exports){
 "use strict";
 
 module.exports.godIsAMan = {
@@ -4691,7 +4752,66 @@ module.exports.blocker = function (size) {
   return new THREE.Mesh(geometry, material);
 };
 
-},{"three":21}],19:[function(require,module,exports){
+},{"three":22}],19:[function(require,module,exports){
+"use strict";
+
+var THREE = require("three");
+
+module.exports = VideoMesh;
+
+function VideoMesh(options) {
+  this.video = options.video;
+  this.renderedVideoWidth = options.renderedVideoWidth || 150;
+  this.renderedVideoHeight = options.renderedVideoHeight || 75;
+
+  var sourceVideoWidth = options.sourceVideoWidth || 320;
+  var sourceVideoHeight = options.sourceVideoHeight || 180;
+
+  this.videoImage = document.createElement("canvas");
+  this.videoImage.width = sourceVideoWidth.width;
+  this.videoImage.height = sourceVideoHeight.height;
+
+  this.videoImageContext = this.videoImage.getContext("2d");
+  this.videoImageContext.fillStyle = "#000000"; // background color if no video present
+  this.videoImageContext.fillRect(0, 0, this.renderedVideoWidth, this.renderedVideoHeight);
+
+  this.videoTexture = new THREE.Texture(this.videoImage);
+  this.videoTexture.minFilter = THREE.LinearFilter;
+  this.videoTexture.magFilter = THREE.LinearFilter;
+  this.videoTexture.format = THREE.RGBFormat;
+  this.videoTexture.generateMipmaps = false;
+
+  this.videoMaterial = new THREE.MeshBasicMaterial({
+    map: this.videoTexture,
+    overdraw: true,
+    side: THREE.DoubleSide
+  });
+
+  this.videoGeometry = new THREE.BoxGeometry(this.renderedVideoWidth, this.renderedVideoHeight, 20);
+  this.mesh = new THREE.Mesh(this.videoGeometry, this.videoMaterial);
+}
+
+VideoMesh.prototype.addTo = function (scene) {
+  scene.add(this.mesh);
+};
+
+VideoMesh.prototype.render = function () {
+  if (this.video.readyState === this.video.HAVE_ENOUGH_DATA) {
+    this.videoImageContext.drawImage(this.video, 0, 0);
+
+    if (this.videoTexture) this.videoTexture.needsUpdate = true;
+  }
+};
+
+VideoMesh.prototype.moveTo = function (x, y, z) {
+  this.mesh.position.set(x, y + this.renderedVideoHeight / 2, z);
+};
+
+VideoMesh.prototype.rotateTo = function (rx, ry, rz) {
+  this.mesh.rotation.set(rx, ry, rz);
+};
+
+},{"three":22}],20:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.3
  * http://jquery.com/
@@ -13898,7 +14018,7 @@ return jQuery;
 
 }));
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 
 /* export something */
 module.exports = new Kutility();
@@ -14472,7 +14592,7 @@ Kutility.prototype.blur = function(el, x) {
   this.setFilter(el, cf + f);
 };
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 // File:src/Three.js
 
 /**

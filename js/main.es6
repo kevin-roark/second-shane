@@ -19,6 +19,12 @@ class SecondShane extends ThreeBoiler {
       alpha: true
     });
 
+    this.renderer.shadowMapEnabled = true;
+    this.renderer.shadowMapCullFace = THREE.CullFaceBack;
+
+    this.renderer.gammaInput = true;
+	  this.renderer.gammaOutput = true;
+
     this.controls = new FlyControls(this.camera);
     this.scene.add(this.controls.getObject());
 
