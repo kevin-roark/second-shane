@@ -7,6 +7,7 @@ let Terrain = require('../../lib/three.terrain');
 let urls = require('../../urls');
 import {Talisman} from '../../talisman.es6';
 import {ShaneScene} from '../../shane-scene.es6';
+let ShaneMesh = require('../../shane-mesh');
 
 export class PapaJohn extends ShaneScene {
 
@@ -35,7 +36,7 @@ export class PapaJohn extends ShaneScene {
     var terrainTexture = THREE.ImageUtils.loadTexture('/media/textures/sand.jpg');
     terrainTexture.wrapS = THREE.RepeatWrapping;
     terrainTexture.wrapT = THREE.RepeatWrapping;
-    terrainTexture.repeat.set(4, 4);
+    terrainTexture.repeat.set(8, 8);
 
     this.terrainScene = Terrain({
       easing: Terrain.Linear,
@@ -56,16 +57,49 @@ export class PapaJohn extends ShaneScene {
       ySize: 1024,
     });
     this.scene.add(this.terrainScene);
+
+    this.makeSpotlight();
+    this.spreadCactus();
   }
 
   exit() {
     super.exit();
 
     this.scene.remove(this.terrainScene);
+
+    this.scene.remove(this.spotLight);
   }
 
   update() {
     super.update();
+  }
+
+  /// Creation
+
+  spreadCactus() {
+    var cactus = new ShaneMesh({
+      modelName: '/js/models/cactus/low_poly_cactus.json'
+    });
+
+    cactus.createMesh(() => {
+      cactus.mesh.scale.set(2, 2, 2);
+
+      var terrainGeometry = this.terrainScene.children[0].geometry;
+      this.cactusScene = THREE.Terrain.ScatterMeshes(terrainGeometry, {
+        mesh: cactus.mesh,
+        w: 63,
+        h: 63,
+        spread: 0.02,
+        randomness: Math.random,
+      });
+      this.terrainScene.add(this.cactusScene);
+    });
+  }
+
+
+  makeSpotlight() {
+    this.spotLight = new THREE.HemisphereLight(0x4796ef, 0xffffff, 1.2);
+    this.scene.add(this.spotLight);
   }
 
 }

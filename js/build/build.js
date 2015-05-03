@@ -1026,6 +1026,8 @@ var Talisman = require("../../talisman.es6").Talisman;
 
 var ShaneScene = require("../../shane-scene.es6").ShaneScene;
 
+var ShaneMesh = require("../../shane-mesh");
+
 var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
 
   /// Init
@@ -1061,7 +1063,7 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
         var terrainTexture = THREE.ImageUtils.loadTexture("/media/textures/sand.jpg");
         terrainTexture.wrapS = THREE.RepeatWrapping;
         terrainTexture.wrapT = THREE.RepeatWrapping;
-        terrainTexture.repeat.set(4, 4);
+        terrainTexture.repeat.set(8, 8);
 
         this.terrainScene = Terrain({
           easing: Terrain.Linear,
@@ -1081,6 +1083,9 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
           ySegments: 63,
           ySize: 1024 });
         this.scene.add(this.terrainScene);
+
+        this.makeSpotlight();
+        this.spreadCactus();
       }
     },
     exit: {
@@ -1088,11 +1093,44 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
         _get(Object.getPrototypeOf(PapaJohn.prototype), "exit", this).call(this);
 
         this.scene.remove(this.terrainScene);
+
+        this.scene.remove(this.spotLight);
       }
     },
     update: {
       value: function update() {
         _get(Object.getPrototypeOf(PapaJohn.prototype), "update", this).call(this);
+      }
+    },
+    spreadCactus: {
+
+      /// Creation
+
+      value: function spreadCactus() {
+        var _this = this;
+
+        var cactus = new ShaneMesh({
+          modelName: "/js/models/cactus/low_poly_cactus.json"
+        });
+
+        cactus.createMesh(function () {
+          cactus.mesh.scale.set(2, 2, 2);
+
+          var terrainGeometry = _this.terrainScene.children[0].geometry;
+          _this.cactusScene = THREE.Terrain.ScatterMeshes(terrainGeometry, {
+            mesh: cactus.mesh,
+            w: 63,
+            h: 63,
+            spread: 0.02,
+            randomness: Math.random });
+          _this.terrainScene.add(_this.cactusScene);
+        });
+      }
+    },
+    makeSpotlight: {
+      value: function makeSpotlight() {
+        this.spotLight = new THREE.HemisphereLight(4691695, 16777215, 1.2);
+        this.scene.add(this.spotLight);
       }
     }
   });
@@ -1104,7 +1142,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../lib/three.terrain":8,"../../shane-scene.es6":13,"../../talisman.es6":14,"../../urls":17,"jquery":19,"kutility":20,"three":21}],6:[function(require,module,exports){
+},{"../../lib/three.terrain":8,"../../shane-mesh":12,"../../shane-scene.es6":13,"../../talisman.es6":14,"../../urls":17,"jquery":19,"kutility":20,"three":21}],6:[function(require,module,exports){
 "use strict";
 
 /**
