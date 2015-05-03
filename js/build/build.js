@@ -1063,7 +1063,7 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
         var terrainTexture = THREE.ImageUtils.loadTexture("/media/textures/sand.jpg");
         terrainTexture.wrapS = THREE.RepeatWrapping;
         terrainTexture.wrapT = THREE.RepeatWrapping;
-        terrainTexture.repeat.set(8, 8);
+        terrainTexture.repeat.set(16, 16);
 
         this.terrainScene = Terrain({
           easing: Terrain.Linear,
@@ -1086,6 +1086,7 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
 
         this.makeSpotlight();
         this.spreadCactus();
+        this.spreadRocks();
       }
     },
     exit: {
@@ -1127,9 +1128,33 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
         });
       }
     },
+    spreadRocks: {
+      value: function spreadRocks() {
+        var _this = this;
+
+        var rock = new ShaneMesh({
+          modelName: "/js/models/rock/rock.json"
+        });
+
+        rock.createMesh(function () {
+          //rock.mesh.scale.set(2, 2, 2);
+
+          //rock.setMeshColor(0x857023);
+
+          var terrainGeometry = _this.terrainScene.children[0].geometry;
+          _this.rockScene = THREE.Terrain.ScatterMeshes(terrainGeometry, {
+            mesh: rock.mesh,
+            w: 63,
+            h: 63,
+            spread: 0.03,
+            randomness: Math.random });
+          _this.terrainScene.add(_this.rockScene);
+        });
+      }
+    },
     makeSpotlight: {
       value: function makeSpotlight() {
-        this.spotLight = new THREE.HemisphereLight(4691695, 16777215, 1.2);
+        this.spotLight = new THREE.HemisphereLight(15658751, 16777215, 1); // 0xb8e5f8 (blue)
         this.scene.add(this.spotLight);
       }
     }

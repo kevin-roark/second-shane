@@ -36,7 +36,7 @@ export class PapaJohn extends ShaneScene {
     var terrainTexture = THREE.ImageUtils.loadTexture('/media/textures/sand.jpg');
     terrainTexture.wrapS = THREE.RepeatWrapping;
     terrainTexture.wrapT = THREE.RepeatWrapping;
-    terrainTexture.repeat.set(8, 8);
+    terrainTexture.repeat.set(16, 16);
 
     this.terrainScene = Terrain({
       easing: Terrain.Linear,
@@ -60,6 +60,7 @@ export class PapaJohn extends ShaneScene {
 
     this.makeSpotlight();
     this.spreadCactus();
+    this.spreadRocks();
   }
 
   exit() {
@@ -96,9 +97,30 @@ export class PapaJohn extends ShaneScene {
     });
   }
 
+  spreadRocks() {
+    var rock = new ShaneMesh({
+      modelName: '/js/models/rock/rock.json'
+    });
+
+    rock.createMesh(() => {
+      //rock.mesh.scale.set(2, 2, 2);
+
+      //rock.setMeshColor(0x857023);
+
+      var terrainGeometry = this.terrainScene.children[0].geometry;
+      this.rockScene = THREE.Terrain.ScatterMeshes(terrainGeometry, {
+        mesh: rock.mesh,
+        w: 63,
+        h: 63,
+        spread: 0.03,
+        randomness: Math.random,
+      });
+      this.terrainScene.add(this.rockScene);
+    });
+  }
 
   makeSpotlight() {
-    this.spotLight = new THREE.HemisphereLight(0x4796ef, 0xffffff, 1.2);
+    this.spotLight = new THREE.HemisphereLight(0xeeeeff, 0xffffff, 1); // 0xb8e5f8 (blue)
     this.scene.add(this.spotLight);
   }
 
