@@ -618,7 +618,7 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
           _this.doRotatingFoot(12666);
         }, 20666);
         setTimeout(function () {
-          _this.doFootBone(11666);
+          _this.doFootSlap(11666);
         }, 34666);
         setTimeout(function () {
           _this.doFootModel(15666);
@@ -640,7 +640,7 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
           var dur = endOfItAll - restOfThemOffset;
           _this.doFootMassage(dur);
           _this.doRotatingFoot(dur);
-          _this.doFootBone(dur);
+          _this.doFootSlap(dur);
           _this.doFootModel(dur);
           _this.doCadFootImage(dur);
 
@@ -739,20 +739,20 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
         }, duration);
       }
     },
-    doFootBone: {
-      value: function doFootBone(duration) {
+    doFootSlap: {
+      value: function doFootSlap(duration) {
         var _this = this;
 
-        this.footBone = this.makeBodyVideo("foot_bone");
+        this.footSlap = this.makeBodyVideo("footslap");
 
-        this.footBone.style.width = "40%";
-        this.footBone.style.left = "30%";
-        this.footBone.style.top = "40%";
+        this.footSlap.style.width = "40%";
+        this.footSlap.style.left = "30%";
+        this.footSlap.style.top = "40%";
 
-        this.footBone.play();
+        this.footSlap.play();
 
         setTimeout(function () {
-          _this.removeVideo(_this.footBone);
+          _this.removeVideo(_this.footSlap);
         }, duration);
       }
     },

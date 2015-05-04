@@ -47,7 +47,7 @@ export class iFeltTheFoot extends ShaneScene {
       this.doRotatingFoot(12666);
     }, 20666);
     setTimeout(() => {
-      this.doFootBone(11666);
+      this.doFootSlap(11666);
     }, 34666);
     setTimeout(() => {
       this.doFootModel(15666);
@@ -69,7 +69,7 @@ export class iFeltTheFoot extends ShaneScene {
       let dur = endOfItAll - restOfThemOffset;
       this.doFootMassage(dur);
       this.doRotatingFoot(dur);
-      this.doFootBone(dur);
+      this.doFootSlap(dur);
       this.doFootModel(dur);
       this.doCadFootImage(dur);
 
@@ -153,17 +153,17 @@ export class iFeltTheFoot extends ShaneScene {
     }, duration);
   }
 
-  doFootBone(duration) {
-    this.footBone = this.makeBodyVideo('foot_bone');
+  doFootSlap(duration) {
+    this.footSlap = this.makeBodyVideo('footslap');
 
-    this.footBone.style.width = '40%';
-    this.footBone.style.left = '30%';
-    this.footBone.style.top = '40%';
+    this.footSlap.style.width = '40%';
+    this.footSlap.style.left = '30%';
+    this.footSlap.style.top = '40%';
 
-    this.footBone.play();
+    this.footSlap.play();
 
     setTimeout(() => {
-      this.removeVideo(this.footBone);
+      this.removeVideo(this.footSlap);
     }, duration);
   }
 
