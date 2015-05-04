@@ -599,6 +599,8 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
       /// Shane System
 
       value: function enter() {
+        var _this = this;
+
         _get(Object.getPrototypeOf(iFeltTheFoot.prototype), "enter", this).call(this);
 
         this.renderer.setClearColor(0, 0);
@@ -607,11 +609,45 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
 
         this.makeSpotlight();
 
-        setTimeout(this.doFootMassage.bind(this), 6666);
-        setTimeout(this.doRotatingFoot.bind(this), 38666);
-        setTimeout(this.doFootBone.bind(this), 60666);
-        setTimeout(this.doFootModel.bind(this), 86666);
-        setTimeout(this.doCadFootImage.bind(this), 96666);
+        var endOfItAll = 121000;
+
+        setTimeout(function () {
+          _this.doFootMassage(12666);
+        }, 6666);
+        setTimeout(function () {
+          _this.doRotatingFoot(12666);
+        }, 20666);
+        setTimeout(function () {
+          _this.doFootBone(11666);
+        }, 34666);
+        setTimeout(function () {
+          _this.doFootModel(15666);
+        }, 46666);
+        setTimeout(function () {
+          _this.doCadFootImage(12666);
+        }, 62666);
+
+        var seanOffset = 77666;
+        setTimeout(function () {
+          _this.doSean(endOfItAll - seanOffset);
+        }, seanOffset);
+        var kevinOffset = seanOffset + 6000;
+        setTimeout(function () {
+          _this.doKevin(endOfItAll - kevinOffset);
+        }, kevinOffset);
+        var restOfThemOffset = kevinOffset + 5000;
+        setTimeout(function () {
+          var dur = endOfItAll - restOfThemOffset;
+          _this.doFootMassage(dur);
+          _this.doRotatingFoot(dur);
+          _this.doFootBone(dur);
+          _this.doFootModel(dur);
+          _this.doCadFootImage(dur);
+
+          setTimeout(_this.flash.bind(_this), 4000);
+        }, restOfThemOffset);
+
+        setTimeout(this.iWantOut.bind(this), endOfItAll);
       }
     },
     exit: {
@@ -640,11 +676,33 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
         }
       }
     },
+    flash: {
+
+      /// Manipulation
+
+      value: function flash() {
+        var _this = this;
+
+        if (!this.active) {
+          return;
+        }
+
+        $("video, img").css("opacity", "0");
+        this.footModel.mesh.visible = false;
+        setTimeout(function () {
+          $("video, img").css("opacity", "1");
+          _this.footModel.mesh.visible = true;
+          setTimeout(function () {
+            _this.flash();
+          }, kt.randInt(1000, 2500));
+        }, kt.randInt(250, 1000));
+      }
+    },
     doRotatingFoot: {
 
       /// Body Videos
 
-      value: function doRotatingFoot() {
+      value: function doRotatingFoot(duration) {
         var _this = this;
 
         this.rotatingFoot = this.makeBodyVideo("rotating_foot");
@@ -661,11 +719,11 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
 
         setTimeout(function () {
           _this.removeVideo(_this.rotatingFoot);
-        }, 15666);
+        }, duration);
       }
     },
     doFootMassage: {
-      value: function doFootMassage() {
+      value: function doFootMassage(duration) {
         var _this = this;
 
         this.footMassage = this.makeBodyVideo("foot_massage");
@@ -678,11 +736,11 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
 
         setTimeout(function () {
           _this.removeVideo(_this.footMassage);
-        }, 18666);
+        }, duration);
       }
     },
     doFootBone: {
-      value: function doFootBone() {
+      value: function doFootBone(duration) {
         var _this = this;
 
         this.footBone = this.makeBodyVideo("foot_bone");
@@ -695,7 +753,43 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
 
         setTimeout(function () {
           _this.removeVideo(_this.footBone);
-        }, 29666);
+        }, duration);
+      }
+    },
+    doSean: {
+      value: function doSean(duration) {
+        var _this = this;
+
+        this.sean = this.makeBodyVideo("sean");
+
+        this.sean.style.height = "40%";
+        this.sean.style.left = "15%";
+        this.sean.style.bottom = "15%";
+
+        this.sean.play();
+
+        kt.rotate($(this.sean), 90);
+
+        setTimeout(function () {
+          _this.removeVideo(_this.sean);
+        }, duration);
+      }
+    },
+    doKevin: {
+      value: function doKevin(duration) {
+        var _this = this;
+
+        this.kevin = this.makeBodyVideo("kevin");
+
+        this.kevin.style.width = "30%";
+        this.kevin.style.left = "5%";
+        this.kevin.style.top = "5%";
+
+        this.kevin.play();
+
+        setTimeout(function () {
+          _this.removeVideo(_this.kevin);
+        }, duration);
       }
     },
     makeBodyVideo: {
@@ -717,7 +811,7 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
 
       /// Body Models
 
-      value: function doFootModel() {
+      value: function doFootModel(duration) {
         var _this = this;
 
         this.footModel = new ShaneMesh({
@@ -726,6 +820,7 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
         });
 
         this.footModel.addTo(this.scene, function () {
+          _this.footModel.active = true;
           // human.twitching = true;
           // human.twitchIntensity = 0.015;
 
@@ -739,7 +834,7 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
           setTimeout(function () {
             _this.footModel.active = false;
             _this.footModel.removeFrom(_this.scene);
-          }, 30666);
+          }, duration);
         });
       }
     },
@@ -759,7 +854,7 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
 
       /// Body Images
 
-      value: function doCadFootImage() {
+      value: function doCadFootImage(duration) {
         var _this = this;
 
         this.cadFootImage = this.makeBodyImage("cad_foot.jpg");
@@ -772,7 +867,7 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
 
         setTimeout(function () {
           _this.cadFootImage.remove();
-        }, 16666);
+        }, duration);
       }
     },
     makeBodyImage: {
