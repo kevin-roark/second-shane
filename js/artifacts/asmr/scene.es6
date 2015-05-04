@@ -8,6 +8,8 @@ import {Talisman} from '../../talisman.es6';
 import {ShaneScene} from '../../shane-scene.es6';
 let ShaneMesh = require('../../shane-mesh');
 
+let curtainDuration = 12000;
+
 export class ASMR extends ShaneScene {
 
   /// Init
@@ -36,11 +38,18 @@ export class ASMR extends ShaneScene {
 
     this.renderer.setClearColor(0x000000);
 
+    this.videos = [];
+
     this.setupVideoData();
     this.timeVideos();
 
-    let asmrLength = 60000 * 3;
-    setTimeout(this.iWantOut.bind(this), asmrLength);
+    let asmrLength = 60000 * 4;
+
+    let dvdTime = 131666;
+    setTimeout(this.doDVD.bind(this), dvdTime);
+    setTimeout(this.doCurtains.bind(this), asmrLength - curtainDuration);
+
+    setTimeout(this.iWantOut.bind(this), asmrLength + 6666);
   }
 
   exit() {
@@ -53,6 +62,12 @@ export class ASMR extends ShaneScene {
       video.removeAttribute("src"); // thanks mdn really smart
       $(video).remove();
     }
+
+    this.dvd.removeAttribute('src');
+    $(this.dvd).remove();
+
+    this.leftCurtain.remove();
+    this.rightCurtain.remove();
   }
 
   update() {
@@ -65,24 +80,21 @@ export class ASMR extends ShaneScene {
 
   /// Curtains
 
-  addCurtains() {
+  doCurtains() {
     this.leftCurtain = this.makeCurtain('left_curtain.jpg');
-    this.leftCurtain.css('left', '0px');
-
     this.rightCurtain = this.makeCurtain('right_curtain.jpg');
-    this.rightCurtain.css('right', '0px');
+
+    this.leftCurtain.css('left', -this.leftCurtain.width());
+    this.rightCurtain.css('right', -this.rightCurtain.width());
+
+    this.leftCurtain.animate({left: 0}, curtainDuration);
+    this.rightCurtain.animate({right: 0}, curtainDuration);
   }
 
   makeCurtain(name) {
     var curtain = this.makeImage(this.imageBase + name);
     curtain.css('width', '50%');
     return curtain;
-  }
-
-  animateCurtains() {
-    var duration = 12000;
-    this.leftCurtain.animate({left: -this.leftCurtain.width()}, duration);
-    this.rightCurtain.animate({right: -this.rightCurtain.width()}, duration);
   }
 
   /// Videos
@@ -121,28 +133,29 @@ export class ASMR extends ShaneScene {
   }
 
   timeVideos() {
-    var videos = [];
     for (var i = 0; i < this.videoData.length; i++) {
       var data = this.videoData[i];
-      var video = this.makeASMRVideo(data.name);
-      videos.push(video);
-      this.addVideo(video, data.onset, this.videoRectangles[i]);
+      this.addVideo(data.name, data.onset, this.videoRectangles[i]);
     }
-
-    this.videos = videos;
   }
 
-  addVideo(video, delay, rect) {
-    setTimeout(function() {
-      video.style.left = (rect.x * 100) + '%';
-      video.style.top = (rect.y * 100) + '%';
-      video.style.width = (rect.width * 100) + '%';
-      video.style.height = (rect.height * 100) + '%';
-      console.log(video);
+  addVideo(videoName, delay, rect) {
+    setTimeout(() => {
+      var video = this.makeASMRVideo(videoName);
+      this.videos.push(video);
+
+      this.sizeVideo(video, rect);
 
       $(video).css('visibility', 'visible');
       video.play();
     }, delay);
+  }
+
+  sizeVideo(video, rect) {
+    video.style.left = (rect.x * 100) + '%';
+    video.style.top = (rect.y * 100) + '%';
+    video.style.width = (rect.width * 100) + '%';
+    video.style.height = (rect.height * 100) + '%';
   }
 
   // fuck matt: http://coding.vdhdesign.co.nz/?p=29
@@ -154,6 +167,63 @@ export class ASMR extends ShaneScene {
     $(video).css('visibility', 'hidden');
 
     return video;
+  }
+
+  /// DVD
+
+  doDVD() {
+    this.dvd = this.makeASMRVideo('jjs-asmr');
+    this.dvd.loop = false;
+
+    this.sizeVideo(this.dvd, rectangle(0.35, 0.35, 0.3, 0.3));
+    $(this.dvd).css('visibility', 'visible');
+    this.dvd.play();
+
+    setTimeout(() => {
+      this.shadowizeDVD(this.dvd, () => {
+        setTimeout(() => {
+          this.growDVD(this.dvd, () => {
+            console.log('i am grown man');
+          });
+        }, 3666);
+      });
+    }, 5666);
+  }
+
+  shadowizeDVD(dvd, callback) {
+    var shadowSize = 0;
+
+    let shadowInterval = setInterval(() => {
+      shadowSize += 1;
+      $(dvd).css('box-shadow', '10px 10px 30px ' + shadowSize + 'px rgba(0, 0, 0, 0.8)');
+
+      if (shadowSize >= 30) {
+        clearInterval(shadowInterval);
+        callback();
+      }
+    }, 140);
+  }
+
+  growDVD(dvd, callback) {
+    var length = 30; // the current length
+
+    let growthInterval = setInterval(() => {
+      length += 0.07;
+      var offset = 100 - length;
+      if (offset > 0) {
+        offset /= 2;
+      }
+
+      dvd.style.left = offset + '%';
+      dvd.style.top = offset + '%';
+      dvd.style.width = length + '%';
+      dvd.style.height = length + '%';
+
+      if (length >= 90) {
+        clearInterval(growthInterval);
+        callback();
+      }
+    }, 30);
   }
 
 }

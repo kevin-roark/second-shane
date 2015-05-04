@@ -21,6 +21,8 @@ var ShaneScene = require("../../shane-scene.es6").ShaneScene;
 
 var ShaneMesh = require("../../shane-mesh");
 
+var curtainDuration = 12000;
+
 var ASMR = exports.ASMR = (function (_ShaneScene) {
 
   /// Init
@@ -57,11 +59,18 @@ var ASMR = exports.ASMR = (function (_ShaneScene) {
 
         this.renderer.setClearColor(0);
 
+        this.videos = [];
+
         this.setupVideoData();
         this.timeVideos();
 
-        var asmrLength = 60000 * 3;
-        setTimeout(this.iWantOut.bind(this), asmrLength);
+        var asmrLength = 60000 * 4;
+
+        var dvdTime = 131666;
+        setTimeout(this.doDVD.bind(this), dvdTime);
+        setTimeout(this.doCurtains.bind(this), asmrLength - curtainDuration);
+
+        setTimeout(this.iWantOut.bind(this), asmrLength + 6666);
       }
     },
     exit: {
@@ -75,6 +84,12 @@ var ASMR = exports.ASMR = (function (_ShaneScene) {
           video.removeAttribute("src"); // thanks mdn really smart
           $(video).remove();
         }
+
+        this.dvd.removeAttribute("src");
+        $(this.dvd).remove();
+
+        this.leftCurtain.remove();
+        this.rightCurtain.remove();
       }
     },
     update: {
@@ -86,16 +101,19 @@ var ASMR = exports.ASMR = (function (_ShaneScene) {
         }
       }
     },
-    addCurtains: {
+    doCurtains: {
 
       /// Curtains
 
-      value: function addCurtains() {
+      value: function doCurtains() {
         this.leftCurtain = this.makeCurtain("left_curtain.jpg");
-        this.leftCurtain.css("left", "0px");
-
         this.rightCurtain = this.makeCurtain("right_curtain.jpg");
-        this.rightCurtain.css("right", "0px");
+
+        this.leftCurtain.css("left", -this.leftCurtain.width());
+        this.rightCurtain.css("right", -this.rightCurtain.width());
+
+        this.leftCurtain.animate({ left: 0 }, curtainDuration);
+        this.rightCurtain.animate({ right: 0 }, curtainDuration);
       }
     },
     makeCurtain: {
@@ -103,13 +121,6 @@ var ASMR = exports.ASMR = (function (_ShaneScene) {
         var curtain = this.makeImage(this.imageBase + name);
         curtain.css("width", "50%");
         return curtain;
-      }
-    },
-    animateCurtains: {
-      value: function animateCurtains() {
-        var duration = 12000;
-        this.leftCurtain.animate({ left: -this.leftCurtain.width() }, duration);
-        this.rightCurtain.animate({ right: -this.rightCurtain.width() }, duration);
       }
     },
     setupVideoData: {
@@ -137,29 +148,33 @@ var ASMR = exports.ASMR = (function (_ShaneScene) {
     },
     timeVideos: {
       value: function timeVideos() {
-        var videos = [];
         for (var i = 0; i < this.videoData.length; i++) {
           var data = this.videoData[i];
-          var video = this.makeASMRVideo(data.name);
-          videos.push(video);
-          this.addVideo(video, data.onset, this.videoRectangles[i]);
+          this.addVideo(data.name, data.onset, this.videoRectangles[i]);
         }
-
-        this.videos = videos;
       }
     },
     addVideo: {
-      value: function addVideo(video, delay, rect) {
+      value: function addVideo(videoName, delay, rect) {
+        var _this = this;
+
         setTimeout(function () {
-          video.style.left = rect.x * 100 + "%";
-          video.style.top = rect.y * 100 + "%";
-          video.style.width = rect.width * 100 + "%";
-          video.style.height = rect.height * 100 + "%";
-          console.log(video);
+          var video = _this.makeASMRVideo(videoName);
+          _this.videos.push(video);
+
+          _this.sizeVideo(video, rect);
 
           $(video).css("visibility", "visible");
           video.play();
         }, delay);
+      }
+    },
+    sizeVideo: {
+      value: function sizeVideo(video, rect) {
+        video.style.left = rect.x * 100 + "%";
+        video.style.top = rect.y * 100 + "%";
+        video.style.width = rect.width * 100 + "%";
+        video.style.height = rect.height * 100 + "%";
       }
     },
     makeASMRVideo: {
@@ -174,6 +189,69 @@ var ASMR = exports.ASMR = (function (_ShaneScene) {
         $(video).css("visibility", "hidden");
 
         return video;
+      }
+    },
+    doDVD: {
+
+      /// DVD
+
+      value: function doDVD() {
+        var _this = this;
+
+        this.dvd = this.makeASMRVideo("jjs-asmr");
+        this.dvd.loop = false;
+
+        this.sizeVideo(this.dvd, rectangle(0.35, 0.35, 0.3, 0.3));
+        $(this.dvd).css("visibility", "visible");
+        this.dvd.play();
+
+        setTimeout(function () {
+          _this.shadowizeDVD(_this.dvd, function () {
+            setTimeout(function () {
+              _this.growDVD(_this.dvd, function () {
+                console.log("i am grown man");
+              });
+            }, 3666);
+          });
+        }, 5666);
+      }
+    },
+    shadowizeDVD: {
+      value: function shadowizeDVD(dvd, callback) {
+        var shadowSize = 0;
+
+        var shadowInterval = setInterval(function () {
+          shadowSize += 1;
+          $(dvd).css("box-shadow", "10px 10px 30px " + shadowSize + "px rgba(0, 0, 0, 0.8)");
+
+          if (shadowSize >= 30) {
+            clearInterval(shadowInterval);
+            callback();
+          }
+        }, 140);
+      }
+    },
+    growDVD: {
+      value: function growDVD(dvd, callback) {
+        var length = 30; // the current length
+
+        var growthInterval = setInterval(function () {
+          length += 0.07;
+          var offset = 100 - length;
+          if (offset > 0) {
+            offset /= 2;
+          }
+
+          dvd.style.left = offset + "%";
+          dvd.style.top = offset + "%";
+          dvd.style.width = length + "%";
+          dvd.style.height = length + "%";
+
+          if (length >= 90) {
+            clearInterval(growthInterval);
+            callback();
+          }
+        }, 30);
       }
     }
   });
