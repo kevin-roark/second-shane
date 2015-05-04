@@ -687,15 +687,17 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
           return;
         }
 
-        $("video, img").css("opacity", "0");
+        var selector = "video, #cad-foot";
+
+        $(selector).css("opacity", "0");
         this.footModel.mesh.visible = false;
         setTimeout(function () {
-          $("video, img").css("opacity", "1");
+          $(selector).css("opacity", "1");
           _this.footModel.mesh.visible = true;
           setTimeout(function () {
             _this.flash();
-          }, kt.randInt(1000, 2500));
-        }, kt.randInt(250, 1000));
+          }, kt.randInt(1000, 3666));
+        }, kt.randInt(200, 500));
       }
     },
     doRotatingFoot: {
@@ -708,8 +710,8 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
         this.rotatingFoot = this.makeBodyVideo("rotating_foot");
 
         this.rotatingFoot.style.height = "60%";
-        this.rotatingFoot.style.right = "100px";
-        this.rotatingFoot.style.top = "15%";
+        this.rotatingFoot.style.right = "3%";
+        this.rotatingFoot.style.bottom = "20%";
 
         $(this.rotatingFoot).hide();
         this.rotatingFoot.play();
@@ -729,8 +731,8 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
         this.footMassage = this.makeBodyVideo("foot_massage");
 
         this.footMassage.style.width = "33%";
-        this.footMassage.style.left = "16%";
-        this.footMassage.style.bottom = "200px";
+        this.footMassage.style.left = "3%";
+        this.footMassage.style.bottom = "50px";
 
         this.footMassage.play();
 
@@ -746,8 +748,8 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
         this.footSlap = this.makeBodyVideo("footslap");
 
         this.footSlap.style.width = "40%";
-        this.footSlap.style.left = "30%";
-        this.footSlap.style.top = "40%";
+        this.footSlap.style.right = "15%";
+        this.footSlap.style.top = "6%";
 
         this.footSlap.play();
 
@@ -763,8 +765,8 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
         this.sean = this.makeBodyVideo("sean");
 
         this.sean.style.height = "40%";
-        this.sean.style.left = "15%";
-        this.sean.style.bottom = "15%";
+        this.sean.style.left = "25%";
+        this.sean.style.bottom = "120px";
 
         this.sean.play();
 
@@ -816,7 +818,7 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
 
         this.footModel = new ShaneMesh({
           modelName: "/js/models/foot.json",
-          position: new THREE.Vector3(-15, -4, -20)
+          position: new THREE.Vector3(-15, -9, -20)
         });
 
         this.footModel.addTo(this.scene, function () {
@@ -858,10 +860,11 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
         var _this = this;
 
         this.cadFootImage = this.makeBodyImage("cad_foot.jpg");
+        this.cadFootImage.attr("id", "cad-foot");
 
-        this.cadFootImage.css("bottom", "40px");
-        this.cadFootImage.css("right", "40px");
-        this.cadFootImage.css("width", "300px");
+        this.cadFootImage.css("bottom", "5px");
+        this.cadFootImage.css("right", "25%");
+        this.cadFootImage.css("width", "220px");
 
         this.cadFootImage.__rotation = 0;
 
