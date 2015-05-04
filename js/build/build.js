@@ -1041,8 +1041,6 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
     var host = this.isLive ? urls.papaJohn.live : urls.papaJohn.web;
     this.videoBase = host + "video/";
     this.imageBase = host + "images/";
-
-    this.papaJohnZ = -175;
   }
 
   _inherits(PapaJohn, _ShaneScene);
@@ -1067,6 +1065,7 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
         this.scene.fog.color.setHSL(0.6, 0, 1);
 
         this.camera.position.set(0, -10, 0);
+        this.camera.rotation.x += 0.125;
 
         this.makeTerrainScene();
         this.makeLights();
@@ -1075,6 +1074,8 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
         this.makeSky();
 
         setTimeout(this.makePapaJohn.bind(this), 3666);
+
+        setTimeout(this.goHome.bind(this), 150 * 1000);
       }
     },
     exit: {
@@ -1168,7 +1169,7 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
         });
 
         rock.createMesh(function () {
-          //rock.mesh.scale.set(2, 2, 2);
+          rock.mesh.scale.set(2, 2, 2);
 
           rock.setMeshColor(7029525);
 
@@ -1253,7 +1254,7 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
         this.papaJohnVideoMesh.mesh.receiveShadow = true;
         this.papaJohnVideoMesh.videoMaterial.opacity = 0;
 
-        this.papaJohnVideoMesh.moveTo(0, -5, this.papaJohnZ);
+        this.papaJohnVideoMesh.moveTo(0, -8, -135);
         this.papaJohnVideoMesh.rotateTo(0.1, 0, 0);
         this.papaJohnVideoMesh.addTo(this.scene);
 
@@ -1261,6 +1262,24 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
           _this.papaJohnVideoMesh.videoMaterial.opacity += 0.0025;
           if (_this.papaJohnVideoMesh.videoMaterial.opacity >= 1) {
             clearInterval(fadeInterval);
+          }
+        }, 30);
+      }
+    },
+    goHome: {
+
+      /// Going Home
+
+      value: function goHome() {
+        var _this = this;
+
+        console.log("going home!");
+        var fadeInterval = setInterval(function () {
+          _this.papaJohnVideoMesh.videoMaterial.opacity -= 0.0025;
+          if (_this.papaJohnVideoMesh.videoMaterial.opacity <= 0) {
+            clearInterval(fadeInterval);
+
+            _this.iWantOut();
           }
         }, 30);
       }
@@ -4279,7 +4298,7 @@ var ShaneScene = exports.ShaneScene = (function () {
     iWantOut: {
       value: function iWantOut() {
         if (this.exitCallback) {
-          this.exitCallback();
+          this.exitCallback(this);
         }
       }
     },

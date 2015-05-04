@@ -46,7 +46,7 @@ export class ShaneScene {
 
   iWantOut() {
     if (this.exitCallback) {
-      this.exitCallback();
+      this.exitCallback(this);
     }
   }
 
