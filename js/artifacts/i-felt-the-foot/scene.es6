@@ -38,6 +38,8 @@ export class iFeltTheFoot extends ShaneScene {
 
     this.makeSpotlight();
 
+    this.doMarbledDigitalFoot(4888);
+
     var endOfItAll = 121000;
 
     setTimeout(() => {
@@ -264,6 +266,19 @@ export class iFeltTheFoot extends ShaneScene {
 
     setTimeout(() => {
       this.cadFootImage.remove();
+    }, duration);
+  }
+
+  doMarbledDigitalFoot(duration) {
+    this.marbledDigitalFoot = this.makeBodyImage('marble_digital_foot.jpg');
+    this.marbledDigitalFoot.attr('id', 'marble-digital-foot');
+
+    this.marbledDigitalFoot.css('left', '25%');
+    this.marbledDigitalFoot.css('width', '50%');
+    this.marbledDigitalFoot.css('top', '15%');
+
+    setTimeout(() => {
+      this.marbledDigitalFoot.remove();
     }, duration);
   }
 

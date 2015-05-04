@@ -877,6 +877,8 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
 
         this.makeSpotlight();
 
+        this.doMarbledDigitalFoot(4888);
+
         var endOfItAll = 121000;
 
         setTimeout(function () {
@@ -1138,6 +1140,22 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
 
         setTimeout(function () {
           _this.cadFootImage.remove();
+        }, duration);
+      }
+    },
+    doMarbledDigitalFoot: {
+      value: function doMarbledDigitalFoot(duration) {
+        var _this = this;
+
+        this.marbledDigitalFoot = this.makeBodyImage("marble_digital_foot.jpg");
+        this.marbledDigitalFoot.attr("id", "marble-digital-foot");
+
+        this.marbledDigitalFoot.css("left", "25%");
+        this.marbledDigitalFoot.css("width", "50%");
+        this.marbledDigitalFoot.css("top", "15%");
+
+        setTimeout(function () {
+          _this.marbledDigitalFoot.remove();
         }, duration);
       }
     },
