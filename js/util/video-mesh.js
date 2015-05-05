@@ -1,5 +1,6 @@
 
 var THREE = require('three');
+var $ = require('jquery');
 
 module.exports = VideoMesh;
 
@@ -12,11 +13,11 @@ function VideoMesh(options) {
   var sourceVideoHeight = options.sourceVideoHeight || 180;
 
   this.videoImage = document.createElement('canvas');
-  this.videoImage.width = sourceVideoWidth.width;
-  this.videoImage.height = sourceVideoHeight.height;
+  this.videoImage.width = sourceVideoWidth;
+  this.videoImage.height = sourceVideoHeight;
 
   this.videoImageContext = this.videoImage.getContext('2d');
-	this.videoImageContext.fillStyle = '#000000'; // background color if no video present
+	this.videoImageContext.fillStyle = '#ffffff'; // background color if no video present
 	this.videoImageContext.fillRect(0, 0, this.renderedVideoWidth, this.renderedVideoHeight);
 
   this.videoTexture = new THREE.Texture(this.videoImage);
@@ -28,12 +29,11 @@ function VideoMesh(options) {
   this.videoMaterial = new THREE.MeshBasicMaterial({
     map: this.videoTexture,
     overdraw: true,
-    //side: THREE.DoubleSide,
     transparent: true,
     opacity: 1.0
   });
 
-  this.videoGeometry = new THREE.BoxGeometry(this.renderedVideoWidth, this.renderedVideoHeight, 20);
+  this.videoGeometry = new THREE.PlaneGeometry(this.renderedVideoWidth, this.renderedVideoHeight);
   this.mesh = new THREE.Mesh(this.videoGeometry, this.videoMaterial);
 }
 
@@ -41,11 +41,13 @@ VideoMesh.prototype.addTo = function(scene) {
   scene.add(this.mesh);
 };
 
-VideoMesh.prototype.render = function() {
+VideoMesh.prototype.update = function() {
   if (this.video.readyState === this.video.HAVE_ENOUGH_DATA) {
     this.videoImageContext.drawImage(this.video, 0, 0);
 
-    if (this.videoTexture) this.videoTexture.needsUpdate = true;
+    if (this.videoTexture) {
+      this.videoTexture.needsUpdate = true;
+    }
   }
 };
 

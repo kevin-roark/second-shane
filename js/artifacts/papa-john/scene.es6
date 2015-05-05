@@ -69,6 +69,10 @@ export class PapaJohn extends ShaneScene {
 
   update() {
     super.update();
+
+    if (this.papaJohnVideoMesh) {
+      this.papaJohnVideoMesh.update();
+    }
   }
 
   /// Creation
@@ -136,7 +140,7 @@ export class PapaJohn extends ShaneScene {
     rock.createMesh(() => {
       rock.mesh.scale.set(2, 2, 2);
 
-      rock.setMeshColor(0x6b4315);
+      rock.setMeshColor(0x211405);
 
       rock.mesh.castShadow = true;
       rock.mesh.receiveShadow = true;
@@ -153,7 +157,7 @@ export class PapaJohn extends ShaneScene {
   }
 
   makeLights() {
-    this.hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 1.15);
+    this.hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.8);
     this.hemiLight.color.setHSL(0.6, 1, 0.6);
     this.hemiLight.groundColor.setHSL( 0.095, 1, 0.75 );
     this.hemiLight.position.set( 0, 500, 0 );
@@ -202,12 +206,15 @@ export class PapaJohn extends ShaneScene {
   }
 
   makePapaJohn() {
-    this.papaJohnVideo = this.makeVideo(this.videoBase + 'papajohn', false, -10);
+    this.papaJohnVideo = this.makeVideo('/media/videos/papajohn', false, -10);
     $(this.papaJohnVideo).css('display', 'none');
+    $(this.papaJohnVideo).css('background-color', 'white');
     this.papaJohnVideo.play();
 
     this.papaJohnVideoMesh = new VideoMesh({
-      video: this.papaJohnVideo
+      video: this.papaJohnVideo,
+      sourceVideoWidth: 960,
+      sourceVideoHeight: 540
     });
     this.papaJohnVideoMesh.mesh.castShadow = true;
     this.papaJohnVideoMesh.mesh.receiveShadow = true;
