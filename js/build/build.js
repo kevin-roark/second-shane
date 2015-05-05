@@ -266,7 +266,88 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../shane-mesh":13,"../../shane-scene.es6":14,"../../talisman.es6":15,"../../urls":18,"jquery":21,"kutility":22,"three":23}],2:[function(require,module,exports){
+},{"../../shane-mesh":14,"../../shane-scene.es6":15,"../../talisman.es6":16,"../../urls":19,"jquery":22,"kutility":23,"three":24}],2:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+var $ = require("jquery");
+
+var desiredMarkerBottom = 80;
+var defaultMarkerLeft = window.innerWidth / 2.5;
+
+var Basketball = exports.Basketball = (function () {
+  function Basketball(imageName) {
+    _classCallCheck(this, Basketball);
+
+    this.div = markerDiv(imageName);
+  }
+
+  _createClass(Basketball, {
+    addTo: {
+      value: function addTo($domContainer) {
+        $domContainer.append(this.div);
+      }
+    },
+    bounce: {
+      value: function bounce(x, time, skipY) {
+        var marker = this.div;
+
+        var bounceY = desiredMarkerBottom + 50;
+        var currentX = marker.offset().left;
+        var halfWayX = currentX + (x - currentX) / 2;
+
+        if (!skipY) {
+          marker.animate({ left: halfWayX, bottom: bounceY }, time / 2, function () {
+            marker.animate({ left: x, bottom: desiredMarkerBottom }, time / 2);
+          });
+        } else {
+          marker.animate({ left: x, bottom: desiredMarkerBottom }, time);
+        }
+      }
+    }
+  });
+
+  return Basketball;
+})();
+
+function markerDiv(imageName) {
+  var img = $("<img src=\"" + imageName + "\"></img>");
+  img.css("width", "50px");
+
+  var marker = $("<div></div>");
+  marker.append(img);
+
+  marker.css("position", "absolute");
+  marker.css("bottom", desiredMarkerBottom + "px");
+  marker.css("left", defaultMarkerLeft + "px");
+  marker.css("box-shadow", "0px 0px 30px 8px rgba(255, 255, 255, 0.95)");
+  marker.css("z-index", "1000000");
+  marker.css("border-radius", "25px");
+
+  return marker;
+}
+
+function bounceMarker(marker, x, time, skipY) {
+  var bounceY = desiredMarkerBottom + 50;
+  var currentX = marker.offset().left;
+  var halfWayX = currentX + (x - currentX) / 2;
+
+  if (!skipY) {
+    marker.animate({ left: halfWayX, bottom: bounceY }, time / 2, function () {
+      marker.animate({ left: x, bottom: desiredMarkerBottom }, time / 2);
+    });
+  } else {
+    marker.animate({ left: x, bottom: desiredMarkerBottom }, time);
+  }
+}
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+},{"jquery":22}],3:[function(require,module,exports){
 "use strict";
 
 var $ = require("jquery");
@@ -274,9 +355,6 @@ var $ = require("jquery");
 var defaultLineLength = 8000;
 var defaultTimeBetweenLines = 2000;
 var defaultTimeBetweenBlocks = 4000;
-
-var desiredMarkerBottom = 80;
-var defaultMarkerLeft = window.innerWidth / 2.5;
 
 var verse1 = [{ text: "It's alright", length: 1 }, { text: "Everything is fine", length: 1 }, { text: "You live the perfect life", length: 1 }, { text: "Never one immoral thought inside your mind", length: 2 }];
 
@@ -286,13 +364,17 @@ var chorusBlock2 = [{ text: "God is a man", length: 1 }, { text: "You know for c
 
 var verse2 = [{ text: "So you've tried", length: 1 }, { text: "And you've made up your mind", length: 1 }, { text: "Something's still not right", length: 1 }, { text: "The devil you don't know is still outside", length: 2 }];
 
-var doKaraoke = function (domContainer, markerImageName) {
+var doKaraoke = function (domContainer, marker, endtime) {
+  if (!endtime) {
+    endtime = 13 * 60000;
+  }
 
   var karaokeDomContainer = karaokeDiv([]);
   domContainer.append(karaokeDomContainer);
 
-  var marker = markerDiv(markerImageName);
-  domContainer.append(marker);
+  setTimeout(function () {
+    karaokeDomContainer.remove();
+  }, endtime);
 
   processBlock(verse1, function () {
     setTimeout(function () {
@@ -343,7 +425,7 @@ var doKaraoke = function (domContainer, markerImageName) {
     var lineLength = defaultLineLength * line.length;
     var letterLength = lineLength / children.length;
 
-    bounceMarker(marker, $(children[0]).offset().left, delayTime, true);
+    marker.bounce($(children[0]).offset().left, delayTime, true);
 
     setTimeout(function () {
       karaokeDomContainer.css("opacity", "1");
@@ -354,7 +436,7 @@ var doKaraoke = function (domContainer, markerImageName) {
       var letter = $(children[i]);
       activate(letter);
 
-      bounceMarker(marker, letter.offset().left + letter.width() / 2, letterLength);
+      marker.bounce(letter.offset().left + letter.width() / 2, letterLength);
 
       if (i + 1 < children.length) {
         setTimeout(function () {
@@ -406,44 +488,13 @@ var doKaraoke = function (domContainer, markerImageName) {
   function activate(span) {
     span.css("color", "#fdd700");
   }
-
-  function markerDiv(imageName) {
-    var img = $("<img src=\"" + imageName + "\"></img>");
-    img.css("width", "50px");
-
-    var marker = $("<div></div>");
-    marker.append(img);
-
-    marker.css("position", "absolute");
-    marker.css("bottom", desiredMarkerBottom + "px");
-    marker.css("left", defaultMarkerLeft + "px");
-    marker.css("box-shadow", "0px 0px 30px 8px rgba(255, 255, 255, 0.95)");
-    marker.css("z-index", "1000000");
-    marker.css("border-radius", "25px");
-
-    return marker;
-  }
-
-  function bounceMarker(marker, x, time, skipY) {
-    var bounceY = desiredMarkerBottom + 50;
-    var currentX = marker.offset().left;
-    var halfWayX = currentX + (x - currentX) / 2;
-
-    if (!skipY) {
-      marker.animate({ left: halfWayX, bottom: bounceY }, time / 2, function () {
-        marker.animate({ left: x, bottom: desiredMarkerBottom }, time / 2);
-      });
-    } else {
-      marker.animate({ left: x, bottom: desiredMarkerBottom }, time);
-    }
-  }
 };
 exports.doKaraoke = doKaraoke;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"jquery":21}],3:[function(require,module,exports){
+},{"jquery":22}],4:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -465,6 +516,8 @@ var Talisman = require("../../talisman.es6").Talisman;
 var ShaneScene = require("../../shane-scene.es6").ShaneScene;
 
 var doKaraoke = require("./karaoke.es6").doKaraoke;
+
+var Basketball = require("./basketball.es6").Basketball;
 
 var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
   function GodIsAMan(renderer, camera, scene, options) {
@@ -518,7 +571,9 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
         //setTimeout(this.createLilWayne.bind(this), 2000);
 
         setTimeout(function () {
-          doKaraoke(_this.domContainer, _this.imageBase + "basketball.png");
+          _this.basketball = new Basketball(_this.imageBase + "basketball.png");
+          _this.basketball.addTo(_this.domContainer);
+          doKaraoke(_this.domContainer, _this.basketball);
         }, 1000);
       }
     },
@@ -814,7 +869,7 @@ Object.defineProperty(exports, "__esModule", {
 
 //      this.exitCallback(this);
 
-},{"../../shane-scene.es6":14,"../../talisman.es6":15,"../../urls":18,"./karaoke.es6":2,"jquery":21,"kutility":22,"three":23}],4:[function(require,module,exports){
+},{"../../shane-scene.es6":15,"../../talisman.es6":16,"../../urls":19,"./basketball.es6":2,"./karaoke.es6":3,"jquery":22,"kutility":23,"three":24}],5:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1284,7 +1339,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../shane-mesh":13,"../../shane-scene.es6":14,"../../talisman.es6":15,"../../urls":18,"jquery":21,"kutility":22,"three":23}],5:[function(require,module,exports){
+},{"../../shane-mesh":14,"../../shane-scene.es6":15,"../../talisman.es6":16,"../../urls":19,"jquery":22,"kutility":23,"three":24}],6:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1495,7 +1550,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../shane-mesh":13,"../../shane-scene.es6":14,"../../talisman.es6":15,"../../urls":18,"jquery":21,"three":23}],6:[function(require,module,exports){
+},{"../../shane-mesh":14,"../../shane-scene.es6":15,"../../talisman.es6":16,"../../urls":19,"jquery":22,"three":24}],7:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1791,7 +1846,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../lib/three.terrain":9,"../../shane-mesh":13,"../../shane-scene.es6":14,"../../talisman.es6":15,"../../urls":18,"../../util/video-mesh":20,"jquery":21,"kutility":22,"three":23}],7:[function(require,module,exports){
+},{"../../lib/three.terrain":10,"../../shane-mesh":14,"../../shane-scene.es6":15,"../../talisman.es6":16,"../../urls":19,"../../util/video-mesh":21,"jquery":22,"kutility":23,"three":24}],8:[function(require,module,exports){
 "use strict";
 
 /**
@@ -2066,7 +2121,7 @@ module.exports = function (camera, options) {
 	this.updateRotationVector();
 };
 
-},{"./pointerlocker":8,"three":23}],8:[function(require,module,exports){
+},{"./pointerlocker":9,"three":24}],9:[function(require,module,exports){
 "use strict";
 
 module.exports = function () {
@@ -2166,7 +2221,7 @@ module.exports = function () {
   }
 };
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 "use strict";
 
 /**
@@ -4206,7 +4261,7 @@ THREE.Terrain.Influence = function (g, options, f, x, y, r, h, t, e) {
 
 module.exports = THREE.Terrain;
 
-},{"three":23}],10:[function(require,module,exports){
+},{"three":24}],11:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -4418,7 +4473,7 @@ $(function () {
   shane.activate();
 });
 
-},{"./controls/fly-controls":7,"./one-offs.es6":11,"./scenes.es6":12,"./theme.es6":16,"./three-boiler.es6":17,"jquery":21,"three":23}],11:[function(require,module,exports){
+},{"./controls/fly-controls":8,"./one-offs.es6":12,"./scenes.es6":13,"./theme.es6":17,"./three-boiler.es6":18,"jquery":22,"three":24}],12:[function(require,module,exports){
 "use strict";
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
@@ -4534,7 +4589,7 @@ Object.defineProperty(exports, "__esModule", {
 
 // override for frame-ly updates
 
-},{"three":23}],12:[function(require,module,exports){
+},{"three":24}],13:[function(require,module,exports){
 "use strict";
 
 var ASMR = require("./artifacts/asmr/scene.es6").ASMR;
@@ -4561,7 +4616,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"./artifacts/asmr/scene.es6":1,"./artifacts/god-is-a-man/scene.es6":3,"./artifacts/i-felt-the-foot/scene.es6":4,"./artifacts/live-at-jjs/scene.es6":5,"./artifacts/papa-john/scene.es6":6}],13:[function(require,module,exports){
+},{"./artifacts/asmr/scene.es6":1,"./artifacts/god-is-a-man/scene.es6":4,"./artifacts/i-felt-the-foot/scene.es6":5,"./artifacts/live-at-jjs/scene.es6":6,"./artifacts/papa-john/scene.es6":7}],14:[function(require,module,exports){
 "use strict";
 
 var THREE = require("three");
@@ -4736,7 +4791,7 @@ ShaneMesh.prototype.fallToFloor = function (threshold, speed) {
 ShaneMesh.prototype.additionalInit = function () {};
 ShaneMesh.prototype.additionalRender = function () {};
 
-},{"kutility":22,"three":23}],14:[function(require,module,exports){
+},{"kutility":23,"three":24}],15:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -4899,7 +4954,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"./talisman.es6":15,"jquery":21,"three":23}],15:[function(require,module,exports){
+},{"./talisman.es6":16,"jquery":22,"three":24}],16:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -5031,7 +5086,7 @@ Object.defineProperty(exports, "__esModule", {
 
 // do stuff with mesh
 
-},{"three":23}],16:[function(require,module,exports){
+},{"three":24}],17:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -5077,7 +5132,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"./util/skybox":19}],17:[function(require,module,exports){
+},{"./util/skybox":20}],18:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -5196,7 +5251,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"jquery":21,"three":23}],18:[function(require,module,exports){
+},{"jquery":22,"three":24}],19:[function(require,module,exports){
 "use strict";
 
 module.exports.godIsAMan = {
@@ -5224,7 +5279,7 @@ module.exports.papaJohn = {
   live: "http://localhost:5555/"
 };
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 "use strict";
 
 var THREE = require("three");
@@ -5294,7 +5349,7 @@ module.exports.blocker = function (size) {
   return new THREE.Mesh(geometry, material);
 };
 
-},{"three":23}],20:[function(require,module,exports){
+},{"three":24}],21:[function(require,module,exports){
 "use strict";
 
 var THREE = require("three");
@@ -5357,7 +5412,7 @@ VideoMesh.prototype.rotateTo = function (rx, ry, rz) {
   this.mesh.rotation.set(rx, ry, rz);
 };
 
-},{"jquery":21,"three":23}],21:[function(require,module,exports){
+},{"jquery":22,"three":24}],22:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.3
  * http://jquery.com/
@@ -14564,7 +14619,7 @@ return jQuery;
 
 }));
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 
 /* export something */
 module.exports = new Kutility();
@@ -15138,7 +15193,7 @@ Kutility.prototype.blur = function(el, x) {
   this.setFilter(el, cf + f);
 };
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 var self = self || {};// File:src/Three.js
 
 /**
@@ -50286,4 +50341,4 @@ if (typeof exports !== 'undefined') {
   this['THREE'] = THREE;
 }
 
-},{}]},{},[10]);
+},{}]},{},[11]);

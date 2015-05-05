@@ -8,6 +8,7 @@ import {Talisman} from '../../talisman.es6';
 import {ShaneScene} from '../../shane-scene.es6';
 
 import {doKaraoke} from './karaoke.es6';
+import {Basketball} from './basketball.es6';
 
 export class GodIsAMan extends ShaneScene {
 
@@ -53,7 +54,9 @@ export class GodIsAMan extends ShaneScene {
     //setTimeout(this.createLilWayne.bind(this), 2000);
 
     setTimeout(() => {
-      doKaraoke(this.domContainer, this.imageBase + 'basketball.png');
+      this.basketball = new Basketball(this.imageBase + 'basketball.png');
+      this.basketball.addTo(this.domContainer);
+      doKaraoke(this.domContainer, this.basketball);
     }, 1000);
   }
 
