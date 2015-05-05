@@ -204,7 +204,7 @@ export class iFeltTheFoot extends ShaneScene {
   makeBodyVideo(name) {
     let vid = this.makeVideo(this.videoBase + name, false, -10);
 
-    $(vid).css('box-shadow', '0px 0px 30px 16px rgba(0, 0, 0, 0.75)');
+    $(vid).css('box-shadow', '12px 12px 30px 16px rgba(0, 0, 0, 0.75)');
 
     return vid;
   }
@@ -285,7 +285,7 @@ export class iFeltTheFoot extends ShaneScene {
   makeBodyImage(name) {
     var image = this.makeImage(this.imageBase + name, false, -10);
 
-    image.css('box-shadow', '0px 0px 30px 16px rgba(0, 0, 0, 0.75)');
+    image.css('box-shadow', '12px 12px 30px 16px rgba(0, 0, 0, 0.75)');
 
     return image;
   }
