@@ -31,7 +31,7 @@ body {
   z-index: 999;
 }
 
-.video-overlay, .image-overlay {
+.video-overlay, .image-overlay, .canvas-overlay {
   position: fixed;
   z-index: 200;
 }

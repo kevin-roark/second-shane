@@ -122,4 +122,17 @@ export class ShaneScene {
     return img;
   }
 
+  makeCanvas(z) {
+    var canvas = $('<canvas class="canvas-overlay"></canvas>');
+
+
+    if (z !== undefined) {
+      canvas.css('z-index', z);
+    }
+
+    this.domContainer.append(canvas);
+
+    return canvas.get(0);
+  }
+
 }

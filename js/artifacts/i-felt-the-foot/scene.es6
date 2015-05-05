@@ -76,6 +76,7 @@ export class iFeltTheFoot extends ShaneScene {
       this.doCadFootImage(dur);
 
       setTimeout(this.flash.bind(this), 4000);
+      setTimeout(this.makeFountain.bind(this), 15666);
     }, restOfThemOffset);
 
     setTimeout(this.iWantOut.bind(this), endOfItAll);
@@ -87,6 +88,9 @@ export class iFeltTheFoot extends ShaneScene {
     this.renderer.setClearColor(0xffffff, 1);
 
     this.marble.remove();
+
+    $(this.fountainCanvas).remove();
+    this.fountainsActive = false;
 
     this.scene.remove(this.spotLight);
   }
@@ -103,6 +107,10 @@ export class iFeltTheFoot extends ShaneScene {
       this.cadFootImage.__rotation += 1;
       kt.rotate3dy(this.cadFootImage, this.cadFootImage.__rotation);
     }
+
+    if (this.fountainsActive) {
+      this.updateFountain();
+    }
   }
 
   /// Manipulation
@@ -112,7 +120,7 @@ export class iFeltTheFoot extends ShaneScene {
       return;
     }
 
-    let selector = 'video, #cad-foot';
+    let selector = 'video, #cad-foot, #fountain-canvas';
 
     $(selector).css('opacity', '0');
     this.footModel.mesh.visible = false;
@@ -204,7 +212,7 @@ export class iFeltTheFoot extends ShaneScene {
   makeBodyVideo(name) {
     let vid = this.makeVideo(this.videoBase + name, false, -10);
 
-    $(vid).css('box-shadow', '12px 12px 30px 16px rgba(0, 0, 0, 0.75)');
+    $(vid).css('box-shadow', '25px 25px 30px 0px rgba(0, 0, 0, 0.75)');
 
     return vid;
   }
@@ -285,9 +293,92 @@ export class iFeltTheFoot extends ShaneScene {
   makeBodyImage(name) {
     var image = this.makeImage(this.imageBase + name, false, -10);
 
-    image.css('box-shadow', '12px 12px 30px 16px rgba(0, 0, 0, 0.75)');
+    image.css('box-shadow', '25px 25px 30px 0px rgba(0, 0, 0, 0.75)');
 
     return image;
+  }
+
+  /// Fountain (delightfully modified from http://cssdeck.com/labs/html5-canvas-fountain-exploding-particles-with-gravity)
+
+  makeFountain() {
+    this.fountainsActive = true;
+
+    var canvas = this.makeCanvas(-5);
+    canvas.id = 'fountain-canvas';
+    canvas.width = 400;
+    canvas.height = window.innerHeight - 40;
+    canvas.style.top = '20px';
+    canvas.style.left = '35%';
+
+
+    this.fountainCanvas = canvas;
+
+  	var ctx = canvas.getContext('2d');
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.75)';
+    ctx.shadowBlur = 20;
+    ctx.shadowOffsetX = 10;
+    ctx.shadowOffsetY = 10;
+
+    var fountainImage = $('<img src="' + this.imageBase + 'fountain_foot.png"></img>').get(0);
+
+  	var imageCount = 20;
+  	this.fountainFeet = [];
+
+  	function FountainFoot() {
+      this.resetPosition = function() {
+        this.x = canvas.width / 2;
+        this.y = canvas.height - this.height;
+      };
+
+      this.resetVelocities = function() {
+        this.vx = Math.random() * 4 - 2;
+
+        // vy should be negative initially
+        this.vy = Math.random() * -18 - 10;
+      };
+
+  		this.draw = function() {
+        ctx.drawImage(fountainImage, this.x, this.y, this.width, this.height);
+  		};
+
+  		this.width = kt.randInt(20, 50);
+      this.height = this.width * 0.75;
+
+      this.resetPosition();
+      this.resetVelocities();
+  	}
+
+  	for (var i = 0; i < imageCount; i++) {
+  		this.fountainFeet.push(new FountainFoot());
+  	}
+  }
+
+  updateFountain() {
+    var ctx = this.fountainCanvas.getContext('2d');
+
+    ctx.clearRect(0, 0, this.fountainCanvas.width, this.fountainCanvas.height);
+
+    var gravity = 0.5;
+
+    for (var i = 0; i < this.fountainFeet.length; i++) {
+      var foot = this.fountainFeet[i];
+
+      foot.vy += gravity;
+
+      foot.x += foot.vx;
+      foot.y += foot.vy;
+
+      if (foot.x + foot.width > this.fountainCanvas.width ||
+          foot.x - foot.width < 0 ||
+          foot.y + foot.height > this.fountainCanvas.height) {
+
+        // we need to re-position the particles on the base :)
+        foot.resetPosition();
+        foot.resetVelocities();
+      }
+
+      foot.draw();
+    }
   }
 
 }
