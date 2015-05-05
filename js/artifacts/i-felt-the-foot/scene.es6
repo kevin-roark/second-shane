@@ -40,6 +40,9 @@ export class iFeltTheFoot extends ShaneScene {
 
     this.doMarbledDigitalFoot(4888);
 
+    this.fountainVelocityMultiplier = 1.0;
+    this.makeFountain();
+
     var endOfItAll = 121000;
 
     setTimeout(() => {
@@ -110,6 +113,14 @@ export class iFeltTheFoot extends ShaneScene {
 
     if (this.fountainsActive) {
       this.updateFountain();
+    }
+  }
+
+  resize() {
+    super.resize();
+    if (this.fountainCanvas) {
+      this.fountainCanvas.width = window.innerWidth;
+      this.fountainCanvas.height = window.innerHeight;
     }
   }
 
@@ -301,15 +312,16 @@ export class iFeltTheFoot extends ShaneScene {
   /// Fountain (delightfully modified from http://cssdeck.com/labs/html5-canvas-fountain-exploding-particles-with-gravity)
 
   makeFountain() {
+    var self = this;
+
     this.fountainsActive = true;
 
     var canvas = this.makeCanvas(-5);
     canvas.id = 'fountain-canvas';
-    canvas.width = 400;
-    canvas.height = window.innerHeight - 40;
-    canvas.style.top = '20px';
-    canvas.style.left = '35%';
-
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    canvas.style.top = '0px';
+    canvas.style.left = '0px';
 
     this.fountainCanvas = canvas;
 
@@ -321,7 +333,7 @@ export class iFeltTheFoot extends ShaneScene {
 
     var fountainImage = $('<img src="' + this.imageBase + 'fountain_foot.png"></img>').get(0);
 
-  	var imageCount = 20;
+  	var imageCount = 21;
   	this.fountainFeet = [];
 
   	function FountainFoot() {
@@ -331,17 +343,17 @@ export class iFeltTheFoot extends ShaneScene {
       };
 
       this.resetVelocities = function() {
-        this.vx = Math.random() * 4 - 2;
+        this.vx = (Math.random() * 6 - 3) * self.fountainVelocityMultiplier;
 
         // vy should be negative initially
-        this.vy = Math.random() * -18 - 10;
+        this.vy = (Math.random() * -9 - 3) * self.fountainVelocityMultiplier;
       };
 
   		this.draw = function() {
         ctx.drawImage(fountainImage, this.x, this.y, this.width, this.height);
   		};
 
-  		this.width = kt.randInt(20, 50);
+  		this.width = kt.randInt(25, 58);
       this.height = this.width * 0.75;
 
       this.resetPosition();
@@ -354,6 +366,8 @@ export class iFeltTheFoot extends ShaneScene {
   }
 
   updateFountain() {
+    this.fountainVelocityMultiplier += 0.00075;
+
     var ctx = this.fountainCanvas.getContext('2d');
 
     ctx.clearRect(0, 0, this.fountainCanvas.width, this.fountainCanvas.height);
