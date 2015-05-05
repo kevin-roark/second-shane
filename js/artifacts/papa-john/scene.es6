@@ -225,7 +225,7 @@ export class PapaJohn extends ShaneScene {
     this.papaJohnVideoMesh.addTo(this.scene);
 
     var fadeInterval = setInterval(() => {
-      this.papaJohnVideoMesh.videoMaterial.opacity += 0.0025;
+      this.papaJohnVideoMesh.videoMaterial.opacity += 0.00125;
       if (this.papaJohnVideoMesh.videoMaterial.opacity >= 1) {
         clearInterval(fadeInterval);
       }
@@ -237,7 +237,7 @@ export class PapaJohn extends ShaneScene {
   goHome() {
     console.log('going home!');
     var fadeInterval = setInterval(() => {
-      this.papaJohnVideoMesh.videoMaterial.opacity -= 0.0025;
+      this.papaJohnVideoMesh.videoMaterial.opacity -= 0.00125;
       if (this.papaJohnVideoMesh.videoMaterial.opacity <= 0) {
         clearInterval(fadeInterval);
 

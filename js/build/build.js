@@ -1650,7 +1650,7 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
         this.papaJohnVideoMesh.addTo(this.scene);
 
         var fadeInterval = setInterval(function () {
-          _this.papaJohnVideoMesh.videoMaterial.opacity += 0.0025;
+          _this.papaJohnVideoMesh.videoMaterial.opacity += 0.00125;
           if (_this.papaJohnVideoMesh.videoMaterial.opacity >= 1) {
             clearInterval(fadeInterval);
           }
@@ -1666,7 +1666,7 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
 
         console.log("going home!");
         var fadeInterval = setInterval(function () {
-          _this.papaJohnVideoMesh.videoMaterial.opacity -= 0.0025;
+          _this.papaJohnVideoMesh.videoMaterial.opacity -= 0.00125;
           if (_this.papaJohnVideoMesh.videoMaterial.opacity <= 0) {
             clearInterval(fadeInterval);
 
