@@ -283,6 +283,7 @@ var Basketball = exports.Basketball = (function () {
     _classCallCheck(this, Basketball);
 
     this.div = markerDiv(imageName);
+    this.img = $(this.div.children()[0]);
   }
 
   _createClass(Basketball, {
@@ -291,16 +292,25 @@ var Basketball = exports.Basketball = (function () {
         $domContainer.append(this.div);
       }
     },
+    setWidth: {
+      value: function setWidth(width) {
+        this.img.css("width", width + "px");
+        this.div.css("border-radius", width / 2 + "px");
+      }
+    },
     bounce: {
-      value: function bounce(x, time, skipY) {
+      value: function bounce(options) {
         var marker = this.div;
 
-        var bounceY = desiredMarkerBottom + 50;
         var currentX = marker.offset().left;
-        var halfWayX = currentX + (x - currentX) / 2;
 
-        if (!skipY) {
-          marker.animate({ left: halfWayX, bottom: bounceY }, time / 2, function () {
+        var x = options.x || currentX;
+        var y = options.y;
+        var time = options.time || 500;
+
+        if (y !== undefined) {
+          var halfWayX = currentX + (x - currentX) / 2;
+          marker.animate({ left: halfWayX, bottom: desiredMarkerBottom + y }, time / 2, function () {
             marker.animate({ left: x, bottom: desiredMarkerBottom }, time / 2);
           });
         } else {
@@ -328,20 +338,6 @@ function markerDiv(imageName) {
   marker.css("border-radius", "25px");
 
   return marker;
-}
-
-function bounceMarker(marker, x, time, skipY) {
-  var bounceY = desiredMarkerBottom + 50;
-  var currentX = marker.offset().left;
-  var halfWayX = currentX + (x - currentX) / 2;
-
-  if (!skipY) {
-    marker.animate({ left: halfWayX, bottom: bounceY }, time / 2, function () {
-      marker.animate({ left: x, bottom: desiredMarkerBottom }, time / 2);
-    });
-  } else {
-    marker.animate({ left: x, bottom: desiredMarkerBottom }, time);
-  }
 }
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -425,7 +421,10 @@ var doKaraoke = function (domContainer, marker, endtime) {
     var lineLength = defaultLineLength * line.length;
     var letterLength = lineLength / children.length;
 
-    marker.bounce($(children[0]).offset().left, delayTime, true);
+    marker.bounce({
+      x: $(children[0]).offset().left,
+      time: delayTime
+    });
 
     setTimeout(function () {
       karaokeDomContainer.css("opacity", "1");
@@ -436,7 +435,11 @@ var doKaraoke = function (domContainer, marker, endtime) {
       var letter = $(children[i]);
       activate(letter);
 
-      marker.bounce(letter.offset().left + letter.width() / 2, letterLength);
+      marker.bounce({
+        x: letter.offset().left + letter.width() / 2,
+        y: 50,
+        time: letterLength
+      });
 
       if (i + 1 < children.length) {
         setTimeout(function () {
@@ -570,6 +573,8 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
         //setTimeout(this.createBigSean.bind(this), 2000);
         //setTimeout(this.createLilWayne.bind(this), 2000);
 
+        //setTimeout(this.transitionToBall.bind(this), 1666); // 13 minutes?
+
         setTimeout(function () {
           _this.basketball = new Basketball(_this.imageBase + "basketball.png");
           _this.basketball.addTo(_this.domContainer);
@@ -589,8 +594,6 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
         if (!this.active) {
           return;
         }
-
-        if (this.exitCallback) {}
       }
     },
     vegasTime: {
@@ -857,6 +860,56 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
           $(vision).remove();
         });
       }
+    },
+    transitionToBall: {
+
+      /// Basketball at the end
+
+      value: function transitionToBall() {
+        this.ballWidth = 50;
+        this.upBallWidth();
+
+        this.finalOverlay = $("<div></div>");
+        this.finalOverlay.css("background-color", "white");
+        this.finalOverlay.css("opacity", "0");
+        this.finalOverlay.css("z-index", "10000");
+        this.finalOverlay.css("position", "fixed");
+        this.finalOverlay.css("width", "100%");
+        this.finalOverlay.css("height", "100%");
+        this.finalOverlay.css("left", "0");
+        this.finalOverlay.css("top", "0");
+        this.domContainer.append(this.finalOverlay);
+        this.finalOverlay.animate({ opacity: 1 }, 45000);
+
+        this.basketball.bounce({
+          x: window.innerWidth / 2 - 25,
+          time: 100
+        });
+        setTimeout(this.bounceBall.bind(this), 500);
+      }
+    },
+    upBallWidth: {
+      value: function upBallWidth() {
+        this.ballWidth += 0.4;
+        this.basketball.setWidth(this.ballWidth);
+
+        if (this.ballWidth < window.innerWidth * 0.8) {
+          setTimeout(this.upBallWidth.bind(this), kt.randInt(25, 65));
+        }
+      }
+    },
+    bounceBall: {
+      value: function bounceBall() {
+        this.basketball.bounce({
+          x: window.innerWidth / 2 - this.ballWidth / 2,
+          y: window.innerHeight / 2,
+          time: 2666
+        });
+
+        if (this.active) {
+          setTimeout(this.bounceBall.bind(this), 2766);
+        }
+      }
     }
   });
 
@@ -866,8 +919,6 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-
-//      this.exitCallback(this);
 
 },{"../../shane-scene.es6":15,"../../talisman.es6":16,"../../urls":19,"./basketball.es6":2,"./karaoke.es6":3,"jquery":22,"kutility":23,"three":24}],5:[function(require,module,exports){
 "use strict";

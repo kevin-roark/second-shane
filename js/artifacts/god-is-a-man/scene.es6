@@ -53,6 +53,8 @@ export class GodIsAMan extends ShaneScene {
     //setTimeout(this.createBigSean.bind(this), 2000);
     //setTimeout(this.createLilWayne.bind(this), 2000);
 
+    //setTimeout(this.transitionToBall.bind(this), 1666); // 13 minutes?
+
     setTimeout(() => {
       this.basketball = new Basketball(this.imageBase + 'basketball.png');
       this.basketball.addTo(this.domContainer);
@@ -69,10 +71,6 @@ export class GodIsAMan extends ShaneScene {
   click() {
     if (!this.active) {
       return;
-    }
-
-    if (this.exitCallback) {
-//      this.exitCallback(this);
     }
   }
 
@@ -303,6 +301,52 @@ export class GodIsAMan extends ShaneScene {
       vision.src = '';
       $(vision).remove();
     });
+  }
+
+  /// Basketball at the end
+
+  transitionToBall() {
+    this.ballWidth = 50;
+    this.upBallWidth();
+
+    this.finalOverlay = $('<div></div>');
+    this.finalOverlay.css('background-color', 'white');
+    this.finalOverlay.css('opacity', '0');
+    this.finalOverlay.css('z-index', '10000');
+    this.finalOverlay.css('position', 'fixed');
+    this.finalOverlay.css('width', '100%');
+    this.finalOverlay.css('height', '100%');
+    this.finalOverlay.css('left', '0');
+    this.finalOverlay.css('top', '0');
+    this.domContainer.append(this.finalOverlay);
+    this.finalOverlay.animate({opacity: 1}, 45000);
+
+    this.basketball.bounce({
+      x: window.innerWidth / 2 - 25,
+      time: 100
+    });
+    setTimeout(this.bounceBall.bind(this), 500);
+  }
+
+  upBallWidth() {
+    this.ballWidth += 0.4;
+    this.basketball.setWidth(this.ballWidth);
+
+    if (this.ballWidth < window.innerWidth * 0.8) {
+      setTimeout(this.upBallWidth.bind(this), kt.randInt(25, 65));
+    }
+  }
+
+  bounceBall() {
+    this.basketball.bounce({
+      x: window.innerWidth / 2 - this.ballWidth / 2,
+      y: window.innerHeight / 2,
+      time: 2666
+    });
+
+    if (this.active) {
+      setTimeout(this.bounceBall.bind(this), 2766);
+    }
   }
 
 }

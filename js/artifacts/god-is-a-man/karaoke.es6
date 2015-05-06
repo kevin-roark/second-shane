@@ -95,7 +95,10 @@ export var doKaraoke = (domContainer, marker, endtime) => {
     var lineLength = defaultLineLength * line.length;
     var letterLength = lineLength / children.length;
 
-    marker.bounce($(children[0]).offset().left, delayTime, true);
+    marker.bounce({
+      x: $(children[0]).offset().left,
+      time: delayTime
+    });
 
     setTimeout(function() {
       karaokeDomContainer.css('opacity', '1');
@@ -106,7 +109,11 @@ export var doKaraoke = (domContainer, marker, endtime) => {
       var letter = $(children[i]);
       activate(letter);
 
-      marker.bounce(letter.offset().left + letter.width() / 2, letterLength);
+      marker.bounce({
+        x: letter.offset().left + letter.width() / 2,
+        y: 50,
+        time: letterLength
+      });
 
       if (i + 1 < children.length) {
         setTimeout(function() {
