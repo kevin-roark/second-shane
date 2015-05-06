@@ -19,7 +19,7 @@ export class Basketball {
     this.div.css('border-radius', (width / 2) + 'px');
   }
 
-  bounce(options) {
+  bounce(options, callback) {
     var marker = this.div;
 
     var currentX = marker.offset().left;
@@ -31,11 +31,15 @@ export class Basketball {
     if (y !== undefined) {
       var halfWayX = currentX + (x - currentX) / 2;
       marker.animate({left: halfWayX, bottom: desiredMarkerBottom + y}, time / 2, function() {
-        marker.animate({left: x, bottom: desiredMarkerBottom}, time / 2);
+        marker.animate({left: x, bottom: desiredMarkerBottom}, time / 2, function() {
+          if (callback) callback();
+        });
       });
     }
     else {
-      marker.animate({left: x, bottom: desiredMarkerBottom}, time);
+      marker.animate({left: x, bottom: desiredMarkerBottom}, time, function() {
+        if (callback) callback();
+      });
     }
   }
 }

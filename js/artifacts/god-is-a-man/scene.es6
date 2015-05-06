@@ -319,7 +319,7 @@ export class GodIsAMan extends ShaneScene {
     this.finalOverlay.css('left', '0');
     this.finalOverlay.css('top', '0');
     this.domContainer.append(this.finalOverlay);
-    this.finalOverlay.animate({opacity: 1}, 45000);
+    this.finalOverlay.animate({opacity: 0.98}, 45000);
 
     this.basketball.bounce({
       x: window.innerWidth / 2 - 25,
@@ -328,25 +328,25 @@ export class GodIsAMan extends ShaneScene {
     setTimeout(this.bounceBall.bind(this), 500);
   }
 
-  upBallWidth() {
-    this.ballWidth += 0.4;
+  upBallWidth(amt) {
+    this.ballWidth += (amt || 0.15);
     this.basketball.setWidth(this.ballWidth);
 
-    if (this.ballWidth < window.innerWidth * 0.8) {
-      setTimeout(this.upBallWidth.bind(this), kt.randInt(25, 65));
+    if (this.ballWidth < window.innerWidth * 0.6) {
+      setTimeout(this.upBallWidth.bind(this), 20);
     }
   }
 
   bounceBall() {
     this.basketball.bounce({
       x: window.innerWidth / 2 - this.ballWidth / 2,
-      y: window.innerHeight / 2,
+      y: window.innerHeight / 2 - this.ballWidth * 0.5,
       time: 2666
+    }, () => {
+      if (this.active) {
+        this.bounceBall();
+      }
     });
-
-    if (this.active) {
-      setTimeout(this.bounceBall.bind(this), 2766);
-    }
   }
 
 }

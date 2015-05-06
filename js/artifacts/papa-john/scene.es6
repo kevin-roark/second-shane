@@ -46,9 +46,9 @@ export class PapaJohn extends ShaneScene {
     this.spreadRocks();
     this.makeSky();
 
-    setTimeout(this.makePapaJohn.bind(this), 3666);
+    setTimeout(this.makePapaJohn.bind(this), 0.5 * 60000);
 
-    setTimeout(this.goHome.bind(this), 150 * 1000);
+    setTimeout(this.goHome.bind(this), 2.75 * 60000);
   }
 
   exit() {
@@ -206,15 +206,15 @@ export class PapaJohn extends ShaneScene {
   }
 
   makePapaJohn() {
-    this.papaJohnVideo = this.makeVideo('/media/videos/papajohn', false, -10);
+    this.papaJohnVideo = this.makeVideo('/media/videos/papajohns', false, -10);
     $(this.papaJohnVideo).css('display', 'none');
     $(this.papaJohnVideo).css('background-color', 'white');
     this.papaJohnVideo.play();
 
     this.papaJohnVideoMesh = new VideoMesh({
       video: this.papaJohnVideo,
-      sourceVideoWidth: 960,
-      sourceVideoHeight: 540
+      sourceVideoWidth: 852,
+      sourceVideoHeight: 480
     });
     this.papaJohnVideoMesh.mesh.castShadow = true;
     this.papaJohnVideoMesh.mesh.receiveShadow = true;

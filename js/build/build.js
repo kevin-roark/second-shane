@@ -299,7 +299,7 @@ var Basketball = exports.Basketball = (function () {
       }
     },
     bounce: {
-      value: function bounce(options) {
+      value: function bounce(options, callback) {
         var marker = this.div;
 
         var currentX = marker.offset().left;
@@ -311,10 +311,14 @@ var Basketball = exports.Basketball = (function () {
         if (y !== undefined) {
           var halfWayX = currentX + (x - currentX) / 2;
           marker.animate({ left: halfWayX, bottom: desiredMarkerBottom + y }, time / 2, function () {
-            marker.animate({ left: x, bottom: desiredMarkerBottom }, time / 2);
+            marker.animate({ left: x, bottom: desiredMarkerBottom }, time / 2, function () {
+              if (callback) callback();
+            });
           });
         } else {
-          marker.animate({ left: x, bottom: desiredMarkerBottom }, time);
+          marker.animate({ left: x, bottom: desiredMarkerBottom }, time, function () {
+            if (callback) callback();
+          });
         }
       }
     }
@@ -879,7 +883,7 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
         this.finalOverlay.css("left", "0");
         this.finalOverlay.css("top", "0");
         this.domContainer.append(this.finalOverlay);
-        this.finalOverlay.animate({ opacity: 1 }, 45000);
+        this.finalOverlay.animate({ opacity: 0.98 }, 45000);
 
         this.basketball.bounce({
           x: window.innerWidth / 2 - 25,
@@ -889,26 +893,28 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
       }
     },
     upBallWidth: {
-      value: function upBallWidth() {
-        this.ballWidth += 0.4;
+      value: function upBallWidth(amt) {
+        this.ballWidth += amt || 0.15;
         this.basketball.setWidth(this.ballWidth);
 
-        if (this.ballWidth < window.innerWidth * 0.8) {
-          setTimeout(this.upBallWidth.bind(this), kt.randInt(25, 65));
+        if (this.ballWidth < window.innerWidth * 0.6) {
+          setTimeout(this.upBallWidth.bind(this), 20);
         }
       }
     },
     bounceBall: {
       value: function bounceBall() {
+        var _this = this;
+
         this.basketball.bounce({
           x: window.innerWidth / 2 - this.ballWidth / 2,
-          y: window.innerHeight / 2,
+          y: window.innerHeight / 2 - this.ballWidth * 0.5,
           time: 2666
+        }, function () {
+          if (_this.active) {
+            _this.bounceBall();
+          }
         });
-
-        if (this.active) {
-          setTimeout(this.bounceBall.bind(this), 2766);
-        }
       }
     }
   });
@@ -1454,7 +1460,7 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
         this.curtainBackdrop.css("top", "10px");
         this.curtainBackdrop.css("opacity", "0.75");
 
-        this.dvd = this.makeVideo(this.videoBase + "liveatjjs");
+        this.dvd = this.makeVideo(this.videoBase + "live_liveatjjs");
         this.dvd.style.height = "365px";
         this.dvd.style.top = "135px";
         this.dvd.style.left = "50%";
@@ -1475,7 +1481,7 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
         setTimeout(this.popcornTimer.bind(this), 13000);
         setTimeout(this.animateCurtains.bind(this), 2000);
 
-        var videoLength = 5 * 60 * 1000;
+        var videoLength = 9.25 * 60 * 1000;
         setTimeout(this.iWantOut.bind(this), videoLength);
       }
     },
@@ -1670,9 +1676,9 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
         this.spreadRocks();
         this.makeSky();
 
-        setTimeout(this.makePapaJohn.bind(this), 3666);
+        setTimeout(this.makePapaJohn.bind(this), 0.5 * 60000);
 
-        setTimeout(this.goHome.bind(this), 150 * 1000);
+        setTimeout(this.goHome.bind(this), 2.75 * 60000);
       }
     },
     exit: {
@@ -1844,15 +1850,15 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
       value: function makePapaJohn() {
         var _this = this;
 
-        this.papaJohnVideo = this.makeVideo("/media/videos/papajohn", false, -10);
+        this.papaJohnVideo = this.makeVideo("/media/videos/papajohns", false, -10);
         $(this.papaJohnVideo).css("display", "none");
         $(this.papaJohnVideo).css("background-color", "white");
         this.papaJohnVideo.play();
 
         this.papaJohnVideoMesh = new VideoMesh({
           video: this.papaJohnVideo,
-          sourceVideoWidth: 960,
-          sourceVideoHeight: 540
+          sourceVideoWidth: 852,
+          sourceVideoHeight: 480
         });
         this.papaJohnVideoMesh.mesh.castShadow = true;
         this.papaJohnVideoMesh.mesh.receiveShadow = true;

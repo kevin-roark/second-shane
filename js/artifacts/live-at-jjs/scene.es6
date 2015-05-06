@@ -41,7 +41,7 @@ export class LiveAtJJs extends ShaneScene {
     this.curtainBackdrop.css('top', '10px');
     this.curtainBackdrop.css('opacity', '0.75');
 
-    this.dvd = this.makeVideo(this.videoBase + 'liveatjjs');
+    this.dvd = this.makeVideo(this.videoBase + 'live_liveatjjs');
     this.dvd.style.height = '365px';
     this.dvd.style.top = '135px';
     this.dvd.style.left = '50%';
@@ -62,7 +62,7 @@ export class LiveAtJJs extends ShaneScene {
     setTimeout(this.popcornTimer.bind(this), 13000);
     setTimeout(this.animateCurtains.bind(this), 2000);
 
-    let videoLength = 5 * 60 * 1000;
+    let videoLength = 9.25 * 60 * 1000;
     setTimeout(this.iWantOut.bind(this), videoLength);
   }
 
