@@ -74,6 +74,15 @@ export class ShaneScene {
 
   /// Utility
 
+  makeAudio(basedFilename) {
+    var audio = document.createElement('audio');
+
+    audio.src = basedFilename + '.mp3';
+    audio.preload = true;
+
+    return audio;
+  }
+
   makeVideo(basedFilename, fullscreen, z) {
     var video = document.createElement('video');
 

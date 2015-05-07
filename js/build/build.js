@@ -35,6 +35,7 @@ var ASMR = exports.ASMR = (function (_ShaneScene) {
     var host = this.isLive ? urls.asmr.live : urls.asmr.web;
     this.videoBase = host + "video/";
     this.imageBase = host + "images/";
+    this.audioBase = host + "audio/";
 
     this.humans = [];
   }
@@ -55,19 +56,31 @@ var ASMR = exports.ASMR = (function (_ShaneScene) {
       /// Shane System
 
       value: function enter() {
+        var _this = this;
+
         _get(Object.getPrototypeOf(ASMR.prototype), "enter", this).call(this);
 
         this.renderer.setClearColor(0);
+
+        if (!this.isLive) {
+          this.audio = this.makeAudio(this.audioBase + "hfsu_asmr");
+          this.audio.play();
+        }
 
         this.videos = [];
 
         this.setupVideoData();
         this.timeVideos();
 
-        var asmrLength = 60000 * 4;
+        var asmrLength = 60000 * 3 + 11000;
 
-        var dvdTime = 131666;
+        var dvdTime = 37 * 1000;
         setTimeout(this.doDVD.bind(this), dvdTime);
+
+        setTimeout(function () {
+          _this.shadowizeDVD(_this.dvd);
+          _this.growDVD(_this.dvd);
+        }, asmrLength - curtainDuration - 27666);
         setTimeout(this.doCurtains.bind(this), asmrLength - curtainDuration);
 
         setTimeout(this.iWantOut.bind(this), asmrLength + 6666);
@@ -78,6 +91,11 @@ var ASMR = exports.ASMR = (function (_ShaneScene) {
         _get(Object.getPrototypeOf(ASMR.prototype), "exit", this).call(this);
 
         this.renderer.setClearColor(16777215);
+
+        if (!this.isLive) {
+          this.audio.src = "";
+          $(this.audio).remove();
+        }
 
         for (var j = 0; j < this.videos.length; j++) {
           var video = this.videos[j];
@@ -120,6 +138,7 @@ var ASMR = exports.ASMR = (function (_ShaneScene) {
       value: function makeCurtain(name) {
         var curtain = this.makeImage(this.imageBase + name);
         curtain.css("width", "50%");
+        curtain.css("z-index", "201");
         return curtain;
       }
     },
@@ -137,7 +156,7 @@ var ASMR = exports.ASMR = (function (_ShaneScene) {
         rectangle(0, 0.4, 0.4, 0.2), // 7
         rectangle(0, 0.6, 0.6, 0.4), // 8
         rectangle(0, 0.2, 0.4, 0.2), // 9
-        rectangle(0.8, 0, 0.2, 0.3), // 10
+        rectangle(0.8, 0.5, 0.2, 0.3), // 10
         rectangle(0.4, 0.9, 0.2, 0.1), // 11,
         rectangle(0.6, 0.3, 0.4, 0.2) // 12
         ];
@@ -196,39 +215,18 @@ var ASMR = exports.ASMR = (function (_ShaneScene) {
       /// DVD
 
       value: function doDVD() {
-        var _this = this;
-
         this.dvd = this.makeASMRVideo("jjs-asmr");
         this.dvd.loop = false;
 
-        this.sizeVideo(this.dvd, rectangle(0.35, 0.35, 0.3, 0.3));
+        this.sizeVideo(this.dvd, rectangle(0.7, 0, 0.3, 0.3));
         $(this.dvd).css("visibility", "visible");
+        $(this.dvd).css("z-index", "201");
         this.dvd.play();
-
-        setTimeout(function () {
-          _this.shadowizeDVD(_this.dvd, function () {
-            setTimeout(function () {
-              _this.growDVD(_this.dvd, function () {
-                console.log("i am grown man");
-              });
-            }, 3666);
-          });
-        }, 5666);
       }
     },
     shadowizeDVD: {
-      value: function shadowizeDVD(dvd, callback) {
-        var shadowSize = 0;
-
-        var shadowInterval = setInterval(function () {
-          shadowSize += 1;
-          $(dvd).css("box-shadow", "10px 10px 30px " + shadowSize + "px rgba(0, 0, 0, 0.8)");
-
-          if (shadowSize >= 30) {
-            clearInterval(shadowInterval);
-            callback();
-          }
-        }, 140);
+      value: function shadowizeDVD(dvd) {
+        $(dvd).css("box-shadow", "-10px 10px 7px 2px rgba(0,0,0,0.85)");
       }
     },
     growDVD: {
@@ -236,20 +234,15 @@ var ASMR = exports.ASMR = (function (_ShaneScene) {
         var length = 30; // the current length
 
         var growthInterval = setInterval(function () {
-          length += 0.07;
-          var offset = 100 - length;
-          if (offset > 0) {
-            offset /= 2;
-          }
+          length += 0.08;
 
-          dvd.style.left = offset + "%";
-          dvd.style.top = offset + "%";
+          dvd.style.left = 100 - length + "%";
           dvd.style.width = length + "%";
           dvd.style.height = length + "%";
 
-          if (length >= 90) {
+          if (length >= 99) {
             clearInterval(growthInterval);
-            callback();
+            if (callback) callback();
           }
         }, 30);
       }
@@ -4936,10 +4929,20 @@ var ShaneScene = exports.ShaneScene = (function () {
         return [];
       }
     },
-    makeVideo: {
+    makeAudio: {
 
       /// Utility
 
+      value: function makeAudio(basedFilename) {
+        var audio = document.createElement("audio");
+
+        audio.src = basedFilename + ".mp3";
+        audio.preload = true;
+
+        return audio;
+      }
+    },
+    makeVideo: {
       value: function makeVideo(basedFilename, fullscreen, z) {
         var video = document.createElement("video");
 
