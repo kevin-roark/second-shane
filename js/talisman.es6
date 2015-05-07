@@ -19,7 +19,7 @@ export class Talisman {
       this.materialOptions = options.materialOptions || {color: 0x777777};
 
       this.geometryCreator = options.geometryCreator || () => {
-        return new THREE.SphereGeometry(3);
+        return new THREE.SphereGeometry(1);
       };
     }
 

@@ -44,7 +44,7 @@ class MeshedOneOff extends OneOff {
 
 class Cube extends MeshedOneOff {
   constructor(options) {
-    this.size = options.size || 5;
+    this.size = options.size || 1;
     this.color = options.color || 0x000000;
 
     super(options);

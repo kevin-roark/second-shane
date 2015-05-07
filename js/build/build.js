@@ -4648,7 +4648,7 @@ var Cube = (function (_MeshedOneOff) {
   function Cube(options) {
     _classCallCheck(this, Cube);
 
-    this.size = options.size || 5;
+    this.size = options.size || 1;
     this.color = options.color || 0;
 
     _get(Object.getPrototypeOf(Cube.prototype), "constructor", this).call(this, options);
@@ -5112,7 +5112,7 @@ var Talisman = exports.Talisman = (function () {
       this.materialOptions = options.materialOptions || { color: 7829367 };
 
       this.geometryCreator = options.geometryCreator || function () {
-        return new THREE.SphereGeometry(3);
+        return new THREE.SphereGeometry(1);
       };
     }
 
