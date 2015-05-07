@@ -19,7 +19,13 @@ export class Basketball {
     this.div.css('border-radius', (width / 2) + 'px');
   }
 
+  stopBouncing() {
+    this.div.stop();
+  }
+
   bounce(options, callback) {
+    this.stopBouncing();
+
     var marker = this.div;
 
     var currentX = marker.offset().left;

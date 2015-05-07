@@ -1,134 +1,184 @@
 
 let $ = require('jquery');
+let kt = require('kutility');
 
-let defaultLineLength = 8000;
-let defaultTimeBetweenLines = 2000;
-let defaultTimeBetweenBlocks = 4000;
+let spaceBeforeLine = 1000;
+
+// hard-coded offsets of each word in the song from the start
+let wordOffsets = [13481,13909, 14300, 18659,21253,22039,25405,25853,26782,27647,29468,32556,33285,34342,36881,38162,39872,40752,43019,43468,43929,47112,47583,48012,48909,49901,50855,54517,55566,58291,59098,61875,62300,62788,64704,65548,66459,68402,69418,72053,72983,73422,73959,78937,79416,80403,80852,88234,88704,90226,91427,91900,93369,95574,96054,97075,97627,98494,102063,102487,102960,106645,107086,108038,108955,109853,110876,114450,116385,117274,118178,121507,121906,123755,124673,125586,126547,127459,128409,131168,132011,132485,133006,138006,138573,139478,139926,147322,147756,149192,150578,150970,152124,154714,155141,156181,156962,158027,161187,161652,162116,166287,169057,169953,173193,173618,174507,175372,177345,180067,181017,181905,184691,185628,187429,188398,190675,191163,191636,194860,195236,195796,196665,197580,198579,202234,203212,205933,206838,209641,210041,210546,212364,213297,214225,216099,217057,219819,220737,221105,221671,226690,227170,228156,228553,235999,236408,237973,239102,239559,240812,243240,243777,244690,245102,246024,249718,250174,250672,254388,254837,255773,256642,257523,258476,262265,264083,264975,265873,269169,269593,271555,272348,273329,274171,275075,276044,278942,279815,280215,280792,285688,286225,287146,287531,294998,295462,296880,298207,298645,299776,302410,302850,303756,304139,305248];
+
+// these are the word-lengths of each line
+let lineLengths = [
+  3,3,5,7, // verse 1
+
+  3,6,4,8, // verse 2
+
+  4,4,6,5, // chorus
+
+  3,6,4,8, // verse 3
+
+  4,4,6,5, // chorus
+
+  3,3,5,7, // verse 1
+
+  3,6,4,8, // verse 2
+
+  4,4,6,5, // chorus
+
+  3,6,4,8, // verse 3
+
+  4,4,6,5, // chorus
+];
 
 var verse1 = [
-  {text: "It's alright", length: 1},
-  {text: "Everything is fine", length: 1},
-  {text: "You live the perfect life", length: 1},
-  {text: "Never one immoral thought inside your mind", length: 2}
-];
-
-var chorusBlock1 = [
-  {text: "What they say", length: 1},
-  {text: "Does it make you feel ashamed?", length: 1},
-  {text: "Isn't everyone the same?", length: 1},
-  {text: "Does it matter that it wasn't your idea?", length: 2}
-];
-
-var chorusBlock2 = [
-  {text: "God is a man", length: 1},
-  {text: "You know for certain", length: 1},
-  {text: "The knowledge in and of itself", length: 1},
-  {text: "Is more than we deserve", length: 1}
+  "It's", "all", "right",
+  "Everything", "is", "fine",
+  "You", "live", "the", "perfect", "life",
+  "Never", "one", "immoral", "thought", "inside", "your", "mind"
 ];
 
 var verse2 = [
-  {text: "So you've tried", length: 1},
-  {text: "And you've made up your mind", length: 1},
-  {text: "Something's still not right", length: 1},
-  {text: "The devil you don't know is still outside", length: 2}
+  "What", "they", "say",
+  "Does", "it", "make", "you", "feel", "ashamed?",
+  "Isn't", "everyone", "the", "same?",
+  "Does", "it", "matter", "that", "it", "wasn't", "your", "idea?"
 ];
 
-export var doKaraoke = (domContainer, marker, endtime) => {
-  if (!endtime) {
-    endtime = 13 * 60000;
-  }
+var chorus = [
+  "God", "is", "a", "man",
+  "You", "know", "for", "certain",
+  "The", "knowledge", "in", "and", "of", "itself",
+  "Is", "more", "than", "we", "deserve"
+];
 
+var verse3 = [
+  "So", "you've", "tried",
+  "And", "you've", "made", "up", "your", "mind",
+  "Something's", "still", "not", "right",
+  "The", "devil", "you", "don't", "know", "is", "still", "outside"
+];
+
+var allWords = verse1.concat(verse2).concat(chorus).concat(verse3).concat(chorus).concat(verse1).concat(verse2).concat(chorus).concat(verse3).concat(chorus);
+var numberOfLines = 32;
+
+export var doKaraoke = (domContainer, marker) => {
   var karaokeDomContainer = karaokeDiv([]);
   domContainer.append(karaokeDomContainer);
 
+  var wordIndex = 0;
+  var lineIndex = 0;
+
   setTimeout(function() {
-    karaokeDomContainer.remove();
-  }, endtime);
+    doLine();
+  }, wordOffsets[wordIndex] - spaceBeforeLine);
 
-  processBlock(verse1, function() {
-    setTimeout(function() {
-      processBlock(chorusBlock1, function() {
-        processBlock(chorusBlock2, function() {
-          setTimeout(function() {
-            processBlock(verse2, function() {
-              processBlock(chorusBlock1, function() {
-                processBlock(chorusBlock2);
-              });
-            });
-          }, defaultTimeBetweenBlocks);
+  function doLine() {
+    console.log('processing line ' + lineIndex);
+
+    processLine(lineIndex, wordIndex, function() {
+      console.log('finished with line ' + lineIndex);
+
+      let currentOffset = wordOffsets[wordIndex + lineLengths[lineIndex] - 1];
+
+      wordIndex += lineLengths[lineIndex];
+      lineIndex += 1;
+
+      if (lineIndex < numberOfLines) {
+        let timeout = wordOffsets[wordIndex] - spaceBeforeLine - currentOffset;
+        console.log('time before next line: ' + timeout);
+        setTimeout(function() {
+          emptyKaraokeDom();
+          doLine();
+        }, timeout);
+      }
+      else {
+        emptyKaraokeDom();
+        karaokeDomContainer.remove();
+
+        marker.bounce({
+          x: window.innerWidth / 2 - 25,
+          time: 5000
         });
-      });
-    }, defaultTimeBetweenBlocks);
-  });
-
-  function processBlock(block, callback) {
-    doLine(0);
-
-    function doLine(lineIndex) {
-      processLine(block[lineIndex], defaultTimeBetweenLines, function() {
-        if (lineIndex + 1 < block.length) {
-          doLine(lineIndex + 1);
-        }
-        else {
-          if (callback) {
-            callback();
-          }
-        }
-      });
-    }
+      }
+    });
   }
 
-  function processLine(line, delayTime, callback) {
-    if (!delayTime) delayTime = 0;
+  function processLine(lineIndex, startWordIndex, callback) {
+    let lineLength = lineLengths[lineIndex];
 
-    var characters = line.text.split('');
-    var charSpans = [];
-    for (var i = 0; i < characters.length; i++) {
-      charSpans.push(span(characters[i], 'character-' + i));
+    let words = [];
+    for (var i = startWordIndex; i < startWordIndex + lineLength; i++) {
+      var word = allWords[i];
+      words.push(word);
     }
+    console.log(words);
 
-    emptyKaraokeDom();
-    karaokeDomContainer.append($(spanView(charSpans)));
-    karaokeDomContainer.css('opacity', '0');
+    var wordSpans = [];
+    for (var w = 0; w < words.length; w++) {
+      wordSpans.push(span(words[w] + ' ', 'word-' + i));
+    }
+    karaokeDomContainer.append($(spanView(wordSpans)));
 
     var children = karaokeDomContainer.children();
-    var lineLength = defaultLineLength * line.length;
-    var letterLength = lineLength / children.length;
 
     marker.bounce({
       x: $(children[0]).offset().left,
-      time: delayTime
+      time: spaceBeforeLine
     });
 
-    setTimeout(function() {
-      karaokeDomContainer.css('opacity', '1');
-      activateLetter(0);
-    }, letterLength + delayTime);
+    var lastWordOffset;
+    let firstWordOffset = wordOffsets[startWordIndex];
+    function doTimeoutForWord(index) {
+      var offset = wordOffsets[index] - (firstWordOffset - spaceBeforeLine);
+      lastWordOffset = offset;
+      console.log('timeout for word: ' + index + ' is ' + offset);
+      setTimeout(function() {
+        let timeUntilNextWord = index === wordOffsets.length - 1 ? 200 : wordOffsets[index + 1] - wordOffsets[index];
+        var bounceLength = Math.min(200, timeUntilNextWord);
+        activateWord(index - startWordIndex, bounceLength);
+        setTimeout(function() {
+          let timeRemaining = timeUntilNextWord - bounceLength;
+          smallBounce();
+          function smallBounce() {
+            let dribbleDuration = kt.randInt(100, 300);
+            if (timeRemaining >= dribbleDuration) {
+              dribble(dribbleDuration, function() {
+                timeRemaining -= dribbleDuration;
+                smallBounce();
+              });
+            }
+          }
+        }, bounceLength);
+      }, offset);
+    }
 
-    function activateLetter(i) {
-      var letter = $(children[i]);
-      activate(letter);
+    for (var t = startWordIndex; t < startWordIndex + lineLength; t++) {
+      doTimeoutForWord(t);
+    }
+
+    setTimeout(function() {
+      if (callback) {
+        callback();
+      }
+    }, lastWordOffset);
+
+    function activateWord(i, bounceLength, callback) {
+      var word = $(children[i]);
+      activate(word);
 
       marker.bounce({
-        x: letter.offset().left + letter.width() / 2,
+        x: word.offset().left + word.width() / 2  - 35,
         y: 50,
-        time: letterLength
-      });
-
-      if (i + 1 < children.length) {
-        setTimeout(function() {
-          activateLetter(i + 1);
-        }, letterLength);
-      }
-      else {
-        setTimeout(function() {
-          emptyKaraokeDom();
-          if (callback) {
-            callback();
-          }
-        }, letterLength);
-      }
+        time: bounceLength
+      }, callback);
     }
+  }
+
+  function dribble(dur, callback) {
+    marker.bounce({
+      y: kt.randInt(10, 20),
+      time: dur
+    }, callback);
   }
 
   function emptyKaraokeDom() {
@@ -139,10 +189,10 @@ export var doKaraoke = (domContainer, marker, endtime) => {
     return '<span id="' + id + '">' + text + '</span>';
   }
 
-  function spanView(charSpans) {
+  function spanView(spans) {
     var view = '';
-    for (var i = 0; i < charSpans.length; i++) {
-      view += charSpans[i];
+    for (var i = 0; i < spans.length; i++) {
+      view += spans[i];
     }
     return view;
   }

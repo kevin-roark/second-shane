@@ -46,6 +46,7 @@ export class GodIsAMan extends ShaneScene {
     super.doTimedWork();
 
     this.highwayVideo.play();
+    doKaraoke(this.domContainer, this.basketball);
 
     let vegasOffset = 45;
     setTimeout(this.vegasTime.bind(this), vegasOffset * 1000); // 45 seconds in, last for a minute
@@ -57,11 +58,11 @@ export class GodIsAMan extends ShaneScene {
     setTimeout(this.cowboyTime.bind(this), cowboyOffset * 1000); // 15 seconds after papa ends
 
     let gameOffset = cowboyOffset + cowboyLength + 30; // 30 seconds after cowboy ends
-    setTimeout(this.game2Time.bind(this), gameOffset * 1000); // ~ 4 minutes?
-    setTimeout(this.game1Time.bind(this), (gameOffset + 20) * 1000); // ~ 4.5 minutes?
+    setTimeout(this.game2Time.bind(this), gameOffset * 1000);
+    setTimeout(this.game1Time.bind(this), (gameOffset + 20) * 1000);
 
     let visionOffset = 15; // 15
-    let timeBetweenVisions = 35; // 35
+    let timeBetweenVisions = 44; // 44
     setTimeout(this.createVin.bind(this), (visionOffset + timeBetweenVisions * 0) * 1000);
     setTimeout(this.createWhitey.bind(this), (visionOffset + timeBetweenVisions * 1) * 1000);
     setTimeout(this.createLebron.bind(this), (visionOffset + timeBetweenVisions * 2) * 1000);
@@ -75,11 +76,7 @@ export class GodIsAMan extends ShaneScene {
     setTimeout(this.createBigSean.bind(this), (visionOffset + timeBetweenVisions * 10) * 1000);
     setTimeout(this.createPapaJohn.bind(this), (visionOffset + timeBetweenVisions * 11) * 1000);
 
-    //setTimeout(this.transitionToBall.bind(this), 1666); // 13 minutes?
-
-    setTimeout(() => {
-      doKaraoke(this.domContainer, this.basketball);
-    }, 1000);
+    setTimeout(this.transitionToBall.bind(this), 9.5 * 60 * 1000); // 9.5 minutes
   }
 
   exit() {
@@ -278,8 +275,6 @@ export class GodIsAMan extends ShaneScene {
 
   animateVision(vision) {
     var curOffset = $(vision).offset();
-    console.log('hello!!!!');
-    console.log(curOffset);
 
     // do slide animation
     if (Math.random() < 0.62) {
@@ -313,7 +308,7 @@ export class GodIsAMan extends ShaneScene {
 
     $(vision).animate({opacity: 0.8, left: curOffset.left, top: curOffset.top}, duration);
 
-    let length = kt.randInt(25000, 40000);
+    let length = kt.randInt(36000, 48000);
     setTimeout(() => {
       this.destroyVision(vision);
     }, length);
