@@ -45,10 +45,13 @@ export class PapaJohn extends ShaneScene {
     this.spreadCactus();
     this.spreadRocks();
     this.makeSky();
+  }
 
-    setTimeout(this.makePapaJohn.bind(this), 0.5 * 60000);
+  doTimedWork() {
+    super.doTimedWork();
 
-    setTimeout(this.goHome.bind(this), 2.75 * 60000);
+    setTimeout(this.makePapaJohn.bind(this), 45 * 1000);
+    setTimeout(this.goHome.bind(this), (45 + 175) * 1000);
   }
 
   exit() {
@@ -207,6 +210,7 @@ export class PapaJohn extends ShaneScene {
 
   makePapaJohn() {
     this.papaJohnVideo = this.makeVideo('/media/videos/papajohns', false, -10);
+    this.papaJohnVideo.loop = false;
     $(this.papaJohnVideo).css('display', 'none');
     $(this.papaJohnVideo).css('background-color', 'white');
     this.papaJohnVideo.play();
@@ -235,9 +239,8 @@ export class PapaJohn extends ShaneScene {
   /// Going Home
 
   goHome() {
-    console.log('going home!');
     var fadeInterval = setInterval(() => {
-      this.papaJohnVideoMesh.videoMaterial.opacity -= 0.00125;
+      this.papaJohnVideoMesh.videoMaterial.opacity -= 0.0025;
       if (this.papaJohnVideoMesh.videoMaterial.opacity <= 0) {
         clearInterval(fadeInterval);
 

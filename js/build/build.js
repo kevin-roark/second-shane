@@ -1727,10 +1727,14 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
         this.spreadCactus();
         this.spreadRocks();
         this.makeSky();
+      }
+    },
+    doTimedWork: {
+      value: function doTimedWork() {
+        _get(Object.getPrototypeOf(PapaJohn.prototype), "doTimedWork", this).call(this);
 
-        setTimeout(this.makePapaJohn.bind(this), 0.5 * 60000);
-
-        setTimeout(this.goHome.bind(this), 2.75 * 60000);
+        setTimeout(this.makePapaJohn.bind(this), 45 * 1000);
+        setTimeout(this.goHome.bind(this), (45 + 175) * 1000);
       }
     },
     exit: {
@@ -1903,6 +1907,7 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
         var _this = this;
 
         this.papaJohnVideo = this.makeVideo("/media/videos/papajohns", false, -10);
+        this.papaJohnVideo.loop = false;
         $(this.papaJohnVideo).css("display", "none");
         $(this.papaJohnVideo).css("background-color", "white");
         this.papaJohnVideo.play();
@@ -1935,9 +1940,8 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
       value: function goHome() {
         var _this = this;
 
-        console.log("going home!");
         var fadeInterval = setInterval(function () {
-          _this.papaJohnVideoMesh.videoMaterial.opacity -= 0.00125;
+          _this.papaJohnVideoMesh.videoMaterial.opacity -= 0.0025;
           if (_this.papaJohnVideoMesh.videoMaterial.opacity <= 0) {
             clearInterval(fadeInterval);
 
