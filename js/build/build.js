@@ -974,8 +974,6 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
       /// Shane System
 
       value: function enter() {
-        var _this = this;
-
         _get(Object.getPrototypeOf(iFeltTheFoot.prototype), "enter", this).call(this);
 
         this.renderer.setClearColor(0, 0);
@@ -984,30 +982,39 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
 
         this.makeSpotlight();
 
+        this.fountainVelocityMultiplier = 1;
+
+        this.doMarbledDigitalFoot();
+      }
+    },
+    doTimedWork: {
+      value: function doTimedWork() {
+        var _this = this;
+
+        _get(Object.getPrototypeOf(iFeltTheFoot.prototype), "doTimedWork", this).call(this);
+
+        this.marbledDigitalFoot.remove();
         this.doMarbledDigitalFoot(4888);
 
-        this.fountainVelocityMultiplier = 1;
-        this.makeFountain();
-
-        var endOfItAll = 121000;
+        var endOfItAll = 113.75 * 1000;
 
         setTimeout(function () {
           _this.doFootMassage(12666);
         }, 6666);
         setTimeout(function () {
-          _this.doRotatingFoot(12666);
-        }, 20666);
+          _this.doRotatingFoot(9666);
+        }, 19666);
         setTimeout(function () {
-          _this.doFootSlap(11666);
-        }, 34666);
+          _this.doFootSlap(13666);
+        }, 30666);
         setTimeout(function () {
-          _this.doFootModel(15666);
-        }, 46666);
+          _this.doFootModel(10666);
+        }, 45666);
         setTimeout(function () {
-          _this.doCadFootImage(12666);
-        }, 62666);
+          _this.doCadFootImage(6666);
+        }, 57666);
 
-        var seanOffset = 77666;
+        var seanOffset = 66666;
         setTimeout(function () {
           _this.doSean(endOfItAll - seanOffset);
         }, seanOffset);
@@ -1025,7 +1032,7 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
           _this.doCadFootImage(dur);
 
           setTimeout(_this.flash.bind(_this), 4000);
-          setTimeout(_this.makeFountain.bind(_this), 15666);
+          setTimeout(_this.makeFountain.bind(_this), 5666);
         }, restOfThemOffset);
 
         setTimeout(this.iWantOut.bind(this), endOfItAll);
@@ -1281,9 +1288,11 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
         this.marbledDigitalFoot.css("width", "50%");
         this.marbledDigitalFoot.css("top", "15%");
 
-        setTimeout(function () {
-          _this.marbledDigitalFoot.remove();
-        }, duration);
+        if (duration) {
+          setTimeout(function () {
+            _this.marbledDigitalFoot.remove();
+          }, duration);
+        }
       }
     },
     makeBodyImage: {
@@ -1355,7 +1364,7 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
     },
     updateFountain: {
       value: function updateFountain() {
-        this.fountainVelocityMultiplier += 0.00075;
+        this.fountainVelocityMultiplier += 0.0013;
 
         var ctx = this.fountainCanvas.getContext("2d");
 

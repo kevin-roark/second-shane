@@ -38,30 +38,36 @@ export class iFeltTheFoot extends ShaneScene {
 
     this.makeSpotlight();
 
+    this.fountainVelocityMultiplier = 1.0;
+
+    this.doMarbledDigitalFoot();
+  }
+
+  doTimedWork() {
+    super.doTimedWork();
+
+    this.marbledDigitalFoot.remove();
     this.doMarbledDigitalFoot(4888);
 
-    this.fountainVelocityMultiplier = 1.0;
-    this.makeFountain();
-
-    var endOfItAll = 121000;
+    var endOfItAll = 113.75 * 1000;
 
     setTimeout(() => {
       this.doFootMassage(12666);
     }, 6666);
     setTimeout(() => {
-      this.doRotatingFoot(12666);
-    }, 20666);
+      this.doRotatingFoot(9666);
+    }, 19666);
     setTimeout(() => {
-      this.doFootSlap(11666);
-    }, 34666);
+      this.doFootSlap(13666);
+    }, 30666);
     setTimeout(() => {
-      this.doFootModel(15666);
-    }, 46666);
+      this.doFootModel(10666);
+    }, 45666);
     setTimeout(() => {
-      this.doCadFootImage(12666);
-    }, 62666);
+      this.doCadFootImage(6666);
+    }, 57666);
 
-    let seanOffset = 77666;
+    let seanOffset = 66666;
     setTimeout(() => {
       this.doSean(endOfItAll - seanOffset);
     }, seanOffset);
@@ -79,7 +85,7 @@ export class iFeltTheFoot extends ShaneScene {
       this.doCadFootImage(dur);
 
       setTimeout(this.flash.bind(this), 4000);
-      setTimeout(this.makeFountain.bind(this), 15666);
+      setTimeout(this.makeFountain.bind(this), 5666);
     }, restOfThemOffset);
 
     setTimeout(this.iWantOut.bind(this), endOfItAll);
@@ -296,9 +302,11 @@ export class iFeltTheFoot extends ShaneScene {
     this.marbledDigitalFoot.css('width', '50%');
     this.marbledDigitalFoot.css('top', '15%');
 
-    setTimeout(() => {
-      this.marbledDigitalFoot.remove();
-    }, duration);
+    if (duration) {
+      setTimeout(() => {
+        this.marbledDigitalFoot.remove();
+      }, duration);
+    }
   }
 
   makeBodyImage(name) {
@@ -366,7 +374,7 @@ export class iFeltTheFoot extends ShaneScene {
   }
 
   updateFountain() {
-    this.fountainVelocityMultiplier += 0.00075;
+    this.fountainVelocityMultiplier += 0.0013;
 
     var ctx = this.fountainCanvas.getContext('2d');
 
