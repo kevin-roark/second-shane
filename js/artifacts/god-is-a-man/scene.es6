@@ -28,7 +28,7 @@ export class GodIsAMan extends ShaneScene {
   createTalisman() {
     // TODO: make this a basketball
     let talisman = new Talisman({
-      position: new THREE.Vector3(0, 0, -10)
+      position: new THREE.Vector3(10, 0, -10)
     });
     return talisman;
   }

@@ -22,7 +22,7 @@ export class iFeltTheFoot extends ShaneScene {
 
   createTalisman() {
     let talisman = new Talisman({
-      position: new THREE.Vector3(-15, 0, -10)
+      position: new THREE.Vector3(0, 0, -10)
     });
     return talisman;
   }

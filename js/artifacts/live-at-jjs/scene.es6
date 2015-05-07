@@ -23,7 +23,7 @@ export class LiveAtJJs extends ShaneScene {
 
   createTalisman() {
     let talisman = new Talisman({
-      position: new THREE.Vector3(0, 0, -15)
+      position: new THREE.Vector3(-5, 0, -10)
     });
     return talisman;
   }
