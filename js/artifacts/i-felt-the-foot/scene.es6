@@ -49,7 +49,7 @@ export class iFeltTheFoot extends ShaneScene {
     this.marbledDigitalFoot.remove();
     this.doMarbledDigitalFoot(4888);
 
-    var endOfItAll = 113.75 * 1000;
+    var endOfItAll = 120 * 1000;
 
     setTimeout(() => {
       this.doFootMassage(12666);
@@ -67,7 +67,7 @@ export class iFeltTheFoot extends ShaneScene {
       this.doCadFootImage(6666);
     }, 57666);
 
-    let seanOffset = 66666;
+    let seanOffset = 71666;
     setTimeout(() => {
       this.doSean(endOfItAll - seanOffset);
     }, seanOffset);
@@ -86,6 +86,7 @@ export class iFeltTheFoot extends ShaneScene {
 
       setTimeout(this.flash.bind(this), 4000);
       setTimeout(this.makeFountain.bind(this), 5666);
+      //setTimeout(this.jigsawFeet.bind(this), 9666);
     }, restOfThemOffset);
 
     setTimeout(this.iWantOut.bind(this), endOfItAll);
@@ -401,6 +402,50 @@ export class iFeltTheFoot extends ShaneScene {
 
       foot.draw();
     }
+  }
+
+  /// Jigsaw
+
+  jigsawFeet() {
+    if (!this.active) {
+      return;
+    }
+
+    this.moveAllFeet(() => {
+      setTimeout(() => {
+        this.jigsawFeet();
+      }, kt.randInt(5666, 10666));
+    });
+  }
+
+  jigsawDuration() {
+    return 3333;
+  }
+
+  moveAllFeet(callback) {
+    this.moveFoot($(this.sean));
+    this.moveFoot($(this.kevin));
+    this.moveFoot($(this.footMassage));
+    this.moveFoot($(this.rotatingFoot));
+    this.moveFoot($(this.footSlap));
+    this.moveFoot($(this.cadFootImage));
+
+    setTimeout(callback, this.jigsawDuration());
+  }
+
+  moveFoot($element) {
+    let dur = this.jigsawDuration();
+
+    // clear position attributes
+    $element.css('left', '');
+    $element.css('top', '');
+    $element.css('right', '');
+    $element.css('bottom', '');
+
+    let left = Math.random() * (window.innerWidth - $element.width());
+    let top = Math.random() * (window.innerHeight - $element.height());
+
+    $element.animate({left: left, top: top}, dur);
   }
 
 }

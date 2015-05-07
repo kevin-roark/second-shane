@@ -71,7 +71,7 @@ export class LiveAtJJs extends ShaneScene {
 
     setTimeout(this.makeDVDFullScreen.bind(this), 8 * 60 * 1000);
 
-    let videoLength = (9 * 60 + 20) * 1000;
+    let videoLength = (9 * 60 + 16) * 1000;
     setTimeout(this.iWantOut.bind(this), videoLength);
   }
 
@@ -120,7 +120,7 @@ export class LiveAtJJs extends ShaneScene {
     let growthInterval = setInterval(() => {
       currentHeight += growthAmt;
 
-      currentTop -= growthAmt * 0.2;
+      currentTop -= growthAmt * 0.25;
       if (currentTop <= 0) currentTop = 0;
 
       dvd.style.height = currentHeight + 'px';
