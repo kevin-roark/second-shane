@@ -64,10 +64,10 @@ export class iFeltTheFoot extends ShaneScene {
       this.doFootModel(10666);
     }, 45666);
     setTimeout(() => {
-      this.doCadFootImage(6666);
+      this.doCadFootImage(9666);
     }, 57666);
 
-    let seanOffset = 71666;
+    let seanOffset = 69666;
     setTimeout(() => {
       this.doSean(endOfItAll - seanOffset);
     }, seanOffset);
@@ -407,6 +407,7 @@ export class iFeltTheFoot extends ShaneScene {
   /// Jigsaw
 
   jigsawFeet() {
+    console.log('jigsaw time!!');
     if (!this.active) {
       return;
     }
@@ -435,15 +436,16 @@ export class iFeltTheFoot extends ShaneScene {
 
   moveFoot($element) {
     let dur = this.jigsawDuration();
+    let offset = $element.offset();
 
     // clear position attributes
-    $element.css('left', '');
-    $element.css('top', '');
+    $element.css('left', offset.left + 'px');
+    $element.css('top', offset.top + 'px');
     $element.css('right', '');
     $element.css('bottom', '');
 
-    let left = Math.random() * (window.innerWidth - $element.width());
-    let top = Math.random() * (window.innerHeight - $element.height());
+    let left = Math.random() * (window.innerWidth - $element.width() * 0.9);
+    let top = Math.random() * (window.innerHeight - $element.height() * 0.9);
 
     $element.animate({left: left, top: top}, dur);
   }
