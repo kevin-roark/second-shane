@@ -33,19 +33,19 @@ export class LiveAtJJs extends ShaneScene {
   enter() {
     super.enter();
 
-    this.renderer.setClearColor(0x000000);
+    this.renderer.setClearColor(0x000000, 0);
+    $('body').css('background-color', 'black');
 
     this.curtainBackdrop = this.makeImage(this.imageBase + 'curtain_backdrop.jpg');
     this.curtainBackdrop.css('max-height', '666px');
-    //this.curtainBackdrop.css('width', '90%');
     this.curtainBackdrop.css('top', '10px');
-    this.curtainBackdrop.css('opacity', '0.75');
+    this.curtainBackdrop.css('z-index', '-10');
 
     this.dvd = this.makeVideo(this.videoBase + 'live_liveatjjs');
     this.dvd.style.height = '365px';
     this.dvd.style.top = '135px';
     this.dvd.style.left = '50%';
-    $(this.dvd).css('box-shadow', '10px 10px 30px 30px rgba(0, 0, 0, 0.8)');
+    $(this.dvd).css('box-shadow', '10px 10px 15px 10px rgba(0, 0, 0, 0.8)');
 
     this.leftCurtain = this.makeCurtain('left_curtain.jpg');
     this.leftCurtain.css('left', '0px');
@@ -59,17 +59,34 @@ export class LiveAtJJs extends ShaneScene {
     }
 
     setTimeout(this.resize.bind(this), 500);
-    setTimeout(this.popcornTimer.bind(this), 13000);
-    setTimeout(this.animateCurtains.bind(this), 2000);
+  }
 
-    let videoLength = 9.25 * 60 * 1000;
+  doTimedWork() {
+    super.doTimedWork();
+
+    this.dvd.play();
+    this.animateCurtains();
+
+    setTimeout(this.popcornTimer.bind(this), 9666);
+
+    setTimeout(this.makeDVDFullScreen.bind(this), 8 * 60 * 1000);
+
+    let videoLength = (9 * 60 + 20) * 1000;
     setTimeout(this.iWantOut.bind(this), videoLength);
   }
 
   exit() {
     super.exit();
 
-    this.renderer.setClearColor(0xffffff);
+    this.renderer.setClearColor(0xffffff, 1);
+    $('body').css('background-color', 'white');
+
+    this.dvd.src = '';
+    $(this.dvd).remove();
+
+    this.curtainBackdrop.remove();
+    this.leftCurtain.remove();
+    this.rightCurtain.remove();
   }
 
   resize() {
@@ -88,6 +105,34 @@ export class LiveAtJJs extends ShaneScene {
     for (var i = 0; i < this.humans.length; i++) {
       this.humans[i].update();
     }
+  }
+
+  /// Marbling
+
+  makeDVDFullScreen() {
+    var dvd = this.dvd;
+
+    var currentHeight = 365;
+    var currentTop = 135;
+
+    let growthAmt = 0.2;
+
+    let growthInterval = setInterval(() => {
+      currentHeight += growthAmt;
+
+      currentTop -= growthAmt * 0.2;
+      if (currentTop <= 0) currentTop = 0;
+
+      dvd.style.height = currentHeight + 'px';
+      dvd.style.top = currentTop + 'px';
+
+      this.resize();
+
+      if (currentTop + currentHeight >= window.innerHeight) {
+        console.log('clearing growth interval');
+        clearInterval(growthInterval);
+      }
+    }, 25);
   }
 
   /// Curtains
@@ -132,8 +177,6 @@ export class LiveAtJJs extends ShaneScene {
     if (!left) {
       offset += cornWidth;
     }
-
-    console.log('offset: ' + offset);
 
     corn.css(left? 'left' : 'right', offset + 'px');
 

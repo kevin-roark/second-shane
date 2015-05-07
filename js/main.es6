@@ -12,6 +12,8 @@ import {currentTheme} from './theme.es6';
 
 let $sceneOverlay = $('#scene-overlay');
 
+let IS_LIVE = true;
+
 class SecondShane extends ThreeBoiler {
   constructor() {
     super({
@@ -125,11 +127,10 @@ class SecondShane extends ThreeBoiler {
   }
 
   fadeSceneOverlay(behavior) {
-    let duration = 1000;
+    let duration = IS_LIVE? 3000 : 1000;
 
     $sceneOverlay.fadeIn(duration, () => {
       behavior();
-
       $sceneOverlay.fadeOut(duration);
     });
   }

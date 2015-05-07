@@ -1447,19 +1447,19 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
       value: function enter() {
         _get(Object.getPrototypeOf(LiveAtJJs.prototype), "enter", this).call(this);
 
-        this.renderer.setClearColor(0);
+        this.renderer.setClearColor(0, 0);
+        $("body").css("background-color", "black");
 
         this.curtainBackdrop = this.makeImage(this.imageBase + "curtain_backdrop.jpg");
         this.curtainBackdrop.css("max-height", "666px");
-        //this.curtainBackdrop.css('width', '90%');
         this.curtainBackdrop.css("top", "10px");
-        this.curtainBackdrop.css("opacity", "0.75");
+        this.curtainBackdrop.css("z-index", "-10");
 
         this.dvd = this.makeVideo(this.videoBase + "live_liveatjjs");
         this.dvd.style.height = "365px";
         this.dvd.style.top = "135px";
         this.dvd.style.left = "50%";
-        $(this.dvd).css("box-shadow", "10px 10px 30px 30px rgba(0, 0, 0, 0.8)");
+        $(this.dvd).css("box-shadow", "10px 10px 15px 10px rgba(0, 0, 0, 0.8)");
 
         this.leftCurtain = this.makeCurtain("left_curtain.jpg");
         this.leftCurtain.css("left", "0px");
@@ -1473,10 +1473,20 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
         }
 
         setTimeout(this.resize.bind(this), 500);
-        setTimeout(this.popcornTimer.bind(this), 13000);
-        setTimeout(this.animateCurtains.bind(this), 2000);
+      }
+    },
+    doTimedWork: {
+      value: function doTimedWork() {
+        _get(Object.getPrototypeOf(LiveAtJJs.prototype), "doTimedWork", this).call(this);
 
-        var videoLength = 9.25 * 60 * 1000;
+        this.dvd.play();
+        this.animateCurtains();
+
+        setTimeout(this.popcornTimer.bind(this), 9666);
+
+        setTimeout(this.makeDVDFullScreen.bind(this), 8 * 60 * 1000);
+
+        var videoLength = (9 * 60 + 20) * 1000;
         setTimeout(this.iWantOut.bind(this), videoLength);
       }
     },
@@ -1484,7 +1494,15 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
       value: function exit() {
         _get(Object.getPrototypeOf(LiveAtJJs.prototype), "exit", this).call(this);
 
-        this.renderer.setClearColor(16777215);
+        this.renderer.setClearColor(16777215, 1);
+        $("body").css("background-color", "white");
+
+        this.dvd.src = "";
+        $(this.dvd).remove();
+
+        this.curtainBackdrop.remove();
+        this.leftCurtain.remove();
+        this.rightCurtain.remove();
       }
     },
     resize: {
@@ -1505,6 +1523,38 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
         for (var i = 0; i < this.humans.length; i++) {
           this.humans[i].update();
         }
+      }
+    },
+    makeDVDFullScreen: {
+
+      /// Marbling
+
+      value: function makeDVDFullScreen() {
+        var _this = this;
+
+        var dvd = this.dvd;
+
+        var currentHeight = 365;
+        var currentTop = 135;
+
+        var growthAmt = 0.2;
+
+        var growthInterval = setInterval(function () {
+          currentHeight += growthAmt;
+
+          currentTop -= growthAmt * 0.2;
+          if (currentTop <= 0) currentTop = 0;
+
+          dvd.style.height = currentHeight + "px";
+          dvd.style.top = currentTop + "px";
+
+          _this.resize();
+
+          if (currentTop + currentHeight >= window.innerHeight) {
+            console.log("clearing growth interval");
+            clearInterval(growthInterval);
+          }
+        }, 25);
       }
     },
     makeCurtain: {
@@ -1555,8 +1605,6 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
         if (!left) {
           offset += cornWidth;
         }
-
-        console.log("offset: " + offset);
 
         corn.css(left ? "left" : "right", offset + "px");
 
@@ -4339,6 +4387,8 @@ var currentTheme = require("./theme.es6").currentTheme;
 
 var $sceneOverlay = $("#scene-overlay");
 
+var IS_LIVE = true;
+
 var SecondShane = (function (_ThreeBoiler) {
   function SecondShane() {
     var _this = this;
@@ -4474,11 +4524,10 @@ var SecondShane = (function (_ThreeBoiler) {
     },
     fadeSceneOverlay: {
       value: function fadeSceneOverlay(behavior) {
-        var duration = 1000;
+        var duration = IS_LIVE ? 3000 : 1000;
 
         $sceneOverlay.fadeIn(duration, function () {
           behavior();
-
           $sceneOverlay.fadeOut(duration);
         });
       }
