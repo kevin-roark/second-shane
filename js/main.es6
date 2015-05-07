@@ -120,7 +120,7 @@ class SecondShane extends ThreeBoiler {
     this.fadeSceneOverlay(() => {
       this.removeSharedObjects();
 
-      shaneScene.enter();
+      shaneScene.startScene();
     });
   }
 

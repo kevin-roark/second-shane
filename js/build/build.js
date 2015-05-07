@@ -56,8 +56,6 @@ var ASMR = exports.ASMR = (function (_ShaneScene) {
       /// Shane System
 
       value: function enter() {
-        var _this = this;
-
         _get(Object.getPrototypeOf(ASMR.prototype), "enter", this).call(this);
 
         this.renderer.setClearColor(0);
@@ -68,8 +66,19 @@ var ASMR = exports.ASMR = (function (_ShaneScene) {
         }
 
         this.videos = [];
-
         this.setupVideoData();
+      }
+    },
+    doTimedWork: {
+      value: function doTimedWork() {
+        var _this = this;
+
+        _get(Object.getPrototypeOf(ASMR.prototype), "doTimedWork", this).call(this);
+
+        if (!this.isLive) {
+          this.audio.play();
+        }
+
         this.timeVideos();
 
         var asmrLength = 60000 * 3 + 11000;
@@ -584,13 +593,6 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
         _get(Object.getPrototypeOf(GodIsAMan.prototype), "exit", this).call(this);
 
         $(this.highwayVideo).remove();
-      }
-    },
-    click: {
-      value: function click() {
-        if (!this.active) {
-          return;
-        }
       }
     },
     vegasTime: {
@@ -4466,7 +4468,7 @@ var SecondShane = (function (_ThreeBoiler) {
         this.fadeSceneOverlay(function () {
           _this.removeSharedObjects();
 
-          shaneScene.enter();
+          shaneScene.startScene();
         });
       }
     },
@@ -4871,6 +4873,7 @@ var ShaneScene = exports.ShaneScene = (function () {
     $(window).resize(this.resize.bind(this));
 
     this.isLive = true;
+    this.hasStarted = false;
   }
 
   _createClass(ShaneScene, {
@@ -4881,6 +4884,15 @@ var ShaneScene = exports.ShaneScene = (function () {
         }
       }
     },
+    startScene: {
+      value: function startScene() {
+        this.enter();
+
+        if (!this.isLive) {
+          this.doTimedWork();
+        }
+      }
+    },
     enter: {
       value: function enter() {
         this.active = true;
@@ -4888,6 +4900,9 @@ var ShaneScene = exports.ShaneScene = (function () {
         this.camera.position.set(0, 0, 0);
         this.camera.rotation.x = 0;this.camera.rotation.y = 0;this.camera.rotation.z = 0;
       }
+    },
+    doTimedWork: {
+      value: function doTimedWork() {}
     },
     exit: {
       value: function exit() {
@@ -4911,7 +4926,12 @@ var ShaneScene = exports.ShaneScene = (function () {
       value: function addMesh() {}
     },
     click: {
-      value: function click() {}
+      value: function click() {
+        if (this.active && this.isLive && !this.hasStarted) {
+          this.doTimedWork();
+          this.hasStarted = true;
+        }
+      }
     },
     resize: {
       value: function resize() {}

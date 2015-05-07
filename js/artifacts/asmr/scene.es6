@@ -45,8 +45,16 @@ export class ASMR extends ShaneScene {
     }
 
     this.videos = [];
-
     this.setupVideoData();
+  }
+
+  doTimedWork() {
+    super.doTimedWork();
+
+    if (!this.isLive) {
+      this.audio.play();
+    }
+
     this.timeVideos();
 
     let asmrLength = 60000 * 3 + 11000;

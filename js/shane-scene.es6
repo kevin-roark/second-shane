@@ -19,6 +19,7 @@ export class ShaneScene {
     $(window).resize(this.resize.bind(this));
 
     this.isLive = true;
+    this.hasStarted = false;
   }
 
   update() {
@@ -27,11 +28,23 @@ export class ShaneScene {
     }
   }
 
+  startScene() {
+    this.enter();
+
+    if (!this.isLive) {
+      this.doTimedWork();
+    }
+  }
+
   enter() {
     this.active = true;
 
     this.camera.position.set(0, 0, 0);
     this.camera.rotation.x = 0; this.camera.rotation.y = 0; this.camera.rotation.z = 0;
+  }
+
+  doTimedWork() {
+
   }
 
   exit() {
@@ -55,7 +68,10 @@ export class ShaneScene {
   }
 
   click() {
-
+    if (this.active && this.isLive && !this.hasStarted) {
+      this.doTimedWork();
+      this.hasStarted = true;
+    }
   }
 
   resize() {

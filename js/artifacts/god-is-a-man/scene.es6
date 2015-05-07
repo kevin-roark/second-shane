@@ -68,12 +68,6 @@ export class GodIsAMan extends ShaneScene {
     $(this.highwayVideo).remove();
   }
 
-  click() {
-    if (!this.active) {
-      return;
-    }
-  }
-
   /// Highway Manipulation
 
   vegasTime() {
