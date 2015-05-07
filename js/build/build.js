@@ -528,6 +528,11 @@ var doKaraoke = require("./karaoke.es6").doKaraoke;
 
 var Basketball = require("./basketball.es6").Basketball;
 
+var vegasLength = 75;
+var papaLength = 90;
+var cowboyLength = 70;
+var gameLength = 60;
+
 var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
   function GodIsAMan(renderer, camera, scene, options) {
     _classCallCheck(this, GodIsAMan);
@@ -553,37 +558,53 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
     },
     enter: {
       value: function enter() {
-        var _this = this;
-
         _get(Object.getPrototypeOf(GodIsAMan.prototype), "enter", this).call(this);
 
         this.highwayVideo = this.makeVideo(this.videoBase + "mojave_cycle", true);
+
+        this.basketball = new Basketball(this.imageBase + "basketball.png");
+        this.basketball.addTo(this.domContainer);
+      }
+    },
+    doTimedWork: {
+      value: function doTimedWork() {
+        var _this = this;
+
+        _get(Object.getPrototypeOf(GodIsAMan.prototype), "doTimedWork", this).call(this);
+
         this.highwayVideo.play();
 
-        setTimeout(this.vegasTime.bind(this), 10000);
-        setTimeout(this.papaTime.bind(this), 20000); // this should be ~ 6 minutes
-        setTimeout(this.cowboyTime.bind(this), 30000); // this should be ~ 8 minutes
-        setTimeout(this.game2Time.bind(this), 40000); // ~ 11 minutes?
-        setTimeout(this.game1Time.bind(this), 50000); // ~11.5 minutes?
+        var vegasOffset = 45;
+        setTimeout(this.vegasTime.bind(this), vegasOffset * 1000); // 45 seconds in, last for a minute
 
-        //setTimeout(this.createVin.bind(this), 2000);
-        //setTimeout(this.createWhitey.bind(this), 2000);
-        //setTimeout(this.createPapaJohn.bind(this), 2000);
-        //setTimeout(this.createGodManVideo.bind(this), 2000);
-        //setTimeout(this.createJohnCena.bind(this), 2000);
-        //setTimeout(this.createBruceWillis.bind(this), 2000);
-        //setTimeout(this.createGodSistene.bind(this), 2000);
-        //setTimeout(this.createHulkHogan.bind(this), 2000);
-        //setTimeout(this.createLebron.bind(this), 2000);
-        //setTimeout(this.createJordan.bind(this), 2000);
-        //setTimeout(this.createBigSean.bind(this), 2000);
-        //setTimeout(this.createLilWayne.bind(this), 2000);
+        var papaOffset = vegasOffset + vegasLength + 30;
+        setTimeout(this.papaTime.bind(this), papaOffset * 1000); // 30 seconds after vegas ends
+
+        var cowboyOffset = papaOffset + papaLength + 20;
+        setTimeout(this.cowboyTime.bind(this), cowboyOffset * 1000); // 15 seconds after papa ends
+
+        var gameOffset = cowboyOffset + cowboyLength + 30; // 30 seconds after cowboy ends
+        setTimeout(this.game2Time.bind(this), gameOffset * 1000); // ~ 4 minutes?
+        setTimeout(this.game1Time.bind(this), (gameOffset + 20) * 1000); // ~ 4.5 minutes?
+
+        var visionOffset = 15; // 15
+        var timeBetweenVisions = 35; // 35
+        setTimeout(this.createVin.bind(this), (visionOffset + timeBetweenVisions * 0) * 1000);
+        setTimeout(this.createWhitey.bind(this), (visionOffset + timeBetweenVisions * 1) * 1000);
+        setTimeout(this.createLebron.bind(this), (visionOffset + timeBetweenVisions * 2) * 1000);
+        setTimeout(this.createGodManVideo.bind(this), (visionOffset + timeBetweenVisions * 3) * 1000);
+        setTimeout(this.createJohnCena.bind(this), (visionOffset + timeBetweenVisions * 4) * 1000);
+        setTimeout(this.createBruceWillis.bind(this), (visionOffset + timeBetweenVisions * 5) * 1000);
+        setTimeout(this.createLilWayne.bind(this), (visionOffset + timeBetweenVisions * 6) * 1000);
+        setTimeout(this.createGodSistene.bind(this), (visionOffset + timeBetweenVisions * 7) * 1000);
+        setTimeout(this.createHulkHogan.bind(this), (visionOffset + timeBetweenVisions * 8) * 1000);
+        setTimeout(this.createJordan.bind(this), (visionOffset + timeBetweenVisions * 9) * 1000);
+        setTimeout(this.createBigSean.bind(this), (visionOffset + timeBetweenVisions * 10) * 1000);
+        setTimeout(this.createPapaJohn.bind(this), (visionOffset + timeBetweenVisions * 11) * 1000);
 
         //setTimeout(this.transitionToBall.bind(this), 1666); // 13 minutes?
 
         setTimeout(function () {
-          _this.basketball = new Basketball(_this.imageBase + "basketball.png");
-          _this.basketball.addTo(_this.domContainer);
           doKaraoke(_this.domContainer, _this.basketball);
         }, 1000);
       }
@@ -603,17 +624,18 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
         var _this = this;
 
         this.vegasVideo = this.makeVideo(this.videoBase + "vegas", true);
+        this.vegasVideo.playbackRate = 3;
         this.vegasVideo.play();
 
         this.vegasVideo.style.opacity = 0;
-        $(this.vegasVideo).animate({ opacity: 0.67 }, 10000);
+        $(this.vegasVideo).animate({ opacity: 0.8 }, 10000);
 
         setTimeout(function () {
           $(_this.vegasVideo).animate({ opacity: 0 }, 10000, function () {
             _this.vegasVideo.src = "";
             $(_this.vegasVideo).remove();
           });
-        }, 320 * 1000); // thats the vegas length dummy
+        }, vegasLength * 1000); // thats the vegas length dummy
       }
     },
     papaTime: {
@@ -624,14 +646,14 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
         this.papaVideo.play();
 
         this.papaVideo.style.opacity = 0;
-        $(this.papaVideo).animate({ opacity: 0.67 }, 10000);
+        $(this.papaVideo).animate({ opacity: 0.9 }, 10000);
 
         setTimeout(function () {
           $(_this.papaVideo).animate({ opacity: 0 }, 10000, function () {
             _this.papaVideo.src = "";
             $(_this.papaVideo).remove();
           });
-        }, 100 * 1000); // thats the papa length dummy
+        }, papaLength * 1000); // thats the papa length dummy
       }
     },
     cowboyTime: {
@@ -642,14 +664,14 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
         this.cowboyVideo.play();
 
         this.cowboyVideo.style.opacity = 0;
-        $(this.cowboyVideo).animate({ opacity: 0.67 }, 10000);
+        $(this.cowboyVideo).animate({ opacity: 0.9 }, 10000);
 
         setTimeout(function () {
           $(_this.cowboyVideo).animate({ opacity: 0 }, 10000, function () {
             _this.cowboyVideo.src = "";
             $(_this.cowboyVideo).remove();
           });
-        }, 145 * 1000); // thats the cowboy length dummy
+        }, cowboyLength * 1000); // thats the cowboy length dummy
       }
     },
     game2Time: {
@@ -667,7 +689,7 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
             _this.game2Video.src = "";
             $(_this.game2Video).remove();
           });
-        }, 66 * 1000);
+        }, gameLength * 1000);
       }
     },
     game1Time: {
@@ -685,7 +707,7 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
             _this.game1Video.src = "";
             $(_this.game1Video).remove();
           });
-        }, 44 * 1000); // thats the vegas length dummy
+        }, (gameLength - 20) * 1000);
       }
     },
     createVin: {
@@ -707,7 +729,7 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
         this.whitey = this.makeVision("whitey");
 
         this.whitey.style.left = "60px";
-        this.whitey.style.bottom = "40px";
+        this.whitey.style.bottom = "100px";
         this.whitey.style.width = "45%";
 
         this.animateVision(this.whitey);
@@ -718,7 +740,7 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
         this.papaJohn = this.makeVision("papajohn");
 
         this.papaJohn.style.left = "25%";
-        this.papaJohn.style.top = "0px";
+        this.papaJohn.style.top = "12px";
         this.papaJohn.style.width = "50%";
 
         this.animateVision(this.papaJohn);
@@ -726,89 +748,49 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
     },
     createGodManVideo: {
       value: function createGodManVideo() {
-        this.godMan = this.makeVision("godmanvideo");
-
-        this.godMan.style.left = "25%";
-        this.godMan.style.top = "40px";
-        this.godMan.style.width = "50%";
-
+        this.godMan = this.makeVision("godmanvideo", true);
         this.animateVision(this.godMan);
       }
     },
     createJohnCena: {
       value: function createJohnCena() {
-        this.johnCena = this.makeVision("johncena");
-
-        this.johnCena.style.left = "25%";
-        this.johnCena.style.top = "40px";
-        this.johnCena.style.width = "50%";
-
+        this.johnCena = this.makeVision("johncena", true);
         this.animateVision(this.johnCena);
       }
     },
     createBruceWillis: {
       value: function createBruceWillis() {
-        this.bruceWillis = this.makeVision("brucewillis");
-
-        this.bruceWillis.style.left = "25%";
-        this.bruceWillis.style.top = "40px";
-        this.bruceWillis.style.width = "50%";
-
+        this.bruceWillis = this.makeVision("brucewillis", true);
         this.animateVision(this.bruceWillis);
       }
     },
     createGodSistene: {
       value: function createGodSistene() {
-        this.godSistene = this.makeVision("godsistene");
-
-        this.godSistene.style.left = "25%";
-        this.godSistene.style.top = "40px";
-        this.godSistene.style.width = "50%";
-
+        this.godSistene = this.makeVision("godsistene", true);
         this.animateVision(this.godSistene);
       }
     },
     createHulkHogan: {
       value: function createHulkHogan() {
-        this.hulkHogan = this.makeVision("hulkhogan");
-
-        this.hulkHogan.style.left = "25%";
-        this.hulkHogan.style.top = "40px";
-        this.hulkHogan.style.width = "50%";
-
+        this.hulkHogan = this.makeVision("hulkhogan", true);
         this.animateVision(this.hulkHogan);
       }
     },
     createLebron: {
       value: function createLebron() {
-        this.lebron = this.makeVision("lebron");
-
-        this.lebron.style.left = "25%";
-        this.lebron.style.top = "40px";
-        this.lebron.style.width = "50%";
-
+        this.lebron = this.makeVision("lebron", true);
         this.animateVision(this.lebron);
       }
     },
     createJordan: {
       value: function createJordan() {
-        this.jordan = this.makeVision("jordan");
-
-        this.jordan.style.left = "25%";
-        this.jordan.style.top = "40px";
-        this.jordan.style.width = "50%";
-
+        this.jordan = this.makeVision("jordan", true);
         this.animateVision(this.jordan);
       }
     },
     createBigSean: {
       value: function createBigSean() {
-        this.bigSean = this.makeVision("bigsean");
-
-        this.bigSean.style.left = "25%";
-        this.bigSean.style.top = "40px";
-        this.bigSean.style.width = "50%";
-
+        this.bigSean = this.makeVision("bigsean", true);
         this.animateVision(this.bigSean);
       }
     },
@@ -823,18 +805,33 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
         this.animateVision(this.lilWayne);
       }
     },
-    stylizeVision: {
+    makeVision: {
 
       /// Vision Utility
 
-      value: function stylizeVision(vision) {
-        $(vision).css("box-shadow", "0px 0px 30px 16px rgba(255, 255, 255, 0.95)");
-      }
-    },
-    makeVision: {
-      value: function makeVision(name) {
+      value: function makeVision(name, randomPlacement) {
         var vision = this.makeVideo(this.videoBase + name);
-        this.stylizeVision(vision);
+
+        if (randomPlacement) {
+          var width = Math.random() * 0.4 + 0.25;
+          vision.style.width = width * 100 + "%";
+
+          var vert = Math.random() * 0.33;
+          if (Math.random() < 0) {
+            vision.style.top = vert * 100 + "%";
+          } else {
+            vision.style.bottom = vert * 100 + "%";
+          }
+
+          var hor = Math.random() * (1 - width);
+          if (Math.random() < 0) {
+            vision.style.left = hor * 100 + "%";
+          } else {
+            vision.style.right = hor * 100 + "%";
+          }
+        }
+        $(vision).css("box-shadow", "0px 0px 20px 13px rgba(255, 255, 255, 0.95)");
+
         return vision;
       }
     },
@@ -842,14 +839,46 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
       value: function animateVision(vision) {
         var _this = this;
 
+        var curOffset = $(vision).offset();
+        console.log("hello!!!!");
+        console.log(curOffset);
+
+        // do slide animation
+        if (Math.random() < 0.62) {
+          vision.style.left = "";
+          vision.style.right = "";
+          vision.style.top = "";
+          vision.style.bottom = "";
+
+          var p = Math.random();
+          if (p < 0.25) {
+            vision.style.left = -kt.randInt(666, 1000);
+            vision.style.top = -kt.randInt(666, 1000);
+          } else if (p < 0.5) {
+            vision.style.left = window.innerWidth + kt.randInt(666, 1000);
+            vision.style.top = -kt.randInt(666, 1000);
+          } else if (p < 0.75) {
+            vision.style.left = window.innerWidth + kt.randInt(666, 1000);
+            vision.style.top = window.innerHeight + kt.randInt(666, 1000);
+          } else {
+            vision.style.left = -kt.randInt(666, 1000);
+            vision.style.top = window.innerHeight + kt.randInt(666, 1000);
+          }
+        }
+
+        // always do opacity
         vision.style.opacity = 0;
+
         vision.play();
 
-        $(vision).animate({ opacity: 0.8 }, kt.randInt(4444, 6666));
+        var duration = kt.randInt(4444, 6666);
 
+        $(vision).animate({ opacity: 0.8, left: curOffset.left, top: curOffset.top }, duration);
+
+        var length = kt.randInt(25000, 40000);
         setTimeout(function () {
           _this.destroyVision(vision);
-        }, kt.randInt(25000, 35000));
+        }, length);
       }
     },
     destroyVision: {
