@@ -2143,8 +2143,6 @@ module.exports = function (camera, options) {
 
 	this.prevTime = performance.now();
 
-	this.tmpQuaternion = new THREE.Quaternion();
-
 	this.mouseStatus = 0;
 
 	this.moveState = { up: 0, down: 0, left: 0, right: 0, forward: 0, back: 0, pitchUp: 0, pitchDown: 0, yawLeft: 0, yawRight: 0, rollLeft: 0, rollRight: 0 };
@@ -2314,12 +2312,6 @@ module.exports = function (camera, options) {
 		this.object.translateX(this.moveVector.x * moveMult);
 		this.object.translateY(this.moveVector.y * moveMult);
 		this.object.translateZ(this.moveVector.z * moveMult);
-
-		this.tmpQuaternion.set(this.rotationVector.x * rotMult, this.rotationVector.y * rotMult, this.rotationVector.z * rotMult, 1).normalize();
-		this.object.quaternion.multiply(this.tmpQuaternion);
-
-		// expose the rotation vector for convenience
-		this.object.rotation.setFromQuaternion(this.object.quaternion, this.object.rotation.order);
 
 		this.prevTime = time;
 	};
