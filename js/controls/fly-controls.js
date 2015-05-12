@@ -108,6 +108,8 @@ module.exports = function (camera, options) {
 
 			case 81: /*Q*/ this.moveState.rollLeft = 0; break;
 			case 69: /*E*/ this.moveState.rollRight = 0; break;
+
+			case 90: /*Z - reset*/ this.object.position.set(0, 0, 0); this.object.rotation.set(0, 0, 0);
 		}
 
 		this.updateMovementVector();
