@@ -1843,7 +1843,9 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
     createTalisman: {
       value: function createTalisman() {
         var talisman = new Talisman({
-          position: new THREE.Vector3(5, 0, -10)
+          position: new THREE.Vector3(5, 0, -10),
+          modelPath: "/js/models/cactus/low_poly_cactus.json",
+          modelScale: 0.5
         });
         return talisman;
       }
@@ -5272,9 +5274,7 @@ var Talisman = exports.Talisman = (function () {
   _createClass(Talisman, {
     update: {
       value: function update() {
-        if (this.hasMesh) {}
-
-        if (this.updater) {
+        if ("function" === typeof this.updater) {
           this.updater();
         }
       }
@@ -5359,8 +5359,6 @@ var Talisman = exports.Talisman = (function () {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-
-// do stuff with mesh
 
 },{"three":24}],17:[function(require,module,exports){
 "use strict";

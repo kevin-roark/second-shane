@@ -30,11 +30,7 @@ export class Talisman {
   }
 
   update() {
-    if (this.hasMesh) {
-      // do stuff with mesh
-    }
-
-    if (this.updater) {
+    if ('function' === typeof this.updater) {
       this.updater();
     }
   }
