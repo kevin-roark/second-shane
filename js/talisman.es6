@@ -87,6 +87,7 @@ export class Talisman {
 
       default:
         this.material = new THREE.MeshBasicMaterial(this.materialOptions);
+        break;
     }
     this.materials = [this.material];
 

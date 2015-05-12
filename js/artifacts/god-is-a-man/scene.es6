@@ -23,12 +23,15 @@ export class GodIsAMan extends ShaneScene {
     var host = (this.isLive? urls.godIsAMan.live : urls.godIsAMan.web);
     this.videoBase = host + 'video/';
     this.imageBase = host + 'images/';
+
+    this.basketballPath = this.imageBase + 'basketball.png';
   }
 
   createTalisman() {
-    // TODO: make this a basketball
     let talisman = new Talisman({
-      position: new THREE.Vector3(10, 0, -10)
+      position: new THREE.Vector3(10, 0, -10),
+      modelPath: '/js/models/basketball/basketball.json',
+      modelScale: 0.8
     });
     return talisman;
   }
@@ -38,7 +41,7 @@ export class GodIsAMan extends ShaneScene {
 
     this.highwayVideo = this.makeVideo(this.videoBase + 'mojave_cycle', true);
 
-    this.basketball = new Basketball(this.imageBase + 'basketball.png');
+    this.basketball = new Basketball(this.basketballPath);
     this.basketball.addTo(this.domContainer);
   }
 

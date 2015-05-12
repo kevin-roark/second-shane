@@ -605,6 +605,8 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
     var host = this.isLive ? urls.godIsAMan.live : urls.godIsAMan.web;
     this.videoBase = host + "video/";
     this.imageBase = host + "images/";
+
+    this.basketballPath = this.imageBase + "basketball.png";
   }
 
   _inherits(GodIsAMan, _ShaneScene);
@@ -612,9 +614,10 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
   _createClass(GodIsAMan, {
     createTalisman: {
       value: function createTalisman() {
-        // TODO: make this a basketball
         var talisman = new Talisman({
-          position: new THREE.Vector3(10, 0, -10)
+          position: new THREE.Vector3(10, 0, -10),
+          modelPath: "/js/models/basketball/basketball.json",
+          modelScale: 0.8
         });
         return talisman;
       }
@@ -625,7 +628,7 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
 
         this.highwayVideo = this.makeVideo(this.videoBase + "mojave_cycle", true);
 
-        this.basketball = new Basketball(this.imageBase + "basketball.png");
+        this.basketball = new Basketball(this.basketballPath);
         this.basketball.addTo(this.domContainer);
       }
     },
@@ -5342,6 +5345,7 @@ var Talisman = exports.Talisman = (function () {
 
           default:
             this.material = new THREE.MeshBasicMaterial(this.materialOptions);
+            break;
         }
         this.materials = [this.material];
 
