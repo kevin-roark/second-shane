@@ -46,7 +46,9 @@ var ASMR = exports.ASMR = (function (_ShaneScene) {
     createTalisman: {
       value: function createTalisman() {
         var talisman = new Talisman({
-          position: new THREE.Vector3(-10, 0, -10)
+          position: new THREE.Vector3(-10, -1.4, -10),
+          modelPath: "/js/models/mug.json",
+          modelScale: 1.2
         });
         return talisman;
       }
@@ -1592,7 +1594,7 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
     createTalisman: {
       value: function createTalisman() {
         var talisman = new Talisman({
-          position: new THREE.Vector3(-5, -1, -10),
+          position: new THREE.Vector3(-5, -1.3, -10),
           modelPath: "/js/models/popcorn-popper.json",
           modelScale: 1
         });

@@ -27,7 +27,9 @@ export class ASMR extends ShaneScene {
 
   createTalisman() {
     let talisman = new Talisman({
-      position: new THREE.Vector3(-10, 0, -10)
+      position: new THREE.Vector3(-10, -1.4, -10),
+      modelPath: '/js/models/mug.json',
+      modelScale: 1.2
     });
     return talisman;
   }
