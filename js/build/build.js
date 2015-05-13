@@ -32,6 +32,8 @@ var ASMR = exports.ASMR = (function (_ShaneScene) {
 
     _get(Object.getPrototypeOf(ASMR.prototype), "constructor", this).call(this, renderer, camera, scene, options);
 
+    this.name = "shane's ASMR treat";
+
     var host = this.isLive ? urls.asmr.live : urls.asmr.web;
     this.videoBase = host + "video/";
     this.imageBase = host + "images/";
@@ -604,6 +606,8 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
 
     _get(Object.getPrototypeOf(GodIsAMan.prototype), "constructor", this).call(this, renderer, camera, scene, options);
 
+    this.name = "God Is A Man";
+
     var host = this.isLive ? urls.godIsAMan.live : urls.godIsAMan.web;
     this.videoBase = host + "video/";
     this.imageBase = host + "images/";
@@ -1042,6 +1046,8 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
     _classCallCheck(this, iFeltTheFoot);
 
     _get(Object.getPrototypeOf(iFeltTheFoot.prototype), "constructor", this).call(this, renderer, camera, scene, options);
+
+    this.name = "i felt the foot";
 
     var host = this.isLive ? urls.iFeltTheFoot.live : urls.iFeltTheFoot.web;
     this.videoBase = host + "video/";
@@ -1581,6 +1587,8 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
 
     _get(Object.getPrototypeOf(LiveAtJJs.prototype), "constructor", this).call(this, renderer, camera, scene, options);
 
+    this.name = "Mister Shane Live At JJ's";
+
     var host = this.isLive ? urls.liveAtJJs.live : urls.liveAtJJs.web;
     this.videoBase = host + "video/";
     this.imageBase = host + "images/";
@@ -1844,6 +1852,8 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
     _classCallCheck(this, PapaJohn);
 
     _get(Object.getPrototypeOf(PapaJohn.prototype), "constructor", this).call(this, renderer, camera, scene, options);
+
+    this.name = "Shane's Papa, John";
 
     var host = this.isLive ? urls.papaJohn.live : urls.papaJohn.web;
     this.videoBase = host + "video/";
@@ -4548,6 +4558,8 @@ var createShaneScenes = require("./scenes.es6").createShaneScenes;
 var currentTheme = require("./theme.es6").currentTheme;
 
 var $sceneOverlay = $("#scene-overlay");
+var $nearbyArtifactContainer = $("#nearby-artifact-container");
+var $nearbyArtifactName = $("#nearby-artifact-name");
 
 var IS_LIVE = true;
 
@@ -4589,6 +4601,9 @@ var SecondShane = (function (_ThreeBoiler) {
     this.theme.applyTo(this.scene);
 
     this.sharedCameraPosition = new THREE.Vector3(0, 0, 0);
+
+    this.nearestTalismanScene = null;
+    this.framesUntilTalismanSearch = 30;
   }
 
   _inherits(SecondShane, _ThreeBoiler);
@@ -4606,6 +4621,13 @@ var SecondShane = (function (_ThreeBoiler) {
 
         for (var j = 0; j < this.shaneScenes.length; j++) {
           this.shaneScenes[j].update();
+        }
+
+        this.framesUntilTalismanSearch -= 1;
+        if (this.framesUntilTalismanSearch <= 0) {
+          this.nearestTalismanScene = this.searchForTalisman();
+          $nearbyArtifactName.text(this.nearestTalismanScene ? this.nearestTalismanScene.name : "null");
+          this.framesUntilTalismanSearch = 30;
         }
       }
     },
@@ -4627,7 +4649,6 @@ var SecondShane = (function (_ThreeBoiler) {
     },
     searchForTalisman: {
       value: function searchForTalisman() {
-        var requiredDistanceSquared = 20 * 20;
         var cameraPosition = this.camera.position;
         var shaneScenes = this.shaneScenes;
         var minDistanceSquared = 100000000000;
@@ -4642,7 +4663,7 @@ var SecondShane = (function (_ThreeBoiler) {
           }
         }
 
-        return minDistanceSquared <= requiredDistanceSquared ? sceneOfNearestTalisman : null;
+        return minDistanceSquared <= 400 ? sceneOfNearestTalisman : null;
       }
     },
     attemptToEnterScene: {
@@ -4650,7 +4671,7 @@ var SecondShane = (function (_ThreeBoiler) {
       /// Transitions
 
       value: function attemptToEnterScene() {
-        var scene = this.searchForTalisman();
+        var scene = this.nearestTalismanScene;
         if (scene) {
           console.log(scene);
           this.transitionToScene(scene);
@@ -4666,6 +4687,7 @@ var SecondShane = (function (_ThreeBoiler) {
           _this.addSharedObjects();
           _this.camera.position.copy(_this.sharedCameraPosition);
           _this.controls.enabled = true;
+          $nearbyArtifactContainer.show();
         });
       }
     },
@@ -4679,6 +4701,7 @@ var SecondShane = (function (_ThreeBoiler) {
 
         this.fadeSceneOverlay(function () {
           _this.removeSharedObjects();
+          $nearbyArtifactContainer.hide();
 
           shaneScene.startScene();
         });
@@ -5074,6 +5097,8 @@ var ShaneScene = exports.ShaneScene = (function () {
     this.camera = camera;
     this.scene = scene;
     this.options = options;
+
+    this.name = "shane scene";
 
     this.talisman = this.createTalisman();
     this.talisman.addTo(scene);

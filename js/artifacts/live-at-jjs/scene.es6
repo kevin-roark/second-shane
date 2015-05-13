@@ -14,6 +14,8 @@ export class LiveAtJJs extends ShaneScene {
   constructor(renderer, camera, scene, options) {
     super(renderer, camera, scene, options);
 
+    this.name = "Mister Shane Live At JJ's";
+
     var host = (this.isLive? urls.liveAtJJs.live : urls.liveAtJJs.web);
     this.videoBase = host + 'video/';
     this.imageBase = host + 'images/';

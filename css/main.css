@@ -31,6 +31,19 @@ body {
   z-index: 999;
 }
 
+#nearby-artifact-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+
+  font-family: 'Cutive Mono', monospace;
+  color: white;
+}
+
+  #nearby-artifact-name {
+    text-decoration: underline;
+  }
+
 .video-overlay, .image-overlay, .canvas-overlay {
   position: fixed;
   z-index: 200;

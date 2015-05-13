@@ -20,6 +20,8 @@ export class GodIsAMan extends ShaneScene {
   constructor(renderer, camera, scene, options) {
     super(renderer, camera, scene, options);
 
+    this.name = 'God Is A Man';
+
     var host = (this.isLive? urls.godIsAMan.live : urls.godIsAMan.web);
     this.videoBase = host + 'video/';
     this.imageBase = host + 'images/';

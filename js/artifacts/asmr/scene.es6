@@ -17,6 +17,8 @@ export class ASMR extends ShaneScene {
   constructor(renderer, camera, scene, options) {
     super(renderer, camera, scene, options);
 
+    this.name = "shane's ASMR treat";
+
     var host = (this.isLive? urls.asmr.live : urls.asmr.web);
     this.videoBase = host + 'video/';
     this.imageBase = host + 'images/';

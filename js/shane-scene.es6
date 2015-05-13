@@ -10,6 +10,8 @@ export class ShaneScene {
     this.scene = scene;
     this.options = options;
 
+    this.name = 'shane scene';
+
     this.talisman = this.createTalisman();
     this.talisman.addTo(scene);
 

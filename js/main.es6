@@ -11,6 +11,8 @@ import {createShaneScenes} from './scenes.es6';
 import {currentTheme} from './theme.es6';
 
 let $sceneOverlay = $('#scene-overlay');
+let $nearbyArtifactContainer = $('#nearby-artifact-container');
+let $nearbyArtifactName = $('#nearby-artifact-name');
 
 let IS_LIVE = true;
 
@@ -48,6 +50,9 @@ class SecondShane extends ThreeBoiler {
     this.theme.applyTo(this.scene);
 
     this.sharedCameraPosition = new THREE.Vector3(0, 0, 0);
+
+    this.nearestTalismanScene = null;
+    this.framesUntilTalismanSearch = 30;
   }
 
   render() {
@@ -61,6 +66,13 @@ class SecondShane extends ThreeBoiler {
 
     for (var j = 0; j < this.shaneScenes.length; j++) {
       this.shaneScenes[j].update();
+    }
+
+    this.framesUntilTalismanSearch -= 1;
+    if (this.framesUntilTalismanSearch <= 0) {
+      this.nearestTalismanScene = this.searchForTalisman();
+      $nearbyArtifactName.text(this.nearestTalismanScene? this.nearestTalismanScene.name : 'null');
+      this.framesUntilTalismanSearch = 30;
     }
   }
 
@@ -77,7 +89,6 @@ class SecondShane extends ThreeBoiler {
   }
 
   searchForTalisman() {
-    let requiredDistanceSquared = 20 * 20;
     var cameraPosition = this.camera.position;
     var shaneScenes = this.shaneScenes;
     var minDistanceSquared = 100000000000;
@@ -92,13 +103,13 @@ class SecondShane extends ThreeBoiler {
       }
     }
 
-    return minDistanceSquared <= requiredDistanceSquared ? sceneOfNearestTalisman : null;
+    return minDistanceSquared <= 400 ? sceneOfNearestTalisman : null;
   }
 
   /// Transitions
 
   attemptToEnterScene() {
-    var scene = this.searchForTalisman();
+    var scene = this.nearestTalismanScene;
     if (scene) {
       console.log(scene);
       this.transitionToScene(scene);
@@ -111,6 +122,7 @@ class SecondShane extends ThreeBoiler {
       this.addSharedObjects();
       this.camera.position.copy(this.sharedCameraPosition);
       this.controls.enabled = true;
+      $nearbyArtifactContainer.show();
     });
   }
 
@@ -121,6 +133,7 @@ class SecondShane extends ThreeBoiler {
 
     this.fadeSceneOverlay(() => {
       this.removeSharedObjects();
+      $nearbyArtifactContainer.hide();
 
       shaneScene.startScene();
     });
