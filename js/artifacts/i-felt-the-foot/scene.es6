@@ -22,7 +22,13 @@ export class iFeltTheFoot extends ShaneScene {
 
   createTalisman() {
     let talisman = new Talisman({
-      position: new THREE.Vector3(0, 0, -10)
+      position: new THREE.Vector3(0, 0, -10),
+      materialOptions: {
+        map: THREE.ImageUtils.loadTexture('/media/talisman-images/cad_foot.jpg')
+      },
+      geometryCreator: () => {
+        return new THREE.BoxGeometry(2.7, 2.7, 2.7);
+      }
     });
     return talisman;
   }
