@@ -4602,6 +4602,8 @@ var SecondShane = (function (_ThreeBoiler) {
 
     this.sharedCameraPosition = new THREE.Vector3(0, 0, 0);
 
+    this.activeScene = null;
+
     this.nearestTalismanScene = null;
     this.framesUntilTalismanSearch = 30;
   }
@@ -4635,7 +4637,7 @@ var SecondShane = (function (_ThreeBoiler) {
       value: function keypress(keycode) {
         switch (keycode) {
           case 32:
-            this.attemptToEnterScene();
+            this.spacebarPressed();
             break;
         }
       }
@@ -4666,10 +4668,23 @@ var SecondShane = (function (_ThreeBoiler) {
         return minDistanceSquared <= 400 ? sceneOfNearestTalisman : null;
       }
     },
-    attemptToEnterScene: {
+    spacebarPressed: {
 
       /// Transitions
 
+      value: function spacebarPressed() {
+        if (this.transitioning) {
+          return;
+        }
+
+        if (!this.activeScene) {
+          this.attemptToEnterScene();
+        } else {
+          this.transitionFromScene(this.activeScene);
+        }
+      }
+    },
+    attemptToEnterScene: {
       value: function attemptToEnterScene() {
         var scene = this.nearestTalismanScene;
         if (scene) {
@@ -4682,12 +4697,19 @@ var SecondShane = (function (_ThreeBoiler) {
       value: function transitionFromScene(shaneScene) {
         var _this = this;
 
+        this.transitioning = true;
+        this.activeScene = null;
+
         this.fadeSceneOverlay(function () {
           shaneScene.exit();
           _this.addSharedObjects();
           _this.camera.position.copy(_this.sharedCameraPosition);
           _this.controls.enabled = true;
           $nearbyArtifactContainer.show();
+
+          setTimeout(function () {
+            _this.transitioning = false;
+          }, 4444);
         });
       }
     },
@@ -4695,8 +4717,9 @@ var SecondShane = (function (_ThreeBoiler) {
       value: function transitionToScene(shaneScene) {
         var _this = this;
 
+        this.transitioning = true;
+        this.activeScene = shaneScene;
         this.controls.enabled = false;
-
         this.sharedCameraPosition.copy(this.camera.position);
 
         this.fadeSceneOverlay(function () {
@@ -4704,6 +4727,10 @@ var SecondShane = (function (_ThreeBoiler) {
           $nearbyArtifactContainer.hide();
 
           shaneScene.startScene();
+
+          setTimeout(function () {
+            _this.transitioning = false;
+          }, 6666);
         });
       }
     },

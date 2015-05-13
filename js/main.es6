@@ -51,6 +51,8 @@ class SecondShane extends ThreeBoiler {
 
     this.sharedCameraPosition = new THREE.Vector3(0, 0, 0);
 
+    this.activeScene = null;
+
     this.nearestTalismanScene = null;
     this.framesUntilTalismanSearch = 30;
   }
@@ -79,7 +81,7 @@ class SecondShane extends ThreeBoiler {
   keypress(keycode) {
     switch (keycode) {
       case 32:
-        this.attemptToEnterScene();
+        this.spacebarPressed();
         break;
     }
   }
@@ -108,6 +110,18 @@ class SecondShane extends ThreeBoiler {
 
   /// Transitions
 
+  spacebarPressed() {
+    if (this.transitioning) {
+      return;
+    }
+
+    if (!this.activeScene) {
+      this.attemptToEnterScene();
+    } else {
+      this.transitionFromScene(this.activeScene);
+    }
+  }
+
   attemptToEnterScene() {
     var scene = this.nearestTalismanScene;
     if (scene) {
@@ -117,18 +131,26 @@ class SecondShane extends ThreeBoiler {
   }
 
   transitionFromScene(shaneScene) {
+    this.transitioning = true;
+    this.activeScene = null;
+
     this.fadeSceneOverlay(() => {
       shaneScene.exit();
       this.addSharedObjects();
       this.camera.position.copy(this.sharedCameraPosition);
       this.controls.enabled = true;
       $nearbyArtifactContainer.show();
+
+      setTimeout(() => {
+        this.transitioning = false;
+      }, 4444);
     });
   }
 
   transitionToScene(shaneScene) {
+    this.transitioning = true;
+    this.activeScene = shaneScene;
     this.controls.enabled = false;
-
     this.sharedCameraPosition.copy(this.camera.position);
 
     this.fadeSceneOverlay(() => {
@@ -136,6 +158,10 @@ class SecondShane extends ThreeBoiler {
       $nearbyArtifactContainer.hide();
 
       shaneScene.startScene();
+
+      setTimeout(() => {
+        this.transitioning = false;
+      }, 6666);
     });
   }
 
