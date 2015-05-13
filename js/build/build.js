@@ -1586,7 +1586,9 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
     createTalisman: {
       value: function createTalisman() {
         var talisman = new Talisman({
-          position: new THREE.Vector3(-5, 0, -10)
+          position: new THREE.Vector3(-5, -1, -10),
+          modelPath: "/js/models/popcorn-popper.json",
+          modelScale: 1
         });
         return talisman;
       }
