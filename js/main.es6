@@ -9,10 +9,12 @@ let FlyControls = require('./controls/fly-controls');
 import {oneOffs} from './one-offs.es6';
 import {createShaneScenes} from './scenes.es6';
 import {currentTheme} from './theme.es6';
+import {chatter} from './util/chatterbox.es6';
 
 let $sceneOverlay = $('#scene-overlay');
 let $nearbyArtifactContainer = $('#nearby-artifact-container');
 let $nearbyArtifactName = $('#nearby-artifact-name');
+let $chatterBoxContainer = $('#chatter-box');
 
 let IS_LIVE = true;
 
@@ -55,6 +57,8 @@ class SecondShane extends ThreeBoiler {
 
     this.nearestTalismanScene = null;
     this.framesUntilTalismanSearch = 30;
+
+    this.showIntroChatter();
   }
 
   render() {
@@ -76,6 +80,12 @@ class SecondShane extends ThreeBoiler {
       $nearbyArtifactName.text(this.nearestTalismanScene? this.nearestTalismanScene.name : 'null');
       this.framesUntilTalismanSearch = 30;
     }
+  }
+
+  showIntroChatter() {
+    setTimeout(() => {
+      chatter($chatterBoxContainer, 'Hello... Welcome to Second Shane.');
+    }, 2000);
   }
 
   keypress(keycode) {
