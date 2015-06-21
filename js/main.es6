@@ -14,6 +14,7 @@ import {chatter} from './util/chatterbox.es6';
 let $sceneOverlay = $('#scene-overlay');
 let $nearbyArtifactContainer = $('#nearby-artifact-container');
 let $nearbyArtifactName = $('#nearby-artifact-name');
+let $introBox = $('#intro-box');
 let $chatterBoxContainer = $('#chatter-box');
 
 let IS_LIVE = true;
@@ -84,6 +85,7 @@ class SecondShane extends ThreeBoiler {
 
   showIntroChatter() {
     setTimeout(() => {
+      $introBox.show();
       chatter($chatterBoxContainer, 'Hello... Welcome to Second Shane.');
     }, 2000);
   }

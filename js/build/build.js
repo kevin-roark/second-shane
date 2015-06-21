@@ -4562,6 +4562,7 @@ var chatter = require("./util/chatterbox.es6").chatter;
 var $sceneOverlay = $("#scene-overlay");
 var $nearbyArtifactContainer = $("#nearby-artifact-container");
 var $nearbyArtifactName = $("#nearby-artifact-name");
+var $introBox = $("#intro-box");
 var $chatterBoxContainer = $("#chatter-box");
 
 var IS_LIVE = true;
@@ -4641,6 +4642,7 @@ var SecondShane = (function (_ThreeBoiler) {
     showIntroChatter: {
       value: function showIntroChatter() {
         setTimeout(function () {
+          $introBox.show();
           chatter($chatterBoxContainer, "Hello... Welcome to Second Shane.");
         }, 2000);
       }
