@@ -5,4 +5,4 @@ watch:
 	watchify js/main.es6 -v -t babelify -o js/build/build.js
 
 serve:
-	http-server -p 8555
+	serve -p 8555
