@@ -1,13 +1,13 @@
 
 let $ = require('jquery');
 
-export var chatter = ($container, text, options) => {
+export var chatter = ($container, lines, options) => {
   if (!options) options = {};
-  let delayBetweenLetters = options.delayBetweenLetters || 200;
-  let delayBetweenWords = options.delayBetweenWords || 300;
+  if (!Array.isArray(lines)) lines = [lines];
+
   let blinkingCursorDelay = options.blinkingCursorDelay || 400;
   let initialDelay = options.initialDelay || 500;
-  let postHumousDelay = options.postHumousDelay || 500;
+  let postHumousDelay = options.postHumousDelay || 50000;
 
   let $subContainer = $('<span></span>');
   $container.append($subContainer);
@@ -17,13 +17,39 @@ export var chatter = ($container, text, options) => {
     cursor.toggle();
   }, blinkingCursorDelay);
 
+  let clear = () => {
+    clearInterval(blinkingCursorInterval);
+    cursor.remove();
+  };
+
+  let processLines = () => {
+    let currentIndex = 0;
+    let processLine = () => {
+      processText($subContainer, lines[currentIndex], options, () => {
+        if (++currentIndex < lines.length) {
+          setTimeout(processLine, initialDelay);
+        } else {
+          setTimeout(clear, postHumousDelay);
+        }
+      });
+    };
+    processLine();
+  };
+
+  setTimeout(processLines, initialDelay);
+};
+
+var processText = ($container, text, options, callback) => {
+  let delayBetweenLetters = options.delayBetweenLetters || 150;
+  let delayBetweenWords = options.delayBetweenWords || 175;
+
   var refreshText = (freshText, delay) => {
     setTimeout(() => {
-      $subContainer.text(freshText);
+      $container.text(freshText);
     }, delay);
   };
 
-  let accumulatedDelay = initialDelay;
+  let accumulatedDelay = 0;
   let accumulatedText = '';
   for (let i = 0; i < text.length; i++) {
     let letter = text.charAt(i);
@@ -34,10 +60,7 @@ export var chatter = ($container, text, options) => {
     accumulatedDelay += (letter === ' ')? delayBetweenWords : delayBetweenLetters;
   }
 
-  setTimeout(() => {
-    clearInterval(blinkingCursorInterval);
-    cursor.remove();
-  }, accumulatedDelay + postHumousDelay);
+  setTimeout(callback, accumulatedDelay);
 };
 
 var createCursor = ($container) => {
