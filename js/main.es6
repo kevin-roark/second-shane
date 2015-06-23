@@ -85,10 +85,15 @@ class SecondShane extends ThreeBoiler {
 
   showIntroChatter() {
     setTimeout(() => {
+      let words = ["Hello... Welcome to Second Shane... The ever-present and evolving realm of Mister Shane's sounds, sights, and feelings. I, the Red Bull™ Goblin, will be your trusted guide and companion.",
+                   "First thing's first... Second Shane is a self-directed experience. Explore the infinite universe and Hunt For Shane's Treasures. Begin by using the mouse to move your eyes. The W, A, S, D, R, and F keys on your keyboard will move your body... That's it...",
+                   "You will find portals to other worlds along the way. Press the spacebar to enter them. Don't be afraid; within those worlds lies the reality of Second Shane. This realm is only a shell.",
+                   "Thank you, and enjoy your time here. Come back soon... Shane is always changing."];
+
       $introBox.show();
-      chatter($chatterBoxContainer, ["Hello... Welcome to Second Shane... The ever-present and evolving realm of Mister Shane's sounds, sights, and feelings. I, the Red Bull™ Goblin, will be your trusted guide and companion.",
-                                     "First thing's first... Second Shane is a self-directed experience. Explore the infinite universe and Hunt For Shane's Treasures. Begin by using the mouse to move your eyes. The W, A, S, D, R, and F keys on your keyboard will move your body... That's it..."]
-      );
+      chatter($chatterBoxContainer, words, {}, () => {
+        $introBox.fadeOut();
+      });
     }, 2000);
   }
 

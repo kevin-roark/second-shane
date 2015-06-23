@@ -4642,8 +4642,12 @@ var SecondShane = (function (_ThreeBoiler) {
     showIntroChatter: {
       value: function showIntroChatter() {
         setTimeout(function () {
+          var words = ["Hello... Welcome to Second Shane... The ever-present and evolving realm of Mister Shane's sounds, sights, and feelings. I, the Red Bull™ Goblin, will be your trusted guide and companion.", "First thing's first... Second Shane is a self-directed experience. Explore the infinite universe and Hunt For Shane's Treasures. Begin by using the mouse to move your eyes. The W, A, S, D, R, and F keys on your keyboard will move your body... That's it...", "You will find portals to other worlds along the way. Press the spacebar to enter them. Don't be afraid; within those worlds lies the reality of Second Shane. This realm is only a shell.", "Thank you, and enjoy your time here. Come back soon... Shane is always changing."];
+
           $introBox.show();
-          chatter($chatterBoxContainer, ["Hello... Welcome to Second Shane... The ever-present and evolving realm of Mister Shane's sounds, sights, and feelings. I, the Red Bull™ Goblin, will be your trusted guide and companion.", "First thing's first... Second Shane is a self-directed experience. Explore the infinite universe and Hunt For Shane's Treasures. Begin by using the mouse to move your eyes. The W, A, S, D, R, and F keys on your keyboard will move your body... That's it..."]);
+          chatter($chatterBoxContainer, words, {}, function () {
+            $introBox.fadeOut();
+          });
         }, 2000);
       }
     },
@@ -5638,13 +5642,13 @@ module.exports.godIsAMan = {
 
 var $ = require("jquery");
 
-var chatter = function ($container, lines, options) {
+var chatter = function ($container, lines, options, callback) {
   if (!options) options = {};
   if (!Array.isArray(lines)) lines = [lines];
 
   var blinkingCursorDelay = options.blinkingCursorDelay || 400;
-  var initialDelay = options.initialDelay || 500;
-  var postHumousDelay = options.postHumousDelay || 50000;
+  var initialDelay = options.initialDelay || 1000;
+  var postHumousDelay = options.postHumousDelay || 1000;
 
   var $subContainer = $("<span></span>");
   $container.append($subContainer);
@@ -5655,6 +5659,9 @@ var chatter = function ($container, lines, options) {
   }, blinkingCursorDelay);
 
   var clear = function () {
+    if (callback) {
+      callback();
+    }
     clearInterval(blinkingCursorInterval);
     cursor.remove();
   };
@@ -5678,8 +5685,8 @@ var chatter = function ($container, lines, options) {
 
 exports.chatter = chatter;
 var processText = function ($container, text, options, callback) {
-  var delayBetweenLetters = options.delayBetweenLetters || 150;
-  var delayBetweenWords = options.delayBetweenWords || 175;
+  var delayBetweenLetters = options.delayBetweenLetters || 100;
+  var delayBetweenWords = options.delayBetweenWords || 125;
 
   var refreshText = function (freshText, delay) {
     setTimeout(function () {

@@ -1,13 +1,13 @@
 
 let $ = require('jquery');
 
-export var chatter = ($container, lines, options) => {
+export var chatter = ($container, lines, options, callback) => {
   if (!options) options = {};
   if (!Array.isArray(lines)) lines = [lines];
 
   let blinkingCursorDelay = options.blinkingCursorDelay || 400;
-  let initialDelay = options.initialDelay || 500;
-  let postHumousDelay = options.postHumousDelay || 50000;
+  let initialDelay = options.initialDelay || 1000;
+  let postHumousDelay = options.postHumousDelay || 1000;
 
   let $subContainer = $('<span></span>');
   $container.append($subContainer);
@@ -18,6 +18,9 @@ export var chatter = ($container, lines, options) => {
   }, blinkingCursorDelay);
 
   let clear = () => {
+    if (callback) {
+      callback();
+    }
     clearInterval(blinkingCursorInterval);
     cursor.remove();
   };
@@ -40,8 +43,8 @@ export var chatter = ($container, lines, options) => {
 };
 
 var processText = ($container, text, options, callback) => {
-  let delayBetweenLetters = options.delayBetweenLetters || 150;
-  let delayBetweenWords = options.delayBetweenWords || 175;
+  let delayBetweenLetters = options.delayBetweenLetters || 100;
+  let delayBetweenWords = options.delayBetweenWords || 125;
 
   var refreshText = (freshText, delay) => {
     setTimeout(() => {
