@@ -90,7 +90,7 @@ class SecondShane extends ThreeBoiler {
                    "You will find portals to other worlds along the way. Press the spacebar to enter them. Don't be afraid; within those worlds lies the reality of Second Shane. This realm is only a shell.",
                    "Thank you, and enjoy your time here. Come back soon... Shane is always changing."];
 
-      $introBox.show();
+      $introBox.fadeIn();
       chatter($chatterBoxContainer, words, {}, () => {
         $introBox.fadeOut();
       });
