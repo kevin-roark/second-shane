@@ -17,6 +17,8 @@ function ShaneMesh(options) {
   this.modelName = options.modelName;
   this.modelChoices = [];
 
+  this.meshCreator = options.meshCreator;
+
   this.melting = false;
   this.twitching = false;
 }
@@ -64,45 +66,69 @@ ShaneMesh.prototype.scaleMultiply = function(s) {
 ShaneMesh.prototype.createMesh = function(callback) {
   var self = this;
 
-  if (!self.modelName ) {
-    if (self.modelChoices) {
-      self.modelName = kt.choice(self.modelChoices);
-    }
-    else {
-      self.modelName = '';
-    }
+  if (self.meshCreator) {
+    self.meshCreator(function(geometry, material, mesh) {
+      self.geometry = geometry;
+      self.material = material;
+      self.mesh = mesh;
+      if (callback) {
+        callback();
+      }
+    });
   }
+  else {
+    if (!self.modelName) {
+      if (self.modelChoices) {
+        self.modelName = kt.choice(self.modelChoices);
+      }
+      else {
+        self.modelName = '';
+      }
+    }
 
-  loader.load(self.modelName, function(geometry, materials) {
-    self.geometry = geometry;
-    self.materials = materials;
+    loader.load(self.modelName, function(geometry, materials) {
+      self.geometry = geometry;
+      self.materials = materials;
 
-    self.material = new THREE.MeshFaceMaterial(materials);
-    self.mesh = new THREE.Mesh(geometry, self.material);
+      self.material = new THREE.MeshFaceMaterial(materials);
+      self.mesh = new THREE.Mesh(geometry, self.material);
 
-    callback();
-  });
+      if (callback) {
+        callback();
+      }
+    });
+  }
 };
 
 ShaneMesh.prototype.addTo = function(scene, callback) {
   var self = this;
-  self.createMesh(function() {
-    self.scaleBody(self.scale);
 
-    self.moveTo(self.startX, self.startY, self.startZ);
-
-    self.additionalInit();
-
-    self.initialPosition = {x: self.mesh.position.x, y: self.mesh.position.y, z: self.mesh.position.z};
-    self.initialScale = {x: self.mesh.scale.x, y: self.mesh.scale.y, z: self.mesh.scale.z};
-    self.initialRotation = {x: self.mesh.rotation.x, y: self.mesh.rotation.y, z: self.mesh.rotation.z};
-
+  var addMesh = function() {
     scene.add(self.mesh);
 
     if (callback) {
       callback(self);
     }
-  });
+  };
+
+  if (!self.mesh) {
+    self.createMesh(function() {
+      self.scaleBody(self.scale);
+
+      self.moveTo(self.startX, self.startY, self.startZ);
+
+      self.additionalInit();
+
+      self.initialPosition = {x: self.mesh.position.x, y: self.mesh.position.y, z: self.mesh.position.z};
+      self.initialScale = {x: self.mesh.scale.x, y: self.mesh.scale.y, z: self.mesh.scale.z};
+      self.initialRotation = {x: self.mesh.rotation.x, y: self.mesh.rotation.y, z: self.mesh.rotation.z};
+
+      addMesh();
+    });
+  }
+  else {
+    addMesh();
+  }
 };
 
 ShaneMesh.prototype.removeFrom = function(scene) {

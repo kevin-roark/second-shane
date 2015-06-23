@@ -4816,20 +4816,26 @@ var _createClass = (function () { function defineProperties(target, props) { for
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
 var THREE = require("three");
+var ShaneMesh = require("./shane-mesh");
 
 var OneOff = (function () {
   function OneOff(options) {
     _classCallCheck(this, OneOff);
 
     this.name = options.name || Math.random() * 10000 + "";
+    this.active = false;
   }
 
   _createClass(OneOff, {
     activate: {
-      value: function activate(scene) {}
+      value: function activate(scene) {
+        this.active = true;
+      }
     },
     deactivate: {
-      value: function deactivate(scene) {}
+      value: function deactivate(scene) {
+        this.active = false;
+      }
     },
     update: {
       value: function update() {}
@@ -4845,10 +4851,7 @@ var MeshedOneOff = (function (_OneOff) {
 
     _get(Object.getPrototypeOf(MeshedOneOff.prototype), "constructor", this).call(this, options);
 
-    this.initPosition = options.position || { x: 0, y: 0, z: 0 };
-
-    this.mesh = this.createMesh();
-    this.mesh.position.copy(this.initPosition);
+    this.shaneMesh = this.createShaneMesh(options);
   }
 
   _inherits(MeshedOneOff, _OneOff);
@@ -4856,17 +4859,30 @@ var MeshedOneOff = (function (_OneOff) {
   _createClass(MeshedOneOff, {
     activate: {
       value: function activate(scene) {
-        scene.add(this.mesh);
+        _get(Object.getPrototypeOf(MeshedOneOff.prototype), "activate", this).call(this, scene);
+
+        this.shaneMesh.addTo(scene);
       }
     },
     deactivate: {
       value: function deactivate(scene) {
-        scene.remove(this.mesh);
+        _get(Object.getPrototypeOf(MeshedOneOff.prototype), "deactivate", this).call(this, scene);
+
+        this.shaneMesh.removeFrom(scene);
       }
     },
-    createMesh: {
-      value: function createMesh() {
-        return new THREE.Mesh();
+    update: {
+      value: function update() {
+        _get(Object.getPrototypeOf(MeshedOneOff.prototype), "update", this).call(this);
+
+        if (this.active) {
+          this.shaneMesh.update();
+        }
+      }
+    },
+    createShaneMesh: {
+      value: function createShaneMesh(options) {
+        return new ShaneMesh(options);
       }
     }
   });
@@ -4876,35 +4892,60 @@ var MeshedOneOff = (function (_OneOff) {
 
 var Cube = (function (_MeshedOneOff) {
   function Cube(options) {
+    var _this = this;
+
     _classCallCheck(this, Cube);
 
     this.size = options.size || 1;
     this.color = options.color || 0;
+
+    options.meshCreator = function (callback) {
+      var geometry = new THREE.BoxGeometry(_this.size, _this.size, _this.size);
+      var material = new THREE.MeshBasicMaterial({ color: _this.color });
+      var mesh = new THREE.Mesh(geometry, material);
+      callback(geometry, material, mesh);
+    };
 
     _get(Object.getPrototypeOf(Cube.prototype), "constructor", this).call(this, options);
   }
 
   _inherits(Cube, _MeshedOneOff);
 
-  _createClass(Cube, {
-    createMesh: {
-      value: function createMesh() {
-        var geometry = new THREE.BoxGeometry(this.size, this.size, this.size);
-        var material = new THREE.MeshBasicMaterial({ color: this.color });
-        return new THREE.Mesh(geometry, material);
+  return Cube;
+})(MeshedOneOff);
+
+var SexMan = (function (_MeshedOneOff2) {
+  function SexMan(options) {
+    _classCallCheck(this, SexMan);
+
+    options.name = "it is just sex man";
+    options.modelName = "/js/models/male.js";
+
+    _get(Object.getPrototypeOf(SexMan.prototype), "constructor", this).call(this, options);
+  }
+
+  _inherits(SexMan, _MeshedOneOff2);
+
+  _createClass(SexMan, {
+    update: {
+      value: function update() {
+        _get(Object.getPrototypeOf(SexMan.prototype), "update", this).call(this);
+
+        if (this.active) {
+          this.shaneMesh.rotate(0, 0.033, 0);
+        }
       }
     }
   });
 
-  return Cube;
+  return SexMan;
 })(MeshedOneOff);
 
 var oneOffs = [new Cube({
   position: { x: -20, y: 0, z: -25 },
   color: 16711680
-}), new Cube({
-  position: { x: 0, y: 0, z: -25 },
-  color: 65280
+}), new SexMan({
+  position: { x: 0, y: 0, z: -25 }
 }), new Cube({
   position: { x: 20, y: 0, z: -25 },
   color: 255
@@ -4914,13 +4955,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-// just do it
-
-// ok
-
-// override for frame-ly updates
-
-},{"three":25}],13:[function(require,module,exports){
+},{"./shane-mesh":14,"three":25}],13:[function(require,module,exports){
 "use strict";
 
 var ASMR = require("./artifacts/asmr/scene.es6").ASMR;
@@ -4967,6 +5002,8 @@ function ShaneMesh(options) {
 
   this.modelName = options.modelName;
   this.modelChoices = [];
+
+  this.meshCreator = options.meshCreator;
 
   this.melting = false;
   this.twitching = false;
@@ -5015,44 +5052,66 @@ ShaneMesh.prototype.scaleMultiply = function (s) {
 ShaneMesh.prototype.createMesh = function (callback) {
   var self = this;
 
-  if (!self.modelName) {
-    if (self.modelChoices) {
-      self.modelName = kt.choice(self.modelChoices);
-    } else {
-      self.modelName = "";
+  if (self.meshCreator) {
+    self.meshCreator(function (geometry, material, mesh) {
+      self.geometry = geometry;
+      self.material = material;
+      self.mesh = mesh;
+      if (callback) {
+        callback();
+      }
+    });
+  } else {
+    if (!self.modelName) {
+      if (self.modelChoices) {
+        self.modelName = kt.choice(self.modelChoices);
+      } else {
+        self.modelName = "";
+      }
     }
+
+    loader.load(self.modelName, function (geometry, materials) {
+      self.geometry = geometry;
+      self.materials = materials;
+
+      self.material = new THREE.MeshFaceMaterial(materials);
+      self.mesh = new THREE.Mesh(geometry, self.material);
+
+      if (callback) {
+        callback();
+      }
+    });
   }
-
-  loader.load(self.modelName, function (geometry, materials) {
-    self.geometry = geometry;
-    self.materials = materials;
-
-    self.material = new THREE.MeshFaceMaterial(materials);
-    self.mesh = new THREE.Mesh(geometry, self.material);
-
-    callback();
-  });
 };
 
 ShaneMesh.prototype.addTo = function (scene, callback) {
   var self = this;
-  self.createMesh(function () {
-    self.scaleBody(self.scale);
 
-    self.moveTo(self.startX, self.startY, self.startZ);
-
-    self.additionalInit();
-
-    self.initialPosition = { x: self.mesh.position.x, y: self.mesh.position.y, z: self.mesh.position.z };
-    self.initialScale = { x: self.mesh.scale.x, y: self.mesh.scale.y, z: self.mesh.scale.z };
-    self.initialRotation = { x: self.mesh.rotation.x, y: self.mesh.rotation.y, z: self.mesh.rotation.z };
-
+  var addMesh = function addMesh() {
     scene.add(self.mesh);
 
     if (callback) {
       callback(self);
     }
-  });
+  };
+
+  if (!self.mesh) {
+    self.createMesh(function () {
+      self.scaleBody(self.scale);
+
+      self.moveTo(self.startX, self.startY, self.startZ);
+
+      self.additionalInit();
+
+      self.initialPosition = { x: self.mesh.position.x, y: self.mesh.position.y, z: self.mesh.position.z };
+      self.initialScale = { x: self.mesh.scale.x, y: self.mesh.scale.y, z: self.mesh.scale.z };
+      self.initialRotation = { x: self.mesh.rotation.x, y: self.mesh.rotation.y, z: self.mesh.rotation.z };
+
+      addMesh();
+    });
+  } else {
+    addMesh();
+  }
 };
 
 ShaneMesh.prototype.removeFrom = function (scene) {

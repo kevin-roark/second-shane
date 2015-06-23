@@ -1,21 +1,23 @@
 
 let THREE = require('three');
+let ShaneMesh = require('./shane-mesh');
 
 class OneOff {
   constructor(options) {
     this.name = options.name || (Math.random() * 10000) + '';
+    this.active = false;
   }
 
   activate(scene) {
-    // just do it
+    this.active = true;
   }
 
   deactivate(scene) {
-    // ok
+    this.active = false;
   }
 
   update() {
-    // override for frame-ly updates
+
   }
 }
 
@@ -23,22 +25,31 @@ class MeshedOneOff extends OneOff {
   constructor(options) {
     super(options);
 
-    this.initPosition = options.position || {x: 0, y: 0, z: 0};
-
-    this.mesh = this.createMesh();
-    this.mesh.position.copy(this.initPosition);
+    this.shaneMesh = this.createShaneMesh(options);
   }
 
   activate(scene) {
-    scene.add(this.mesh);
+    super.activate(scene);
+
+    this.shaneMesh.addTo(scene);
   }
 
   deactivate(scene) {
-    scene.remove(this.mesh);
+    super.deactivate(scene);
+
+    this.shaneMesh.removeFrom(scene);
   }
 
-  createMesh() {
-    return new THREE.Mesh();
+  update() {
+    super.update();
+
+    if (this.active) {
+      this.shaneMesh.update();
+    }
+  }
+
+  createShaneMesh(options) {
+    return new ShaneMesh(options);
   }
 }
 
@@ -47,13 +58,31 @@ class Cube extends MeshedOneOff {
     this.size = options.size || 1;
     this.color = options.color || 0x000000;
 
+    options.meshCreator = (callback) => {
+      var geometry = new THREE.BoxGeometry(this.size, this.size, this.size);
+      var material = new THREE.MeshBasicMaterial({color: this.color});
+      var mesh = new THREE.Mesh(geometry, material);
+      callback(geometry, material, mesh);
+    };
+
+    super(options);
+  }
+}
+
+class SexMan extends MeshedOneOff {
+  constructor(options) {
+    options.name = 'it is just sex man';
+    options.modelName = '/js/models/male.js';
+
     super(options);
   }
 
-  createMesh() {
-    var geometry = new THREE.BoxGeometry(this.size, this.size, this.size);
-    var material = new THREE.MeshBasicMaterial({color: this.color});
-    return new THREE.Mesh(geometry, material);
+  update() {
+    super.update();
+
+    if (this.active) {
+      this.shaneMesh.rotate(0, 0.033, 0);
+    }
   }
 }
 
@@ -62,9 +91,8 @@ export var oneOffs = [
     position: {x: -20, y: 0, z: -25},
     color: 0xff0000
   }),
-  new Cube({
-    position: {x: 0, y: 0, z: -25},
-    color: 0x00ff00
+  new SexMan({
+    position: {x: 0, y: 0, z: -25}
   }),
   new Cube({
     position: {x: 20, y: 0, z: -25},
