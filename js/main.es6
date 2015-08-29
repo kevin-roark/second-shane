@@ -172,6 +172,7 @@ class SecondShane extends ThreeBoiler {
     this.controls.enabled = false;
     this.sharedCameraPosition.copy(this.camera.position);
 
+    $introBox.fadeOut();
     this.fadeSceneOverlay(() => {
       this.removeSharedObjects();
       $nearbyArtifactContainer.hide();

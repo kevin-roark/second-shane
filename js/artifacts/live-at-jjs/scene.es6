@@ -201,7 +201,7 @@ export class LiveAtJJs extends ShaneScene {
       scale: 0.1
     });
 
-    human.addTo(this.scene, function() {
+    this.addMesh(human, function() {
       human.twitching = true;
       human.twitchIntensity = 0.015;
 

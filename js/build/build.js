@@ -272,7 +272,152 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../shane-mesh":14,"../../shane-scene.es6":15,"../../talisman.es6":16,"../../urls":19,"jquery":23,"kutility":24,"three":25}],2:[function(require,module,exports){
+},{"../../shane-mesh":15,"../../shane-scene.es6":16,"../../talisman.es6":17,"../../urls":20,"jquery":24,"kutility":25,"three":26}],2:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+var THREE = require("three");
+var $ = require("jquery");
+
+var urls = require("../../urls");
+
+var Talisman = require("../../talisman.es6").Talisman;
+
+var ShaneScene = require("../../shane-scene.es6").ShaneScene;
+
+var ShaneMesh = require("../../shane-mesh");
+
+var Bruno = exports.Bruno = (function (_ShaneScene) {
+
+  /// Init
+
+  function Bruno(renderer, camera, scene, options) {
+    _classCallCheck(this, Bruno);
+
+    _get(Object.getPrototypeOf(Bruno.prototype), "constructor", this).call(this, renderer, camera, scene, options);
+
+    this.name = "Bruno?";
+
+    // var host = (this.isLive? urls.bruno.live : urls.bruno.web);
+    // this.videoBase = host + 'video/';
+    // this.imageBase = host + 'images/';
+  }
+
+  _inherits(Bruno, _ShaneScene);
+
+  _createClass(Bruno, {
+    createTalisman: {
+      value: function createTalisman() {
+        var talisman = new Talisman({
+          position: new THREE.Vector3(-20, -1.3, -10),
+          modelPath: "/js/models/popcorn-popper.json",
+          modelScale: 1
+        });
+        return talisman;
+      }
+    },
+    enter: {
+
+      /// Overrides
+
+      value: function enter() {
+        _get(Object.getPrototypeOf(Bruno.prototype), "enter", this).call(this);
+
+        this.renderer.setClearColor(0, 0);
+        $("body").css("background-color", "black");
+
+        this.makeLights();
+        this.addGoldCoins();
+      }
+    },
+    doTimedWork: {
+      value: function doTimedWork() {
+        _get(Object.getPrototypeOf(Bruno.prototype), "doTimedWork", this).call(this);
+
+        var brunoLength = 3.5 * 60 * 1000;
+        setTimeout(this.iWantOut.bind(this), brunoLength);
+      }
+    },
+    exit: {
+      value: function exit() {
+        _get(Object.getPrototypeOf(Bruno.prototype), "exit", this).call(this);
+
+        this.renderer.setClearColor(16777215, 1);
+        $("body").css("background-color", "white");
+      }
+    },
+    children: {
+      value: function children() {
+        return [this.hemiLight, this.dirLight];
+      }
+    },
+    update: {
+      value: function update() {
+        _get(Object.getPrototypeOf(Bruno.prototype), "update", this).call(this);
+
+        if (this.coin1) {
+          this.coin1.rotate(0, 0, 0.01);
+          this.coin2.rotate(0, 0, -0.01);
+        }
+      }
+    },
+    makeLights: {
+      value: function makeLights() {
+        this.hemiLight = new THREE.HemisphereLight(16777215, 16777215, 0.8);
+        this.hemiLight.color.setHSL(0.6, 1, 0.6);
+        this.hemiLight.groundColor.setHSL(0.095, 1, 0.75);
+        this.hemiLight.position.set(0, 500, 0);
+        this.scene.add(this.hemiLight);
+
+        var dirLight = new THREE.DirectionalLight(16777215, 1);
+        dirLight.color.setHSL(0.1, 1, 0.95);
+        dirLight.position.set(0, 100, 100);
+
+        this.dirLight = dirLight;
+        this.scene.add(dirLight);
+      }
+    },
+    addGoldCoins: {
+      value: function addGoldCoins() {
+        var coin1 = new ShaneMesh({
+          modelName: "/js/models/bitcoin1.json",
+          position: new THREE.Vector3(-5, 0, -10)
+        });
+
+        this.addMesh(coin1, function () {
+          coin1.rotate(Math.PI / 2, 0, 0);
+        });
+
+        var coin2 = new ShaneMesh({
+          modelName: "/js/models/bitcoin2.json",
+          position: new THREE.Vector3(5, 0, -10)
+        });
+
+        this.addMesh(coin2, function () {
+          coin2.rotate(Math.PI / 2, 0, 0);
+        });
+
+        this.coin1 = coin1;
+        this.coin2 = coin2;
+      }
+    }
+  });
+
+  return Bruno;
+})(ShaneScene);
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+},{"../../shane-mesh":15,"../../shane-scene.es6":16,"../../talisman.es6":17,"../../urls":20,"jquery":24,"three":26}],3:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -360,7 +505,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"jquery":23}],3:[function(require,module,exports){
+},{"jquery":24}],4:[function(require,module,exports){
 "use strict";
 
 var $ = require("jquery");
@@ -570,7 +715,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 // chorus
 
-},{"jquery":23,"kutility":24}],4:[function(require,module,exports){
+},{"jquery":24,"kutility":25}],5:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1015,7 +1160,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../shane-scene.es6":15,"../../talisman.es6":16,"../../urls":19,"./basketball.es6":2,"./karaoke.es6":3,"jquery":23,"kutility":24,"three":25}],5:[function(require,module,exports){
+},{"../../shane-scene.es6":16,"../../talisman.es6":17,"../../urls":20,"./basketball.es6":3,"./karaoke.es6":4,"jquery":24,"kutility":25,"three":26}],6:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1556,7 +1701,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../shane-mesh":14,"../../shane-scene.es6":15,"../../talisman.es6":16,"../../urls":19,"jquery":23,"kutility":24,"three":25}],6:[function(require,module,exports){
+},{"../../shane-mesh":15,"../../shane-scene.es6":16,"../../talisman.es6":17,"../../urls":20,"jquery":24,"kutility":25,"three":26}],7:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1796,7 +1941,7 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
           scale: 0.1
         });
 
-        human.addTo(this.scene, function () {
+        this.addMesh(human, function () {
           human.twitching = true;
           human.twitchIntensity = 0.015;
 
@@ -1819,7 +1964,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../shane-mesh":14,"../../shane-scene.es6":15,"../../talisman.es6":16,"../../urls":19,"jquery":23,"three":25}],7:[function(require,module,exports){
+},{"../../shane-mesh":15,"../../shane-scene.es6":16,"../../talisman.es6":17,"../../urls":20,"jquery":24,"three":26}],8:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2123,7 +2268,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../lib/three.terrain":10,"../../shane-mesh":14,"../../shane-scene.es6":15,"../../talisman.es6":16,"../../urls":19,"../../util/video-mesh":22,"jquery":23,"kutility":24,"three":25}],8:[function(require,module,exports){
+},{"../../lib/three.terrain":11,"../../shane-mesh":15,"../../shane-scene.es6":16,"../../talisman.es6":17,"../../urls":20,"../../util/video-mesh":23,"jquery":24,"kutility":25,"three":26}],9:[function(require,module,exports){
 "use strict";
 
 /**
@@ -2393,7 +2538,7 @@ module.exports = function (camera, options) {
 	this.updateRotationVector();
 };
 
-},{"./pointerlocker":9,"three":25}],9:[function(require,module,exports){
+},{"./pointerlocker":10,"three":26}],10:[function(require,module,exports){
 "use strict";
 
 module.exports = function () {
@@ -2493,7 +2638,7 @@ module.exports = function () {
   }
 };
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 "use strict";
 
 /**
@@ -4533,7 +4678,7 @@ THREE.Terrain.Influence = function (g, options, f, x, y, r, h, t, e) {
 
 module.exports = THREE.Terrain;
 
-},{"three":25}],11:[function(require,module,exports){
+},{"three":26}],12:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -4740,6 +4885,7 @@ var SecondShane = (function (_ThreeBoiler) {
         this.controls.enabled = false;
         this.sharedCameraPosition.copy(this.camera.position);
 
+        $introBox.fadeOut();
         this.fadeSceneOverlay(function () {
           _this.removeSharedObjects();
           $nearbyArtifactContainer.hide();
@@ -4804,7 +4950,7 @@ $(function () {
   shane.activate();
 });
 
-},{"./controls/fly-controls":8,"./one-offs.es6":12,"./scenes.es6":13,"./theme.es6":17,"./three-boiler.es6":18,"./util/chatterbox.es6":20,"jquery":23,"three":25}],12:[function(require,module,exports){
+},{"./controls/fly-controls":9,"./one-offs.es6":13,"./scenes.es6":14,"./theme.es6":18,"./three-boiler.es6":19,"./util/chatterbox.es6":21,"jquery":24,"three":26}],13:[function(require,module,exports){
 "use strict";
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
@@ -4955,7 +5101,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"./shane-mesh":14,"three":25}],13:[function(require,module,exports){
+},{"./shane-mesh":15,"three":26}],14:[function(require,module,exports){
 "use strict";
 
 var ASMR = require("./artifacts/asmr/scene.es6").ASMR;
@@ -4968,8 +5114,10 @@ var iFeltTheFoot = require("./artifacts/i-felt-the-foot/scene.es6").iFeltTheFoot
 
 var PapaJohn = require("./artifacts/papa-john/scene.es6").PapaJohn;
 
+var Bruno = require("./artifacts/bruno/scene.es6").Bruno;
+
 var createShaneScenes = function (exitCallback, renderer, camera, scene) {
-  var scenes = [new ASMR(renderer, camera, scene, {}), new LiveAtJJs(renderer, camera, scene, {}), new GodIsAMan(renderer, camera, scene, {}), new iFeltTheFoot(renderer, camera, scene, {}), new PapaJohn(renderer, camera, scene, {})];
+  var scenes = [new ASMR(renderer, camera, scene, {}), new LiveAtJJs(renderer, camera, scene, {}), new GodIsAMan(renderer, camera, scene, {}), new iFeltTheFoot(renderer, camera, scene, {}), new PapaJohn(renderer, camera, scene, {}), new Bruno(renderer, camera, scene, {})];
 
   scenes.forEach(function (scene) {
     scene.exitCallback = exitCallback;
@@ -4982,7 +5130,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"./artifacts/asmr/scene.es6":1,"./artifacts/god-is-a-man/scene.es6":4,"./artifacts/i-felt-the-foot/scene.es6":5,"./artifacts/live-at-jjs/scene.es6":6,"./artifacts/papa-john/scene.es6":7}],14:[function(require,module,exports){
+},{"./artifacts/asmr/scene.es6":1,"./artifacts/bruno/scene.es6":2,"./artifacts/god-is-a-man/scene.es6":5,"./artifacts/i-felt-the-foot/scene.es6":6,"./artifacts/live-at-jjs/scene.es6":7,"./artifacts/papa-john/scene.es6":8}],15:[function(require,module,exports){
 "use strict";
 
 var THREE = require("three");
@@ -5181,7 +5329,7 @@ ShaneMesh.prototype.fallToFloor = function (threshold, speed) {
 ShaneMesh.prototype.additionalInit = function () {};
 ShaneMesh.prototype.additionalRender = function () {};
 
-},{"kutility":24,"three":25}],15:[function(require,module,exports){
+},{"kutility":25,"three":26}],16:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -5206,6 +5354,8 @@ var ShaneScene = exports.ShaneScene = (function () {
 
     this.talisman = this.createTalisman();
     this.talisman.addTo(scene);
+
+    this.shaneMeshes = [];
 
     this.domContainer = $("body");
 
@@ -5253,6 +5403,12 @@ var ShaneScene = exports.ShaneScene = (function () {
           var child = children[i];
           this.scene.remove(child);
         }
+
+        var shaneMeshes = this.shaneMeshes;
+        for (var i = 0; i < shaneMeshes.length; i++) {
+          var shaneMesh = shaneMesh[i];
+          shaneMesh.removeFrom(this.scene);
+        }
       }
     },
     iWantOut: {
@@ -5263,7 +5419,10 @@ var ShaneScene = exports.ShaneScene = (function () {
       }
     },
     addMesh: {
-      value: function addMesh() {}
+      value: function addMesh(shaneMesh, callback) {
+        shaneMesh.addTo(this.scene, callback);
+        this.shaneMeshes.push(shaneMesh);
+      }
     },
     click: {
       value: function click() {
@@ -5374,7 +5533,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"./talisman.es6":16,"jquery":23,"three":25}],16:[function(require,module,exports){
+},{"./talisman.es6":17,"jquery":24,"three":26}],17:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -5503,7 +5662,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"three":25}],17:[function(require,module,exports){
+},{"three":26}],18:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -5549,7 +5708,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"./util/skybox":21}],18:[function(require,module,exports){
+},{"./util/skybox":22}],19:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -5668,7 +5827,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"jquery":23,"three":25}],19:[function(require,module,exports){
+},{"jquery":24,"three":26}],20:[function(require,module,exports){
 "use strict";
 
 module.exports.asmr = {
@@ -5696,7 +5855,7 @@ module.exports.godIsAMan = {
   live: "http://localhost:5559/"
 };
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 "use strict";
 
 var $ = require("jquery");
@@ -5781,7 +5940,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"jquery":23}],21:[function(require,module,exports){
+},{"jquery":24}],22:[function(require,module,exports){
 "use strict";
 
 var THREE = require("three");
@@ -5851,7 +6010,7 @@ module.exports.blocker = function (size) {
   return new THREE.Mesh(geometry, material);
 };
 
-},{"three":25}],22:[function(require,module,exports){
+},{"three":26}],23:[function(require,module,exports){
 "use strict";
 
 var THREE = require("three");
@@ -5914,7 +6073,7 @@ VideoMesh.prototype.rotateTo = function (rx, ry, rz) {
   this.mesh.rotation.set(rx, ry, rz);
 };
 
-},{"jquery":23,"three":25}],23:[function(require,module,exports){
+},{"jquery":24,"three":26}],24:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.3
  * http://jquery.com/
@@ -15121,7 +15280,7 @@ return jQuery;
 
 }));
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 
 /* export something */
 module.exports = new Kutility();
@@ -15695,7 +15854,7 @@ Kutility.prototype.blur = function(el, x) {
   this.setFilter(el, cf + f);
 };
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 var self = self || {};// File:src/Three.js
 
 /**
@@ -50843,4 +51002,4 @@ if (typeof exports !== 'undefined') {
   this['THREE'] = THREE;
 }
 
-},{}]},{},[11]);
+},{}]},{},[12]);

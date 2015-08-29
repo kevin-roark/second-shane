@@ -15,6 +15,8 @@ export class ShaneScene {
     this.talisman = this.createTalisman();
     this.talisman.addTo(scene);
 
+    this.shaneMeshes = [];
+
     this.domContainer = $('body');
 
     $('body').click(this.click.bind(this));
@@ -53,9 +55,15 @@ export class ShaneScene {
     this.active = false;
 
     let children = this.children();
-    for (var i = 0; i < children.length; i++) {
+    for (let i = 0; i < children.length; i++) {
       let child = children[i];
       this.scene.remove(child);
+    }
+
+    let shaneMeshes = this.shaneMeshes;
+    for (let i = 0; i < shaneMeshes.length; i++) {
+      let shaneMesh = shaneMesh[i];
+      shaneMesh.removeFrom(this.scene);
     }
   }
 
@@ -65,8 +73,9 @@ export class ShaneScene {
     }
   }
 
-  addMesh() {
-
+  addMesh(shaneMesh, callback) {
+    shaneMesh.addTo(this.scene, callback);
+    this.shaneMeshes.push(shaneMesh);
   }
 
   click() {
