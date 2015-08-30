@@ -333,6 +333,8 @@ var Bruno = exports.Bruno = (function (_ShaneScene) {
         this.renderer.setClearColor(0, 0);
         $("body").css("background-color", "black");
 
+        this.coinRotationSpeed = 0.01;
+
         this.makeLights();
         this.addGoldCoins();
       }
@@ -363,8 +365,8 @@ var Bruno = exports.Bruno = (function (_ShaneScene) {
         _get(Object.getPrototypeOf(Bruno.prototype), "update", this).call(this);
 
         if (this.coin1) {
-          this.coin1.rotate(0, 0, 0.01);
-          this.coin2.rotate(0, 0, -0.01);
+          this.coin1.rotate(0, 0, this.coinRotationSpeed);
+          this.coin2.rotate(0, 0, -this.coinRotationSpeed);
         }
       }
     },
@@ -376,8 +378,8 @@ var Bruno = exports.Bruno = (function (_ShaneScene) {
         this.hemiLight.position.set(0, 500, 0);
         this.scene.add(this.hemiLight);
 
-        var dirLight = new THREE.DirectionalLight(16777215, 1);
-        dirLight.color.setHSL(0.1, 1, 0.95);
+        var dirLight = new THREE.DirectionalLight(16777215, 0.25);
+        dirLight.color.setHex(16767084);
         dirLight.position.set(0, 100, 100);
 
         this.dirLight = dirLight;
@@ -386,26 +388,30 @@ var Bruno = exports.Bruno = (function (_ShaneScene) {
     },
     addGoldCoins: {
       value: function addGoldCoins() {
-        var coin1 = new ShaneMesh({
-          modelName: "/js/models/bitcoin1.json",
-          position: new THREE.Vector3(-5, 0, -10)
+        this.coin1 = this.makeCoin(new THREE.Vector3(-5, 0, -10));
+        this.coin2 = this.makeCoin(new THREE.Vector3(5, 0, -10));
+      }
+    },
+    makeCoin: {
+      value: function makeCoin(position) {
+        var coin = new ShaneMesh({
+          meshCreator: function (callback) {
+            var geometry = new THREE.CylinderGeometry(2, 2, 0.5, 32);
+            var material = new THREE.MeshLambertMaterial({
+              color: 16767084
+            });
+            var mesh = new THREE.Mesh(geometry, material);
+            callback(geometry, material, mesh);
+          },
+          position: position
         });
 
-        this.addMesh(coin1, function () {
-          coin1.rotate(Math.PI / 2, 0, 0);
+        this.addMesh(coin, function () {
+          coin.geometry.center();
+          coin.rotate(Math.PI / 2, 0, 0);
         });
 
-        var coin2 = new ShaneMesh({
-          modelName: "/js/models/bitcoin2.json",
-          position: new THREE.Vector3(5, 0, -10)
-        });
-
-        this.addMesh(coin2, function () {
-          coin2.rotate(Math.PI / 2, 0, 0);
-        });
-
-        this.coin1 = coin1;
-        this.coin2 = coin2;
+        return coin;
       }
     }
   });

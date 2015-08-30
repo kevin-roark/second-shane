@@ -38,6 +38,8 @@ export class Bruno extends ShaneScene {
     this.renderer.setClearColor(0x000000, 0);
     $('body').css('background-color', 'black');
 
+    this.coinRotationSpeed = 0.01;
+
     this.makeLights();
     this.addGoldCoins();
   }
@@ -64,8 +66,8 @@ export class Bruno extends ShaneScene {
     super.update();
 
     if (this.coin1) {
-      this.coin1.rotate(0, 0, 0.01);
-      this.coin2.rotate(0, 0, -0.01);
+      this.coin1.rotate(0, 0, this.coinRotationSpeed);
+      this.coin2.rotate(0, 0, -this.coinRotationSpeed);
     }
   }
 
@@ -76,8 +78,8 @@ export class Bruno extends ShaneScene {
     this.hemiLight.position.set( 0, 500, 0 );
     this.scene.add(this.hemiLight);
 
-    var dirLight = new THREE.DirectionalLight( 0xffffff, 1 );
-    dirLight.color.setHSL( 0.1, 1, 0.95 );
+    var dirLight = new THREE.DirectionalLight( 0xffffff, 0.25);
+    dirLight.color.setHex(0xFFD86C);
     dirLight.position.set(0, 100, 100);
 
     this.dirLight = dirLight;
@@ -85,26 +87,29 @@ export class Bruno extends ShaneScene {
   }
 
   addGoldCoins() {
-    let coin1 = new ShaneMesh({
-      modelName: '/js/models/bitcoin1.json',
-      position: new THREE.Vector3(-5, 0, -10)
+    this.coin1 = this.makeCoin(new THREE.Vector3(-5, 0, -10));
+    this.coin2 = this.makeCoin(new THREE.Vector3(5, 0, -10));
+  }
+
+  makeCoin(position) {
+    let coin = new ShaneMesh({
+      meshCreator: (callback) => {
+        let geometry = new THREE.CylinderGeometry(2, 2, 0.5, 32);
+        let material = new THREE.MeshLambertMaterial({
+          color: 0xFFD86C
+        });
+        let mesh = new THREE.Mesh(geometry, material);
+        callback(geometry, material, mesh);
+      },
+      position: position
     });
 
-    this.addMesh(coin1, () => {
-      coin1.rotate(Math.PI / 2, 0, 0);
+    this.addMesh(coin, () => {
+      coin.geometry.center();
+      coin.rotate(Math.PI / 2, 0, 0);
     });
 
-    let coin2 = new ShaneMesh({
-      modelName: '/js/models/bitcoin2.json',
-      position: new THREE.Vector3(5, 0, -10)
-    });
-
-    this.addMesh(coin2, () => {
-      coin2.rotate(Math.PI / 2, 0, 0);
-    });
-
-    this.coin1 = coin1;
-    this.coin2 = coin2;
+    return coin;
   }
 
 }
