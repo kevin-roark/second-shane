@@ -353,6 +353,7 @@ var Bruno = exports.Bruno = (function (_ShaneScene) {
 
         if (this.$canvas) {
           this.$canvas.remove();
+          this.$canvas = null;
         }
       }
     },
@@ -4766,6 +4767,7 @@ var _classCallCheck = function (instance, Constructor) { if (!(instance instance
 
 var $ = require("jquery");
 var THREE = require("three");
+var queryString = require("querystring");
 
 var ThreeBoiler = require("./three-boiler.es6").ThreeBoiler;
 
@@ -4832,6 +4834,11 @@ var SecondShane = (function (_ThreeBoiler) {
     this.framesUntilTalismanSearch = 30;
 
     this.showIntroChatter();
+
+    this.renderCurrentURL();
+    window.addEventListener("popstate", function () {
+      _this.renderCurrentURL();
+    });
   }
 
   _inherits(SecondShane, _ThreeBoiler);
@@ -4856,6 +4863,51 @@ var SecondShane = (function (_ThreeBoiler) {
           this.nearestTalismanScene = this.searchForTalisman();
           $nearbyArtifactName.text(this.nearestTalismanScene ? this.nearestTalismanScene.name : "null");
           this.framesUntilTalismanSearch = 30;
+        }
+      }
+    },
+    renderCurrentURL: {
+      value: function renderCurrentURL() {
+        var currentQuery = queryString.parse(window.location.search.substring(1));
+
+        if (currentQuery.shaneScene) {
+          if (!this.activeScene) {
+            this.transitionToSceneWithName(currentQuery.shaneScene);
+          }
+        } else {
+          if (this.activeScene) {
+            this.transitionFromScene(this.activeScene);
+          }
+        }
+      }
+    },
+    updateHistoryForScene: {
+      value: function updateHistoryForScene(scene) {
+        var currentQuery = queryString.parse(window.location.search.substring(1));
+
+        currentQuery.shaneScene = scene.name;
+
+        this.updateHistoryWithQuery(currentQuery);
+      }
+    },
+    updateHistoryForEarth: {
+      value: function updateHistoryForEarth() {
+        var currentQuery = queryString.parse(window.location.search.substring(1));
+        delete currentQuery.shaneScene;
+
+        this.updateHistoryWithQuery(currentQuery);
+      }
+    },
+    updateHistoryWithQuery: {
+      value: function updateHistoryWithQuery(query) {
+        var newQueryString = queryString.encode(query);
+
+        if (window.history.pushState) {
+          var newURL = window.location.protocol + "//" + window.location.host + window.location.pathname;
+          if (newQueryString.length > 0) {
+            newURL += "?" + newQueryString;
+          }
+          window.history.pushState({ shaneScene: query.shaneScene }, "", newURL);
         }
       }
     },
@@ -4911,6 +4963,8 @@ var SecondShane = (function (_ThreeBoiler) {
       /// Transitions
 
       value: function spacebarPressed() {
+        var _this = this;
+
         if (this.transitioning) {
           return;
         }
@@ -4918,7 +4972,9 @@ var SecondShane = (function (_ThreeBoiler) {
         if (!this.activeScene) {
           this.attemptToEnterScene();
         } else {
-          this.transitionFromScene(this.activeScene);
+          this.transitionFromScene(this.activeScene, function () {
+            _this.updateHistoryForEarth();
+          });
         }
       }
     },
@@ -4932,7 +4988,7 @@ var SecondShane = (function (_ThreeBoiler) {
       }
     },
     transitionFromScene: {
-      value: function transitionFromScene(shaneScene) {
+      value: function transitionFromScene(shaneScene, postFadeCallback) {
         var _this = this;
 
         this.transitioning = true;
@@ -4940,6 +4996,11 @@ var SecondShane = (function (_ThreeBoiler) {
 
         this.fadeSceneOverlay(function () {
           shaneScene.exit();
+
+          if (postFadeCallback) {
+            postFadeCallback();
+          }
+
           _this.addSharedObjects();
           _this.camera.position.copy(_this.sharedCameraPosition);
           _this.controls.enabled = true;
@@ -4949,6 +5010,17 @@ var SecondShane = (function (_ThreeBoiler) {
             _this.transitioning = false;
           }, 4444);
         });
+      }
+    },
+    transitionToSceneWithName: {
+      value: function transitionToSceneWithName(name) {
+        for (var i = 0; i < this.shaneScenes.length; i++) {
+          var scene = this.shaneScenes[i];
+          if (scene.name === name) {
+            this.transitionToScene(scene);
+            return;
+          }
+        }
       }
     },
     transitionToScene: {
@@ -4964,6 +5036,8 @@ var SecondShane = (function (_ThreeBoiler) {
         this.fadeSceneOverlay(function () {
           _this.removeSharedObjects();
           $nearbyArtifactContainer.hide();
+
+          _this.updateHistoryForScene(shaneScene);
 
           shaneScene.startScene();
 
@@ -5025,7 +5099,7 @@ $(function () {
   shane.activate();
 });
 
-},{"./controls/fly-controls":10,"./one-offs.es6":14,"./scenes.es6":15,"./theme.es6":19,"./three-boiler.es6":20,"./util/chatterbox.es6":22,"jquery":25,"three":27}],14:[function(require,module,exports){
+},{"./controls/fly-controls":10,"./one-offs.es6":14,"./scenes.es6":15,"./theme.es6":19,"./three-boiler.es6":20,"./util/chatterbox.es6":22,"jquery":25,"querystring":30,"three":27}],14:[function(require,module,exports){
 "use strict";
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
@@ -51077,4 +51151,183 @@ if (typeof exports !== 'undefined') {
   this['THREE'] = THREE;
 }
 
-},{}]},{},[13]);
+},{}],28:[function(require,module,exports){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+'use strict';
+
+// If obj.hasOwnProperty has been overridden, then calling
+// obj.hasOwnProperty(prop) will break.
+// See: https://github.com/joyent/node/issues/1707
+function hasOwnProperty(obj, prop) {
+  return Object.prototype.hasOwnProperty.call(obj, prop);
+}
+
+module.exports = function(qs, sep, eq, options) {
+  sep = sep || '&';
+  eq = eq || '=';
+  var obj = {};
+
+  if (typeof qs !== 'string' || qs.length === 0) {
+    return obj;
+  }
+
+  var regexp = /\+/g;
+  qs = qs.split(sep);
+
+  var maxKeys = 1000;
+  if (options && typeof options.maxKeys === 'number') {
+    maxKeys = options.maxKeys;
+  }
+
+  var len = qs.length;
+  // maxKeys <= 0 means that we should not limit keys count
+  if (maxKeys > 0 && len > maxKeys) {
+    len = maxKeys;
+  }
+
+  for (var i = 0; i < len; ++i) {
+    var x = qs[i].replace(regexp, '%20'),
+        idx = x.indexOf(eq),
+        kstr, vstr, k, v;
+
+    if (idx >= 0) {
+      kstr = x.substr(0, idx);
+      vstr = x.substr(idx + 1);
+    } else {
+      kstr = x;
+      vstr = '';
+    }
+
+    k = decodeURIComponent(kstr);
+    v = decodeURIComponent(vstr);
+
+    if (!hasOwnProperty(obj, k)) {
+      obj[k] = v;
+    } else if (isArray(obj[k])) {
+      obj[k].push(v);
+    } else {
+      obj[k] = [obj[k], v];
+    }
+  }
+
+  return obj;
+};
+
+var isArray = Array.isArray || function (xs) {
+  return Object.prototype.toString.call(xs) === '[object Array]';
+};
+
+},{}],29:[function(require,module,exports){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+'use strict';
+
+var stringifyPrimitive = function(v) {
+  switch (typeof v) {
+    case 'string':
+      return v;
+
+    case 'boolean':
+      return v ? 'true' : 'false';
+
+    case 'number':
+      return isFinite(v) ? v : '';
+
+    default:
+      return '';
+  }
+};
+
+module.exports = function(obj, sep, eq, name) {
+  sep = sep || '&';
+  eq = eq || '=';
+  if (obj === null) {
+    obj = undefined;
+  }
+
+  if (typeof obj === 'object') {
+    return map(objectKeys(obj), function(k) {
+      var ks = encodeURIComponent(stringifyPrimitive(k)) + eq;
+      if (isArray(obj[k])) {
+        return map(obj[k], function(v) {
+          return ks + encodeURIComponent(stringifyPrimitive(v));
+        }).join(sep);
+      } else {
+        return ks + encodeURIComponent(stringifyPrimitive(obj[k]));
+      }
+    }).join(sep);
+
+  }
+
+  if (!name) return '';
+  return encodeURIComponent(stringifyPrimitive(name)) + eq +
+         encodeURIComponent(stringifyPrimitive(obj));
+};
+
+var isArray = Array.isArray || function (xs) {
+  return Object.prototype.toString.call(xs) === '[object Array]';
+};
+
+function map (xs, f) {
+  if (xs.map) return xs.map(f);
+  var res = [];
+  for (var i = 0; i < xs.length; i++) {
+    res.push(f(xs[i], i));
+  }
+  return res;
+}
+
+var objectKeys = Object.keys || function (obj) {
+  var res = [];
+  for (var key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) res.push(key);
+  }
+  return res;
+};
+
+},{}],30:[function(require,module,exports){
+'use strict';
+
+exports.decode = exports.parse = require('./decode');
+exports.encode = exports.stringify = require('./encode');
+
+},{"./decode":28,"./encode":29}]},{},[13]);

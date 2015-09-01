@@ -1,6 +1,7 @@
 
 let $ = require('jquery');
 let THREE = require('three');
+let queryString = require('querystring');
 
 import {ThreeBoiler} from './three-boiler.es6';
 
@@ -60,6 +61,11 @@ class SecondShane extends ThreeBoiler {
     this.framesUntilTalismanSearch = 30;
 
     this.showIntroChatter();
+
+    this.renderCurrentURL();
+    window.addEventListener('popstate', () => {
+      this.renderCurrentURL();
+    });
   }
 
   render() {
@@ -80,6 +86,48 @@ class SecondShane extends ThreeBoiler {
       this.nearestTalismanScene = this.searchForTalisman();
       $nearbyArtifactName.text(this.nearestTalismanScene? this.nearestTalismanScene.name : 'null');
       this.framesUntilTalismanSearch = 30;
+    }
+  }
+
+  renderCurrentURL() {
+    var currentQuery = queryString.parse(window.location.search.substring(1));
+
+    if (currentQuery.shaneScene) {
+      if (!this.activeScene) {
+        this.transitionToSceneWithName(currentQuery.shaneScene);
+      }
+    }
+    else {
+      if (this.activeScene) {
+        this.transitionFromScene(this.activeScene);
+      }
+    }
+  }
+
+  updateHistoryForScene(scene) {
+    var currentQuery = queryString.parse(window.location.search.substring(1));
+
+    currentQuery.shaneScene = scene.name;
+
+    this.updateHistoryWithQuery(currentQuery);
+  }
+
+  updateHistoryForEarth() {
+    var currentQuery = queryString.parse(window.location.search.substring(1));
+    delete currentQuery.shaneScene;
+
+    this.updateHistoryWithQuery(currentQuery);
+  }
+
+  updateHistoryWithQuery(query) {
+    var newQueryString = queryString.encode(query);
+
+    if (window.history.pushState) {
+      var newURL = window.location.protocol + "//" + window.location.host + window.location.pathname;
+      if (newQueryString.length > 0) {
+          newURL += '?' + newQueryString;
+      }
+      window.history.pushState({shaneScene: query.shaneScene}, '', newURL);
     }
   }
 
@@ -137,7 +185,9 @@ class SecondShane extends ThreeBoiler {
     if (!this.activeScene) {
       this.attemptToEnterScene();
     } else {
-      this.transitionFromScene(this.activeScene);
+      this.transitionFromScene(this.activeScene, () => {
+        this.updateHistoryForEarth();
+      });
     }
   }
 
@@ -149,12 +199,17 @@ class SecondShane extends ThreeBoiler {
     }
   }
 
-  transitionFromScene(shaneScene) {
+  transitionFromScene(shaneScene, postFadeCallback) {
     this.transitioning = true;
     this.activeScene = null;
 
     this.fadeSceneOverlay(() => {
       shaneScene.exit();
+
+      if (postFadeCallback) {
+        postFadeCallback();
+      }
+
       this.addSharedObjects();
       this.camera.position.copy(this.sharedCameraPosition);
       this.controls.enabled = true;
@@ -164,6 +219,16 @@ class SecondShane extends ThreeBoiler {
         this.transitioning = false;
       }, 4444);
     });
+  }
+
+  transitionToSceneWithName(name) {
+    for (var i = 0; i < this.shaneScenes.length; i++) {
+      var scene = this.shaneScenes[i];
+      if (scene.name === name) {
+        this.transitionToScene(scene);
+        return;
+      }
+    }
   }
 
   transitionToScene(shaneScene) {
@@ -176,6 +241,8 @@ class SecondShane extends ThreeBoiler {
     this.fadeSceneOverlay(() => {
       this.removeSharedObjects();
       $nearbyArtifactContainer.hide();
+
+      this.updateHistoryForScene(shaneScene);
 
       shaneScene.startScene();
 

@@ -56,6 +56,7 @@ export class Bruno extends ShaneScene {
 
     if (this.$canvas) {
       this.$canvas.remove();
+      this.$canvas = null;
     }
   }
 

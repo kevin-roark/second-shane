@@ -1,6 +1,7 @@
 
 let THREE = require('three');
 let $ = require('jquery');
+
 import {Talisman} from './talisman.es6';
 
 export class ShaneScene {
