@@ -62,7 +62,7 @@ export class ShaneScene {
 
     let shaneMeshes = this.shaneMeshes;
     for (let i = 0; i < shaneMeshes.length; i++) {
-      let shaneMesh = shaneMesh[i];
+      let shaneMesh = shaneMeshes[i];
       shaneMesh.removeFrom(this.scene);
     }
   }

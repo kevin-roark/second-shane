@@ -6,6 +6,7 @@ let urls = require('../../urls');
 import {Talisman} from '../../talisman.es6';
 import {ShaneScene} from '../../shane-scene.es6';
 let ShaneMesh = require('../../shane-mesh');
+let staticCanvas = require('./static-canvas');
 
 export class Bruno extends ShaneScene {
 
@@ -35,13 +36,12 @@ export class Bruno extends ShaneScene {
   enter() {
     super.enter();
 
-    this.renderer.setClearColor(0x000000, 0);
-    $('body').css('background-color', 'black');
-
     this.coinRotationSpeed = 0.01;
+    this.staticRenderPercentage = 0.1;
 
     this.makeLights();
     this.addGoldCoins();
+    this.makeStaticCanvas();
   }
 
   doTimedWork() {
@@ -54,8 +54,9 @@ export class Bruno extends ShaneScene {
   exit() {
     super.exit();
 
-    this.renderer.setClearColor(0xffffff, 1);
-    $('body').css('background-color', 'white');
+    if (this.$canvas) {
+      this.$canvas.remove();
+    }
   }
 
   children() {
@@ -69,7 +70,22 @@ export class Bruno extends ShaneScene {
       this.coin1.rotate(0, 0, this.coinRotationSpeed);
       this.coin2.rotate(0, 0, -this.coinRotationSpeed);
     }
+
+    if (this.$canvas && Math.random() <= this.staticRenderPercentage) {
+      staticCanvas.fuzz(this.$canvas[0]);
+    }
   }
+
+  resize() {
+    super.resize();
+
+    if (this.$canvas) {
+      this.$canvas.css('left', (window.innerWidth/2 - this.$canvas.width()/2) + 'px');
+      this.$canvas.css('top', (window.innerHeight/2 - this.$canvas.height()/2) + 'px');
+    }
+  }
+
+  // Lights
 
   makeLights() {
     this.hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.8);
@@ -85,6 +101,8 @@ export class Bruno extends ShaneScene {
     this.dirLight = dirLight;
     this.scene.add(dirLight);
   }
+
+  // Gold
 
   addGoldCoins() {
     this.coin1 = this.makeCoin(new THREE.Vector3(-5, 0, -10));
@@ -110,6 +128,27 @@ export class Bruno extends ShaneScene {
     });
 
     return coin;
+  }
+
+  // Static
+
+  makeStaticCanvas() {
+    let canvas = this.makeCanvas();
+
+    canvas.width = 666;
+    canvas.height = 666;
+
+    let $canvas = $(canvas);
+
+    $canvas.css('background-color', 'white');
+
+    $canvas.css('box-shadow', '0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)');
+
+    this.domContainer.append($canvas);
+
+    this.$canvas = $canvas;
+
+    this.resize();
   }
 
 }
