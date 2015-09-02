@@ -185,9 +185,7 @@ class SecondShane extends ThreeBoiler {
     if (!this.activeScene) {
       this.attemptToEnterScene();
     } else {
-      this.transitionFromScene(this.activeScene, () => {
-        this.updateHistoryForEarth();
-      });
+      this.transitionFromScene(this.activeScene);
     }
   }
 
@@ -199,16 +197,14 @@ class SecondShane extends ThreeBoiler {
     }
   }
 
-  transitionFromScene(shaneScene, postFadeCallback) {
+  transitionFromScene(shaneScene) {
     this.transitioning = true;
     this.activeScene = null;
 
     this.fadeSceneOverlay(() => {
       shaneScene.exit();
 
-      if (postFadeCallback) {
-        postFadeCallback();
-      }
+      this.updateHistoryForEarth();
 
       this.addSharedObjects();
       this.camera.position.copy(this.sharedCameraPosition);
@@ -237,9 +233,9 @@ class SecondShane extends ThreeBoiler {
     this.controls.enabled = false;
     this.sharedCameraPosition.copy(this.camera.position);
 
-    $introBox.fadeOut();
     this.fadeSceneOverlay(() => {
       this.removeSharedObjects();
+      $introBox.fadeOut();
       $nearbyArtifactContainer.hide();
 
       this.updateHistoryForScene(shaneScene);

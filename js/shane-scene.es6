@@ -23,7 +23,7 @@ export class ShaneScene {
     $('body').click(this.click.bind(this));
     $(window).resize(this.resize.bind(this));
 
-    this.isLive = true;
+    this.isLive = false;
     this.hasStarted = false;
   }
 

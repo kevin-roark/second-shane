@@ -332,16 +332,45 @@ var Bruno = exports.Bruno = (function (_ShaneScene) {
         _get(Object.getPrototypeOf(Bruno.prototype), "enter", this).call(this);
 
         this.coinRotationSpeed = 0.01;
-        this.staticRenderPercentage = 0.1;
+        this.staticRenderPercentage = 0.9;
 
         this.makeLights();
+        this.makeGround();
         this.addGoldCoins();
-        this.makeStaticCanvas();
       }
     },
     doTimedWork: {
       value: function doTimedWork() {
+        var _this = this;
+
         _get(Object.getPrototypeOf(Bruno.prototype), "doTimedWork", this).call(this);
+
+        var canvasOffset = 45 * 1000;
+        setTimeout(function () {
+          _this.makeStaticCanvas();
+        }, canvasOffset);
+
+        var brunoFadeOffset = canvasOffset + 90 * 1000;
+        setTimeout(function () {
+          _this.addBrunoText();
+        }, brunoFadeOffset);
+
+        var brunoShakeOffset = brunoFadeOffset + 15 * 1000;
+        setTimeout(function () {
+          if (!_this.$brunoText) {
+            return;
+          }
+
+          _this.brunoShakeInterval = setInterval(function () {
+            var top = parseFloat(_this.$brunoText.css("margin-top"));
+            var newTop = top + (Math.random() - 0.5) * 5;
+            _this.$brunoText.css("margin-top", newTop + "px");
+
+            var left = parseFloat(_this.$brunoText.css("margin-left"));
+            var newLeft = left + (Math.random() - 0.5) * 5;
+            _this.$brunoText.css("margin-left", newLeft + "px");
+          }, 50);
+        }, brunoShakeOffset);
 
         var brunoLength = 3.5 * 60 * 1000;
         setTimeout(this.iWantOut.bind(this), brunoLength);
@@ -355,6 +384,13 @@ var Bruno = exports.Bruno = (function (_ShaneScene) {
           this.$canvas.remove();
           this.$canvas = null;
         }
+
+        if (this.$brunoText) {
+          this.$brunoText.remove();
+          this.$brunoText = null;
+        }
+
+        clearInterval(this.brunoShakeInterval);
       }
     },
     children: {
@@ -369,6 +405,11 @@ var Bruno = exports.Bruno = (function (_ShaneScene) {
         if (this.coin1) {
           this.coin1.rotate(0, 0, this.coinRotationSpeed);
           this.coin2.rotate(0, 0, -this.coinRotationSpeed);
+          this.coin3.rotate(0, 0, this.coinRotationSpeed);
+
+          if (this.coinRotationSpeed < 0.35) {
+            this.coinRotationSpeed += 0.000006;
+          }
         }
 
         if (this.$canvas && Math.random() <= this.staticRenderPercentage) {
@@ -399,10 +440,40 @@ var Bruno = exports.Bruno = (function (_ShaneScene) {
 
         var dirLight = new THREE.DirectionalLight(16777215, 0.25);
         dirLight.color.setHex(16767084);
-        dirLight.position.set(0, 100, 100);
+        dirLight.position.set(0, 75, 100);
+        dirLight.castShadow = true;
+        dirLight.shadowMapWidth = dirLight.shadowMapHeight = 8192;
 
         this.dirLight = dirLight;
         this.scene.add(dirLight);
+      }
+    },
+    makeGround: {
+
+      // Ground
+
+      value: function makeGround() {
+        var ground = new ShaneMesh({
+          meshCreator: function (callback) {
+            var groundLength = 100;
+            var geometry = new THREE.PlaneGeometry(groundLength, groundLength);
+
+            var material = new THREE.MeshBasicMaterial({
+              color: 16777215,
+              side: THREE.DoubleSide
+            });
+
+            var mesh = new THREE.Mesh(geometry, material);
+            mesh.rotation.x = -Math.PI / 2;
+            mesh.receiveShadow = true;
+
+            callback(geometry, material, mesh);
+          },
+
+          position: new THREE.Vector3(0, -5, 0)
+        });
+
+        this.addMesh(ground);
       }
     },
     addGoldCoins: {
@@ -410,8 +481,10 @@ var Bruno = exports.Bruno = (function (_ShaneScene) {
       // Gold
 
       value: function addGoldCoins() {
-        this.coin1 = this.makeCoin(new THREE.Vector3(-5, 0, -10));
-        this.coin2 = this.makeCoin(new THREE.Vector3(5, 0, -10));
+        this.coin1 = this.makeCoin(new THREE.Vector3(-5, 0.5, -10));
+        this.coin2 = this.makeCoin(new THREE.Vector3(5, 0.5, -10));
+        this.coin3 = this.makeCoin(new THREE.Vector3(0, 3, -20));
+        this.coin3.rotate(0, 0, Math.PI / 2);
       }
     },
     makeCoin: {
@@ -422,7 +495,10 @@ var Bruno = exports.Bruno = (function (_ShaneScene) {
             var material = new THREE.MeshLambertMaterial({
               color: 16767084
             });
+
             var mesh = new THREE.Mesh(geometry, material);
+            mesh.castShadow = true;
+
             callback(geometry, material, mesh);
           },
           position: position
@@ -450,13 +526,30 @@ var Bruno = exports.Bruno = (function (_ShaneScene) {
 
         $canvas.css("background-color", "white");
 
-        $canvas.css("box-shadow", "0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)");
+        $canvas.css("box-shadow", "0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)");
+        $canvas.css("opacity", "0");
 
         this.domContainer.append($canvas);
+
+        $canvas.animate({ opacity: 0.75 }, 60666);
 
         this.$canvas = $canvas;
 
         this.resize();
+      }
+    },
+    addBrunoText: {
+      value: function addBrunoText() {
+        if (!this.$canvas) {
+          return;
+        }
+
+        var $text = $("<div style=\"opacity: 0; color: rgb(255, 0, 138); font-family: cursive; position: absolute; top: 50%; text-align: center; width: 100%; font-size: 100px; font-weight: bold; letter-spacing: 5px; margin-top: -100px; z-index: 201; text-shadow: 3px 3px 6px rgba(255, 0, 0, 0.9);\">Bruno?</div>");
+        this.domContainer.append($text);
+
+        $text.animate({ opacity: 1 }, 30666);
+
+        this.$brunoText = $text;
       }
     }
   });
@@ -4963,8 +5056,6 @@ var SecondShane = (function (_ThreeBoiler) {
       /// Transitions
 
       value: function spacebarPressed() {
-        var _this = this;
-
         if (this.transitioning) {
           return;
         }
@@ -4972,9 +5063,7 @@ var SecondShane = (function (_ThreeBoiler) {
         if (!this.activeScene) {
           this.attemptToEnterScene();
         } else {
-          this.transitionFromScene(this.activeScene, function () {
-            _this.updateHistoryForEarth();
-          });
+          this.transitionFromScene(this.activeScene);
         }
       }
     },
@@ -4988,7 +5077,7 @@ var SecondShane = (function (_ThreeBoiler) {
       }
     },
     transitionFromScene: {
-      value: function transitionFromScene(shaneScene, postFadeCallback) {
+      value: function transitionFromScene(shaneScene) {
         var _this = this;
 
         this.transitioning = true;
@@ -4997,9 +5086,7 @@ var SecondShane = (function (_ThreeBoiler) {
         this.fadeSceneOverlay(function () {
           shaneScene.exit();
 
-          if (postFadeCallback) {
-            postFadeCallback();
-          }
+          _this.updateHistoryForEarth();
 
           _this.addSharedObjects();
           _this.camera.position.copy(_this.sharedCameraPosition);
@@ -5032,9 +5119,9 @@ var SecondShane = (function (_ThreeBoiler) {
         this.controls.enabled = false;
         this.sharedCameraPosition.copy(this.camera.position);
 
-        $introBox.fadeOut();
         this.fadeSceneOverlay(function () {
           _this.removeSharedObjects();
+          $introBox.fadeOut();
           $nearbyArtifactContainer.hide();
 
           _this.updateHistoryForScene(shaneScene);
@@ -5511,7 +5598,7 @@ var ShaneScene = exports.ShaneScene = (function () {
     $("body").click(this.click.bind(this));
     $(window).resize(this.resize.bind(this));
 
-    this.isLive = true;
+    this.isLive = false;
     this.hasStarted = false;
   }
 

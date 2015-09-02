@@ -37,15 +37,42 @@ export class Bruno extends ShaneScene {
     super.enter();
 
     this.coinRotationSpeed = 0.01;
-    this.staticRenderPercentage = 0.1;
+    this.staticRenderPercentage = 0.9;
 
     this.makeLights();
+    this.makeGround();
     this.addGoldCoins();
-    this.makeStaticCanvas();
   }
 
   doTimedWork() {
     super.doTimedWork();
+
+    let canvasOffset = 45 * 1000;
+    setTimeout(() => {
+      this.makeStaticCanvas();
+    }, canvasOffset);
+
+    let brunoFadeOffset = canvasOffset + 90 * 1000;
+    setTimeout(() => {
+      this.addBrunoText();
+    }, brunoFadeOffset);
+
+    let brunoShakeOffset = brunoFadeOffset + 15 * 1000;
+    setTimeout(() => {
+      if (!this.$brunoText) {
+        return;
+      }
+
+      this.brunoShakeInterval = setInterval(() => {
+        var top = parseFloat(this.$brunoText.css('margin-top'));
+        var newTop = top + (Math.random() - 0.5) * 5;
+        this.$brunoText.css('margin-top', newTop + 'px');
+
+        var left = parseFloat(this.$brunoText.css('margin-left'));
+        var newLeft = left + (Math.random() - 0.5) * 5;
+        this.$brunoText.css('margin-left', newLeft + 'px');
+      }, 50);
+    }, brunoShakeOffset);
 
     let brunoLength = (3.5 * 60) * 1000;
     setTimeout(this.iWantOut.bind(this), brunoLength);
@@ -58,6 +85,13 @@ export class Bruno extends ShaneScene {
       this.$canvas.remove();
       this.$canvas = null;
     }
+
+    if (this.$brunoText) {
+      this.$brunoText.remove();
+      this.$brunoText = null;
+    }
+
+    clearInterval(this.brunoShakeInterval);
   }
 
   children() {
@@ -70,6 +104,11 @@ export class Bruno extends ShaneScene {
     if (this.coin1) {
       this.coin1.rotate(0, 0, this.coinRotationSpeed);
       this.coin2.rotate(0, 0, -this.coinRotationSpeed);
+      this.coin3.rotate(0, 0, this.coinRotationSpeed);
+
+      if (this.coinRotationSpeed < 0.35) {
+        this.coinRotationSpeed += 0.000006;
+      }
     }
 
     if (this.$canvas && Math.random() <= this.staticRenderPercentage) {
@@ -97,17 +136,47 @@ export class Bruno extends ShaneScene {
 
     var dirLight = new THREE.DirectionalLight( 0xffffff, 0.25);
     dirLight.color.setHex(0xFFD86C);
-    dirLight.position.set(0, 100, 100);
+    dirLight.position.set(0, 75, 100);
+    dirLight.castShadow = true;
+    dirLight.shadowMapWidth = dirLight.shadowMapHeight = 8192;
 
     this.dirLight = dirLight;
     this.scene.add(dirLight);
   }
 
+  // Ground
+
+  makeGround() {
+    let ground = new ShaneMesh({
+      meshCreator: (callback) => {
+        let groundLength = 100;
+        let geometry = new THREE.PlaneGeometry(groundLength, groundLength);
+
+        let material = new THREE.MeshBasicMaterial({
+          color: 0xffffff,
+          side: THREE.DoubleSide
+        });
+
+        let mesh = new THREE.Mesh(geometry, material);
+        mesh.rotation.x = -Math.PI / 2;
+        mesh.receiveShadow = true;
+
+        callback(geometry, material, mesh);
+      },
+
+      position: new THREE.Vector3(0, -5, 0)
+    });
+
+    this.addMesh(ground);
+  }
+
   // Gold
 
   addGoldCoins() {
-    this.coin1 = this.makeCoin(new THREE.Vector3(-5, 0, -10));
-    this.coin2 = this.makeCoin(new THREE.Vector3(5, 0, -10));
+    this.coin1 = this.makeCoin(new THREE.Vector3(-5, 0.5, -10));
+    this.coin2 = this.makeCoin(new THREE.Vector3(5, 0.5, -10));
+    this.coin3 = this.makeCoin(new THREE.Vector3(0, 3.0, -20));
+    this.coin3.rotate(0, 0, Math.PI / 2);
   }
 
   makeCoin(position) {
@@ -117,7 +186,10 @@ export class Bruno extends ShaneScene {
         let material = new THREE.MeshLambertMaterial({
           color: 0xFFD86C
         });
+
         let mesh = new THREE.Mesh(geometry, material);
+        mesh.castShadow = true;
+
         callback(geometry, material, mesh);
       },
       position: position
@@ -143,13 +215,29 @@ export class Bruno extends ShaneScene {
 
     $canvas.css('background-color', 'white');
 
-    $canvas.css('box-shadow', '0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)');
+    $canvas.css('box-shadow', '0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)');
+    $canvas.css('opacity', '0');
 
     this.domContainer.append($canvas);
+
+    $canvas.animate({opacity: 0.75}, 60666);
 
     this.$canvas = $canvas;
 
     this.resize();
+  }
+
+  addBrunoText() {
+    if (!this.$canvas) {
+      return;
+    }
+
+    let $text = $('<div style="opacity: 0; color: rgb(255, 0, 138); font-family: cursive; position: absolute; top: 50%; text-align: center; width: 100%; font-size: 100px; font-weight: bold; letter-spacing: 5px; margin-top: -100px; z-index: 201; text-shadow: 3px 3px 6px rgba(255, 0, 0, 0.9);">Bruno?</div>');
+    this.domContainer.append($text);
+
+    $text.animate({opacity: 1}, 30666);
+
+    this.$brunoText = $text;
   }
 
 }
