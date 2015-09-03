@@ -4984,7 +4984,7 @@ var SecondShane = (function (_ThreeBoiler) {
     this.activeScene = null;
 
     this.nearestTalismanScene = null;
-    this.framesUntilTalismanSearch = 30;
+    this.framesUntilCameraPositionCalculations = 30;
 
     this.showIntroChatter();
 
@@ -5010,12 +5010,12 @@ var SecondShane = (function (_ThreeBoiler) {
             this.oneOffs[i].update();
           }
 
-          for (var j = 0; j < this.shaneScenes.length; j++) {
-            this.shaneScenes[j].update();
+          for (i = 0; i < this.shaneScenes.length; i++) {
+            this.shaneScenes[i].update();
           }
 
-          this.framesUntilTalismanSearch -= 1;
-          if (this.framesUntilTalismanSearch <= 0) {
+          this.framesUntilCameraPositionCalculations -= 1;
+          if (this.framesUntilCameraPositionCalculations <= 0) {
             this.nearestTalismanScene = this.searchForTalisman();
 
             if (this.nearestTalismanScene) {
@@ -5025,7 +5025,11 @@ var SecondShane = (function (_ThreeBoiler) {
               $nearbyArtifactContainer.hide();
             }
 
-            this.framesUntilTalismanSearch = 30;
+            for (i = 0; i < this.oneOffs.length; i++) {
+              this.oneOffs[i].relayCameraPosition(this.camera.position);
+            }
+
+            this.framesUntilCameraPositionCalculations = 30;
           }
         }
       }
@@ -5268,7 +5272,10 @@ var _createClass = (function () { function defineProperties(target, props) { for
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
 var THREE = require("three");
+var $ = require("jquery");
 var ShaneMesh = require("./shane-mesh");
+
+var domContainer = $("body");
 
 var OneOff = (function () {
   function OneOff(options) {
@@ -5291,11 +5298,16 @@ var OneOff = (function () {
     },
     update: {
       value: function update() {}
+    },
+    relayCameraPosition: {
+      value: function relayCameraPosition(cameraPosition) {}
     }
   });
 
   return OneOff;
 })();
+
+/** 3D MESH ONE OFFS */
 
 var MeshedOneOff = (function (_OneOff) {
   function MeshedOneOff(options) {
@@ -5439,6 +5451,58 @@ var RotatingMan = (function (_MeshedOneOff2) {
   return RotatingMan;
 })(MeshedOneOff);
 
+/** DOM ONE OFFS */
+
+var DomOneOff = (function (_OneOff2) {
+  function DomOneOff(options) {
+    _classCallCheck(this, DomOneOff);
+
+    _get(Object.getPrototypeOf(DomOneOff.prototype), "constructor", this).call(this, options);
+
+    this.$element = options.$element;
+    this.position = options.position;
+    this.activationDistance = options.activationDistance || 20;
+
+    this.isVisible = false;
+  }
+
+  _inherits(DomOneOff, _OneOff2);
+
+  _createClass(DomOneOff, {
+    relayCameraPosition: {
+      value: function relayCameraPosition(cameraPosition) {
+        _get(Object.getPrototypeOf(DomOneOff.prototype), "relayCameraPosition", this).call(this, cameraPosition);
+
+        var distanceSquared = this.position.distanceToSquared(cameraPosition);
+        this.setVisible(distanceSquared < this.activationDistance * this.activationDistance);
+      }
+    },
+    setVisible: {
+      value: function setVisible(visible) {
+        if (visible === this.isVisible) {
+          return;
+        }
+
+        this.isVisible = visible;
+
+        if (visible) {
+          this.$element.css("display", "none");
+          domContainer.append(this.$element);
+          this.$element.fadeIn();
+        } else {
+          this.$element.fadeOut();
+        }
+      }
+    }
+  });
+
+  return DomOneOff;
+})(OneOff);
+
+/** ONE OFF CREATION */
+
+var dogPoemOneOffText = ["He wants his dog's life.", "He's got a big house, a new car,", "a beautiful wife.", "He wants his dog's life.", "Dogs shit on the street.", "They stink when they're wet.", "Dogs eat from a bowl, or", "slurp scraps from the floor.", "He wants his dog's life.", "A leash around his neck,", "his wet tongue licking the air.", "To look up at his owner ", "with love and respect.", "He wants his dog's life.", "A dog looks in a mirror", "and sees not himself,", "but another dog.", "His dog's mind.", "His dog's body.", "His dog's cock.", "He wants his dog's life.", "", "In dog years I'd already be dead."].join("<br>");
+
 var oneOffs = [new RotatingMan({
   name: "it is just sex man",
   text: "It's just ... sex ...",
@@ -5464,13 +5528,17 @@ var oneOffs = [new RotatingMan({
   text: "His Job, His Wife, His House, His Dog",
   textColor: 13413711,
   position: { x: -50, y: 0, z: -25 }
+}), new DomOneOff({
+  name: "dog life poem",
+  $element: $("<div class=\"one-off-text\">" + dogPoemOneOffText + "</div>"),
+  position: new THREE.Vector3(0, 0, -50)
 })];
 exports.oneOffs = oneOffs;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"./shane-mesh":16,"three":27}],15:[function(require,module,exports){
+},{"./shane-mesh":16,"jquery":25,"three":27}],15:[function(require,module,exports){
 "use strict";
 
 var ASMR = require("./artifacts/asmr/scene.es6").ASMR;

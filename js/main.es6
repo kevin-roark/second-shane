@@ -62,7 +62,7 @@ class SecondShane extends ThreeBoiler {
     this.activeScene = null;
 
     this.nearestTalismanScene = null;
-    this.framesUntilTalismanSearch = 30;
+    this.framesUntilCameraPositionCalculations = 30;
 
     this.showIntroChatter();
 
@@ -85,12 +85,12 @@ class SecondShane extends ThreeBoiler {
         this.oneOffs[i].update();
       }
 
-      for (var j = 0; j < this.shaneScenes.length; j++) {
-        this.shaneScenes[j].update();
+      for (i = 0; i < this.shaneScenes.length; i++) {
+        this.shaneScenes[i].update();
       }
 
-      this.framesUntilTalismanSearch -= 1;
-      if (this.framesUntilTalismanSearch <= 0) {
+      this.framesUntilCameraPositionCalculations -= 1;
+      if (this.framesUntilCameraPositionCalculations <= 0) {
         this.nearestTalismanScene = this.searchForTalisman();
 
         if (this.nearestTalismanScene) {
@@ -100,7 +100,11 @@ class SecondShane extends ThreeBoiler {
           $nearbyArtifactContainer.hide();
         }
 
-        this.framesUntilTalismanSearch = 30;
+        for (i = 0; i < this.oneOffs.length; i++) {
+          this.oneOffs[i].relayCameraPosition(this.camera.position);
+        }
+
+        this.framesUntilCameraPositionCalculations = 30;
       }
     }
   }

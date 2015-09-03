@@ -1,6 +1,9 @@
 
 let THREE = require('three');
+let $ = require('jquery');
 let ShaneMesh = require('./shane-mesh');
+
+let domContainer = $('body');
 
 class OneOff {
   constructor(options) {
@@ -19,7 +22,13 @@ class OneOff {
   update() {
 
   }
+
+  relayCameraPosition(cameraPosition) {
+
+  }
 }
+
+/** 3D MESH ONE OFFS */
 
 class MeshedOneOff extends OneOff {
   constructor(options) {
@@ -129,6 +138,72 @@ class RotatingMan extends MeshedOneOff {
   }
 }
 
+/** DOM ONE OFFS */
+
+class DomOneOff extends OneOff {
+  constructor(options) {
+    super(options);
+
+    this.$element = options.$element;
+    this.position = options.position;
+    this.activationDistance = options.activationDistance || 20;
+
+    this.isVisible = false;
+  }
+
+  relayCameraPosition(cameraPosition) {
+    super.relayCameraPosition(cameraPosition);
+
+    var distanceSquared = this.position.distanceToSquared(cameraPosition);
+    this.setVisible(distanceSquared < this.activationDistance * this.activationDistance);
+  }
+
+  setVisible(visible) {
+    if (visible === this.isVisible) {
+      return;
+    }
+
+    this.isVisible = visible;
+
+    if (visible) {
+      this.$element.css('display', 'none');
+      domContainer.append(this.$element);
+      this.$element.fadeIn();
+    }
+    else {
+      this.$element.fadeOut();
+    }
+  }
+}
+
+/** ONE OFF CREATION */
+
+let dogPoemOneOffText = [
+  "He wants his dog's life.",
+  "He's got a big house, a new car,",
+  "a beautiful wife.",
+  "He wants his dog's life.",
+  "Dogs shit on the street.",
+  "They stink when they're wet.",
+  "Dogs eat from a bowl, or",
+  "slurp scraps from the floor.",
+  "He wants his dog's life.",
+  "A leash around his neck,",
+  "his wet tongue licking the air.",
+  "To look up at his owner ",
+  "with love and respect.",
+  "He wants his dog's life.",
+  "A dog looks in a mirror",
+  "and sees not himself,",
+  "but another dog.",
+  "His dog's mind.",
+  "His dog's body.",
+  "His dog's cock.",
+  "He wants his dog's life.",
+  "",
+  "In dog years I'd already be dead."
+].join('<br>');
+
 export var oneOffs = [
   new RotatingMan({
     name: 'it is just sex man',
@@ -160,4 +235,10 @@ export var oneOffs = [
     textColor: 0xccad4f,
     position: {x: -50, y: 0, z: -25}
   }),
+
+  new DomOneOff({
+    name: 'dog life poem',
+    $element: $('<div class="one-off-text">' + dogPoemOneOffText + '</div>'),
+    position: new THREE.Vector3(0, 0, -50)
+  })
 ];
