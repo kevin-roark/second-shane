@@ -62,6 +62,10 @@ export class ThreeBoiler {
   }
 }
 
+// setup typeface
+window._typeface_js = {faces: THREE.FontUtils.faces, loadFace: THREE.FontUtils.loadFace};
+THREE.typeface_js = window._typeface_js;
+
 // request animation frame shim
 (function() {
     var lastTime = 0;

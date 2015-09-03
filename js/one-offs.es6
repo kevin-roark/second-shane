@@ -31,7 +31,13 @@ class MeshedOneOff extends OneOff {
   activate(scene) {
     super.activate(scene);
 
-    this.shaneMesh.addTo(scene);
+    this.shaneMesh.addTo(scene, () => {
+      this.meshWasLoaded();
+    });
+  }
+
+  meshWasLoaded() {
+
   }
 
   deactivate(scene) {
@@ -69,33 +75,89 @@ class Cube extends MeshedOneOff {
   }
 }
 
-class SexMan extends MeshedOneOff {
+class RotatingMan extends MeshedOneOff {
   constructor(options) {
-    options.name = 'it is just sex man';
     options.modelName = '/js/models/male.js';
 
     super(options);
+
+    this.text = options.text;
+    this.textSize = options.textSize || 1.0;
+    this.textColor = options.textColor || 0xffffff;
+    this.rotationSpeed = options.rotationSpeed || 0.033;
+    this.bevelEnabled = options.bevelEnabled || false;
+  }
+
+  meshWasLoaded() {
+    var textMesh = this.makeTextMesh(this.text);
+    textMesh.position.set(0, 4, 0);
+    this.shaneMesh.mesh.add(textMesh);
+  }
+
+  makeTextMesh(text) {
+    let geometry = new THREE.TextGeometry(text, {
+      size: this.textSize,
+      height: 0.5,
+      font: 'helvetiker',
+
+      bevelThickness: 0.35,
+      bevelSize: 0.05,
+      bevelSegments: 5,
+      bevelEnabled: this.bevelEnabled
+    });
+
+    geometry.computeBoundingBox();
+    geometry.computeFaceNormals();
+    geometry.computeVertexNormals();
+    geometry.center();
+
+    let material = new THREE.MeshBasicMaterial({
+      color: this.textColor,
+      side: THREE.DoubleSide
+    });
+
+    let mesh = new THREE.Mesh(geometry, material);
+    return mesh;
   }
 
   update() {
     super.update();
 
     if (this.active) {
-      this.shaneMesh.rotate(0, 0.033, 0);
+      this.shaneMesh.rotate(0, this.rotationSpeed, 0);
     }
   }
 }
 
 export var oneOffs = [
-  new Cube({
-    position: {x: -20, y: 0, z: -25},
-    color: 0xff0000
-  }),
-  new SexMan({
+  new RotatingMan({
+    name: 'it is just sex man',
+    text: "It's just ... sex ...",
+    textColor: 0xff008a,
     position: {x: 0, y: 0, z: -25}
   }),
-  new Cube({
-    position: {x: 20, y: 0, z: -25},
-    color: 0x0000ff
-  })
+  new RotatingMan({
+    name: 'dog man',
+    text: "I want my dog's life",
+    textColor: 0x035d32,
+    position: {x: 25, y: 0, z: -25}
+  }),
+  new RotatingMan({
+    name: 'old man',
+    text: "My old man's ... that old man",
+    textColor: 0x666666,
+    position: {x: -25, y: 0, z: -25}
+  }),
+  new RotatingMan({
+    name: 'man man',
+    text: "I don't want to be a man anymore",
+    textColor: 0x0d035d,
+    position: {x: 50, y: 0, z: -25}
+  }),
+  new RotatingMan({
+    name: 'break a man',
+    text: "His Job, His Wife, His House, His Dog",
+    textColor: 0xccad4f,
+    position: {x: -50, y: 0, z: -25}
+  }),
 ];

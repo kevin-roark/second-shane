@@ -5311,10 +5311,17 @@ var MeshedOneOff = (function (_OneOff) {
   _createClass(MeshedOneOff, {
     activate: {
       value: function activate(scene) {
+        var _this = this;
+
         _get(Object.getPrototypeOf(MeshedOneOff.prototype), "activate", this).call(this, scene);
 
-        this.shaneMesh.addTo(scene);
+        this.shaneMesh.addTo(scene, function () {
+          _this.meshWasLoaded();
+        });
       }
+    },
+    meshWasLoaded: {
+      value: function meshWasLoaded() {}
     },
     deactivate: {
       value: function deactivate(scene) {
@@ -5366,41 +5373,97 @@ var Cube = (function (_MeshedOneOff) {
   return Cube;
 })(MeshedOneOff);
 
-var SexMan = (function (_MeshedOneOff2) {
-  function SexMan(options) {
-    _classCallCheck(this, SexMan);
+var RotatingMan = (function (_MeshedOneOff2) {
+  function RotatingMan(options) {
+    _classCallCheck(this, RotatingMan);
 
-    options.name = "it is just sex man";
     options.modelName = "/js/models/male.js";
 
-    _get(Object.getPrototypeOf(SexMan.prototype), "constructor", this).call(this, options);
+    _get(Object.getPrototypeOf(RotatingMan.prototype), "constructor", this).call(this, options);
+
+    this.text = options.text;
+    this.textSize = options.textSize || 1;
+    this.textColor = options.textColor || 16777215;
+    this.rotationSpeed = options.rotationSpeed || 0.033;
+    this.bevelEnabled = options.bevelEnabled || false;
   }
 
-  _inherits(SexMan, _MeshedOneOff2);
+  _inherits(RotatingMan, _MeshedOneOff2);
 
-  _createClass(SexMan, {
+  _createClass(RotatingMan, {
+    meshWasLoaded: {
+      value: function meshWasLoaded() {
+        var textMesh = this.makeTextMesh(this.text);
+        textMesh.position.set(0, 4, 0);
+        this.shaneMesh.mesh.add(textMesh);
+      }
+    },
+    makeTextMesh: {
+      value: function makeTextMesh(text) {
+        var geometry = new THREE.TextGeometry(text, {
+          size: this.textSize,
+          height: 0.5,
+          font: "helvetiker",
+
+          bevelThickness: 0.35,
+          bevelSize: 0.05,
+          bevelSegments: 5,
+          bevelEnabled: this.bevelEnabled
+        });
+
+        geometry.computeBoundingBox();
+        geometry.computeFaceNormals();
+        geometry.computeVertexNormals();
+        geometry.center();
+
+        var material = new THREE.MeshBasicMaterial({
+          color: this.textColor,
+          side: THREE.DoubleSide
+        });
+
+        var mesh = new THREE.Mesh(geometry, material);
+        return mesh;
+      }
+    },
     update: {
       value: function update() {
-        _get(Object.getPrototypeOf(SexMan.prototype), "update", this).call(this);
+        _get(Object.getPrototypeOf(RotatingMan.prototype), "update", this).call(this);
 
         if (this.active) {
-          this.shaneMesh.rotate(0, 0.033, 0);
+          this.shaneMesh.rotate(0, this.rotationSpeed, 0);
         }
       }
     }
   });
 
-  return SexMan;
+  return RotatingMan;
 })(MeshedOneOff);
 
-var oneOffs = [new Cube({
-  position: { x: -20, y: 0, z: -25 },
-  color: 16711680
-}), new SexMan({
+var oneOffs = [new RotatingMan({
+  name: "it is just sex man",
+  text: "It's just ... sex ...",
+  textColor: 16711818,
   position: { x: 0, y: 0, z: -25 }
-}), new Cube({
-  position: { x: 20, y: 0, z: -25 },
-  color: 255
+}), new RotatingMan({
+  name: "dog man",
+  text: "I want my dog's life",
+  textColor: 220466,
+  position: { x: 25, y: 0, z: -25 }
+}), new RotatingMan({
+  name: "old man",
+  text: "My old man's ... that old man",
+  textColor: 6710886,
+  position: { x: -25, y: 0, z: -25 }
+}), new RotatingMan({
+  name: "man man",
+  text: "I don't want to be a man anymore",
+  textColor: 852829,
+  position: { x: 50, y: 0, z: -25 }
+}), new RotatingMan({
+  name: "break a man",
+  text: "His Job, His Wife, His House, His Dog",
+  textColor: 13413711,
+  position: { x: -50, y: 0, z: -25 }
 })];
 exports.oneOffs = oneOffs;
 Object.defineProperty(exports, "__esModule", {
@@ -6110,6 +6173,10 @@ var ThreeBoiler = exports.ThreeBoiler = (function () {
 
   return ThreeBoiler;
 })();
+
+// setup typeface
+window._typeface_js = { faces: THREE.FontUtils.faces, loadFace: THREE.FontUtils.loadFace };
+THREE.typeface_js = window._typeface_js;
 
 // request animation frame shim
 (function () {
