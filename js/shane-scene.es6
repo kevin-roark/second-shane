@@ -105,7 +105,13 @@ export class ShaneScene {
   makeAudio(basedFilename) {
     var audio = document.createElement('audio');
 
-    audio.src = basedFilename + '.mp3';
+    if (audio.canPlayType('audio/mpeg')) {
+      audio.src = basedFilename + '.mp3';
+    }
+    else {
+      audio.src = basedFilename + '.ogg';
+    }
+
     audio.preload = true;
 
     return audio;

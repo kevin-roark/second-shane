@@ -66,7 +66,6 @@ var ASMR = exports.ASMR = (function (_ShaneScene) {
 
         if (!this.isLive) {
           this.audio = this.makeAudio(this.audioBase + "hfsu_asmr");
-          this.audio.play();
         }
 
         this.videos = [];
@@ -306,9 +305,8 @@ var Bruno = exports.Bruno = (function (_ShaneScene) {
 
     this.name = "Bruno?";
 
-    // var host = (this.isLive? urls.bruno.live : urls.bruno.web);
-    // this.videoBase = host + 'video/';
-    // this.imageBase = host + 'images/';
+    var host = this.isLive ? urls.bruno.live : urls.bruno.web;
+    this.mediaBase = host + "media/";
   }
 
   _inherits(Bruno, _ShaneScene);
@@ -334,6 +332,10 @@ var Bruno = exports.Bruno = (function (_ShaneScene) {
         this.coinRotationSpeed = 0.01;
         this.staticRenderPercentage = 0.9;
 
+        if (!this.isLive) {
+          this.audio = this.makeAudio(this.mediaBase + "bruno");
+        }
+
         this.makeLights();
         this.makeGround();
         this.addGoldCoins();
@@ -344,6 +346,10 @@ var Bruno = exports.Bruno = (function (_ShaneScene) {
         var _this = this;
 
         _get(Object.getPrototypeOf(Bruno.prototype), "doTimedWork", this).call(this);
+
+        if (!this.isLive) {
+          this.audio.play();
+        }
 
         var canvasOffset = 45 * 1000;
         setTimeout(function () {
@@ -379,6 +385,11 @@ var Bruno = exports.Bruno = (function (_ShaneScene) {
     exit: {
       value: function exit() {
         _get(Object.getPrototypeOf(Bruno.prototype), "exit", this).call(this);
+
+        if (this.audio) {
+          this.audio.src = "";
+          $(this.audio).remove();
+        }
 
         if (this.$canvas) {
           this.$canvas.remove();
@@ -5691,7 +5702,12 @@ var ShaneScene = exports.ShaneScene = (function () {
       value: function makeAudio(basedFilename) {
         var audio = document.createElement("audio");
 
-        audio.src = basedFilename + ".mp3";
+        if (audio.canPlayType("audio/mpeg")) {
+          audio.src = basedFilename + ".mp3";
+        } else {
+          audio.src = basedFilename + ".ogg";
+        }
+
         audio.preload = true;
 
         return audio;
@@ -6089,6 +6105,11 @@ module.exports.papaJohn = {
 module.exports.godIsAMan = {
   web: "http://kevin-roark.github.io/second-shane-god-man/",
   live: "http://localhost:5559/"
+};
+
+module.exports.bruno = {
+  web: "http://kevin-roark.github.io/second-shane-bruno/",
+  live: "http://localhost:5560/"
 };
 
 },{}],22:[function(require,module,exports){

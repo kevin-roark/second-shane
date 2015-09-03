@@ -17,9 +17,8 @@ export class Bruno extends ShaneScene {
 
     this.name = "Bruno?";
 
-    // var host = (this.isLive? urls.bruno.live : urls.bruno.web);
-    // this.videoBase = host + 'video/';
-    // this.imageBase = host + 'images/';
+    var host = (this.isLive? urls.bruno.live : urls.bruno.web);
+    this.mediaBase = host + 'media/';
   }
 
   createTalisman() {
@@ -39,6 +38,10 @@ export class Bruno extends ShaneScene {
     this.coinRotationSpeed = 0.01;
     this.staticRenderPercentage = 0.9;
 
+    if (!this.isLive) {
+      this.audio = this.makeAudio(this.mediaBase + 'bruno');
+    }
+
     this.makeLights();
     this.makeGround();
     this.addGoldCoins();
@@ -46,6 +49,10 @@ export class Bruno extends ShaneScene {
 
   doTimedWork() {
     super.doTimedWork();
+
+    if (!this.isLive) {
+      this.audio.play();
+    }
 
     let canvasOffset = 45 * 1000;
     setTimeout(() => {
@@ -80,6 +87,11 @@ export class Bruno extends ShaneScene {
 
   exit() {
     super.exit();
+
+    if (this.audio) {
+      this.audio.src = '';
+      $(this.audio).remove();
+    }
 
     if (this.$canvas) {
       this.$canvas.remove();

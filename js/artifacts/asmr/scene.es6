@@ -45,7 +45,6 @@ export class ASMR extends ShaneScene {
 
     if (!this.isLive) {
       this.audio = this.makeAudio(this.audioBase + 'hfsu_asmr');
-      this.audio.play();
     }
 
     this.videos = [];

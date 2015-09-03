@@ -23,3 +23,8 @@ module.exports.godIsAMan = {
   web: 'http://kevin-roark.github.io/second-shane-god-man/',
   live: 'http://localhost:5559/'
 };
+
+module.exports.bruno = {
+  web: 'http://kevin-roark.github.io/second-shane-bruno/',
+  live: 'http://localhost:5560/'
+};
