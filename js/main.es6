@@ -37,6 +37,10 @@ class SecondShane extends ThreeBoiler {
     this.scene.add(this.controls.getObject());
 
     $(document).click(() => {
+      if (this.activeScene) {
+        return;
+      }
+
       if (this.controls.requestPointerlock) {
         this.controls.requestPointerlock();
       }
@@ -71,21 +75,33 @@ class SecondShane extends ThreeBoiler {
   render() {
     super.render();
 
-    this.controls.update();
-
-    for (var i = 0; i < this.oneOffs.length; i++) {
-      this.oneOffs[i].update();
+    if (this.activeScene) {
+      this.activeScene.update();
     }
+    else {
+      this.controls.update();
 
-    for (var j = 0; j < this.shaneScenes.length; j++) {
-      this.shaneScenes[j].update();
-    }
+      for (var i = 0; i < this.oneOffs.length; i++) {
+        this.oneOffs[i].update();
+      }
 
-    this.framesUntilTalismanSearch -= 1;
-    if (this.framesUntilTalismanSearch <= 0) {
-      this.nearestTalismanScene = this.searchForTalisman();
-      $nearbyArtifactName.text(this.nearestTalismanScene? this.nearestTalismanScene.name : 'null');
-      this.framesUntilTalismanSearch = 30;
+      for (var j = 0; j < this.shaneScenes.length; j++) {
+        this.shaneScenes[j].update();
+      }
+
+      this.framesUntilTalismanSearch -= 1;
+      if (this.framesUntilTalismanSearch <= 0) {
+        this.nearestTalismanScene = this.searchForTalisman();
+
+        if (this.nearestTalismanScene) {
+          $nearbyArtifactContainer.show();
+          $nearbyArtifactName.text(this.nearestTalismanScene.name);
+        } else {
+          $nearbyArtifactContainer.hide();
+        }
+
+        this.framesUntilTalismanSearch = 30;
+      }
     }
   }
 
@@ -209,7 +225,6 @@ class SecondShane extends ThreeBoiler {
       this.addSharedObjects();
       this.camera.position.copy(this.sharedCameraPosition);
       this.controls.enabled = true;
-      $nearbyArtifactContainer.show();
 
       setTimeout(() => {
         this.transitioning = false;

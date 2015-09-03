@@ -4918,6 +4918,10 @@ var SecondShane = (function (_ThreeBoiler) {
     this.scene.add(this.controls.getObject());
 
     $(document).click(function () {
+      if (_this.activeScene) {
+        return;
+      }
+
       if (_this.controls.requestPointerlock) {
         _this.controls.requestPointerlock();
       }
@@ -4956,21 +4960,32 @@ var SecondShane = (function (_ThreeBoiler) {
       value: function render() {
         _get(Object.getPrototypeOf(SecondShane.prototype), "render", this).call(this);
 
-        this.controls.update();
+        if (this.activeScene) {
+          this.activeScene.update();
+        } else {
+          this.controls.update();
 
-        for (var i = 0; i < this.oneOffs.length; i++) {
-          this.oneOffs[i].update();
-        }
+          for (var i = 0; i < this.oneOffs.length; i++) {
+            this.oneOffs[i].update();
+          }
 
-        for (var j = 0; j < this.shaneScenes.length; j++) {
-          this.shaneScenes[j].update();
-        }
+          for (var j = 0; j < this.shaneScenes.length; j++) {
+            this.shaneScenes[j].update();
+          }
 
-        this.framesUntilTalismanSearch -= 1;
-        if (this.framesUntilTalismanSearch <= 0) {
-          this.nearestTalismanScene = this.searchForTalisman();
-          $nearbyArtifactName.text(this.nearestTalismanScene ? this.nearestTalismanScene.name : "null");
-          this.framesUntilTalismanSearch = 30;
+          this.framesUntilTalismanSearch -= 1;
+          if (this.framesUntilTalismanSearch <= 0) {
+            this.nearestTalismanScene = this.searchForTalisman();
+
+            if (this.nearestTalismanScene) {
+              $nearbyArtifactContainer.show();
+              $nearbyArtifactName.text(this.nearestTalismanScene.name);
+            } else {
+              $nearbyArtifactContainer.hide();
+            }
+
+            this.framesUntilTalismanSearch = 30;
+          }
         }
       }
     },
@@ -5106,7 +5121,6 @@ var SecondShane = (function (_ThreeBoiler) {
           _this.addSharedObjects();
           _this.camera.position.copy(_this.sharedCameraPosition);
           _this.controls.enabled = true;
-          $nearbyArtifactContainer.show();
 
           setTimeout(function () {
             _this.transitioning = false;
