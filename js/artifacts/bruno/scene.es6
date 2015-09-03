@@ -23,9 +23,13 @@ export class Bruno extends ShaneScene {
 
   createTalisman() {
     let talisman = new Talisman({
-      position: new THREE.Vector3(-20, -1.3, -10),
-      modelPath: '/js/models/popcorn-popper.json',
-      modelScale: 1.0
+      position: new THREE.Vector3(-150, 100, -300),
+      geometryCreator: () => {
+        return new THREE.SphereGeometry(5, 32, 32);
+      },
+      materialOptions: {
+        color: 0xffffff
+      }
     });
     return talisman;
   }
