@@ -2668,6 +2668,17 @@ module.exports = function (camera, options) {
 			var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
 			var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
 
+			// fallback for browsers with no movement
+			if (movementX === undefined) {
+				if (this.lastClientX !== undefined) {
+					movementX = event.clientX - this.lastClientX;
+					movementY = event.clientY - this.lastClientY;
+				} else {
+					movementX = 0;
+					movementY = 0;
+				}
+			}
+
 			this.object.rotation.y -= movementX * 0.002;
 			this.object.rotation.x -= movementY * 0.002;
 		}
@@ -6184,7 +6195,6 @@ var ThreeBoiler = exports.ThreeBoiler = (function () {
     this.scene = new THREE.Scene();
 
     this.camera = this.createCamera();
-    this.scene.add(this.camera);
 
     this.ambientLight = this.createAmbientLight();
     this.scene.add(this.ambientLight);

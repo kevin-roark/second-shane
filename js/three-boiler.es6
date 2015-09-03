@@ -22,7 +22,6 @@ export class ThreeBoiler {
     this.scene = new THREE.Scene();
 
     this.camera = this.createCamera();
-    this.scene.add(this.camera);
 
     this.ambientLight = this.createAmbientLight();
     this.scene.add(this.ambientLight);
