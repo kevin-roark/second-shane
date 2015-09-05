@@ -67,9 +67,9 @@ export class ASMR extends ShaneScene {
     let asmrLength = 60000 * 3 + 11000;
 
     let dvdTime = 37 * 1000;
-    setTimeout(this.doDVD.bind(this), dvdTime);
+    this.addTimeout(this.doDVD.bind(this), dvdTime);
 
-    setTimeout(() => {
+    this.addTimeout(() => {
       if (!this.active) {
         return;
       }
@@ -77,9 +77,9 @@ export class ASMR extends ShaneScene {
       this.shadowizeDVD(this.dvd);
       this.growDVD(this.dvd);
     }, asmrLength - curtainDuration - 27666);
-    setTimeout(this.doCurtains.bind(this), asmrLength - curtainDuration);
+    this.addTimeout(this.doCurtains.bind(this), asmrLength - curtainDuration);
 
-    setTimeout(this.iWantOut.bind(this), asmrLength + 6666);
+    this.addTimeout(this.iWantOut.bind(this), asmrLength + 6666);
   }
 
   exit() {
@@ -190,7 +190,7 @@ export class ASMR extends ShaneScene {
   }
 
   addVideo(videoName, delay, rect) {
-    setTimeout(() => {
+    this.addTimeout(() => {
       if (!this.active) {
         return;
       }

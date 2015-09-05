@@ -59,34 +59,34 @@ export class GodIsAMan extends ShaneScene {
     doKaraoke(this.domContainer, this.basketball);
 
     let vegasOffset = 45;
-    setTimeout(this.vegasTime.bind(this), vegasOffset * 1000); // 45 seconds in, last for a minute
+    this.addTimeout(this.vegasTime.bind(this), vegasOffset * 1000); // 45 seconds in, last for a minute
 
     let papaOffset = vegasOffset + vegasLength + 30;
-    setTimeout(this.papaTime.bind(this), papaOffset * 1000); // 30 seconds after vegas ends
+    this.addTimeout(this.papaTime.bind(this), papaOffset * 1000); // 30 seconds after vegas ends
 
     let cowboyOffset = papaOffset + papaLength + 20;
-    setTimeout(this.cowboyTime.bind(this), cowboyOffset * 1000); // 15 seconds after papa ends
+    this.addTimeout(this.cowboyTime.bind(this), cowboyOffset * 1000); // 15 seconds after papa ends
 
     let gameOffset = cowboyOffset + cowboyLength + 30; // 30 seconds after cowboy ends
-    setTimeout(this.game2Time.bind(this), gameOffset * 1000);
-    setTimeout(this.game1Time.bind(this), (gameOffset + 20) * 1000);
+    this.addTimeout(this.game2Time.bind(this), gameOffset * 1000);
+    this.addTimeout(this.game1Time.bind(this), (gameOffset + 20) * 1000);
 
     let visionOffset = 15; // 15
     let timeBetweenVisions = 44; // 44
-    setTimeout(this.createVin.bind(this), (visionOffset + timeBetweenVisions * 0) * 1000);
-    setTimeout(this.createWhitey.bind(this), (visionOffset + timeBetweenVisions * 1) * 1000);
-    setTimeout(this.createLebron.bind(this), (visionOffset + timeBetweenVisions * 2) * 1000);
-    setTimeout(this.createGodManVideo.bind(this), (visionOffset + timeBetweenVisions * 3) * 1000);
-    setTimeout(this.createJohnCena.bind(this), (visionOffset + timeBetweenVisions * 4) * 1000);
-    setTimeout(this.createBruceWillis.bind(this), (visionOffset + timeBetweenVisions * 5) * 1000);
-    setTimeout(this.createLilWayne.bind(this), (visionOffset + timeBetweenVisions * 6) * 1000);
-    setTimeout(this.createGodSistene.bind(this), (visionOffset + timeBetweenVisions * 7) * 1000);
-    setTimeout(this.createHulkHogan.bind(this), (visionOffset + timeBetweenVisions * 8) * 1000);
-    setTimeout(this.createJordan.bind(this), (visionOffset + timeBetweenVisions * 9) * 1000);
-    setTimeout(this.createBigSean.bind(this), (visionOffset + timeBetweenVisions * 10) * 1000);
-    setTimeout(this.createPapaJohn.bind(this), (visionOffset + timeBetweenVisions * 11) * 1000);
+    this.addTimeout(this.createVin.bind(this), (visionOffset + timeBetweenVisions * 0) * 1000);
+    this.addTimeout(this.createWhitey.bind(this), (visionOffset + timeBetweenVisions * 1) * 1000);
+    this.addTimeout(this.createLebron.bind(this), (visionOffset + timeBetweenVisions * 2) * 1000);
+    this.addTimeout(this.createGodManVideo.bind(this), (visionOffset + timeBetweenVisions * 3) * 1000);
+    this.addTimeout(this.createJohnCena.bind(this), (visionOffset + timeBetweenVisions * 4) * 1000);
+    this.addTimeout(this.createBruceWillis.bind(this), (visionOffset + timeBetweenVisions * 5) * 1000);
+    this.addTimeout(this.createLilWayne.bind(this), (visionOffset + timeBetweenVisions * 6) * 1000);
+    this.addTimeout(this.createGodSistene.bind(this), (visionOffset + timeBetweenVisions * 7) * 1000);
+    this.addTimeout(this.createHulkHogan.bind(this), (visionOffset + timeBetweenVisions * 8) * 1000);
+    this.addTimeout(this.createJordan.bind(this), (visionOffset + timeBetweenVisions * 9) * 1000);
+    this.addTimeout(this.createBigSean.bind(this), (visionOffset + timeBetweenVisions * 10) * 1000);
+    this.addTimeout(this.createPapaJohn.bind(this), (visionOffset + timeBetweenVisions * 11) * 1000);
 
-    setTimeout(this.transitionToBall.bind(this), 9.5 * 60 * 1000); // 9.5 minutes
+    this.addTimeout(this.transitionToBall.bind(this), 9.5 * 60 * 1000); // 9.5 minutes
   }
 
   exit() {
@@ -429,6 +429,10 @@ export class GodIsAMan extends ShaneScene {
   }
 
   upBallWidth(amt) {
+    if (!this.active) {
+      return;
+    }
+
     this.ballWidth += (amt || 0.15);
     this.basketball.setWidth(this.ballWidth);
 

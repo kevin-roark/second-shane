@@ -76,12 +76,12 @@ export class LiveAtJJs extends ShaneScene {
     this.dvd.play();
     this.animateCurtains();
 
-    setTimeout(this.popcornTimer.bind(this), 9666);
+    this.addTimeout(this.popcornTimer.bind(this), 9666);
 
-    setTimeout(this.makeDVDFullScreen.bind(this), 8 * 60 * 1000);
+    this.addTimeout(this.makeDVDFullScreen.bind(this), 8 * 60 * 1000);
 
     let videoLength = (9 * 60 + 16) * 1000;
-    setTimeout(this.iWantOut.bind(this), videoLength);
+    this.addTimeout(this.iWantOut.bind(this), videoLength);
   }
 
   exit() {

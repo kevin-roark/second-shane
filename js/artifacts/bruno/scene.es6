@@ -63,17 +63,17 @@ export class Bruno extends ShaneScene {
     }
 
     let canvasOffset = 45 * 1000;
-    setTimeout(() => {
+    this.addTimeout(() => {
       this.makeStaticCanvas();
     }, canvasOffset);
 
     let brunoFadeOffset = canvasOffset + 90 * 1000;
-    setTimeout(() => {
+    this.addTimeout(() => {
       this.addBrunoText();
     }, brunoFadeOffset);
 
     let brunoShakeOffset = brunoFadeOffset + 15 * 1000;
-    setTimeout(() => {
+    this.addTimeout(() => {
       if (!this.$brunoText) {
         return;
       }
@@ -90,7 +90,7 @@ export class Bruno extends ShaneScene {
     }, brunoShakeOffset);
 
     let brunoLength = (3.5 * 60) * 1000;
-    setTimeout(this.iWantOut.bind(this), brunoLength);
+    this.addTimeout(this.iWantOut.bind(this), brunoLength);
   }
 
   exit() {

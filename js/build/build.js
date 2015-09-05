@@ -93,9 +93,9 @@ var ASMR = exports.ASMR = (function (_ShaneScene) {
         var asmrLength = 60000 * 3 + 11000;
 
         var dvdTime = 37 * 1000;
-        setTimeout(this.doDVD.bind(this), dvdTime);
+        this.addTimeout(this.doDVD.bind(this), dvdTime);
 
-        setTimeout(function () {
+        this.addTimeout(function () {
           if (!_this.active) {
             return;
           }
@@ -103,9 +103,9 @@ var ASMR = exports.ASMR = (function (_ShaneScene) {
           _this.shadowizeDVD(_this.dvd);
           _this.growDVD(_this.dvd);
         }, asmrLength - curtainDuration - 27666);
-        setTimeout(this.doCurtains.bind(this), asmrLength - curtainDuration);
+        this.addTimeout(this.doCurtains.bind(this), asmrLength - curtainDuration);
 
-        setTimeout(this.iWantOut.bind(this), asmrLength + 6666);
+        this.addTimeout(this.iWantOut.bind(this), asmrLength + 6666);
       }
     },
     exit: {
@@ -213,7 +213,7 @@ var ASMR = exports.ASMR = (function (_ShaneScene) {
       value: function addVideo(videoName, delay, rect) {
         var _this = this;
 
-        setTimeout(function () {
+        this.addTimeout(function () {
           if (!_this.active) {
             return;
           }
@@ -394,17 +394,17 @@ var Bruno = exports.Bruno = (function (_ShaneScene) {
         }
 
         var canvasOffset = 45 * 1000;
-        setTimeout(function () {
+        this.addTimeout(function () {
           _this.makeStaticCanvas();
         }, canvasOffset);
 
         var brunoFadeOffset = canvasOffset + 90 * 1000;
-        setTimeout(function () {
+        this.addTimeout(function () {
           _this.addBrunoText();
         }, brunoFadeOffset);
 
         var brunoShakeOffset = brunoFadeOffset + 15 * 1000;
-        setTimeout(function () {
+        this.addTimeout(function () {
           if (!_this.$brunoText) {
             return;
           }
@@ -421,7 +421,7 @@ var Bruno = exports.Bruno = (function (_ShaneScene) {
         }, brunoShakeOffset);
 
         var brunoLength = 3.5 * 60 * 1000;
-        setTimeout(this.iWantOut.bind(this), brunoLength);
+        this.addTimeout(this.iWantOut.bind(this), brunoLength);
       }
     },
     exit: {
@@ -1019,34 +1019,34 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
         doKaraoke(this.domContainer, this.basketball);
 
         var vegasOffset = 45;
-        setTimeout(this.vegasTime.bind(this), vegasOffset * 1000); // 45 seconds in, last for a minute
+        this.addTimeout(this.vegasTime.bind(this), vegasOffset * 1000); // 45 seconds in, last for a minute
 
         var papaOffset = vegasOffset + vegasLength + 30;
-        setTimeout(this.papaTime.bind(this), papaOffset * 1000); // 30 seconds after vegas ends
+        this.addTimeout(this.papaTime.bind(this), papaOffset * 1000); // 30 seconds after vegas ends
 
         var cowboyOffset = papaOffset + papaLength + 20;
-        setTimeout(this.cowboyTime.bind(this), cowboyOffset * 1000); // 15 seconds after papa ends
+        this.addTimeout(this.cowboyTime.bind(this), cowboyOffset * 1000); // 15 seconds after papa ends
 
         var gameOffset = cowboyOffset + cowboyLength + 30; // 30 seconds after cowboy ends
-        setTimeout(this.game2Time.bind(this), gameOffset * 1000);
-        setTimeout(this.game1Time.bind(this), (gameOffset + 20) * 1000);
+        this.addTimeout(this.game2Time.bind(this), gameOffset * 1000);
+        this.addTimeout(this.game1Time.bind(this), (gameOffset + 20) * 1000);
 
         var visionOffset = 15; // 15
         var timeBetweenVisions = 44; // 44
-        setTimeout(this.createVin.bind(this), (visionOffset + timeBetweenVisions * 0) * 1000);
-        setTimeout(this.createWhitey.bind(this), (visionOffset + timeBetweenVisions * 1) * 1000);
-        setTimeout(this.createLebron.bind(this), (visionOffset + timeBetweenVisions * 2) * 1000);
-        setTimeout(this.createGodManVideo.bind(this), (visionOffset + timeBetweenVisions * 3) * 1000);
-        setTimeout(this.createJohnCena.bind(this), (visionOffset + timeBetweenVisions * 4) * 1000);
-        setTimeout(this.createBruceWillis.bind(this), (visionOffset + timeBetweenVisions * 5) * 1000);
-        setTimeout(this.createLilWayne.bind(this), (visionOffset + timeBetweenVisions * 6) * 1000);
-        setTimeout(this.createGodSistene.bind(this), (visionOffset + timeBetweenVisions * 7) * 1000);
-        setTimeout(this.createHulkHogan.bind(this), (visionOffset + timeBetweenVisions * 8) * 1000);
-        setTimeout(this.createJordan.bind(this), (visionOffset + timeBetweenVisions * 9) * 1000);
-        setTimeout(this.createBigSean.bind(this), (visionOffset + timeBetweenVisions * 10) * 1000);
-        setTimeout(this.createPapaJohn.bind(this), (visionOffset + timeBetweenVisions * 11) * 1000);
+        this.addTimeout(this.createVin.bind(this), (visionOffset + timeBetweenVisions * 0) * 1000);
+        this.addTimeout(this.createWhitey.bind(this), (visionOffset + timeBetweenVisions * 1) * 1000);
+        this.addTimeout(this.createLebron.bind(this), (visionOffset + timeBetweenVisions * 2) * 1000);
+        this.addTimeout(this.createGodManVideo.bind(this), (visionOffset + timeBetweenVisions * 3) * 1000);
+        this.addTimeout(this.createJohnCena.bind(this), (visionOffset + timeBetweenVisions * 4) * 1000);
+        this.addTimeout(this.createBruceWillis.bind(this), (visionOffset + timeBetweenVisions * 5) * 1000);
+        this.addTimeout(this.createLilWayne.bind(this), (visionOffset + timeBetweenVisions * 6) * 1000);
+        this.addTimeout(this.createGodSistene.bind(this), (visionOffset + timeBetweenVisions * 7) * 1000);
+        this.addTimeout(this.createHulkHogan.bind(this), (visionOffset + timeBetweenVisions * 8) * 1000);
+        this.addTimeout(this.createJordan.bind(this), (visionOffset + timeBetweenVisions * 9) * 1000);
+        this.addTimeout(this.createBigSean.bind(this), (visionOffset + timeBetweenVisions * 10) * 1000);
+        this.addTimeout(this.createPapaJohn.bind(this), (visionOffset + timeBetweenVisions * 11) * 1000);
 
-        setTimeout(this.transitionToBall.bind(this), 9.5 * 60 * 1000); // 9.5 minutes
+        this.addTimeout(this.transitionToBall.bind(this), 9.5 * 60 * 1000); // 9.5 minutes
       }
     },
     exit: {
@@ -1428,6 +1428,10 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
     },
     upBallWidth: {
       value: function upBallWidth(amt) {
+        if (!this.active) {
+          return;
+        }
+
         this.ballWidth += amt || 0.15;
         this.basketball.setWidth(this.ballWidth);
 
@@ -1545,32 +1549,32 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
 
         var endOfItAll = 120 * 1000;
 
-        setTimeout(function () {
+        this.addTimeout(function () {
           _this.doFootMassage(12666);
         }, 6666);
-        setTimeout(function () {
+        this.addTimeout(function () {
           _this.doRotatingFoot(9666);
         }, 19666);
-        setTimeout(function () {
+        this.addTimeout(function () {
           _this.doFootSlap(13666);
         }, 30666);
-        setTimeout(function () {
+        this.addTimeout(function () {
           _this.doFootModel(10666);
         }, 45666);
-        setTimeout(function () {
+        this.addTimeout(function () {
           _this.doCadFootImage(9666);
         }, 57666);
 
         var seanOffset = 69666;
-        setTimeout(function () {
+        this.addTimeout(function () {
           _this.doSean(endOfItAll - seanOffset);
         }, seanOffset);
         var kevinOffset = seanOffset + 6000;
-        setTimeout(function () {
+        this.addTimeout(function () {
           _this.doKevin(endOfItAll - kevinOffset);
         }, kevinOffset);
         var restOfThemOffset = kevinOffset + 5000;
-        setTimeout(function () {
+        this.addTimeout(function () {
           var dur = endOfItAll - restOfThemOffset;
           _this.doFootMassage(dur);
           _this.doRotatingFoot(dur);
@@ -1578,12 +1582,12 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
           _this.doFootModel(dur);
           _this.doCadFootImage(dur);
 
-          setTimeout(_this.flash.bind(_this), 4000);
-          setTimeout(_this.makeFountain.bind(_this), 5666);
-          //setTimeout(this.jigsawFeet.bind(this), 9666);
+          _this.addTimeout(_this.flash.bind(_this), 4000);
+          _this.addTimeout(_this.makeFountain.bind(_this), 5666);
+          //this.addTimeout(this.jigsawFeet.bind(this), 9666);
         }, restOfThemOffset);
 
-        setTimeout(this.iWantOut.bind(this), endOfItAll);
+        this.addTimeout(this.iWantOut.bind(this), endOfItAll);
       }
     },
     exit: {
@@ -2174,12 +2178,12 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
         this.dvd.play();
         this.animateCurtains();
 
-        setTimeout(this.popcornTimer.bind(this), 9666);
+        this.addTimeout(this.popcornTimer.bind(this), 9666);
 
-        setTimeout(this.makeDVDFullScreen.bind(this), 8 * 60 * 1000);
+        this.addTimeout(this.makeDVDFullScreen.bind(this), 8 * 60 * 1000);
 
         var videoLength = (9 * 60 + 16) * 1000;
-        setTimeout(this.iWantOut.bind(this), videoLength);
+        this.addTimeout(this.iWantOut.bind(this), videoLength);
       }
     },
     exit: {
@@ -6097,6 +6101,8 @@ var ShaneScene = exports.ShaneScene = (function () {
 
         this.camera.position.set(0, 0, 0);
         this.camera.rotation.x = 0;this.camera.rotation.y = 0;this.camera.rotation.z = 0;
+
+        this.timeoutsToCancel = [];
       }
     },
     didLoadMedia: {
@@ -6118,6 +6124,10 @@ var ShaneScene = exports.ShaneScene = (function () {
     exit: {
       value: function exit() {
         this.active = false;
+
+        for (var i = 0; i < this.timeoutsToCancel.length; i++) {
+          clearTimeout(this.timeoutsToCancel[i]);
+        }
 
         var children = this.children();
         for (var i = 0; i < children.length; i++) {
@@ -6169,10 +6179,16 @@ var ShaneScene = exports.ShaneScene = (function () {
         return [];
       }
     },
-    makeAudio: {
+    addTimeout: {
 
       /// Utility
 
+      value: function addTimeout(fn, timeout) {
+        var id = setTimeout(fn, timeout);
+        this.timeoutsToCancel.push(id);
+      }
+    },
+    makeAudio: {
       value: function makeAudio(basedFilename) {
         var audio = document.createElement("audio");
 

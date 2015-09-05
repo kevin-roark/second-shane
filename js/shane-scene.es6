@@ -44,6 +44,8 @@ export class ShaneScene {
 
     this.camera.position.set(0, 0, 0);
     this.camera.rotation.x = 0; this.camera.rotation.y = 0; this.camera.rotation.z = 0;
+
+    this.timeoutsToCancel = [];
   }
 
   didLoadMedia() {
@@ -63,6 +65,10 @@ export class ShaneScene {
 
   exit() {
     this.active = false;
+
+    for (let i = 0; i < this.timeoutsToCancel.length; i++) {
+      clearTimeout(this.timeoutsToCancel[i]);
+    }
 
     let children = this.children();
     for (let i = 0; i < children.length; i++) {
@@ -110,6 +116,11 @@ export class ShaneScene {
   }
 
   /// Utility
+
+  addTimeout(fn, timeout) {
+    var id = setTimeout(fn, timeout);
+    this.timeoutsToCancel.push(id);
+  }
 
   makeAudio(basedFilename) {
     var audio = document.createElement('audio');

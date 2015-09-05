@@ -59,32 +59,32 @@ export class iFeltTheFoot extends ShaneScene {
 
     var endOfItAll = 120 * 1000;
 
-    setTimeout(() => {
+    this.addTimeout(() => {
       this.doFootMassage(12666);
     }, 6666);
-    setTimeout(() => {
+    this.addTimeout(() => {
       this.doRotatingFoot(9666);
     }, 19666);
-    setTimeout(() => {
+    this.addTimeout(() => {
       this.doFootSlap(13666);
     }, 30666);
-    setTimeout(() => {
+    this.addTimeout(() => {
       this.doFootModel(10666);
     }, 45666);
-    setTimeout(() => {
+    this.addTimeout(() => {
       this.doCadFootImage(9666);
     }, 57666);
 
     let seanOffset = 69666;
-    setTimeout(() => {
+    this.addTimeout(() => {
       this.doSean(endOfItAll - seanOffset);
     }, seanOffset);
     let kevinOffset = seanOffset + 6000;
-    setTimeout(() => {
+    this.addTimeout(() => {
       this.doKevin(endOfItAll - kevinOffset);
     }, kevinOffset);
     let restOfThemOffset = kevinOffset + 5000;
-    setTimeout(() => {
+    this.addTimeout(() => {
       let dur = endOfItAll - restOfThemOffset;
       this.doFootMassage(dur);
       this.doRotatingFoot(dur);
@@ -92,12 +92,12 @@ export class iFeltTheFoot extends ShaneScene {
       this.doFootModel(dur);
       this.doCadFootImage(dur);
 
-      setTimeout(this.flash.bind(this), 4000);
-      setTimeout(this.makeFountain.bind(this), 5666);
-      //setTimeout(this.jigsawFeet.bind(this), 9666);
+      this.addTimeout(this.flash.bind(this), 4000);
+      this.addTimeout(this.makeFountain.bind(this), 5666);
+      //this.addTimeout(this.jigsawFeet.bind(this), 9666);
     }, restOfThemOffset);
 
-    setTimeout(this.iWantOut.bind(this), endOfItAll);
+    this.addTimeout(this.iWantOut.bind(this), endOfItAll);
   }
 
   exit() {
