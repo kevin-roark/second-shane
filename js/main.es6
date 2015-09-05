@@ -100,8 +100,9 @@ class SecondShane extends ThreeBoiler {
           $nearbyArtifactContainer.hide();
         }
 
+        var cameraPosition = this.controls.getObject().position;
         for (i = 0; i < this.oneOffs.length; i++) {
-          this.oneOffs[i].relayCameraPosition(this.camera.position);
+          this.oneOffs[i].relayCameraPosition(cameraPosition);
         }
 
         this.framesUntilCameraPositionCalculations = 30;
@@ -178,7 +179,7 @@ class SecondShane extends ThreeBoiler {
   }
 
   searchForTalisman() {
-    var cameraPosition = this.camera.position;
+    var cameraPosition = this.controls.getObject().position;
     var shaneScenes = this.shaneScenes;
     var minDistanceSquared = 100000000000;
     var sceneOfNearestTalisman = null;
@@ -227,7 +228,7 @@ class SecondShane extends ThreeBoiler {
       this.updateHistoryForEarth();
 
       this.addSharedObjects();
-      this.camera.position.copy(this.sharedCameraPosition);
+      this.controls.getObject().position.copy(this.sharedCameraPosition);
       this.controls.enabled = true;
 
       setTimeout(() => {
@@ -250,12 +251,15 @@ class SecondShane extends ThreeBoiler {
     this.transitioning = true;
     this.activeScene = shaneScene;
     this.controls.enabled = false;
-    this.sharedCameraPosition.copy(this.camera.position);
+    this.controls.exitPointerlock();
+    this.sharedCameraPosition.copy(this.controls.getObject().position);
 
     this.fadeSceneOverlay(() => {
       this.removeSharedObjects();
       $introBox.fadeOut();
       $nearbyArtifactContainer.hide();
+
+      this.controls.reset();
 
       this.updateHistoryForScene(shaneScene);
 

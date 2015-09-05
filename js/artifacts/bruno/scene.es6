@@ -222,6 +222,10 @@ export class Bruno extends ShaneScene {
   // Static
 
   makeStaticCanvas() {
+    if (!this.active) {
+      return;
+    }
+
     let canvas = this.makeCanvas();
 
     canvas.width = 666;

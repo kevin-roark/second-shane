@@ -6,10 +6,16 @@
 var THREE = require('three');
 var Pointerlocker = require('./pointerlocker');
 
+var PI_2 = Math.PI / 2;
+
 module.exports = function (camera, options) {
 	if (!options) options = {};
 
-	this.object = camera;
+	camera.rotation.set(0, 0, 0);
+	var pitchObject = new THREE.Object3D();
+	pitchObject.add(camera);
+	var yawObject = new THREE.Object3D();
+	yawObject.add(pitchObject);
 
 	// API
 
@@ -30,11 +36,14 @@ module.exports = function (camera, options) {
 	this.locker = new Pointerlocker();
 
 	this.getObject = function() {
-		return this.object;
+		return yawObject;
 	};
 
 	this.requestPointerlock = function() {
 		this.locker.requestPointerlock();
+	};
+	this.exitPointerlock = function() {
+		this.locker.exitPointerlock();
 	};
 
 	// internals
@@ -46,12 +55,6 @@ module.exports = function (camera, options) {
 	this.moveState = { up: 0, down: 0, left: 0, right: 0, forward: 0, back: 0, pitchUp: 0, pitchDown: 0, yawLeft: 0, yawRight: 0, rollLeft: 0, rollRight: 0 };
 	this.moveVector = new THREE.Vector3( 0, 0, 0 );
 	this.rotationVector = new THREE.Vector3( 0, 0, 0 );
-
-	this.handleEvent = function ( event ) {
-		if ( typeof this[ event.type ] === 'function' ) {
-			this[ event.type ]( event );
-		}
-	};
 
 	this.keydown = function( event ) {
 		if (!this.enabled) return;
@@ -146,11 +149,19 @@ module.exports = function (camera, options) {
 			case 81: /*Q*/ this.moveState.rollLeft = 0; break;
 			case 69: /*E*/ this.moveState.rollRight = 0; break;
 
-			case 90: /*Z - reset*/ this.object.position.set(0, 0, 0); this.object.rotation.set(0, 0, 0);
+			case 90: /*Z - reset*/ {
+				this.reset();
+			} break;
 		}
 
 		this.updateMovementVector();
 		this.updateRotationVector();
+	};
+
+	this.reset = function() {
+		[yawObject, pitchObject, camera].forEach(function(obj) {
+			obj.position.set(0, 0, 0); obj.rotation.set(0, 0, 0);
+		});
 	};
 
 	this.mousedown = function( event ) {
@@ -194,8 +205,10 @@ module.exports = function (camera, options) {
 		    }
 			}
 
-			this.object.rotation.y -= movementX * 0.002;
-			this.object.rotation.x -= movementY * 0.002;
+			yawObject.rotation.y -= movementX * 0.002;
+
+			pitchObject.rotation.x -= movementY * 0.002;
+			pitchObject.rotation.x = Math.max(-PI_2, Math.min(PI_2,pitchObject.rotation.x));
 		}
 	};
 
@@ -227,13 +240,15 @@ module.exports = function (camera, options) {
 		var moveMult = delta * this.movementSpeed;
 		var rotMult = delta * this.rollSpeed;
 
-		this.object.translateX( this.moveVector.x * moveMult );
-		this.object.translateY( this.moveVector.y * moveMult );
-		this.object.translateZ( this.moveVector.z * moveMult );
+		yawObject.translateX( this.moveVector.x * moveMult );
+		yawObject.translateY( this.moveVector.y * moveMult );
+		yawObject.translateZ( this.moveVector.z * moveMult );
 
-		this.object.rotateX(this.rotationVector.x * rotMult);
-		this.object.rotateY(this.rotationVector.y * rotMult);
-		this.object.rotateZ(this.rotationVector.z * rotMult);
+		if (this.keysAsRotation) {
+			yawObject.rotateX(this.rotationVector.x * rotMult);
+			yawObject.rotateY(this.rotationVector.y * rotMult);
+			yawObject.rotateZ(this.rotationVector.z * rotMult);
+		}
 
 		this.prevTime = time;
 	};
