@@ -5190,7 +5190,7 @@ var $nearbyArtifactName = $("#nearby-artifact-name");
 var $introBox = $("#intro-box");
 var $chatterBoxContainer = $("#chatter-box");
 
-var IS_LIVE = true;
+var IS_LIVE = false;
 
 var SecondShane = (function (_ThreeBoiler) {
   function SecondShane() {
@@ -5410,11 +5410,15 @@ var SecondShane = (function (_ThreeBoiler) {
       value: function transitionFromScene(shaneScene) {
         var _this = this;
 
+        if (this.transitioning) {
+          return;
+        }
+
         this.transitioning = true;
-        this.activeScene = null;
 
         this.fadeSceneOverlay(function () {
           shaneScene.exit();
+          _this.activeScene = null;
 
           _this.updateHistoryForEarth();
 
@@ -5444,6 +5448,10 @@ var SecondShane = (function (_ThreeBoiler) {
     transitionToScene: {
       value: function transitionToScene(shaneScene) {
         var _this = this;
+
+        if (this.transitioning) {
+          return;
+        }
 
         this.transitioning = true;
         this.activeScene = shaneScene;

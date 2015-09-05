@@ -18,7 +18,7 @@ let $nearbyArtifactName = $('#nearby-artifact-name');
 let $introBox = $('#intro-box');
 let $chatterBoxContainer = $('#chatter-box');
 
-let IS_LIVE = true;
+let IS_LIVE = false;
 
 class SecondShane extends ThreeBoiler {
   constructor() {
@@ -219,11 +219,15 @@ class SecondShane extends ThreeBoiler {
   }
 
   transitionFromScene(shaneScene) {
+    if (this.transitioning) {
+      return;
+    }
+
     this.transitioning = true;
-    this.activeScene = null;
 
     this.fadeSceneOverlay(() => {
       shaneScene.exit();
+      this.activeScene = null;
 
       this.updateHistoryForEarth();
 
@@ -250,6 +254,10 @@ class SecondShane extends ThreeBoiler {
   }
 
   transitionToScene(shaneScene) {
+    if (this.transitioning) {
+      return;
+    }
+
     this.transitioning = true;
     this.activeScene = shaneScene;
     this.controls.enabled = false;
