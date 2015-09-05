@@ -77,10 +77,7 @@ export var doKaraoke = (domContainer, marker) => {
   }, wordOffsets[wordIndex] - spaceBeforeLine);
 
   function doLine() {
-    console.log('processing line ' + lineIndex);
-
     processLine(lineIndex, wordIndex, function() {
-      console.log('finished with line ' + lineIndex);
 
       let currentOffset = wordOffsets[wordIndex + lineLengths[lineIndex] - 1];
 
@@ -89,7 +86,6 @@ export var doKaraoke = (domContainer, marker) => {
 
       if (lineIndex < numberOfLines) {
         let timeout = wordOffsets[wordIndex] - spaceBeforeLine - currentOffset;
-        console.log('time before next line: ' + timeout);
         setTimeout(function() {
           emptyKaraokeDom();
           doLine();
@@ -117,7 +113,6 @@ export var doKaraoke = (domContainer, marker) => {
       var word = allWords[i];
       words.push(word);
     }
-    console.log(words);
 
     var wordSpans = [];
     for (var w = 0; w < words.length; w++) {
@@ -137,7 +132,6 @@ export var doKaraoke = (domContainer, marker) => {
     function doTimeoutForWord(index) {
       var offset = wordOffsets[index] - (firstWordOffset - spaceBeforeLine);
       lastWordOffset = offset;
-      console.log('timeout for word: ' + index + ' is ' + offset);
       setTimeout(function() {
         let timeUntilNextWord = index === wordOffsets.length - 1 ? 200 : wordOffsets[index + 1] - wordOffsets[index];
         var bounceLength = Math.min(200, timeUntilNextWord);

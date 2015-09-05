@@ -45,6 +45,11 @@ export class GodIsAMan extends ShaneScene {
 
     this.basketball = new Basketball(this.basketballPath);
     this.basketball.addTo(this.domContainer);
+
+    this.numMediaToLoad += 1;
+    this.highwayVideo.addEventListener('canplaythrough', () => {
+      this.didLoadMedia();
+    });
   }
 
   doTimedWork() {
@@ -93,6 +98,10 @@ export class GodIsAMan extends ShaneScene {
   /// Highway Manipulation
 
   vegasTime() {
+    if (!this.active) {
+      return;
+    }
+
     this.vegasVideo = this.makeVideo(this.videoBase + 'vegas', true);
     this.vegasVideo.playbackRate = 3;
     this.vegasVideo.play();
@@ -109,6 +118,10 @@ export class GodIsAMan extends ShaneScene {
   }
 
   papaTime() {
+    if (!this.active) {
+      return;
+    }
+
     this.papaVideo = this.makeVideo(this.videoBase + 'softypapa', true);
     this.papaVideo.play();
 
@@ -124,6 +137,10 @@ export class GodIsAMan extends ShaneScene {
   }
 
   cowboyTime() {
+    if (!this.active) {
+      return;
+    }
+
     this.cowboyVideo = this.makeVideo(this.videoBase + 'lonely_cowboy', true);
     this.cowboyVideo.play();
 
@@ -139,6 +156,10 @@ export class GodIsAMan extends ShaneScene {
   }
 
   game2Time() {
+    if (!this.active) {
+      return;
+    }
+
     this.game2Video = this.makeVideo(this.videoBase + 'game_2', true);
     this.game2Video.play();
 
@@ -154,6 +175,10 @@ export class GodIsAMan extends ShaneScene {
   }
 
   game1Time() {
+    if (!this.active) {
+      return;
+    }
+
     this.game1Video = this.makeVideo(this.videoBase + 'game_1', true);
     this.game1Video.play();
 
@@ -171,6 +196,10 @@ export class GodIsAMan extends ShaneScene {
   /// Vision Creation
 
   createVin() {
+    if (!this.active) {
+      return;
+    }
+
     this.vin = this.makeVision('vin_diesel');
 
     this.vin.style.left = '54%';
@@ -181,6 +210,10 @@ export class GodIsAMan extends ShaneScene {
   }
 
   createWhitey() {
+    if (!this.active) {
+      return;
+    }
+
     this.whitey = this.makeVision('whitey');
 
     this.whitey.style.left = '60px';
@@ -191,6 +224,10 @@ export class GodIsAMan extends ShaneScene {
   }
 
   createPapaJohn() {
+    if (!this.active) {
+      return;
+    }
+
     this.papaJohn = this.makeVision('papajohn');
 
     this.papaJohn.style.left = '25%';
@@ -201,46 +238,82 @@ export class GodIsAMan extends ShaneScene {
   }
 
   createGodManVideo() {
+    if (!this.active) {
+      return;
+    }
+
     this.godMan = this.makeVision('godmanvideo', true);
     this.animateVision(this.godMan);
   }
 
   createJohnCena() {
+    if (!this.active) {
+      return;
+    }
+
     this.johnCena = this.makeVision('johncena', true);
     this.animateVision(this.johnCena);
   }
 
   createBruceWillis() {
+    if (!this.active) {
+      return;
+    }
+
     this.bruceWillis = this.makeVision('brucewillis', true);
     this.animateVision(this.bruceWillis);
   }
 
   createGodSistene() {
+    if (!this.active) {
+      return;
+    }
+
     this.godSistene = this.makeVision('godsistene', true);
     this.animateVision(this.godSistene);
   }
 
   createHulkHogan() {
+    if (!this.active) {
+      return;
+    }
+
     this.hulkHogan = this.makeVision('hulkhogan', true);
     this.animateVision(this.hulkHogan);
   }
 
   createLebron() {
+    if (!this.active) {
+      return;
+    }
+
     this.lebron = this.makeVision('lebron', true);
     this.animateVision(this.lebron);
   }
 
   createJordan() {
+    if (!this.active) {
+      return;
+    }
+
     this.jordan = this.makeVision('jordan', true);
     this.animateVision(this.jordan);
   }
 
   createBigSean() {
+    if (!this.active) {
+      return;
+    }
+
     this.bigSean = this.makeVision('bigsean', true);
     this.animateVision(this.bigSean);
   }
 
   createLilWayne() {
+    if (!this.active) {
+      return;
+    }
+
     this.lilWayne = this.makeVision('lilwayne');
 
     this.lilWayne.style.left = '30px';
@@ -329,6 +402,10 @@ export class GodIsAMan extends ShaneScene {
   /// Basketball at the end
 
   transitionToBall() {
+    if (!this.active) {
+      return;
+    }
+
     this.ballWidth = 50;
     this.upBallWidth();
 

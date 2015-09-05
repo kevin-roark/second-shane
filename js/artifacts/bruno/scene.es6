@@ -43,7 +43,11 @@ export class Bruno extends ShaneScene {
     this.staticRenderPercentage = 0.9;
 
     if (!this.isLive) {
+      this.numMediaToLoad += 1;
       this.audio = this.makeAudio(this.mediaBase + 'bruno');
+      this.audio.addEventListener('canplaythrough', () => {
+        this.didLoadMedia();
+      });
     }
 
     this.makeLights();
@@ -95,6 +99,7 @@ export class Bruno extends ShaneScene {
     if (this.audio) {
       this.audio.src = '';
       $(this.audio).remove();
+      this.audio = null;
     }
 
     if (this.$canvas) {

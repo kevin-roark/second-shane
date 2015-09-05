@@ -44,7 +44,11 @@ export class ASMR extends ShaneScene {
     this.renderer.setClearColor(0x000000);
 
     if (!this.isLive) {
+      this.numMediaToLoad += 1;
       this.audio = this.makeAudio(this.audioBase + 'hfsu_asmr');
+      this.audio.addEventListener('canplaythrough', () => {
+        this.didLoadMedia();
+      });
     }
 
     this.videos = [];
@@ -66,6 +70,10 @@ export class ASMR extends ShaneScene {
     setTimeout(this.doDVD.bind(this), dvdTime);
 
     setTimeout(() => {
+      if (!this.active) {
+        return;
+      }
+
       this.shadowizeDVD(this.dvd);
       this.growDVD(this.dvd);
     }, asmrLength - curtainDuration - 27666);
@@ -82,6 +90,7 @@ export class ASMR extends ShaneScene {
     if (!this.isLive) {
       this.audio.src = '';
       $(this.audio).remove();
+      this.audio = null;
     }
 
     for (var j = 0; j < this.videos.length; j++) {
@@ -89,12 +98,21 @@ export class ASMR extends ShaneScene {
       video.removeAttribute("src"); // thanks mdn really smart
       $(video).remove();
     }
+    this.videos = [];
 
-    this.dvd.removeAttribute('src');
-    $(this.dvd).remove();
-
-    this.leftCurtain.remove();
-    this.rightCurtain.remove();
+    if (this.dvd) {
+      this.dvd.removeAttribute('src');
+      $(this.dvd).remove();
+      this.dvd = null;
+    }
+    if (this.leftCurtain) {
+      this.leftCurtain.remove();
+      this.leftCurtain = null;
+    }
+    if (this.rightCurtain) {
+      this.rightCurtain.remove();
+      this.rightCurtain = null;
+    }
   }
 
   update() {
@@ -108,6 +126,10 @@ export class ASMR extends ShaneScene {
   /// Curtains
 
   doCurtains() {
+    if (!this.active) {
+      return;
+    }
+
     this.leftCurtain = this.makeCurtain('left_curtain.jpg');
     this.rightCurtain = this.makeCurtain('right_curtain.jpg');
 
@@ -169,6 +191,10 @@ export class ASMR extends ShaneScene {
 
   addVideo(videoName, delay, rect) {
     setTimeout(() => {
+      if (!this.active) {
+        return;
+      }
+
       var video = this.makeASMRVideo(videoName);
       this.videos.push(video);
 
@@ -200,6 +226,10 @@ export class ASMR extends ShaneScene {
   /// DVD
 
   doDVD() {
+    if (!this.active) {
+      return;
+    }
+
     this.dvd = this.makeASMRVideo('jjs-asmr');
     this.dvd.loop = false;
 

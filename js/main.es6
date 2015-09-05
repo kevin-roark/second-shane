@@ -227,6 +227,8 @@ class SecondShane extends ThreeBoiler {
 
       this.updateHistoryForEarth();
 
+      this.controls.reset();
+
       this.addSharedObjects();
       this.controls.getObject().position.copy(this.sharedCameraPosition);
       this.controls.enabled = true;

@@ -60,12 +60,18 @@ var ASMR = exports.ASMR = (function (_ShaneScene) {
       /// Shane System
 
       value: function enter() {
+        var _this = this;
+
         _get(Object.getPrototypeOf(ASMR.prototype), "enter", this).call(this);
 
         this.renderer.setClearColor(0);
 
         if (!this.isLive) {
+          this.numMediaToLoad += 1;
           this.audio = this.makeAudio(this.audioBase + "hfsu_asmr");
+          this.audio.addEventListener("canplaythrough", function () {
+            _this.didLoadMedia();
+          });
         }
 
         this.videos = [];
@@ -90,6 +96,10 @@ var ASMR = exports.ASMR = (function (_ShaneScene) {
         setTimeout(this.doDVD.bind(this), dvdTime);
 
         setTimeout(function () {
+          if (!_this.active) {
+            return;
+          }
+
           _this.shadowizeDVD(_this.dvd);
           _this.growDVD(_this.dvd);
         }, asmrLength - curtainDuration - 27666);
@@ -107,6 +117,7 @@ var ASMR = exports.ASMR = (function (_ShaneScene) {
         if (!this.isLive) {
           this.audio.src = "";
           $(this.audio).remove();
+          this.audio = null;
         }
 
         for (var j = 0; j < this.videos.length; j++) {
@@ -114,12 +125,21 @@ var ASMR = exports.ASMR = (function (_ShaneScene) {
           video.removeAttribute("src"); // thanks mdn really smart
           $(video).remove();
         }
+        this.videos = [];
 
-        this.dvd.removeAttribute("src");
-        $(this.dvd).remove();
-
-        this.leftCurtain.remove();
-        this.rightCurtain.remove();
+        if (this.dvd) {
+          this.dvd.removeAttribute("src");
+          $(this.dvd).remove();
+          this.dvd = null;
+        }
+        if (this.leftCurtain) {
+          this.leftCurtain.remove();
+          this.leftCurtain = null;
+        }
+        if (this.rightCurtain) {
+          this.rightCurtain.remove();
+          this.rightCurtain = null;
+        }
       }
     },
     update: {
@@ -136,6 +156,10 @@ var ASMR = exports.ASMR = (function (_ShaneScene) {
       /// Curtains
 
       value: function doCurtains() {
+        if (!this.active) {
+          return;
+        }
+
         this.leftCurtain = this.makeCurtain("left_curtain.jpg");
         this.rightCurtain = this.makeCurtain("right_curtain.jpg");
 
@@ -190,6 +214,10 @@ var ASMR = exports.ASMR = (function (_ShaneScene) {
         var _this = this;
 
         setTimeout(function () {
+          if (!_this.active) {
+            return;
+          }
+
           var video = _this.makeASMRVideo(videoName);
           _this.videos.push(video);
 
@@ -227,6 +255,10 @@ var ASMR = exports.ASMR = (function (_ShaneScene) {
       /// DVD
 
       value: function doDVD() {
+        if (!this.active) {
+          return;
+        }
+
         this.dvd = this.makeASMRVideo("jjs-asmr");
         this.dvd.loop = false;
 
@@ -331,13 +363,19 @@ var Bruno = exports.Bruno = (function (_ShaneScene) {
       /// Overrides
 
       value: function enter() {
+        var _this = this;
+
         _get(Object.getPrototypeOf(Bruno.prototype), "enter", this).call(this);
 
         this.coinRotationSpeed = 0.01;
         this.staticRenderPercentage = 0.9;
 
         if (!this.isLive) {
+          this.numMediaToLoad += 1;
           this.audio = this.makeAudio(this.mediaBase + "bruno");
+          this.audio.addEventListener("canplaythrough", function () {
+            _this.didLoadMedia();
+          });
         }
 
         this.makeLights();
@@ -393,6 +431,7 @@ var Bruno = exports.Bruno = (function (_ShaneScene) {
         if (this.audio) {
           this.audio.src = "";
           $(this.audio).remove();
+          this.audio = null;
         }
 
         if (this.$canvas) {
@@ -752,10 +791,7 @@ var doKaraoke = function (domContainer, marker) {
   }, wordOffsets[wordIndex] - spaceBeforeLine);
 
   function doLine() {
-    console.log("processing line " + lineIndex);
-
     processLine(lineIndex, wordIndex, function () {
-      console.log("finished with line " + lineIndex);
 
       var currentOffset = wordOffsets[wordIndex + lineLengths[lineIndex] - 1];
 
@@ -764,7 +800,6 @@ var doKaraoke = function (domContainer, marker) {
 
       if (lineIndex < numberOfLines) {
         var timeout = wordOffsets[wordIndex] - spaceBeforeLine - currentOffset;
-        console.log("time before next line: " + timeout);
         setTimeout(function () {
           emptyKaraokeDom();
           doLine();
@@ -791,7 +826,6 @@ var doKaraoke = function (domContainer, marker) {
       var word = allWords[i];
       words.push(word);
     }
-    console.log(words);
 
     var wordSpans = [];
     for (var w = 0; w < words.length; w++) {
@@ -811,7 +845,6 @@ var doKaraoke = function (domContainer, marker) {
     function doTimeoutForWord(index) {
       var offset = wordOffsets[index] - (firstWordOffset - spaceBeforeLine);
       lastWordOffset = offset;
-      console.log("timeout for word: " + index + " is " + offset);
       setTimeout(function () {
         var timeUntilNextWord = index === wordOffsets.length - 1 ? 200 : wordOffsets[index + 1] - wordOffsets[index];
         var bounceLength = Math.min(200, timeUntilNextWord);
@@ -963,12 +996,19 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
     },
     enter: {
       value: function enter() {
+        var _this = this;
+
         _get(Object.getPrototypeOf(GodIsAMan.prototype), "enter", this).call(this);
 
         this.highwayVideo = this.makeVideo(this.videoBase + "mojave_cycle", true);
 
         this.basketball = new Basketball(this.basketballPath);
         this.basketball.addTo(this.domContainer);
+
+        this.numMediaToLoad += 1;
+        this.highwayVideo.addEventListener("canplaythrough", function () {
+          _this.didLoadMedia();
+        });
       }
     },
     doTimedWork: {
@@ -1023,6 +1063,10 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
       value: function vegasTime() {
         var _this = this;
 
+        if (!this.active) {
+          return;
+        }
+
         this.vegasVideo = this.makeVideo(this.videoBase + "vegas", true);
         this.vegasVideo.playbackRate = 3;
         this.vegasVideo.play();
@@ -1042,6 +1086,10 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
       value: function papaTime() {
         var _this = this;
 
+        if (!this.active) {
+          return;
+        }
+
         this.papaVideo = this.makeVideo(this.videoBase + "softypapa", true);
         this.papaVideo.play();
 
@@ -1059,6 +1107,10 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
     cowboyTime: {
       value: function cowboyTime() {
         var _this = this;
+
+        if (!this.active) {
+          return;
+        }
 
         this.cowboyVideo = this.makeVideo(this.videoBase + "lonely_cowboy", true);
         this.cowboyVideo.play();
@@ -1078,6 +1130,10 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
       value: function game2Time() {
         var _this = this;
 
+        if (!this.active) {
+          return;
+        }
+
         this.game2Video = this.makeVideo(this.videoBase + "game_2", true);
         this.game2Video.play();
 
@@ -1095,6 +1151,10 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
     game1Time: {
       value: function game1Time() {
         var _this = this;
+
+        if (!this.active) {
+          return;
+        }
 
         this.game1Video = this.makeVideo(this.videoBase + "game_1", true);
         this.game1Video.play();
@@ -1115,6 +1175,10 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
       /// Vision Creation
 
       value: function createVin() {
+        if (!this.active) {
+          return;
+        }
+
         this.vin = this.makeVision("vin_diesel");
 
         this.vin.style.left = "54%";
@@ -1126,6 +1190,10 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
     },
     createWhitey: {
       value: function createWhitey() {
+        if (!this.active) {
+          return;
+        }
+
         this.whitey = this.makeVision("whitey");
 
         this.whitey.style.left = "60px";
@@ -1137,6 +1205,10 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
     },
     createPapaJohn: {
       value: function createPapaJohn() {
+        if (!this.active) {
+          return;
+        }
+
         this.papaJohn = this.makeVision("papajohn");
 
         this.papaJohn.style.left = "25%";
@@ -1148,54 +1220,90 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
     },
     createGodManVideo: {
       value: function createGodManVideo() {
+        if (!this.active) {
+          return;
+        }
+
         this.godMan = this.makeVision("godmanvideo", true);
         this.animateVision(this.godMan);
       }
     },
     createJohnCena: {
       value: function createJohnCena() {
+        if (!this.active) {
+          return;
+        }
+
         this.johnCena = this.makeVision("johncena", true);
         this.animateVision(this.johnCena);
       }
     },
     createBruceWillis: {
       value: function createBruceWillis() {
+        if (!this.active) {
+          return;
+        }
+
         this.bruceWillis = this.makeVision("brucewillis", true);
         this.animateVision(this.bruceWillis);
       }
     },
     createGodSistene: {
       value: function createGodSistene() {
+        if (!this.active) {
+          return;
+        }
+
         this.godSistene = this.makeVision("godsistene", true);
         this.animateVision(this.godSistene);
       }
     },
     createHulkHogan: {
       value: function createHulkHogan() {
+        if (!this.active) {
+          return;
+        }
+
         this.hulkHogan = this.makeVision("hulkhogan", true);
         this.animateVision(this.hulkHogan);
       }
     },
     createLebron: {
       value: function createLebron() {
+        if (!this.active) {
+          return;
+        }
+
         this.lebron = this.makeVision("lebron", true);
         this.animateVision(this.lebron);
       }
     },
     createJordan: {
       value: function createJordan() {
+        if (!this.active) {
+          return;
+        }
+
         this.jordan = this.makeVision("jordan", true);
         this.animateVision(this.jordan);
       }
     },
     createBigSean: {
       value: function createBigSean() {
+        if (!this.active) {
+          return;
+        }
+
         this.bigSean = this.makeVision("bigsean", true);
         this.animateVision(this.bigSean);
       }
     },
     createLilWayne: {
       value: function createLilWayne() {
+        if (!this.active) {
+          return;
+        }
+
         this.lilWayne = this.makeVision("lilwayne");
 
         this.lilWayne.style.left = "30px";
@@ -1292,6 +1400,10 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
       /// Basketball at the end
 
       value: function transitionToBall() {
+        if (!this.active) {
+          return;
+        }
+
         this.ballWidth = 50;
         this.upBallWidth();
 
@@ -1482,10 +1594,35 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
 
         this.marble.remove();
 
-        $(this.fountainCanvas).remove();
-        this.fountainsActive = false;
-
         this.scene.remove(this.spotLight);
+
+        if (this.fountainCanvas) {
+          $(this.fountainCanvas).remove();
+          this.fountainCanvas = null;
+          this.fountainsActive = false;
+        }
+
+        this.removeMediaElement(this.rotatingFoot);
+        this.rotatingFoot = null;
+        this.removeMediaElement(this.footMassage);
+        this.footMassage = null;
+        this.removeMediaElement(this.footSlap);
+        this.footSlap = null;
+        this.removeMediaElement(this.sean);
+        this.sean = null;
+        this.removeMediaElement(this.kevin);
+        this.kevin = null;
+
+        if (this.footModel) {
+          this.footModel.active = false;
+          this.footModel.removeFrom(this.scene);
+          this.footModel = null;
+        }
+
+        this.removeMediaElement(this.cadFootImage);
+        this.cadFootImage = null;
+        this.removeMediaElement(this.marbledDigitalFoot);
+        this.marbledDigitalFoot = null;
       }
     },
     update: {
@@ -1547,6 +1684,10 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
       value: function doRotatingFoot(duration) {
         var _this = this;
 
+        if (!this.active) {
+          return;
+        }
+
         this.rotatingFoot = this.makeBodyVideo("rotating_foot");
 
         this.rotatingFoot.style.height = "60%";
@@ -1560,13 +1701,18 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
         }, 100);
 
         setTimeout(function () {
-          _this.removeVideo(_this.rotatingFoot);
+          _this.removeMediaElement(_this.rotatingFoot);
+          _this.rotatingFoot = null;
         }, duration);
       }
     },
     doFootMassage: {
       value: function doFootMassage(duration) {
         var _this = this;
+
+        if (!this.active) {
+          return;
+        }
 
         this.footMassage = this.makeBodyVideo("foot_massage");
 
@@ -1577,13 +1723,18 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
         this.footMassage.play();
 
         setTimeout(function () {
-          _this.removeVideo(_this.footMassage);
+          _this.removeMediaElement(_this.footMassage);
+          _this.footMassage = null;
         }, duration);
       }
     },
     doFootSlap: {
       value: function doFootSlap(duration) {
         var _this = this;
+
+        if (!this.active) {
+          return;
+        }
 
         this.footSlap = this.makeBodyVideo("footslap");
 
@@ -1594,13 +1745,18 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
         this.footSlap.play();
 
         setTimeout(function () {
-          _this.removeVideo(_this.footSlap);
+          _this.removeMediaElement(_this.footSlap);
+          _this.footSlap = null;
         }, duration);
       }
     },
     doSean: {
       value: function doSean(duration) {
         var _this = this;
+
+        if (!this.active) {
+          return;
+        }
 
         this.sean = this.makeBodyVideo("sean");
 
@@ -1613,13 +1769,18 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
         kt.rotate($(this.sean), 90);
 
         setTimeout(function () {
-          _this.removeVideo(_this.sean);
+          _this.removeMediaElement(_this.sean);
+          _this.sean = null;
         }, duration);
       }
     },
     doKevin: {
       value: function doKevin(duration) {
         var _this = this;
+
+        if (!this.active) {
+          return;
+        }
 
         this.kevin = this.makeBodyVideo("kevin");
 
@@ -1630,7 +1791,8 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
         this.kevin.play();
 
         setTimeout(function () {
-          _this.removeVideo(_this.kevin);
+          _this.removeMediaElement(_this.kevin);
+          _this.kevin = null;
         }, duration);
       }
     },
@@ -1643,9 +1805,11 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
         return vid;
       }
     },
-    removeVideo: {
-      value: function removeVideo(video) {
-        video.src = "";
+    removeMediaElement: {
+      value: function removeMediaElement(video) {
+        if (!video) {
+          return;
+        }video.src = "";
         $(video).remove();
       }
     },
@@ -1655,6 +1819,10 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
 
       value: function doFootModel(duration) {
         var _this = this;
+
+        if (!this.active) {
+          return;
+        }
 
         this.footModel = new ShaneMesh({
           modelName: "/js/models/foot.json",
@@ -1674,8 +1842,10 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
           //this.footModel.setMeshColor(0xff0000);
 
           setTimeout(function () {
+            if (!_this.footModel) return;
             _this.footModel.active = false;
             _this.footModel.removeFrom(_this.scene);
+            _this.footModel = null;
           }, duration);
         });
       }
@@ -1699,6 +1869,10 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
       value: function doCadFootImage(duration) {
         var _this = this;
 
+        if (!this.active) {
+          return;
+        }
+
         this.cadFootImage = this.makeBodyImage("cad_foot.jpg");
         this.cadFootImage.attr("id", "cad-foot");
 
@@ -1709,13 +1883,18 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
         this.cadFootImage.__rotation = 0;
 
         setTimeout(function () {
-          _this.cadFootImage.remove();
+          _this.removeMediaElement(_this.cadFootImage);
+          _this.cadFootImage = null;
         }, duration);
       }
     },
     doMarbledDigitalFoot: {
       value: function doMarbledDigitalFoot(duration) {
         var _this = this;
+
+        if (!this.active) {
+          return;
+        }
 
         this.marbledDigitalFoot = this.makeBodyImage("marble_digital_foot.jpg");
         this.marbledDigitalFoot.attr("id", "marble-digital-foot");
@@ -1726,7 +1905,8 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
 
         if (duration) {
           setTimeout(function () {
-            _this.marbledDigitalFoot.remove();
+            _this.removeMediaElement(_this.marbledDigitalFoot);
+            _this.marbledDigitalFoot = null;
           }, duration);
         }
       }
@@ -1745,6 +1925,10 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
       /// Fountain (delightfully modified from http://cssdeck.com/labs/html5-canvas-fountain-exploding-particles-with-gravity)
 
       value: function makeFountain() {
+        if (!this.active) {
+          return;
+        }
+
         var self = this;
 
         this.fountainsActive = true;
@@ -1834,7 +2018,6 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
       value: function jigsawFeet() {
         var _this = this;
 
-        console.log("jigsaw time!!");
         if (!this.active) {
           return;
         }
@@ -1947,6 +2130,8 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
       /// Overrides
 
       value: function enter() {
+        var _this = this;
+
         _get(Object.getPrototypeOf(LiveAtJJs.prototype), "enter", this).call(this);
 
         this.renderer.setClearColor(0, 0);
@@ -1975,6 +2160,11 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
         }
 
         setTimeout(this.resize.bind(this), 500);
+
+        this.numMediaToLoad += 1;
+        this.dvd.addEventListener("canplaythrough", function () {
+          _this.didLoadMedia();
+        });
       }
     },
     doTimedWork: {
@@ -1999,12 +2189,24 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
         this.renderer.setClearColor(16777215, 1);
         $("body").css("background-color", "white");
 
-        this.dvd.src = "";
-        $(this.dvd).remove();
+        if (this.dvd) {
+          this.dvd.src = "";
+          $(this.dvd).remove();
+          this.dvd = null;
+        }
 
-        this.curtainBackdrop.remove();
-        this.leftCurtain.remove();
-        this.rightCurtain.remove();
+        if (this.curtainBackdrop) {
+          this.curtainBackdrop.remove();
+          this.curtainBackdrop = null;
+        }
+        if (this.leftCurtain) {
+          this.leftCurtain.remove();
+          this.leftCurtain = null;
+        }
+        if (this.rightCurtain) {
+          this.rightCurtain.remove();
+          this.rightCurtain = null;
+        }
       }
     },
     resize: {
@@ -2033,6 +2235,10 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
 
       value: function makeDVDFullScreen() {
         var _this = this;
+
+        if (!this.active) {
+          return;
+        }
 
         var dvd = this.dvd;
 
@@ -2211,6 +2417,8 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
       /// Shane System
 
       value: function enter() {
+        var _this = this;
+
         _get(Object.getPrototypeOf(PapaJohn.prototype), "enter", this).call(this);
 
         this.scene.fog = new THREE.Fog(16777215, 1, 6000);
@@ -2224,13 +2432,33 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
         this.spreadCactus();
         this.spreadRocks();
         this.makeSky();
+        this.makePapaJohn();
+
+        this.numMediaToLoad += 1;
+        this.papaJohnVideo.addEventListener("canplaythrough", function () {
+          _this.didLoadMedia();
+        });
       }
     },
     doTimedWork: {
       value: function doTimedWork() {
+        var _this = this;
+
         _get(Object.getPrototypeOf(PapaJohn.prototype), "doTimedWork", this).call(this);
 
-        setTimeout(this.makePapaJohn.bind(this), 45 * 1000);
+        setTimeout(function () {
+          _this.papaJohnVideo.play();
+
+          _this.makePapaJohnMesh();
+
+          var fadeInterval = setInterval(function () {
+            _this.papaJohnVideoMesh.videoMaterial.opacity += 0.00125;
+            if (_this.papaJohnVideoMesh.videoMaterial.opacity >= 1) {
+              clearInterval(fadeInterval);
+            }
+          }, 30);
+        }, 45 * 1000);
+
         setTimeout(this.goHome.bind(this), (45 + 175) * 1000);
       }
     },
@@ -2246,9 +2474,12 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
         this.scene.remove(this.hemiLight);
         this.scene.remove(this.dirLight);
 
-        this.papaJohnVideo.src = "";
-        $(this.papaJohnVideo).remove();
-        this.scene.remove(this.papaJohnVideoMesh.mesh);
+        if (this.papaJohnVideo) {
+          this.papaJohnVideo.src = "";
+          $(this.papaJohnVideo).remove();
+          this.scene.remove(this.papaJohnVideoMesh.mesh);
+          this.papaJohnVideo = null;
+        }
       }
     },
     update: {
@@ -2401,14 +2632,14 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
     },
     makePapaJohn: {
       value: function makePapaJohn() {
-        var _this = this;
-
         this.papaJohnVideo = this.makeVideo("/media/videos/papajohns", false, -10);
         this.papaJohnVideo.loop = false;
         $(this.papaJohnVideo).css("display", "none");
         $(this.papaJohnVideo).css("background-color", "white");
-        this.papaJohnVideo.play();
-
+      }
+    },
+    makePapaJohnMesh: {
+      value: function makePapaJohnMesh() {
         this.papaJohnVideoMesh = new VideoMesh({
           video: this.papaJohnVideo,
           sourceVideoWidth: 852,
@@ -2421,13 +2652,6 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
         this.papaJohnVideoMesh.moveTo(0, -8, -135);
         this.papaJohnVideoMesh.rotateTo(0.1, 0, 0);
         this.papaJohnVideoMesh.addTo(this.scene);
-
-        var fadeInterval = setInterval(function () {
-          _this.papaJohnVideoMesh.videoMaterial.opacity += 0.00125;
-          if (_this.papaJohnVideoMesh.videoMaterial.opacity >= 1) {
-            clearInterval(fadeInterval);
-          }
-        }, 30);
       }
     },
     goHome: {
@@ -5194,6 +5418,8 @@ var SecondShane = (function (_ThreeBoiler) {
 
           _this.updateHistoryForEarth();
 
+          _this.controls.reset();
+
           _this.addSharedObjects();
           _this.controls.getObject().position.copy(_this.sharedCameraPosition);
           _this.controls.enabled = true;
@@ -5834,7 +6060,7 @@ var ShaneScene = exports.ShaneScene = (function () {
     $(window).resize(this.resize.bind(this));
 
     this.isLive = false;
-    this.hasStarted = false;
+    this.numMediaToLoad = this.isLive ? 1 : 0;
   }
 
   _createClass(ShaneScene, {
@@ -5849,9 +6075,7 @@ var ShaneScene = exports.ShaneScene = (function () {
       value: function startScene() {
         this.enter();
 
-        if (!this.isLive) {
-          this.doTimedWork();
-        }
+        this.startTimedWorkIfPossible();
       }
     },
     enter: {
@@ -5860,6 +6084,19 @@ var ShaneScene = exports.ShaneScene = (function () {
 
         this.camera.position.set(0, 0, 0);
         this.camera.rotation.x = 0;this.camera.rotation.y = 0;this.camera.rotation.z = 0;
+      }
+    },
+    didLoadMedia: {
+      value: function didLoadMedia() {
+        this.numMediaToLoad -= 1;
+        this.startTimedWorkIfPossible();
+      }
+    },
+    startTimedWorkIfPossible: {
+      value: function startTimedWorkIfPossible() {
+        if (this.active && this.numMediaToLoad === 0) {
+          this.doTimedWork();
+        }
       }
     },
     doTimedWork: {
@@ -5897,9 +6134,9 @@ var ShaneScene = exports.ShaneScene = (function () {
     },
     click: {
       value: function click() {
-        if (this.active && this.isLive && !this.hasStarted) {
-          this.doTimedWork();
-          this.hasStarted = true;
+        if (this.active && this.isLive && !this.hasPerformedStartLiveClick) {
+          this.didLoadMedia();
+          this.hasPerformedStartLiveClick = true;
         }
       }
     },

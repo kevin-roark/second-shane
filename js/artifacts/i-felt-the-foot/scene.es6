@@ -107,10 +107,35 @@ export class iFeltTheFoot extends ShaneScene {
 
     this.marble.remove();
 
-    $(this.fountainCanvas).remove();
-    this.fountainsActive = false;
-
     this.scene.remove(this.spotLight);
+
+    if (this.fountainCanvas) {
+      $(this.fountainCanvas).remove();
+      this.fountainCanvas = null;
+      this.fountainsActive = false;
+    }
+
+    this.removeMediaElement(this.rotatingFoot);
+    this.rotatingFoot = null;
+    this.removeMediaElement(this.footMassage);
+    this.footMassage = null;
+    this.removeMediaElement(this.footSlap);
+    this.footSlap = null;
+    this.removeMediaElement(this.sean);
+    this.sean = null;
+    this.removeMediaElement(this.kevin);
+    this.kevin = null;
+
+    if (this.footModel) {
+      this.footModel.active = false;
+      this.footModel.removeFrom(this.scene);
+      this.footModel = null;
+    }
+
+    this.removeMediaElement(this.cadFootImage);
+    this.cadFootImage = null;
+    this.removeMediaElement(this.marbledDigitalFoot);
+    this.marbledDigitalFoot = null;
   }
 
   update() {
@@ -162,6 +187,10 @@ export class iFeltTheFoot extends ShaneScene {
   /// Body Videos
 
   doRotatingFoot(duration) {
+    if (!this.active) {
+      return;
+    }
+
     this.rotatingFoot = this.makeBodyVideo('rotating_foot');
 
     this.rotatingFoot.style.height = '60%';
@@ -173,11 +202,16 @@ export class iFeltTheFoot extends ShaneScene {
     setTimeout(() => {$(this.rotatingFoot).show();}, 100);
 
     setTimeout(() => {
-      this.removeVideo(this.rotatingFoot);
+      this.removeMediaElement(this.rotatingFoot);
+      this.rotatingFoot = null;
     }, duration);
   }
 
   doFootMassage(duration) {
+    if (!this.active) {
+      return;
+    }
+
     this.footMassage = this.makeBodyVideo('foot_massage');
 
     this.footMassage.style.width = '33%';
@@ -187,11 +221,16 @@ export class iFeltTheFoot extends ShaneScene {
     this.footMassage.play();
 
     setTimeout(() => {
-      this.removeVideo(this.footMassage);
+      this.removeMediaElement(this.footMassage);
+      this.footMassage = null;
     }, duration);
   }
 
   doFootSlap(duration) {
+    if (!this.active) {
+      return;
+    }
+
     this.footSlap = this.makeBodyVideo('footslap');
 
     this.footSlap.style.width = '40%';
@@ -201,11 +240,16 @@ export class iFeltTheFoot extends ShaneScene {
     this.footSlap.play();
 
     setTimeout(() => {
-      this.removeVideo(this.footSlap);
+      this.removeMediaElement(this.footSlap);
+      this.footSlap = null;
     }, duration);
   }
 
   doSean(duration) {
+    if (!this.active) {
+      return;
+    }
+
     this.sean = this.makeBodyVideo('sean');
 
     this.sean.style.height = '40%';
@@ -217,11 +261,16 @@ export class iFeltTheFoot extends ShaneScene {
     kt.rotate($(this.sean), 90);
 
     setTimeout(() => {
-      this.removeVideo(this.sean);
+      this.removeMediaElement(this.sean);
+      this.sean = null;
     }, duration);
   }
 
   doKevin(duration) {
+    if (!this.active) {
+      return;
+    }
+
     this.kevin = this.makeBodyVideo('kevin');
 
     this.kevin.style.width = '30%';
@@ -231,7 +280,8 @@ export class iFeltTheFoot extends ShaneScene {
     this.kevin.play();
 
     setTimeout(() => {
-      this.removeVideo(this.kevin);
+      this.removeMediaElement(this.kevin);
+      this.kevin = null;
     }, duration);
   }
 
@@ -243,7 +293,8 @@ export class iFeltTheFoot extends ShaneScene {
     return vid;
   }
 
-  removeVideo(video) {
+  removeMediaElement(video) {
+    if (!video) return;
     video.src = '';
     $(video).remove();
   }
@@ -251,6 +302,10 @@ export class iFeltTheFoot extends ShaneScene {
   /// Body Models
 
   doFootModel(duration) {
+    if (!this.active) {
+      return;
+    }
+
     this.footModel = new ShaneMesh({
       modelName: '/js/models/foot.json',
       position: new THREE.Vector3(-15, -9, -20)
@@ -269,8 +324,10 @@ export class iFeltTheFoot extends ShaneScene {
       //this.footModel.setMeshColor(0xff0000);
 
       setTimeout(() => {
+        if (!this.footModel) return;
         this.footModel.active = false;
         this.footModel.removeFrom(this.scene);
+        this.footModel = null;
       }, duration);
     });
   }
@@ -289,6 +346,10 @@ export class iFeltTheFoot extends ShaneScene {
   /// Body Images
 
   doCadFootImage(duration) {
+    if (!this.active) {
+      return;
+    }
+
     this.cadFootImage = this.makeBodyImage('cad_foot.jpg');
     this.cadFootImage.attr('id', 'cad-foot');
 
@@ -299,11 +360,16 @@ export class iFeltTheFoot extends ShaneScene {
     this.cadFootImage.__rotation = 0;
 
     setTimeout(() => {
-      this.cadFootImage.remove();
+      this.removeMediaElement(this.cadFootImage);
+      this.cadFootImage = null;
     }, duration);
   }
 
   doMarbledDigitalFoot(duration) {
+    if (!this.active) {
+      return;
+    }
+
     this.marbledDigitalFoot = this.makeBodyImage('marble_digital_foot.jpg');
     this.marbledDigitalFoot.attr('id', 'marble-digital-foot');
 
@@ -313,7 +379,8 @@ export class iFeltTheFoot extends ShaneScene {
 
     if (duration) {
       setTimeout(() => {
-        this.marbledDigitalFoot.remove();
+        this.removeMediaElement(this.marbledDigitalFoot);
+        this.marbledDigitalFoot = null;
       }, duration);
     }
   }
@@ -329,6 +396,10 @@ export class iFeltTheFoot extends ShaneScene {
   /// Fountain (delightfully modified from http://cssdeck.com/labs/html5-canvas-fountain-exploding-particles-with-gravity)
 
   makeFountain() {
+    if (!this.active) {
+      return;
+    }
+
     var self = this;
 
     this.fountainsActive = true;
@@ -415,7 +486,6 @@ export class iFeltTheFoot extends ShaneScene {
   /// Jigsaw
 
   jigsawFeet() {
-    console.log('jigsaw time!!');
     if (!this.active) {
       return;
     }

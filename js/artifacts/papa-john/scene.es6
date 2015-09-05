@@ -49,12 +49,30 @@ export class PapaJohn extends ShaneScene {
     this.spreadCactus();
     this.spreadRocks();
     this.makeSky();
+    this.makePapaJohn();
+
+    this.numMediaToLoad += 1;
+    this.papaJohnVideo.addEventListener('canplaythrough', () => {
+      this.didLoadMedia();
+    });
   }
 
   doTimedWork() {
     super.doTimedWork();
 
-    setTimeout(this.makePapaJohn.bind(this), 45 * 1000);
+    setTimeout(() => {
+      this.papaJohnVideo.play();
+
+      this.makePapaJohnMesh();
+
+      var fadeInterval = setInterval(() => {
+        this.papaJohnVideoMesh.videoMaterial.opacity += 0.00125;
+        if (this.papaJohnVideoMesh.videoMaterial.opacity >= 1) {
+          clearInterval(fadeInterval);
+        }
+      }, 30);
+    }, 45 * 1000);
+
     setTimeout(this.goHome.bind(this), (45 + 175) * 1000);
   }
 
@@ -69,9 +87,12 @@ export class PapaJohn extends ShaneScene {
     this.scene.remove(this.hemiLight);
     this.scene.remove(this.dirLight);
 
-    this.papaJohnVideo.src = '';
-    $(this.papaJohnVideo).remove();
-    this.scene.remove(this.papaJohnVideoMesh.mesh);
+    if (this.papaJohnVideo) {
+      this.papaJohnVideo.src = '';
+      $(this.papaJohnVideo).remove();
+      this.scene.remove(this.papaJohnVideoMesh.mesh);
+      this.papaJohnVideo = null;
+    }
   }
 
   update() {
@@ -217,8 +238,9 @@ export class PapaJohn extends ShaneScene {
     this.papaJohnVideo.loop = false;
     $(this.papaJohnVideo).css('display', 'none');
     $(this.papaJohnVideo).css('background-color', 'white');
-    this.papaJohnVideo.play();
+  }
 
+  makePapaJohnMesh() {
     this.papaJohnVideoMesh = new VideoMesh({
       video: this.papaJohnVideo,
       sourceVideoWidth: 852,
@@ -231,13 +253,6 @@ export class PapaJohn extends ShaneScene {
     this.papaJohnVideoMesh.moveTo(0, -8, -135);
     this.papaJohnVideoMesh.rotateTo(0.1, 0, 0);
     this.papaJohnVideoMesh.addTo(this.scene);
-
-    var fadeInterval = setInterval(() => {
-      this.papaJohnVideoMesh.videoMaterial.opacity += 0.00125;
-      if (this.papaJohnVideoMesh.videoMaterial.opacity >= 1) {
-        clearInterval(fadeInterval);
-      }
-    }, 30);
   }
 
   /// Going Home

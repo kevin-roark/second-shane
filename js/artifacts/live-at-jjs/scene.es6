@@ -63,6 +63,11 @@ export class LiveAtJJs extends ShaneScene {
     }
 
     setTimeout(this.resize.bind(this), 500);
+
+    this.numMediaToLoad += 1;
+    this.dvd.addEventListener('canplaythrough', () => {
+      this.didLoadMedia();
+    });
   }
 
   doTimedWork() {
@@ -85,12 +90,24 @@ export class LiveAtJJs extends ShaneScene {
     this.renderer.setClearColor(0xffffff, 1);
     $('body').css('background-color', 'white');
 
-    this.dvd.src = '';
-    $(this.dvd).remove();
+    if (this.dvd) {
+      this.dvd.src = '';
+      $(this.dvd).remove();
+      this.dvd = null;
+    }
 
-    this.curtainBackdrop.remove();
-    this.leftCurtain.remove();
-    this.rightCurtain.remove();
+    if (this.curtainBackdrop) {
+      this.curtainBackdrop.remove();
+      this.curtainBackdrop = null;
+    }
+    if (this.leftCurtain) {
+      this.leftCurtain.remove();
+      this.leftCurtain = null;
+    }
+    if (this.rightCurtain) {
+      this.rightCurtain.remove();
+      this.rightCurtain = null;
+    }
   }
 
   resize() {
@@ -114,6 +131,10 @@ export class LiveAtJJs extends ShaneScene {
   /// Marbling
 
   makeDVDFullScreen() {
+    if (!this.active) {
+      return;
+    }
+
     var dvd = this.dvd;
 
     var currentHeight = 365;

@@ -24,7 +24,7 @@ export class ShaneScene {
     $(window).resize(this.resize.bind(this));
 
     this.isLive = false;
-    this.hasStarted = false;
+    this.numMediaToLoad = this.isLive ? 1 : 0;
   }
 
   update() {
@@ -36,9 +36,7 @@ export class ShaneScene {
   startScene() {
     this.enter();
 
-    if (!this.isLive) {
-      this.doTimedWork();
-    }
+    this.startTimedWorkIfPossible();
   }
 
   enter() {
@@ -46,6 +44,17 @@ export class ShaneScene {
 
     this.camera.position.set(0, 0, 0);
     this.camera.rotation.x = 0; this.camera.rotation.y = 0; this.camera.rotation.z = 0;
+  }
+
+  didLoadMedia() {
+    this.numMediaToLoad -= 1;
+    this.startTimedWorkIfPossible();
+  }
+
+  startTimedWorkIfPossible() {
+    if (this.active && this.numMediaToLoad === 0) {
+      this.doTimedWork();
+    }
   }
 
   doTimedWork() {
@@ -80,9 +89,9 @@ export class ShaneScene {
   }
 
   click() {
-    if (this.active && this.isLive && !this.hasStarted) {
-      this.doTimedWork();
-      this.hasStarted = true;
+    if (this.active && this.isLive && !this.hasPerformedStartLiveClick) {
+      this.didLoadMedia();
+      this.hasPerformedStartLiveClick = true;
     }
   }
 
