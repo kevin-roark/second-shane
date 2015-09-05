@@ -5788,6 +5788,11 @@ var oneOffs = [new RotatingMan({
   text: "His Job, His Wife, His House, His Dog",
   textColor: 13413711,
   position: { x: -50, y: 0, z: -25 }
+}), new RotatingMan({
+  name: "chris",
+  text: "A Hopelessly Romantic Man Of Integrity",
+  textColor: 16711703,
+  position: { x: 0, y: 0, z: -50 }
 }), new DomOneOff({
   name: "dog life poem",
   $element: $("<div class=\"one-off-text\">" + dogPoemOneOffText + "</div>"),

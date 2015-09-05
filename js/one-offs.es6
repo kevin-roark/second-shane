@@ -235,6 +235,12 @@ export var oneOffs = [
     textColor: 0xccad4f,
     position: {x: -50, y: 0, z: -25}
   }),
+  new RotatingMan({
+    name: 'chris',
+    text: "A Hopelessly Romantic Man Of Integrity",
+    textColor: 0xff0017,
+    position: {x: 0, y: 0, z: -50}
+  }),
 
   new DomOneOff({
     name: 'dog life poem',
