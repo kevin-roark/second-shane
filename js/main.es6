@@ -17,6 +17,7 @@ let $nearbyArtifactContainer = $('#nearby-artifact-container');
 let $nearbyArtifactName = $('#nearby-artifact-name');
 let $introBox = $('#intro-box');
 let $chatterBoxContainer = $('#chatter-box');
+var $hud = $('#hud');
 var $pointerLockTip = $('#pointer-lock-tip');
 
 let IS_LIVE = false;
@@ -121,11 +122,13 @@ class SecondShane extends ThreeBoiler {
 
     if (currentQuery.shaneScene) {
       if (!this.activeScene) {
+        this.transitioning = false;
         this.transitionToSceneWithName(currentQuery.shaneScene);
       }
     }
     else {
       if (this.activeScene) {
+        this.transitioning = false;
         this.transitionFromScene(this.activeScene);
       }
     }
@@ -259,6 +262,7 @@ class SecondShane extends ThreeBoiler {
       this.activeScene = null;
 
       this.updateHistoryForEarth();
+      $hud.show();
 
       this.controls.reset();
 
@@ -297,6 +301,7 @@ class SecondShane extends ThreeBoiler {
       this.removeSharedObjects();
       $introBox.fadeOut();
       $nearbyArtifactContainer.hide();
+      $hud.hide();
 
       this.controls.reset();
 

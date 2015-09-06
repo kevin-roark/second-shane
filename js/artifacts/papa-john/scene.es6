@@ -90,8 +90,12 @@ export class PapaJohn extends ShaneScene {
     if (this.papaJohnVideo) {
       this.papaJohnVideo.src = '';
       $(this.papaJohnVideo).remove();
-      this.scene.remove(this.papaJohnVideoMesh.mesh);
       this.papaJohnVideo = null;
+    }
+
+    if (this.papaJohnVideoMesh) {
+      this.scene.remove(this.papaJohnVideoMesh.mesh);
+      this.papaJohnVideoMesh = null;
     }
   }
 

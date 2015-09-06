@@ -33,10 +33,11 @@ body {
 #nearby-artifact-container {
   display: none;
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  bottom: 10px;
+  right: 10px;
 
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 15px;
   color: white;
 }
 
@@ -45,20 +46,24 @@ body {
   }
 
 #hud {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  color: white;
+  position: fixed;
+  top: 5px;
+  left: 5px;
+  padding: 4px;
+  color: rgba(255, 255, 255, 0.87);
+  font-size: 11px;
+  font-family: 'Roboto Mono', monospace;
 }
+  #pointer-lock-tip {
+    text-decoration: underline;
+  }
 
 #intro-box {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 5px;
+  right: 5px;
   display: none;
   width: 500px;
-  padding: 10px;
-  background-color: rgba(100, 100, 100, 0.3);
   min-height: 250px;
 }
 
@@ -76,8 +81,8 @@ body {
   width: 280px;
   margin-left: 220px;
 
-  font-size: 18px;
-  font-family: 'Cutive Mono', monospace;
+  font-size: 15px;
+  font-family: 'Roboto Mono', monospace;
   letter-spacing: 1px;
   color: white;
 }
@@ -115,5 +120,5 @@ body {
   font-size: 15px;
   line-height: 25px;
 
-  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  box-shadow: 0 10px 20px rgba(255, 255, 255, 0.19), 0 6px 6px rgba(255, 255, 255, 0.23);
 }

@@ -2481,8 +2481,12 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
         if (this.papaJohnVideo) {
           this.papaJohnVideo.src = "";
           $(this.papaJohnVideo).remove();
-          this.scene.remove(this.papaJohnVideoMesh.mesh);
           this.papaJohnVideo = null;
+        }
+
+        if (this.papaJohnVideoMesh) {
+          this.scene.remove(this.papaJohnVideoMesh.mesh);
+          this.papaJohnVideoMesh = null;
         }
       }
     },
@@ -5201,6 +5205,7 @@ var $nearbyArtifactContainer = $("#nearby-artifact-container");
 var $nearbyArtifactName = $("#nearby-artifact-name");
 var $introBox = $("#intro-box");
 var $chatterBoxContainer = $("#chatter-box");
+var $hud = $("#hud");
 var $pointerLockTip = $("#pointer-lock-tip");
 
 var IS_LIVE = false;
@@ -5314,10 +5319,12 @@ var SecondShane = (function (_ThreeBoiler) {
 
         if (currentQuery.shaneScene) {
           if (!this.activeScene) {
+            this.transitioning = false;
             this.transitionToSceneWithName(currentQuery.shaneScene);
           }
         } else {
           if (this.activeScene) {
+            this.transitioning = false;
             this.transitionFromScene(this.activeScene);
           }
         }
@@ -5466,6 +5473,7 @@ var SecondShane = (function (_ThreeBoiler) {
           _this.activeScene = null;
 
           _this.updateHistoryForEarth();
+          $hud.show();
 
           _this.controls.reset();
 
@@ -5508,6 +5516,7 @@ var SecondShane = (function (_ThreeBoiler) {
           _this.removeSharedObjects();
           $introBox.fadeOut();
           $nearbyArtifactContainer.hide();
+          $hud.hide();
 
           _this.controls.reset();
 
