@@ -3082,11 +3082,19 @@ module.exports = function () {
     scope.canRequestPointerlock = false;
   };
 
+  this.canEverHavePointerLock = function () {
+    return havePointerLock;
+  };
+
   function pointerlockchange() {
     if (document.pointerLockElement === pointerlockElement || document.mozPointerLockElement === pointerlockElement || document.webkitPointerLockElement === pointerlockElement) {
       scope.currentlyHasPointerlock = true;
     } else {
       scope.currentlyHasPointerlock = false;
+    }
+
+    if (scope.pointerLockChangeCallback) {
+      scope.pointerLockChangeCallback(scope.currentlyHasPointerlock);
     }
   }
 
@@ -5193,6 +5201,7 @@ var $nearbyArtifactContainer = $("#nearby-artifact-container");
 var $nearbyArtifactName = $("#nearby-artifact-name");
 var $introBox = $("#intro-box");
 var $chatterBoxContainer = $("#chatter-box");
+var $pointerLockTip = $("#pointer-lock-tip");
 
 var IS_LIVE = false;
 
@@ -5215,6 +5224,9 @@ var SecondShane = (function (_ThreeBoiler) {
 
     this.controls = new FlyControls(this.camera);
     this.scene.add(this.controls.getObject());
+    this.controls.locker.pointerLockChangeCallback = function (hasPointerLock) {
+      _this.reactToPointerLock(hasPointerLock);
+    };
 
     $(document).click(function () {
       if (_this.activeScene) {
@@ -5294,6 +5306,9 @@ var SecondShane = (function (_ThreeBoiler) {
       }
     },
     renderCurrentURL: {
+
+      /// History
+
       value: function renderCurrentURL() {
         var currentQuery = queryString.parse(window.location.search.substring(1));
 
@@ -5339,6 +5354,9 @@ var SecondShane = (function (_ThreeBoiler) {
       }
     },
     showIntroChatter: {
+
+      /// Behavior
+
       value: function showIntroChatter() {
         setTimeout(function () {
           var words = ["Hello... Welcome to Second Shane... The ever-present and evolving realm of Mister Shane's sounds, sights, and feelings. I, the Red Bull™ Goblin, will be your trusted guide and companion.", "First thing's first... Second Shane is a self-directed experience. Explore the infinite universe and Hunt For Shane's Treasures. Begin by using the mouse to move your eyes. The W, A, S, D, R, and F keys on your keyboard will move your body... That's it...", "You will find portals to other worlds along the way. Press the spacebar to enter them. Don't be afraid; within those worlds lies the reality of Second Shane. This realm is only a shell.", "Thank you, and enjoy your time here. Come back soon... Shane is always changing."];
@@ -5350,7 +5368,27 @@ var SecondShane = (function (_ThreeBoiler) {
         }, 2000);
       }
     },
+    reactToPointerLock: {
+      value: function reactToPointerLock(hasPointerlock) {
+        if (!this.controls.locker.canEverHavePointerLock()) {
+          return;
+        }
+
+        if (this.activeScene) {
+          return;
+        }
+
+        if (!hasPointerlock) {
+          $pointerLockTip.show();
+        } else {
+          $pointerLockTip.hide();
+        }
+      }
+    },
     keypress: {
+
+      /// Interaction
+
       value: function keypress(keycode) {
         switch (keycode) {
           case 32:
@@ -5359,7 +5397,23 @@ var SecondShane = (function (_ThreeBoiler) {
         }
       }
     },
+    spacebarPressed: {
+      value: function spacebarPressed() {
+        if (this.transitioning) {
+          return;
+        }
+
+        if (!this.activeScene) {
+          this.attemptToEnterScene();
+        } else {
+          this.transitionFromScene(this.activeScene);
+        }
+      }
+    },
     talismans: {
+
+      /// Talismans
+
       value: function talismans() {
         return this.shaneScenes.map(function (scene) {
           return scene.talisman;
@@ -5385,23 +5439,10 @@ var SecondShane = (function (_ThreeBoiler) {
         return minDistanceSquared <= 400 ? sceneOfNearestTalisman : null;
       }
     },
-    spacebarPressed: {
+    attemptToEnterScene: {
 
       /// Transitions
 
-      value: function spacebarPressed() {
-        if (this.transitioning) {
-          return;
-        }
-
-        if (!this.activeScene) {
-          this.attemptToEnterScene();
-        } else {
-          this.transitionFromScene(this.activeScene);
-        }
-      }
-    },
-    attemptToEnterScene: {
       value: function attemptToEnterScene() {
         var scene = this.nearestTalismanScene;
         if (scene) {

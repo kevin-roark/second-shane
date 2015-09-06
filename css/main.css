@@ -44,6 +44,13 @@ body {
     text-decoration: underline;
   }
 
+#hud {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  color: white;
+}
+
 #intro-box {
   position: absolute;
   top: 10px;

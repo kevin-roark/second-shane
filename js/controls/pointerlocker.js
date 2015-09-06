@@ -51,11 +51,19 @@ module.exports = function() {
     scope.canRequestPointerlock = false;
   };
 
+  this.canEverHavePointerLock = function() {
+    return havePointerLock;
+  };
+
   function pointerlockchange() {
     if (document.pointerLockElement === pointerlockElement || document.mozPointerLockElement === pointerlockElement || document.webkitPointerLockElement === pointerlockElement ) {
       scope.currentlyHasPointerlock = true;
     } else {
       scope.currentlyHasPointerlock = false;
+    }
+
+    if (scope.pointerLockChangeCallback) {
+      scope.pointerLockChangeCallback(scope.currentlyHasPointerlock);
     }
   }
 

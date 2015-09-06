@@ -17,6 +17,7 @@ let $nearbyArtifactContainer = $('#nearby-artifact-container');
 let $nearbyArtifactName = $('#nearby-artifact-name');
 let $introBox = $('#intro-box');
 let $chatterBoxContainer = $('#chatter-box');
+var $pointerLockTip = $('#pointer-lock-tip');
 
 let IS_LIVE = false;
 
@@ -35,6 +36,9 @@ class SecondShane extends ThreeBoiler {
 
     this.controls = new FlyControls(this.camera);
     this.scene.add(this.controls.getObject());
+    this.controls.locker.pointerLockChangeCallback = (hasPointerLock) => {
+      this.reactToPointerLock(hasPointerLock);
+    };
 
     $(document).click(() => {
       if (this.activeScene) {
@@ -110,6 +114,8 @@ class SecondShane extends ThreeBoiler {
     }
   }
 
+  /// History
+
   renderCurrentURL() {
     var currentQuery = queryString.parse(window.location.search.substring(1));
 
@@ -152,6 +158,8 @@ class SecondShane extends ThreeBoiler {
     }
   }
 
+  /// Behavior
+
   showIntroChatter() {
     setTimeout(() => {
       let words = ["Hello... Welcome to Second Shane... The ever-present and evolving realm of Mister Shane's sounds, sights, and feelings. I, the Red Bull™ Goblin, will be your trusted guide and companion.",
@@ -166,6 +174,25 @@ class SecondShane extends ThreeBoiler {
     }, 2000);
   }
 
+  reactToPointerLock(hasPointerlock) {
+    if (!this.controls.locker.canEverHavePointerLock()) {
+      return;
+    }
+
+    if (this.activeScene) {
+      return;
+    }
+
+    if (!hasPointerlock) {
+      $pointerLockTip.show();
+    }
+    else {
+      $pointerLockTip.hide();
+    }
+  }
+
+  /// Interaction
+
   keypress(keycode) {
     switch (keycode) {
       case 32:
@@ -173,6 +200,20 @@ class SecondShane extends ThreeBoiler {
         break;
     }
   }
+
+  spacebarPressed() {
+    if (this.transitioning) {
+      return;
+    }
+
+    if (!this.activeScene) {
+      this.attemptToEnterScene();
+    } else {
+      this.transitionFromScene(this.activeScene);
+    }
+  }
+
+  /// Talismans
 
   talismans() {
     return this.shaneScenes.map(scene => scene.talisman);
@@ -197,18 +238,6 @@ class SecondShane extends ThreeBoiler {
   }
 
   /// Transitions
-
-  spacebarPressed() {
-    if (this.transitioning) {
-      return;
-    }
-
-    if (!this.activeScene) {
-      this.attemptToEnterScene();
-    } else {
-      this.transitionFromScene(this.activeScene);
-    }
-  }
 
   attemptToEnterScene() {
     var scene = this.nearestTalismanScene;
