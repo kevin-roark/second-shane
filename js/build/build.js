@@ -5859,6 +5859,10 @@ var oneOffs = [new RotatingMan({
   name: "dog life poem",
   $element: $("<div class=\"one-off-text\">" + dogPoemOneOffText + "</div>"),
   position: new THREE.Vector3(0, 0, -50)
+}), new DomOneOff({
+  name: "life hack",
+  $element: $("<div class=\"one-off-text\">Life Hack I.<br>If you want to die gamble everything until:<br>1. You have enough money to live as a king<br>2. You have nothing</div>"),
+  position: new THREE.Vector3(-30, 0, -25)
 })];
 exports.oneOffs = oneOffs;
 Object.defineProperty(exports, "__esModule", {
