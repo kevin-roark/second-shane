@@ -44,7 +44,7 @@ export class Bruno extends ShaneScene {
 
     if (!this.isLive) {
       this.numMediaToLoad += 1;
-      this.audio = this.makeAudio(this.mediaBase + 'bruno');
+      this.audio = this.dahmer.makeAudio(this.mediaBase + 'bruno');
       this.audio.addEventListener('canplaythrough', () => {
         this.didLoadMedia();
       });
@@ -231,7 +231,7 @@ export class Bruno extends ShaneScene {
       return;
     }
 
-    let canvas = this.makeCanvas();
+    let canvas = this.dahmer.makeCanvas();
 
     canvas.width = 666;
     canvas.height = 666;

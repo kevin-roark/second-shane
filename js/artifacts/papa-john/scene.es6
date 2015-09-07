@@ -238,7 +238,7 @@ export class PapaJohn extends ShaneScene {
   }
 
   makePapaJohn() {
-    this.papaJohnVideo = this.makeVideo('/media/videos/papajohns', false, -10);
+    this.papaJohnVideo = this.dahmer.makeVideo('/media/videos/papajohns', false, -10);
     this.papaJohnVideo.loop = false;
     $(this.papaJohnVideo).css('display', 'none');
     $(this.papaJohnVideo).css('background-color', 'white');

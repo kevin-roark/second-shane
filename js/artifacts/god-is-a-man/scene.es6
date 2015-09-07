@@ -41,7 +41,7 @@ export class GodIsAMan extends ShaneScene {
   enter() {
     super.enter();
 
-    this.highwayVideo = this.makeVideo(this.videoBase + 'mojave_cycle', true);
+    this.highwayVideo = this.dahmer.makeVideo(this.videoBase + 'mojave_cycle', true);
 
     this.basketball = new Basketball(this.basketballPath);
     this.basketball.addTo(this.domContainer);
@@ -102,7 +102,7 @@ export class GodIsAMan extends ShaneScene {
       return;
     }
 
-    this.vegasVideo = this.makeVideo(this.videoBase + 'vegas', true);
+    this.vegasVideo = this.dahmer.makeVideo(this.videoBase + 'vegas', true);
     this.vegasVideo.playbackRate = 3;
     this.vegasVideo.play();
 
@@ -122,7 +122,7 @@ export class GodIsAMan extends ShaneScene {
       return;
     }
 
-    this.papaVideo = this.makeVideo(this.videoBase + 'softypapa', true);
+    this.papaVideo = this.dahmer.makeVideo(this.videoBase + 'softypapa', true);
     this.papaVideo.play();
 
     this.papaVideo.style.opacity = 0.0;
@@ -141,7 +141,7 @@ export class GodIsAMan extends ShaneScene {
       return;
     }
 
-    this.cowboyVideo = this.makeVideo(this.videoBase + 'lonely_cowboy', true);
+    this.cowboyVideo = this.dahmer.makeVideo(this.videoBase + 'lonely_cowboy', true);
     this.cowboyVideo.play();
 
     this.cowboyVideo.style.opacity = 0.0;
@@ -160,7 +160,7 @@ export class GodIsAMan extends ShaneScene {
       return;
     }
 
-    this.game2Video = this.makeVideo(this.videoBase + 'game_2', true);
+    this.game2Video = this.dahmer.makeVideo(this.videoBase + 'game_2', true);
     this.game2Video.play();
 
     this.game2Video.style.opacity = 0.0;
@@ -179,7 +179,7 @@ export class GodIsAMan extends ShaneScene {
       return;
     }
 
-    this.game1Video = this.makeVideo(this.videoBase + 'game_1', true);
+    this.game1Video = this.dahmer.makeVideo(this.videoBase + 'game_1', true);
     this.game1Video.play();
 
     this.game1Video.style.opacity = 0.0;
@@ -326,7 +326,7 @@ export class GodIsAMan extends ShaneScene {
   /// Vision Utility
 
   makeVision(name, randomPlacement) {
-    var vision = this.makeVideo(this.videoBase + name);
+    var vision = this.dahmer.makeVideo(this.videoBase + name);
 
     if (randomPlacement) {
       var width = Math.random() * 0.4 + 0.25;

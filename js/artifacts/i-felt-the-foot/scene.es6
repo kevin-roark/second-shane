@@ -42,7 +42,7 @@ export class iFeltTheFoot extends ShaneScene {
 
     this.renderer.setClearColor(0x000000, 0);
 
-    this.marble = this.makeImage(this.imageBase + 'marble.jpg', true, -10);
+    this.marble = this.dahmer.makeImage(this.imageBase + 'marble.jpg', true, -10);
 
     this.makeSpotlight();
 
@@ -286,7 +286,7 @@ export class iFeltTheFoot extends ShaneScene {
   }
 
   makeBodyVideo(name) {
-    let vid = this.makeVideo(this.videoBase + name, false, -10);
+    let vid = this.dahmer.makeVideo(this.videoBase + name, false, -10);
 
     $(vid).css('box-shadow', '25px 25px 30px 0px rgba(0, 0, 0, 0.75)');
 
@@ -386,7 +386,7 @@ export class iFeltTheFoot extends ShaneScene {
   }
 
   makeBodyImage(name) {
-    var image = this.makeImage(this.imageBase + name, false, -10);
+    var image = this.dahmer.makeImage(this.imageBase + name, false, -10);
 
     image.css('box-shadow', '25px 25px 30px 0px rgba(0, 0, 0, 0.75)');
 
@@ -404,7 +404,7 @@ export class iFeltTheFoot extends ShaneScene {
 
     this.fountainsActive = true;
 
-    var canvas = this.makeCanvas(-5);
+    var canvas = this.dahmer.makeCanvas(-5);
     canvas.id = 'fountain-canvas';
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;

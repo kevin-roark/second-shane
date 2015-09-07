@@ -40,12 +40,12 @@ export class LiveAtJJs extends ShaneScene {
     this.renderer.setClearColor(0x000000, 0);
     $('body').css('background-color', 'black');
 
-    this.curtainBackdrop = this.makeImage(this.imageBase + 'curtain_backdrop.jpg');
+    this.curtainBackdrop = this.dahmer.makeImage(this.imageBase + 'curtain_backdrop.jpg');
     this.curtainBackdrop.css('max-height', '666px');
     this.curtainBackdrop.css('top', '10px');
     this.curtainBackdrop.css('z-index', '-10');
 
-    this.dvd = this.makeVideo(this.videoBase + 'live_liveatjjs');
+    this.dvd = this.dahmer.makeVideo(this.videoBase + 'live_liveatjjs');
     this.dvd.style.height = '365px';
     this.dvd.style.top = '135px';
     this.dvd.style.left = '50%';
@@ -163,7 +163,7 @@ export class LiveAtJJs extends ShaneScene {
   /// Curtains
 
   makeCurtain(name) {
-    var curtain = this.makeImage(this.imageBase + name);
+    var curtain = this.dahmer.makeImage(this.imageBase + name);
     curtain.css('width', '50%');
     return curtain;
   }
@@ -189,7 +189,7 @@ export class LiveAtJJs extends ShaneScene {
   }
 
   addPopcorn() {
-    let corn = this.makeImage(this.imageBase + 'popcorn.png');
+    let corn = this.dahmer.makeImage(this.imageBase + 'popcorn.png');
 
     let cornWidth = Math.round(Math.random() * 100) + 20;
     corn.css('width', cornWidth + 'px');

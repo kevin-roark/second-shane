@@ -45,7 +45,7 @@ export class ASMR extends ShaneScene {
 
     if (!this.isLive) {
       this.numMediaToLoad += 1;
-      this.audio = this.makeAudio(this.audioBase + 'hfsu_asmr');
+      this.audio = this.dahmer.makeAudio(this.audioBase + 'hfsu_asmr');
       this.audio.addEventListener('canplaythrough', () => {
         this.didLoadMedia();
       });
@@ -141,7 +141,7 @@ export class ASMR extends ShaneScene {
   }
 
   makeCurtain(name) {
-    var curtain = this.makeImage(this.imageBase + name);
+    var curtain = this.dahmer.makeImage(this.imageBase + name);
     curtain.css('width', '50%');
     curtain.css('z-index', '201');
     return curtain;
@@ -214,7 +214,7 @@ export class ASMR extends ShaneScene {
 
   // fuck matt: http://coding.vdhdesign.co.nz/?p=29
   makeASMRVideo(name) {
-    let video = this.makeVideo(this.videoBase + name, false);
+    let video = this.dahmer.makeVideo(this.videoBase + name, false);
 
     $(video).css('position', 'absolute');
     $(video).css('object-fit', 'fill');
