@@ -5825,7 +5825,7 @@ var RotatingMan = (function (_MeshedOneOff2) {
     this.text = options.text;
     this.textSize = options.textSize || 1;
     this.textColor = options.textColor || 16777215;
-    this.rotationSpeed = options.rotationSpeed || 0.033;
+    this.rotationSpeed = options.rotationSpeed || 0.025;
     this.bevelEnabled = options.bevelEnabled || false;
   }
 
@@ -6016,6 +6016,26 @@ var oneOffs = [new RotatingMan({
   text: "A Hopelessly Romantic Man Of Integrity",
   textColor: 16711703,
   position: { x: 0, y: 0, z: -50 }
+}), new RotatingMan({
+  name: "dog as god I",
+  text: "I have known dogs that gave their lives for their masters",
+  textColor: 3614472,
+  position: { x: 25, y: 0, z: -50 }
+}), new RotatingMan({
+  name: "dog as god II",
+  text: "And if you give your heart to a dog he will not break it",
+  textColor: 3614472,
+  position: { x: -25, y: 0, z: -50 }
+}), new RotatingMan({
+  name: "dog as god III",
+  text: "If you seek loyalty unto death, look no further than a dog",
+  textColor: 3614472,
+  position: { x: 50, y: 0, z: -50 }
+}), new RotatingMan({
+  name: "dog as god IV",
+  text: "I don’t think that Dog is God spelled backwards",
+  textColor: 3614472,
+  position: { x: -50, y: 0, z: -50 }
 }), new DomOneOff({
   name: "dog life poem",
   $element: $("<div class=\"one-off-text\">" + dogPoemOneOffText + "</div>"),
@@ -6027,7 +6047,7 @@ var oneOffs = [new RotatingMan({
 }), new VideoOneOff({
   name: "big sur forest",
   videoName: "media/videos/bigsur",
-  position: new THREE.Vector3(0, 0, 0)
+  position: new THREE.Vector3(50, 0, 0)
 })];
 exports.oneOffs = oneOffs;
 Object.defineProperty(exports, "__esModule", {
