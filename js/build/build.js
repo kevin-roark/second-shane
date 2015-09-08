@@ -5700,6 +5700,7 @@ var _classCallCheck = function (instance, Constructor) { if (!(instance instance
 var THREE = require("three");
 var $ = require("jquery");
 var ShaneMesh = require("./shane-mesh");
+var kt = require("kutility");
 
 var Dahmer = require("./dahmer.es6").Dahmer;
 
@@ -5834,6 +5835,8 @@ var RotatingMan = (function (_MeshedOneOff2) {
   _createClass(RotatingMan, {
     meshWasLoaded: {
       value: function meshWasLoaded() {
+        _get(Object.getPrototypeOf(RotatingMan.prototype), "meshWasLoaded", this).call(this);
+
         var textMesh = this.makeTextMesh(this.text);
         textMesh.position.set(0, 4, 0);
         this.shaneMesh.mesh.add(textMesh);
@@ -5882,9 +5885,45 @@ var RotatingMan = (function (_MeshedOneOff2) {
 
 /** DOM ONE OFFS */
 
-var DomOneOff = (function (_OneOff2) {
+function makeStyledGeometry(geometryStyle, geometrySize) {
+  var cylinderRadialMultipler = 0.33;
+  switch (geometryStyle) {
+    case "sphere":
+      return new THREE.SphereGeometry(geometrySize, 12, 12);
+
+    case "cylinder":
+      return new THREE.CylinderGeometry(geometrySize * cylinderRadialMultipler, geometrySize * cylinderRadialMultipler, geometrySize);
+
+    case "cone":
+      return new THREE.CylinderGeometry(geometrySize * cylinderRadialMultipler * 0.25, geometrySize * cylinderRadialMultipler, geometrySize);
+
+    //case 'cube':
+    default:
+      return new THREE.BoxGeometry(geometrySize, geometrySize, geometrySize);
+  }
+}
+
+var DomOneOff = (function (_MeshedOneOff3) {
   function DomOneOff(options) {
     _classCallCheck(this, DomOneOff);
+
+    if (!options.meshCreator) {
+      (function () {
+        var geometryStyle = options.geometryStyle || kt.choice(["cube", "sphere", "cone", "cylinder"]);
+        var geometrySize = options.geometrySize || 3;
+        var materialColor = options.color || parseInt(Math.random() * 16777215);
+
+        options.meshCreator = function (callback) {
+          var geometry = makeStyledGeometry(geometryStyle, geometrySize);
+
+          var material = new THREE.MeshBasicMaterial({
+            color: materialColor
+          });
+
+          callback(geometry, material, new THREE.Mesh(geometry, material));
+        };
+      })();
+    }
 
     _get(Object.getPrototypeOf(DomOneOff.prototype), "constructor", this).call(this, options);
 
@@ -5895,7 +5934,7 @@ var DomOneOff = (function (_OneOff2) {
     this.isVisible = false;
   }
 
-  _inherits(DomOneOff, _OneOff2);
+  _inherits(DomOneOff, _MeshedOneOff3);
 
   _createClass(DomOneOff, {
     deactivate: {
@@ -5942,7 +5981,7 @@ var DomOneOff = (function (_OneOff2) {
   });
 
   return DomOneOff;
-})(OneOff);
+})(MeshedOneOff);
 
 var VideoOneOff = (function (_DomOneOff) {
   function VideoOneOff(options) {
@@ -6039,22 +6078,22 @@ var oneOffs = [new RotatingMan({
 }), new DomOneOff({
   name: "dog life poem",
   $element: $("<div class=\"one-off-text\">" + dogPoemOneOffText + "</div>"),
-  position: new THREE.Vector3(0, 0, -50)
+  position: new THREE.Vector3(-10, -5, -10)
 }), new DomOneOff({
   name: "life hack",
   $element: $("<div class=\"one-off-text\">Life Hack I.<br>If you want to die gamble everything until:<br>1. You have enough money to live as a king<br>2. You have nothing</div>"),
-  position: new THREE.Vector3(-30, 0, -25)
+  position: new THREE.Vector3(-30, -5, -25)
 }), new VideoOneOff({
   name: "big sur forest",
   videoName: "media/videos/bigsur",
-  position: new THREE.Vector3(50, 0, 0)
+  position: new THREE.Vector3(50, -5, 0)
 })];
 exports.oneOffs = oneOffs;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"./dahmer.es6":12,"./shane-mesh":17,"jquery":26,"three":28}],16:[function(require,module,exports){
+},{"./dahmer.es6":12,"./shane-mesh":17,"jquery":26,"kutility":27,"three":28}],16:[function(require,module,exports){
 "use strict";
 
 var ASMR = require("./artifacts/asmr/scene.es6").ASMR;

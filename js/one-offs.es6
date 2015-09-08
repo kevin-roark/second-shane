@@ -2,6 +2,7 @@
 let THREE = require('three');
 let $ = require('jquery');
 let ShaneMesh = require('./shane-mesh');
+let kt = require('kutility');
 import {Dahmer} from './dahmer.es6';
 
 let domContainer = $('body');
@@ -100,6 +101,8 @@ class RotatingMan extends MeshedOneOff {
   }
 
   meshWasLoaded() {
+    super.meshWasLoaded();
+
     var textMesh = this.makeTextMesh(this.text);
     textMesh.position.set(0, 4, 0);
     this.shaneMesh.mesh.add(textMesh);
@@ -142,8 +145,43 @@ class RotatingMan extends MeshedOneOff {
 
 /** DOM ONE OFFS */
 
-class DomOneOff extends OneOff {
+function makeStyledGeometry(geometryStyle, geometrySize) {
+  let cylinderRadialMultipler = 0.33;
+  switch (geometryStyle) {
+    case 'sphere':
+      return new THREE.SphereGeometry(geometrySize, 12, 12);
+
+    case 'cylinder':
+      return new THREE.CylinderGeometry(geometrySize * cylinderRadialMultipler, geometrySize * cylinderRadialMultipler, geometrySize);
+
+    case 'cone':
+      return new THREE.CylinderGeometry(geometrySize * cylinderRadialMultipler * 0.25, geometrySize * cylinderRadialMultipler, geometrySize);
+
+    //case 'cube':
+    default:
+      return new THREE.BoxGeometry(geometrySize, geometrySize, geometrySize);
+  }
+}
+
+class DomOneOff extends MeshedOneOff {
   constructor(options) {
+
+    if (!options.meshCreator) {
+      let geometryStyle = options.geometryStyle || kt.choice(['cube', 'sphere', 'cone', 'cylinder']);
+      let geometrySize = options.geometrySize || 3;
+      let materialColor = options.color || parseInt(Math.random() * 16777215);
+
+      options.meshCreator = (callback) => {
+        var geometry = makeStyledGeometry(geometryStyle, geometrySize);
+
+        var material = new THREE.MeshBasicMaterial({
+          color: materialColor
+        });
+
+        callback(geometry, material, new THREE.Mesh(geometry, material));
+      };
+    }
+
     super(options);
 
     this.$element = options.$element;
@@ -311,17 +349,17 @@ export var oneOffs = [
   new DomOneOff({
     name: 'dog life poem',
     $element: $('<div class="one-off-text">' + dogPoemOneOffText + '</div>'),
-    position: new THREE.Vector3(0, 0, -50)
+    position: new THREE.Vector3(-10, -5, -10)
   }),
   new DomOneOff({
     name: 'life hack',
     $element: $('<div class="one-off-text">Life Hack I.<br>If you want to die gamble everything until:<br>1. You have enough money to live as a king<br>2. You have nothing</div>'),
-    position: new THREE.Vector3(-30, 0, -25)
+    position: new THREE.Vector3(-30, -5, -25)
   }),
 
   new VideoOneOff({
     name: 'big sur forest',
     videoName: 'media/videos/bigsur',
-    position: new THREE.Vector3(50, 0, 0)
+    position: new THREE.Vector3(50, -5, 0)
   })
 ];
