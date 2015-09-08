@@ -339,8 +339,13 @@ export var oneOffs = [
   }),
 
   new VideoOneOff({
-    name: 'big sur forest',
+    name: 'I watched the woods',
     videoName: 'media/videos/bigsur',
     position: new THREE.Vector3(50, -5, 0)
+  }),
+  new VideoOneOff({
+    name: 'I watched the car',
+    videoName: 'media/videos/brakes',
+    position: new THREE.Vector3(-50, -5, -50)
   })
 ];

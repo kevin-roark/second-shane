@@ -5791,31 +5791,7 @@ var MeshedOneOff = (function (_OneOff) {
   return MeshedOneOff;
 })(OneOff);
 
-var Cube = (function (_MeshedOneOff) {
-  function Cube(options) {
-    var _this = this;
-
-    _classCallCheck(this, Cube);
-
-    this.size = options.size || 1;
-    this.color = options.color || 0;
-
-    options.meshCreator = function (callback) {
-      var geometry = new THREE.BoxGeometry(_this.size, _this.size, _this.size);
-      var material = new THREE.MeshBasicMaterial({ color: _this.color });
-      var mesh = new THREE.Mesh(geometry, material);
-      callback(geometry, material, mesh);
-    };
-
-    _get(Object.getPrototypeOf(Cube.prototype), "constructor", this).call(this, options);
-  }
-
-  _inherits(Cube, _MeshedOneOff);
-
-  return Cube;
-})(MeshedOneOff);
-
-var RotatingMan = (function (_MeshedOneOff2) {
+var RotatingMan = (function (_MeshedOneOff) {
   function RotatingMan(options) {
     _classCallCheck(this, RotatingMan);
 
@@ -5830,7 +5806,7 @@ var RotatingMan = (function (_MeshedOneOff2) {
     this.bevelEnabled = options.bevelEnabled || false;
   }
 
-  _inherits(RotatingMan, _MeshedOneOff2);
+  _inherits(RotatingMan, _MeshedOneOff);
 
   _createClass(RotatingMan, {
     meshWasLoaded: {
@@ -5883,7 +5859,7 @@ var RotatingMan = (function (_MeshedOneOff2) {
   return RotatingMan;
 })(MeshedOneOff);
 
-/** DOM ONE OFFS */
+/** BEACON OFFS */
 
 function makeStyledGeometry(geometryStyle, geometrySize) {
   var cylinderRadialMultipler = 0.33;
@@ -5903,9 +5879,9 @@ function makeStyledGeometry(geometryStyle, geometrySize) {
   }
 }
 
-var DomOneOff = (function (_MeshedOneOff3) {
-  function DomOneOff(options) {
-    _classCallCheck(this, DomOneOff);
+var BeaconOneOff = (function (_MeshedOneOff2) {
+  function BeaconOneOff(options) {
+    _classCallCheck(this, BeaconOneOff);
 
     if (!options.meshCreator) {
       (function () {
@@ -5925,65 +5901,68 @@ var DomOneOff = (function (_MeshedOneOff3) {
       })();
     }
 
-    _get(Object.getPrototypeOf(DomOneOff.prototype), "constructor", this).call(this, options);
+    _get(Object.getPrototypeOf(BeaconOneOff.prototype), "constructor", this).call(this, options);
 
     this.$element = options.$element;
     this.position = options.position;
-    this.activationDistance = options.activationDistance || 20;
-
-    this.isVisible = false;
+    this.isNear = false;
+    this.nearDistance = options.nearDistance || 20;
   }
 
-  _inherits(DomOneOff, _MeshedOneOff3);
+  _inherits(BeaconOneOff, _MeshedOneOff2);
 
-  _createClass(DomOneOff, {
+  _createClass(BeaconOneOff, {
     deactivate: {
-      value: function deactivate() {
-        _get(Object.getPrototypeOf(DomOneOff.prototype), "deactivate", this).call(this);
-        this.hide();
+      value: function deactivate(scene) {
+        _get(Object.getPrototypeOf(BeaconOneOff.prototype), "deactivate", this).call(this, scene);
+
+        this.updateForFar();
       }
     },
     relayCameraPosition: {
       value: function relayCameraPosition(cameraPosition) {
-        _get(Object.getPrototypeOf(DomOneOff.prototype), "relayCameraPosition", this).call(this, cameraPosition);
+        _get(Object.getPrototypeOf(BeaconOneOff.prototype), "relayCameraPosition", this).call(this, cameraPosition);
 
         var distanceSquared = this.position.distanceToSquared(cameraPosition);
-        this.setVisible(distanceSquared < this.activationDistance * this.activationDistance);
+        this.setNear(distanceSquared < this.nearDistance * this.nearDistance);
       }
     },
-    setVisible: {
-      value: function setVisible(visible) {
-        if (visible === this.isVisible) {
+    setNear: {
+      value: function setNear(near) {
+        if (near === this.isNear) {
           return;
         }
 
-        if (visible) {
-          this.show();
+        if (near) {
+          this.updateForNear();
         } else {
-          this.hide();
+          this.updateForFar();
         }
       }
     },
-    show: {
-      value: function show() {
-        this.isVisible = true;
+    updateForNear: {
+      value: function updateForNear() {
+        this.isNear = true;
+
         this.$element.css("display", "none");
         domContainer.append(this.$element);
         this.$element.fadeIn();
+
+        // TODO: flash name across screen
       }
     },
-    hide: {
-      value: function hide() {
-        this.isVisible = false;
+    updateForFar: {
+      value: function updateForFar() {
+        this.isNear = false;
         this.$element.fadeOut();
       }
     }
   });
 
-  return DomOneOff;
+  return BeaconOneOff;
 })(MeshedOneOff);
 
-var VideoOneOff = (function (_DomOneOff) {
+var VideoOneOff = (function (_BeaconOneOff) {
   function VideoOneOff(options) {
     _classCallCheck(this, VideoOneOff);
 
@@ -5992,24 +5971,23 @@ var VideoOneOff = (function (_DomOneOff) {
     this.videoName = options.videoName;
   }
 
-  _inherits(VideoOneOff, _DomOneOff);
+  _inherits(VideoOneOff, _BeaconOneOff);
 
   _createClass(VideoOneOff, {
-    show: {
-      value: function show() {
+    updateForNear: {
+      value: function updateForNear() {
         var video = dahmer.makeVideo(this.videoName);
-
         this.$element = $(video);
         this.$element.addClass("one-off-video");
 
-        _get(Object.getPrototypeOf(VideoOneOff.prototype), "show", this).call(this);
+        _get(Object.getPrototypeOf(VideoOneOff.prototype), "updateForNear", this).call(this);
 
         video.play();
       }
     },
-    hide: {
-      value: function hide() {
-        _get(Object.getPrototypeOf(VideoOneOff.prototype), "hide", this).call(this);
+    updateForFar: {
+      value: function updateForFar() {
+        _get(Object.getPrototypeOf(VideoOneOff.prototype), "updateForFar", this).call(this);
 
         this.$element.get(0).src = "";
         this.$element.remove();
@@ -6019,7 +5997,7 @@ var VideoOneOff = (function (_DomOneOff) {
   });
 
   return VideoOneOff;
-})(DomOneOff);
+})(BeaconOneOff);
 
 /** ONE OFF CREATION */
 
@@ -6029,64 +6007,68 @@ var oneOffs = [new RotatingMan({
   name: "it is just sex man",
   text: "It's just ... sex ...",
   textColor: 16711818,
-  position: { x: 0, y: 0, z: -25 }
+  position: new THREE.Vector3(0, 0, -25)
 }), new RotatingMan({
   name: "dog man",
   text: "I want my dog's life",
   textColor: 220466,
-  position: { x: 25, y: 0, z: -25 }
+  position: new THREE.Vector3(25, 0, -25)
 }), new RotatingMan({
   name: "old man",
   text: "My old man's ... that old man",
   textColor: 6710886,
-  position: { x: -25, y: 0, z: -25 }
+  position: new THREE.Vector3(-25, 0, -25)
 }), new RotatingMan({
   name: "man man",
   text: "I don't want to be a man anymore",
   textColor: 852829,
-  position: { x: 50, y: 0, z: -25 }
+  position: new THREE.Vector3(50, 0, -25)
 }), new RotatingMan({
   name: "break a man",
   text: "His Job, His Wife, His House, His Dog",
   textColor: 13413711,
-  position: { x: -50, y: 0, z: -25 }
+  position: new THREE.Vector3(-50, 0, -25)
 }), new RotatingMan({
   name: "chris",
   text: "A Hopelessly Romantic Man Of Integrity",
   textColor: 16711703,
-  position: { x: 0, y: 0, z: -50 }
+  position: new THREE.Vector3(0, 0, -50)
 }), new RotatingMan({
   name: "dog as god I",
   text: "I have known dogs that gave their lives for their masters",
   textColor: 3614472,
-  position: { x: 25, y: 0, z: -50 }
+  position: new THREE.Vector3(25, 0, -50)
 }), new RotatingMan({
   name: "dog as god II",
   text: "And if you give your heart to a dog he will not break it",
   textColor: 3614472,
-  position: { x: -25, y: 0, z: -50 }
+  position: new THREE.Vector3(-25, 0, -50)
 }), new RotatingMan({
   name: "dog as god III",
   text: "If you seek loyalty unto death, look no further than a dog",
   textColor: 3614472,
-  position: { x: 50, y: 0, z: -50 }
+  position: new THREE.Vector3(50, 0, -50)
 }), new RotatingMan({
   name: "dog as god IV",
   text: "I don’t think that Dog is God spelled backwards",
   textColor: 3614472,
-  position: { x: -50, y: 0, z: -50 }
-}), new DomOneOff({
+  position: new THREE.Vector3(-50, 0, -50)
+}), new BeaconOneOff({
   name: "dog life poem",
   $element: $("<div class=\"one-off-text\">" + dogPoemOneOffText + "</div>"),
   position: new THREE.Vector3(-10, -5, -10)
-}), new DomOneOff({
+}), new BeaconOneOff({
   name: "life hack",
   $element: $("<div class=\"one-off-text\">Life Hack I.<br>If you want to die gamble everything until:<br>1. You have enough money to live as a king<br>2. You have nothing</div>"),
   position: new THREE.Vector3(-30, -5, -25)
 }), new VideoOneOff({
-  name: "big sur forest",
+  name: "I watched the woods",
   videoName: "media/videos/bigsur",
   position: new THREE.Vector3(50, -5, 0)
+}), new VideoOneOff({
+  name: "I watched the car",
+  videoName: "media/videos/brakes",
+  position: new THREE.Vector3(-50, -5, -50)
 })];
 exports.oneOffs = oneOffs;
 Object.defineProperty(exports, "__esModule", {
@@ -6467,84 +6449,6 @@ var ShaneScene = exports.ShaneScene = (function () {
       value: function addTimeout(fn, timeout) {
         var id = setTimeout(fn, timeout);
         this.timeoutsToCancel.push(id);
-      }
-    },
-    makeAudio: {
-      value: function makeAudio(basedFilename) {
-        var audio = document.createElement("audio");
-
-        if (audio.canPlayType("audio/mpeg")) {
-          audio.src = basedFilename + ".mp3";
-        } else {
-          audio.src = basedFilename + ".ogg";
-        }
-
-        audio.preload = true;
-
-        return audio;
-      }
-    },
-    makeVideo: {
-      value: function makeVideo(basedFilename, fullscreen, z) {
-        var video = document.createElement("video");
-
-        var videoURL;
-        if (video.canPlayType("video/mp4").length > 0) {
-          videoURL = basedFilename + ".mp4";
-        } else {
-          videoURL = basedFilename + ".webm";
-        }
-
-        video.src = videoURL;
-        video.preload = true;
-        video.loop = true;
-
-        if (fullscreen) {
-          $(video).addClass("full-screen-video");
-        } else {
-          $(video).addClass("video-overlay");
-        }
-
-        if (z !== undefined) {
-          $(video).css("z-index", z);
-        }
-
-        this.domContainer.append(video);
-
-        return video;
-      }
-    },
-    makeImage: {
-      value: function makeImage(basedFilename, fullscreen, z) {
-        var img = $("<img src=\"" + basedFilename + "\" class=\"image-overlay\"/>");
-
-        if (fullscreen) {
-          img.css("top", "0px");
-          img.css("left", "0px");
-          img.css("width", "100%");
-          img.css("height", "100%");
-        }
-
-        if (z !== undefined) {
-          img.css("z-index", z);
-        }
-
-        this.domContainer.append(img);
-
-        return img;
-      }
-    },
-    makeCanvas: {
-      value: function makeCanvas(z) {
-        var canvas = $("<canvas class=\"canvas-overlay\"></canvas>");
-
-        if (z !== undefined) {
-          canvas.css("z-index", z);
-        }
-
-        this.domContainer.append(canvas);
-
-        return canvas.get(0);
       }
     }
   });
