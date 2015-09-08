@@ -122,3 +122,10 @@ body {
 
   box-shadow: 0 10px 20px rgba(255, 255, 255, 0.19), 0 6px 6px rgba(255, 255, 255, 0.23);
 }
+
+.one-off-video {
+  left: 50%; width: 800px; margin-left: -400px;
+  top: 100px;
+
+  box-shadow: 0 19px 38px rgba(255, 255, 255, 0.30), 0 15px 12px rgba(255, 255, 255, 0.23);
+}

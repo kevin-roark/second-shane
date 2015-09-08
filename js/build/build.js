@@ -5701,7 +5701,10 @@ var THREE = require("three");
 var $ = require("jquery");
 var ShaneMesh = require("./shane-mesh");
 
+var Dahmer = require("./dahmer.es6").Dahmer;
+
 var domContainer = $("body");
+var dahmer = new Dahmer({ $domContainer: domContainer });
 
 var OneOff = (function () {
   function OneOff(options) {
@@ -5895,6 +5898,12 @@ var DomOneOff = (function (_OneOff2) {
   _inherits(DomOneOff, _OneOff2);
 
   _createClass(DomOneOff, {
+    deactivate: {
+      value: function deactivate() {
+        _get(Object.getPrototypeOf(DomOneOff.prototype), "deactivate", this).call(this);
+        this.hide();
+      }
+    },
     relayCameraPosition: {
       value: function relayCameraPosition(cameraPosition) {
         _get(Object.getPrototypeOf(DomOneOff.prototype), "relayCameraPosition", this).call(this, cameraPosition);
@@ -5909,21 +5918,69 @@ var DomOneOff = (function (_OneOff2) {
           return;
         }
 
-        this.isVisible = visible;
-
         if (visible) {
-          this.$element.css("display", "none");
-          domContainer.append(this.$element);
-          this.$element.fadeIn();
+          this.show();
         } else {
-          this.$element.fadeOut();
+          this.hide();
         }
+      }
+    },
+    show: {
+      value: function show() {
+        this.isVisible = true;
+        this.$element.css("display", "none");
+        domContainer.append(this.$element);
+        this.$element.fadeIn();
+      }
+    },
+    hide: {
+      value: function hide() {
+        this.isVisible = false;
+        this.$element.fadeOut();
       }
     }
   });
 
   return DomOneOff;
 })(OneOff);
+
+var VideoOneOff = (function (_DomOneOff) {
+  function VideoOneOff(options) {
+    _classCallCheck(this, VideoOneOff);
+
+    _get(Object.getPrototypeOf(VideoOneOff.prototype), "constructor", this).call(this, options);
+
+    this.videoName = options.videoName;
+  }
+
+  _inherits(VideoOneOff, _DomOneOff);
+
+  _createClass(VideoOneOff, {
+    show: {
+      value: function show() {
+        var video = dahmer.makeVideo(this.videoName);
+
+        this.$element = $(video);
+        this.$element.addClass("one-off-video");
+
+        _get(Object.getPrototypeOf(VideoOneOff.prototype), "show", this).call(this);
+
+        video.play();
+      }
+    },
+    hide: {
+      value: function hide() {
+        _get(Object.getPrototypeOf(VideoOneOff.prototype), "hide", this).call(this);
+
+        this.$element.get(0).src = "";
+        this.$element.remove();
+        this.$element = null;
+      }
+    }
+  });
+
+  return VideoOneOff;
+})(DomOneOff);
 
 /** ONE OFF CREATION */
 
@@ -5967,13 +6024,17 @@ var oneOffs = [new RotatingMan({
   name: "life hack",
   $element: $("<div class=\"one-off-text\">Life Hack I.<br>If you want to die gamble everything until:<br>1. You have enough money to live as a king<br>2. You have nothing</div>"),
   position: new THREE.Vector3(-30, 0, -25)
+}), new VideoOneOff({
+  name: "big sur forest",
+  videoName: "media/videos/bigsur",
+  position: new THREE.Vector3(0, 0, 0)
 })];
 exports.oneOffs = oneOffs;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"./shane-mesh":17,"jquery":26,"three":28}],16:[function(require,module,exports){
+},{"./dahmer.es6":12,"./shane-mesh":17,"jquery":26,"three":28}],16:[function(require,module,exports){
 "use strict";
 
 var ASMR = require("./artifacts/asmr/scene.es6").ASMR;

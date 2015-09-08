@@ -2,8 +2,10 @@
 let THREE = require('three');
 let $ = require('jquery');
 let ShaneMesh = require('./shane-mesh');
+import {Dahmer} from './dahmer.es6';
 
 let domContainer = $('body');
+let dahmer = new Dahmer({$domContainer: domContainer});
 
 class OneOff {
   constructor(options) {
@@ -151,6 +153,11 @@ class DomOneOff extends OneOff {
     this.isVisible = false;
   }
 
+  deactivate() {
+    super.deactivate();
+    this.hide();
+  }
+
   relayCameraPosition(cameraPosition) {
     super.relayCameraPosition(cameraPosition);
 
@@ -163,16 +170,51 @@ class DomOneOff extends OneOff {
       return;
     }
 
-    this.isVisible = visible;
-
     if (visible) {
-      this.$element.css('display', 'none');
-      domContainer.append(this.$element);
-      this.$element.fadeIn();
+      this.show();
     }
     else {
-      this.$element.fadeOut();
+      this.hide();
     }
+  }
+
+  show() {
+    this.isVisible = true;
+    this.$element.css('display', 'none');
+    domContainer.append(this.$element);
+    this.$element.fadeIn();
+  }
+
+  hide() {
+    this.isVisible = false;
+    this.$element.fadeOut();
+  }
+}
+
+class VideoOneOff extends DomOneOff {
+  constructor(options) {
+    super(options);
+
+    this.videoName = options.videoName;
+  }
+
+  show() {
+    var video = dahmer.makeVideo(this.videoName);
+
+    this.$element = $(video);
+    this.$element.addClass('one-off-video');
+
+    super.show();
+
+    video.play();
+  }
+
+  hide() {
+    super.hide();
+
+    this.$element.get(0).src = '';
+    this.$element.remove();
+    this.$element = null;
   }
 }
 
@@ -251,5 +293,11 @@ export var oneOffs = [
     name: 'life hack',
     $element: $('<div class="one-off-text">Life Hack I.<br>If you want to die gamble everything until:<br>1. You have enough money to live as a king<br>2. You have nothing</div>'),
     position: new THREE.Vector3(-30, 0, -25)
+  }),
+
+  new VideoOneOff({
+    name: 'big sur forest',
+    videoName: 'media/videos/bigsur',
+    position: new THREE.Vector3(0, 0, 0)
   })
 ];
