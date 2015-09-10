@@ -43,8 +43,8 @@ export var chatter = ($container, lines, options, callback) => {
 };
 
 var processText = ($container, text, options, callback) => {
-  let delayBetweenLetters = options.delayBetweenLetters || 100;
-  let delayBetweenWords = options.delayBetweenWords || 125;
+  let delayBetweenLetters = options.delayBetweenLetters || 60;
+  let delayBetweenWords = options.delayBetweenWords || 100;
 
   var refreshText = (freshText, delay) => {
     setTimeout(() => {

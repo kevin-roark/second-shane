@@ -5297,7 +5297,10 @@ var ThreeBoiler = require("./three-boiler.es6").ThreeBoiler;
 var FlyControls = require("./controls/fly-controls");
 var moneyMan = require("./new-money");
 
-var oneOffs = require("./one-offs.es6").oneOffs;
+var _oneOffsEs6 = require("./one-offs.es6");
+
+var oneOffs = _oneOffsEs6.oneOffs;
+var setDidFindBeaconCallback = _oneOffsEs6.setDidFindBeaconCallback;
 
 var createShaneScenes = require("./scenes.es6").createShaneScenes;
 
@@ -5332,6 +5335,8 @@ var SecondShane = (function (_ThreeBoiler) {
     this.renderer.gammaInput = true;
     this.renderer.gammaOutput = true;
 
+    this.waitBeforeAddingMoney = true;
+
     this.controls = new FlyControls(this.camera);
     this.scene.add(this.controls.getObject());
     this.controls.locker.pointerLockChangeCallback = function (hasPointerLock) {
@@ -5359,20 +5364,36 @@ var SecondShane = (function (_ThreeBoiler) {
     this.theme = currentTheme;
     this.theme.applyTo(this.scene);
 
-    moneyMan.init();
-
     this.sharedCameraPosition = new THREE.Vector3(0, 0, 0);
 
     this.activeScene = null;
-
     this.nearestTalismanScene = null;
-
-    this.showIntroChatter();
 
     this.renderCurrentURL();
     window.addEventListener("popstate", function () {
       _this.renderCurrentURL();
     });
+
+    setDidFindBeaconCallback(function (beacon) {
+      _this.waitBeforeAddingMoney = true;
+      moneyMan.addMoney(250);
+      moneyMan.setMoneyReason("Won $250 for discovering \"" + beacon.name + "\"!");
+      setTimeout(function () {
+        _this.waitBeforeAddingMoney = false;
+      }, 3000);
+    });
+
+    setTimeout(function () {
+      _this.waitBeforeAddingMoney = false;
+      moneyMan.init();
+      moneyMan.setMoneyReason("Keep an eye on your New Money accumulation!");
+
+      setTimeout(function () {
+        if (!_this.activeScene) {
+          _this.showIntroChatter();
+        }
+      }, 3333);
+    }, 3333);
   }
 
   _inherits(SecondShane, _ThreeBoiler);
@@ -5413,7 +5434,7 @@ var SecondShane = (function (_ThreeBoiler) {
           }
 
           // update my money count just for being alive
-          if (this.frame % 90 === 0) {
+          if (this.frame % 90 === 0 && !this.waitBeforeAddingMoney) {
             if (!(this.activeScene || this.transitioning)) {
               moneyMan.addMoney(1);
             }
@@ -5436,7 +5457,7 @@ var SecondShane = (function (_ThreeBoiler) {
         } else {
           if (this.activeScene) {
             this.transitioning = false;
-            this.transitionFromScene(this.activeScene);
+            this.transitionFromScene(this.activeScene, true);
           }
         }
       }
@@ -5477,7 +5498,7 @@ var SecondShane = (function (_ThreeBoiler) {
 
       value: function showIntroChatter() {
         setTimeout(function () {
-          var words = ["Hello... Welcome to Second Shane... The ever-present and evolving realm of Mister Shane's sounds, sights, and feelings. I, the Red Bull™ Goblin, will be your trusted guide and companion.", "First thing's first... Second Shane is a self-directed experience. Explore the infinite universe and Hunt For Shane's Treasures. Begin by using the mouse to move your eyes. The W, A, S, D, R, and F keys on your keyboard will move your body... That's it...", "You will find portals to other worlds along the way. Press the spacebar to enter them. Don't be afraid; within those worlds lies the reality of Second Shane. This realm is only a shell.", "Thank you, and enjoy your time here. Come back soon... Shane is always changing."];
+          var words = ["Hello... Welcome to Second Shane... The ever-present and evolving realm of Mister Shane's sounds, sights, and feelings. I, the Red Bull™ Goblin, will be your trusted guide and companion.", "First thing's first... Second Shane is a self-driven experience. Explore the infinite universe and Hunt For Shane's Treasures. Move your eyes and body with the instructions to the left...", "You will find portals to other worlds along the way. Press the Spacebar to enter them. Fear not for within those worlds lies the reality of Second Shane. This realm is a shell.", "Thank you, and enjoy your time here. Come back soon... Shane is always changing."];
 
           $introBox.fadeIn();
           chatter($chatterBoxContainer, words, {}, function () {
@@ -5524,7 +5545,7 @@ var SecondShane = (function (_ThreeBoiler) {
         if (!this.activeScene) {
           this.attemptToEnterScene();
         } else {
-          this.transitionFromScene(this.activeScene);
+          this.transitionFromScene(this.activeScene, true);
         }
       }
     },
@@ -5570,7 +5591,7 @@ var SecondShane = (function (_ThreeBoiler) {
       }
     },
     transitionFromScene: {
-      value: function transitionFromScene(shaneScene) {
+      value: function transitionFromScene(shaneScene, didCancel) {
         var _this = this;
 
         if (this.transitioning) {
@@ -5591,10 +5612,21 @@ var SecondShane = (function (_ThreeBoiler) {
           _this.addSharedObjects();
           _this.controls.getObject().position.copy(_this.sharedCameraPosition);
           _this.controls.enabled = true;
+        }, function () {
+          _this.transitioning = false;
 
+          if (!didCancel) {
+            moneyMan.addMoney(1000);
+            moneyMan.setMoneyReason("Won $1000 for completing " + shaneScene.name + "!");
+          } else {
+            moneyMan.addMoney(-500);
+            moneyMan.setMoneyReason("Lost $500 for lack of honor");
+          }
+
+          _this.waitBeforeAddingMoney = true;
           setTimeout(function () {
-            _this.transitioning = false;
-          }, 4444);
+            _this.waitBeforeAddingMoney = false;
+          }, 3000);
         });
       }
     },
@@ -5633,20 +5665,20 @@ var SecondShane = (function (_ThreeBoiler) {
           _this.updateHistoryForScene(shaneScene);
 
           shaneScene.startScene();
-
-          setTimeout(function () {
-            _this.transitioning = false;
-          }, 6666);
+        }, function () {
+          _this.transitioning = false;
         });
       }
     },
     fadeSceneOverlay: {
-      value: function fadeSceneOverlay(behavior) {
+      value: function fadeSceneOverlay(behavior, callback) {
         var duration = IS_LIVE ? 3000 : 1000;
 
         $sceneOverlay.fadeIn(duration, function () {
           behavior();
-          $sceneOverlay.fadeOut(duration);
+          $sceneOverlay.fadeOut(duration, function () {
+            if (callback) callback();
+          });
         });
       }
     },
@@ -5699,11 +5731,15 @@ var $ = require("jquery");
 var Odometer = require("odometer");
 
 var odometer;
+var $moneyZone = $("#new-money-zone");
 var $moneyCount = $("#new-money-count");
+var $moneyReason = $("#new-money-reason");
 
 var _myMoneyCount = 0; // fallback for those of us without window.localStorage
 
 module.exports.init = function () {
+  $moneyZone.show();
+
   var money = getMoney();
 
   odometer = new Odometer({
@@ -5719,6 +5755,16 @@ module.exports.init = function () {
 module.exports.addMoney = function (increment) {
   var money = getMoney();
   setMoney(money + increment);
+};
+
+module.exports.setMoneyReason = function (moneyReason) {
+  $moneyReason.hide();
+  $moneyReason.text(moneyReason);
+  $moneyReason.fadeIn(400, function () {
+    setTimeout(function () {
+      $moneyReason.fadeOut(400);
+    }, 3333);
+  });
 };
 
 module.exports.drain = function () {
@@ -5768,6 +5814,8 @@ var Dahmer = require("./dahmer.es6").Dahmer;
 
 var domContainer = $("body");
 var dahmer = new Dahmer({ $domContainer: domContainer });
+
+var didFindBeaconCallback;
 
 var OneOff = (function () {
   function OneOff(options) {
@@ -6010,6 +6058,10 @@ var BeaconOneOff = (function (_MeshedOneOff2) {
         domContainer.append(this.$element);
         this.$element.fadeIn();
 
+        if (didFindBeaconCallback) {
+          didFindBeaconCallback(this);
+        }
+
         // TODO: flash name across screen
       }
     },
@@ -6065,8 +6117,13 @@ var VideoOneOff = (function (_BeaconOneOff) {
   return VideoOneOff;
 })(BeaconOneOff);
 
-/** ONE OFF CREATION */
+/** EXPORTS */
 
+var setDidFindBeaconCallback = function setDidFindBeaconCallback(callback) {
+  didFindBeaconCallback = callback;
+};
+
+exports.setDidFindBeaconCallback = setDidFindBeaconCallback;
 var dogPoemOneOffText = ["He wants his dog's life.", "He's got a big house, a new car,", "a beautiful wife.", "He wants his dog's life.", "Dogs shit on the street.", "They stink when they're wet.", "Dogs eat from a bowl, or", "slurp scraps from the floor.", "He wants his dog's life.", "A leash around his neck,", "his wet tongue licking the air.", "To look up at his owner ", "with love and respect.", "He wants his dog's life.", "A dog looks in a mirror", "and sees not himself,", "but another dog.", "His dog's mind.", "His dog's body.", "His dog's cock.", "He wants his dog's life.", "", "In dog years I'd already be dead."].join("<br>");
 
 var oneOffs = [new RotatingMan({
@@ -6120,19 +6177,19 @@ var oneOffs = [new RotatingMan({
   textColor: 3614472,
   position: new THREE.Vector3(-50, 0, -50)
 }), new BeaconOneOff({
-  name: "dog life poem",
+  name: "My Dog's Life",
   $element: $("<div class=\"one-off-text\">" + dogPoemOneOffText + "</div>"),
-  position: new THREE.Vector3(-10, -5, -10)
+  position: new THREE.Vector3(-15, -5, -20)
 }), new BeaconOneOff({
-  name: "life hack",
+  name: "Life Hack I",
   $element: $("<div class=\"one-off-text\">Life Hack I.<br>If you want to die gamble everything until:<br>1. You have enough money to live as a king<br>2. You have nothing</div>"),
   position: new THREE.Vector3(-30, -5, -25)
 }), new VideoOneOff({
-  name: "I watched the woods",
+  name: "I Watched the Woods",
   videoName: "media/videos/bigsur",
   position: new THREE.Vector3(50, -5, 0)
 }), new VideoOneOff({
-  name: "I watched the car",
+  name: "I Watched the Car",
   videoName: "media/videos/brakes",
   position: new THREE.Vector3(-50, -5, -50)
 })];
@@ -6904,8 +6961,8 @@ var chatter = function ($container, lines, options, callback) {
 
 exports.chatter = chatter;
 var processText = function ($container, text, options, callback) {
-  var delayBetweenLetters = options.delayBetweenLetters || 100;
-  var delayBetweenWords = options.delayBetweenWords || 125;
+  var delayBetweenLetters = options.delayBetweenLetters || 60;
+  var delayBetweenWords = options.delayBetweenWords || 100;
 
   var refreshText = function (freshText, delay) {
     setTimeout(function () {

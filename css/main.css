@@ -54,15 +54,21 @@ body {
   position: fixed;
   bottom: 10px;
   right: 10px;
+  text-align: right;
 }
 
 #new-money-zone {
-  text-align: right;
+  display: none;
   font-family: 'Roboto Mono', monospace;
   font-size: 15px;
   color: rgb(255, 253, 18);
   text-shadow: 3px 3px 3px rgba(255, 253, 18, 0.88);
 }
+  #new-money-reason {
+    display: none;
+    font-size: 32px;
+    font-style: italic;
+  }
 
 #nearby-artifact-container {
   display: none;

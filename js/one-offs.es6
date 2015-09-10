@@ -8,6 +8,8 @@ import {Dahmer} from './dahmer.es6';
 let domContainer = $('body');
 let dahmer = new Dahmer({$domContainer: domContainer});
 
+var didFindBeaconCallback;
+
 class OneOff {
   constructor(options) {
     this.name = options.name || (Math.random() * 10000) + '';
@@ -202,6 +204,10 @@ class BeaconOneOff extends MeshedOneOff {
     domContainer.append(this.$element);
     this.$element.fadeIn();
 
+    if (didFindBeaconCallback) {
+      didFindBeaconCallback(this);
+    }
+
     // TODO: flash name across screen
   }
 
@@ -233,7 +239,7 @@ class VideoOneOff extends BeaconOneOff {
   updateForFar() {
     super.updateForFar();
 
-    if (this.$element && this.$element.get(0)) {  
+    if (this.$element && this.$element.get(0)) {
       this.$element.get(0).src = '';
       this.$element.remove();
       this.$element = null;
@@ -241,7 +247,11 @@ class VideoOneOff extends BeaconOneOff {
   }
 }
 
-/** ONE OFF CREATION */
+/** EXPORTS */
+
+export var setDidFindBeaconCallback = function(callback) {
+  didFindBeaconCallback = callback;
+};
 
 let dogPoemOneOffText = [
   "He wants his dog's life.",
@@ -332,23 +342,23 @@ export var oneOffs = [
   }),
 
   new BeaconOneOff({
-    name: 'dog life poem',
+    name: "My Dog's Life",
     $element: $('<div class="one-off-text">' + dogPoemOneOffText + '</div>'),
-    position: new THREE.Vector3(-10, -5, -10)
+    position: new THREE.Vector3(-15, -5, -20)
   }),
   new BeaconOneOff({
-    name: 'life hack',
+    name: 'Life Hack I',
     $element: $('<div class="one-off-text">Life Hack I.<br>If you want to die gamble everything until:<br>1. You have enough money to live as a king<br>2. You have nothing</div>'),
     position: new THREE.Vector3(-30, -5, -25)
   }),
 
   new VideoOneOff({
-    name: 'I watched the woods',
+    name: 'I Watched the Woods',
     videoName: 'media/videos/bigsur',
     position: new THREE.Vector3(50, -5, 0)
   }),
   new VideoOneOff({
-    name: 'I watched the car',
+    name: 'I Watched the Car',
     videoName: 'media/videos/brakes',
     position: new THREE.Vector3(-50, -5, -50)
   })

@@ -8,7 +8,7 @@ import {ThreeBoiler} from './three-boiler.es6';
 let FlyControls = require('./controls/fly-controls');
 let moneyMan = require('./new-money');
 
-import {oneOffs} from './one-offs.es6';
+import {oneOffs, setDidFindBeaconCallback} from './one-offs.es6';
 import {createShaneScenes} from './scenes.es6';
 import {currentTheme} from './theme.es6';
 import {chatter} from './util/chatterbox.es6';
@@ -35,6 +35,8 @@ class SecondShane extends ThreeBoiler {
 
     this.renderer.gammaInput = true;
 	  this.renderer.gammaOutput = true;
+
+    this.waitBeforeAddingMoney = true;
 
     this.controls = new FlyControls(this.camera);
     this.scene.add(this.controls.getObject());
@@ -63,20 +65,36 @@ class SecondShane extends ThreeBoiler {
     this.theme = currentTheme;
     this.theme.applyTo(this.scene);
 
-    moneyMan.init();
-
     this.sharedCameraPosition = new THREE.Vector3(0, 0, 0);
 
     this.activeScene = null;
-
     this.nearestTalismanScene = null;
-
-    this.showIntroChatter();
 
     this.renderCurrentURL();
     window.addEventListener('popstate', () => {
       this.renderCurrentURL();
     });
+
+    setDidFindBeaconCallback((beacon) => {
+      this.waitBeforeAddingMoney = true;
+      moneyMan.addMoney(250);
+      moneyMan.setMoneyReason('Won $250 for discovering "' + beacon.name + '"!');
+      setTimeout(() => {
+        this.waitBeforeAddingMoney = false;
+      }, 3000);
+    });
+
+    setTimeout(() => {
+      this.waitBeforeAddingMoney = false;
+      moneyMan.init();
+      moneyMan.setMoneyReason('Keep an eye on your New Money accumulation!');
+
+      setTimeout(() => {
+        if (!this.activeScene) {
+          this.showIntroChatter();
+        }
+      }, 3333);
+    }, 3333);
   }
 
   render() {
@@ -114,7 +132,7 @@ class SecondShane extends ThreeBoiler {
       }
 
       // update my money count just for being alive
-      if (this.frame % 90 === 0) {
+      if (this.frame % 90 === 0 && !this.waitBeforeAddingMoney) {
         if (!(this.activeScene || this.transitioning)) {
           moneyMan.addMoney(1);
         }
@@ -136,7 +154,7 @@ class SecondShane extends ThreeBoiler {
     else {
       if (this.activeScene) {
         this.transitioning = false;
-        this.transitionFromScene(this.activeScene);
+        this.transitionFromScene(this.activeScene, true);
       }
     }
   }
@@ -173,8 +191,8 @@ class SecondShane extends ThreeBoiler {
   showIntroChatter() {
     setTimeout(() => {
       let words = ["Hello... Welcome to Second Shane... The ever-present and evolving realm of Mister Shane's sounds, sights, and feelings. I, the Red Bull™ Goblin, will be your trusted guide and companion.",
-                   "First thing's first... Second Shane is a self-directed experience. Explore the infinite universe and Hunt For Shane's Treasures. Begin by using the mouse to move your eyes. The W, A, S, D, R, and F keys on your keyboard will move your body... That's it...",
-                   "You will find portals to other worlds along the way. Press the spacebar to enter them. Don't be afraid; within those worlds lies the reality of Second Shane. This realm is only a shell.",
+                   "First thing's first... Second Shane is a self-driven experience. Explore the infinite universe and Hunt For Shane's Treasures. Move your eyes and body with the instructions to the left...",
+                   "You will find portals to other worlds along the way. Press the Spacebar to enter them. Fear not for within those worlds lies the reality of Second Shane. This realm is a shell.",
                    "Thank you, and enjoy your time here. Come back soon... Shane is always changing."];
 
       $introBox.fadeIn();
@@ -219,7 +237,7 @@ class SecondShane extends ThreeBoiler {
     if (!this.activeScene) {
       this.attemptToEnterScene();
     } else {
-      this.transitionFromScene(this.activeScene);
+      this.transitionFromScene(this.activeScene, true);
     }
   }
 
@@ -257,7 +275,7 @@ class SecondShane extends ThreeBoiler {
     }
   }
 
-  transitionFromScene(shaneScene) {
+  transitionFromScene(shaneScene, didCancel) {
     if (this.transitioning) {
       return;
     }
@@ -276,10 +294,22 @@ class SecondShane extends ThreeBoiler {
       this.addSharedObjects();
       this.controls.getObject().position.copy(this.sharedCameraPosition);
       this.controls.enabled = true;
+    }, () => {
+      this.transitioning = false;
 
+      if (!didCancel) {
+        moneyMan.addMoney(1000);
+        moneyMan.setMoneyReason('Won $1000 for completing ' + shaneScene.name + '!');
+      }
+      else {
+        moneyMan.addMoney(-500);
+        moneyMan.setMoneyReason('Lost $500 for lack of honor');
+      }
+
+      this.waitBeforeAddingMoney = true;
       setTimeout(() => {
-        this.transitioning = false;
-      }, 4444);
+        this.waitBeforeAddingMoney = false;
+      }, 3000);
     });
   }
 
@@ -314,19 +344,19 @@ class SecondShane extends ThreeBoiler {
       this.updateHistoryForScene(shaneScene);
 
       shaneScene.startScene();
-
-      setTimeout(() => {
-        this.transitioning = false;
-      }, 6666);
+    }, () => {
+      this.transitioning = false;
     });
   }
 
-  fadeSceneOverlay(behavior) {
+  fadeSceneOverlay(behavior, callback) {
     let duration = IS_LIVE? 3000 : 1000;
 
     $sceneOverlay.fadeIn(duration, () => {
       behavior();
-      $sceneOverlay.fadeOut(duration);
+      $sceneOverlay.fadeOut(duration, () => {
+        if (callback) callback();
+      });
     });
   }
 

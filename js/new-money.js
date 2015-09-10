@@ -3,11 +3,15 @@ var $ = require('jquery');
 var Odometer = require('odometer');
 
 var odometer;
+var $moneyZone = $('#new-money-zone');
 var $moneyCount = $('#new-money-count');
+var $moneyReason = $('#new-money-reason');
 
 var _myMoneyCount = 0; // fallback for those of us without window.localStorage
 
 module.exports.init = function() {
+  $moneyZone.show();
+
   var money = getMoney();
 
   odometer = new Odometer({
@@ -23,6 +27,16 @@ module.exports.init = function() {
 module.exports.addMoney = function(increment) {
   var money = getMoney();
   setMoney(money + increment);
+};
+
+module.exports.setMoneyReason = function(moneyReason) {
+  $moneyReason.hide();
+  $moneyReason.text(moneyReason);
+  $moneyReason.fadeIn(400, function() {
+    setTimeout(function() {
+      $moneyReason.fadeOut(400);
+    }, 3333);
+  });
 };
 
 module.exports.drain = function() {
