@@ -5375,9 +5375,11 @@ var SecondShane = (function (_ThreeBoiler) {
     });
 
     setDidFindBeaconCallback(function (beacon) {
+      var money = parseInt(Math.random() * 200) + 100;
+      moneyMan.addMoney(money);
+      moneyMan.setMoneyReason("Won $" + money + " for discovering \"" + beacon.name + "\"!");
+
       _this.waitBeforeAddingMoney = true;
-      moneyMan.addMoney(250);
-      moneyMan.setMoneyReason("Won $250 for discovering \"" + beacon.name + "\"!");
       setTimeout(function () {
         _this.waitBeforeAddingMoney = false;
       }, 3000);
@@ -6126,7 +6128,9 @@ var setDidFindBeaconCallback = function setDidFindBeaconCallback(callback) {
 exports.setDidFindBeaconCallback = setDidFindBeaconCallback;
 var dogPoemOneOffText = ["He wants his dog's life.", "He's got a big house, a new car,", "a beautiful wife.", "He wants his dog's life.", "Dogs shit on the street.", "They stink when they're wet.", "Dogs eat from a bowl, or", "slurp scraps from the floor.", "He wants his dog's life.", "A leash around his neck,", "his wet tongue licking the air.", "To look up at his owner ", "with love and respect.", "He wants his dog's life.", "A dog looks in a mirror", "and sees not himself,", "but another dog.", "His dog's mind.", "His dog's body.", "His dog's cock.", "He wants his dog's life.", "", "In dog years I'd already be dead."].join("<br>");
 
-var oneOffs = [new RotatingMan({
+var oneOffs = [
+// rotating men
+new RotatingMan({
   name: "it is just sex man",
   text: "It's just ... sex ...",
   textColor: 16711818,
@@ -6157,6 +6161,29 @@ var oneOffs = [new RotatingMan({
   textColor: 16711703,
   position: new THREE.Vector3(0, 0, -50)
 }), new RotatingMan({
+  name: "something to cherish",
+  text: "Art used to be something to Cherish",
+  textColor: 8010922,
+  position: new THREE.Vector3(40, 0, 20)
+}), new RotatingMan({
+  name: "fragile",
+  text: "Fragile Masculinity",
+  textColor: 857584,
+  position: new THREE.Vector3(-40, 0, 20)
+}), new RotatingMan({
+  name: "stationary monitors",
+  text: "Monitors stay where positioned",
+  textColor: 4508839,
+  position: new THREE.Vector3(20, 0, -100)
+}), new RotatingMan({
+  name: "facial monitors",
+  text: "Monitors can be placed close to the face",
+  textColor: 7130180,
+  position: new THREE.Vector3(-10, 0, -100)
+}),
+
+// dog as god
+new RotatingMan({
   name: "dog as god I",
   text: "I have known dogs that gave their lives for their masters",
   textColor: 3614472,
@@ -6176,15 +6203,50 @@ var oneOffs = [new RotatingMan({
   text: "I don’t think that Dog is God spelled backwards",
   textColor: 3614472,
   position: new THREE.Vector3(-50, 0, -50)
-}), new BeaconOneOff({
+}),
+
+// the flat
+new RotatingMan({
+  name: "The Flat I",
+  text: "I fear The Flat",
+  textColor: 11821666,
+  position: new THREE.Vector3(100, 0, 0)
+}), new RotatingMan({
+  name: "The Flat II",
+  text: "Flat residents will take My Computer",
+  textColor: 11821666,
+  position: new THREE.Vector3(100, 0, 20)
+}), new RotatingMan({
+  name: "The Flat III",
+  text: "Stay away from the Hills",
+  textColor: 11821666,
+  position: new THREE.Vector3(100, 0, -20)
+}),
+
+// isolated poems
+new BeaconOneOff({
   name: "My Dog's Life",
   $element: $("<div class=\"one-off-text\">" + dogPoemOneOffText + "</div>"),
   position: new THREE.Vector3(-15, -5, -20)
-}), new BeaconOneOff({
+}),
+
+// life hacks
+new BeaconOneOff({
   name: "Life Hack I",
   $element: $("<div class=\"one-off-text\">Life Hack I.<br>If you want to die gamble everything until:<br>1. You have enough money to live as a king<br>2. You have nothing</div>"),
   position: new THREE.Vector3(-30, -5, -25)
-}), new VideoOneOff({
+}), new BeaconOneOff({
+  name: "Life Hack II",
+  $element: $("<div class=\"one-off-text\">Life Hack II.<br>If you want to die<br>Never pay taxes and you'll have more money<br>to thrive<br>and when They finally come for you<br>just do what you wanted</div>"),
+  position: new THREE.Vector3(-75, -5, -25)
+}), new BeaconOneOff({
+  name: "Life Hack III",
+  $element: $("<div class=\"one-off-text\">Life Hack III.<br>If you want to die<br>just Find a way<br>to accumulate power<br>and soon you are ready to<br>live again</div>"),
+  position: new THREE.Vector3(200, -5, -25)
+}),
+
+// vids
+new VideoOneOff({
   name: "I Watched the Woods",
   videoName: "media/videos/bigsur",
   position: new THREE.Vector3(50, -5, 0)

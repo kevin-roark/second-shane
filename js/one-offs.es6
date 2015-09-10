@@ -280,6 +280,7 @@ let dogPoemOneOffText = [
 ].join('<br>');
 
 export var oneOffs = [
+  // rotating men
   new RotatingMan({
     name: 'it is just sex man',
     text: "It's just ... sex ...",
@@ -317,6 +318,32 @@ export var oneOffs = [
     position: new THREE.Vector3(0, 0, -50)
   }),
   new RotatingMan({
+    name: 'something to cherish',
+    text: 'Art used to be something to Cherish',
+    textColor: 0x7a3caa,
+    position: new THREE.Vector3(40, 0, 20)
+  }),
+  new RotatingMan({
+    name: 'fragile',
+    text: 'Fragile Masculinity',
+    textColor: 0x0d15f0,
+    position: new THREE.Vector3(-40, 0, 20)
+  }),
+  new RotatingMan({
+    name: 'stationary monitors',
+    text: 'Monitors stay where positioned',
+    textColor: 0x44cca7,
+    position: new THREE.Vector3(20, 0, -100)
+  }),
+  new RotatingMan({
+    name: 'facial monitors',
+    text: 'Monitors can be placed close to the face',
+    textColor: 0x6ccc44,
+    position: new THREE.Vector3(-10, 0, -100)
+  }),
+
+  // dog as god
+  new RotatingMan({
     name: 'dog as god I',
     text: 'I have known dogs that gave their lives for their masters',
     textColor: 0x372708,
@@ -341,17 +368,51 @@ export var oneOffs = [
     position: new THREE.Vector3(-50, 0, -50)
   }),
 
+  // the flat
+  new RotatingMan({
+    name: 'The Flat I',
+    text: "I fear The Flat",
+    textColor: 0xb46262,
+    position: new THREE.Vector3(100, 0, 0)
+  }),
+  new RotatingMan({
+    name: 'The Flat II',
+    text: "Flat residents will take My Computer",
+    textColor: 0xb46262,
+    position: new THREE.Vector3(100, 0, 20)
+  }),
+  new RotatingMan({
+    name: 'The Flat III',
+    text: "Stay away from the Hills",
+    textColor: 0xb46262,
+    position: new THREE.Vector3(100, 0, -20)
+  }),
+
+  // isolated poems
   new BeaconOneOff({
     name: "My Dog's Life",
     $element: $('<div class="one-off-text">' + dogPoemOneOffText + '</div>'),
     position: new THREE.Vector3(-15, -5, -20)
   }),
+
+  // life hacks
   new BeaconOneOff({
     name: 'Life Hack I',
     $element: $('<div class="one-off-text">Life Hack I.<br>If you want to die gamble everything until:<br>1. You have enough money to live as a king<br>2. You have nothing</div>'),
     position: new THREE.Vector3(-30, -5, -25)
   }),
+  new BeaconOneOff({
+    name: 'Life Hack II',
+    $element: $('<div class="one-off-text">Life Hack II.<br>If you want to die<br>Never pay taxes and you\'ll have more money<br>to thrive<br>and when They finally come for you<br>just do what you wanted</div>'),
+    position: new THREE.Vector3(-75, -5, -25)
+  }),
+  new BeaconOneOff({
+    name: 'Life Hack III',
+    $element: $('<div class="one-off-text">Life Hack III.<br>If you want to die<br>just Find a way<br>to accumulate power<br>and soon you are ready to<br>live again</div>'),
+    position: new THREE.Vector3(200, -5, -25)
+  }),
 
+  // vids
   new VideoOneOff({
     name: 'I Watched the Woods',
     videoName: 'media/videos/bigsur',
