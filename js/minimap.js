@@ -7,6 +7,13 @@ var _mapElements;
 var sizeOfMinimap = 400;
 var halfSizeOfMinimap = sizeOfMinimap / 2;
 var paddedHalfSizeOfMinimap = halfSizeOfMinimap + 5;
+var pixelUnits = canvas.width / sizeOfMinimap;
+var scaledHalfMinimapSize = halfSizeOfMinimap * pixelUnits;
+
+var arrowImage = new Image();
+arrowImage.src = '/media/symbols/arrow.png';
+var arrowLength = 32;
+var centeredArrowPosition = scaledHalfMinimapSize - arrowLength / 2;
 
 var defaultImage = new Image();
 defaultImage.src = '/media/symbols/dot.png';
@@ -34,7 +41,6 @@ module.exports.update = function(centerPosition, rotation) {
     return; // wait for init
   }
 
-  console.log(rotation);
   var sinValue = Math.sin(rotation);
   var cosValue = Math.cos(rotation);
 
@@ -52,10 +58,7 @@ module.exports.update = function(centerPosition, rotation) {
       // only pay attention to elements that are close enough to the center
       var image = element.image || defaultImage;
       var length = element.length || 8;
-
-      var pixelUnits = canvas.width / sizeOfMinimap;
-      var halfLength = length/2;
-      var scaledHalfMinimapSize = halfSizeOfMinimap * pixelUnits;
+      var halfLength = length / 2;
 
       // rotation gleaned from http://stackoverflow.com/questions/3162643/proper-trigonometry-for-rotating-a-point-around-the-origin
       var xLocation = xd * pixelUnits - halfLength;
@@ -66,4 +69,11 @@ module.exports.update = function(centerPosition, rotation) {
       context.drawImage(image, rotatedXLocation + scaledHalfMinimapSize, rotatedYLocation + scaledHalfMinimapSize, length, length);
     }
   }
+
+  // draw arrow for ME last
+  context.save();
+  context.shadowColor = '#20eb83';
+  context.shadowBlur = 25;
+  context.drawImage(arrowImage, centeredArrowPosition, centeredArrowPosition, arrowLength, arrowLength);
+  context.restore();
 };
