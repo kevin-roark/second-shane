@@ -6,6 +6,7 @@ let queryString = require('querystring');
 import {ThreeBoiler} from './three-boiler.es6';
 
 let FlyControls = require('./controls/fly-controls');
+let moneyMan = require('./new-money');
 
 import {oneOffs} from './one-offs.es6';
 import {createShaneScenes} from './scenes.es6';
@@ -62,12 +63,13 @@ class SecondShane extends ThreeBoiler {
     this.theme = currentTheme;
     this.theme.applyTo(this.scene);
 
+    moneyMan.init();
+
     this.sharedCameraPosition = new THREE.Vector3(0, 0, 0);
 
     this.activeScene = null;
 
     this.nearestTalismanScene = null;
-    this.framesUntilCameraPositionCalculations = 30;
 
     this.showIntroChatter();
 
@@ -94,8 +96,8 @@ class SecondShane extends ThreeBoiler {
         this.shaneScenes[i].update();
       }
 
-      this.framesUntilCameraPositionCalculations -= 1;
-      if (this.framesUntilCameraPositionCalculations <= 0) {
+      // perform camera position calculations
+      if (this.frame % 30 === 0) {
         this.nearestTalismanScene = this.searchForTalisman();
 
         if (this.nearestTalismanScene) {
@@ -109,8 +111,13 @@ class SecondShane extends ThreeBoiler {
         for (i = 0; i < this.oneOffs.length; i++) {
           this.oneOffs[i].relayCameraPosition(cameraPosition);
         }
+      }
 
-        this.framesUntilCameraPositionCalculations = 30;
+      // update my money count just for being alive
+      if (this.frame % 90 === 0) {
+        if (!(this.activeScene || this.transitioning)) {
+          moneyMan.addMoney(1);
+        }
       }
     }
   }
@@ -300,7 +307,6 @@ class SecondShane extends ThreeBoiler {
     this.fadeSceneOverlay(() => {
       this.removeSharedObjects();
       $introBox.fadeOut();
-      $nearbyArtifactContainer.hide();
       $hud.hide();
 
       this.controls.reset();

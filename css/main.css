@@ -30,22 +30,14 @@ body {
   z-index: 999;
 }
 
-#nearby-artifact-container {
-  display: none;
-  position: fixed;
-  bottom: 10px;
-  right: 10px;
-
-  font-family: 'Roboto Mono', monospace;
-  font-size: 15px;
-  color: white;
-}
-
-  #nearby-artifact-name {
-    text-decoration: underline;
-  }
+/** HUD */
 
 #hud {
+  position: fixed;
+  left: 0; top: 0; width: 100%; height: 100%;
+}
+
+#top-left-hud {
   position: fixed;
   top: 5px;
   left: 5px;
@@ -57,6 +49,34 @@ body {
   #pointer-lock-tip {
     text-decoration: underline;
   }
+
+#bottom-right-hud {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+}
+
+#new-money-zone {
+  text-align: right;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 15px;
+  color: rgb(255, 253, 18);
+  text-shadow: 3px 3px 3px rgba(255, 253, 18, 0.88);
+}
+
+#nearby-artifact-container {
+  display: none;
+
+  font-family: 'Roboto Mono', monospace;
+  font-size: 15px;
+  color: white;
+}
+
+  #nearby-artifact-name {
+    text-decoration: underline;
+  }
+
+/** GOBLIN */
 
 #intro-box {
   position: absolute;
@@ -86,6 +106,8 @@ body {
   letter-spacing: 1px;
   color: white;
 }
+
+/** REAL STUFF */
 
 .video-overlay, .image-overlay, .canvas-overlay {
   position: fixed;

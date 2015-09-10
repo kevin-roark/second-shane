@@ -207,7 +207,9 @@ class BeaconOneOff extends MeshedOneOff {
 
   updateForFar() {
     this.isNear = false;
-    this.$element.fadeOut();
+    if (this.$element) {
+      this.$element.fadeOut();
+    }
   }
 }
 
@@ -231,9 +233,11 @@ class VideoOneOff extends BeaconOneOff {
   updateForFar() {
     super.updateForFar();
 
-    this.$element.get(0).src = '';
-    this.$element.remove();
-    this.$element = null;
+    if (this.$element && this.$element.get(0)) {  
+      this.$element.get(0).src = '';
+      this.$element.remove();
+      this.$element = null;
+    }
   }
 }
 
