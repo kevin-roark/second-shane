@@ -7,6 +7,7 @@ import {ThreeBoiler} from './three-boiler.es6';
 
 let FlyControls = require('./controls/fly-controls');
 let moneyMan = require('./new-money');
+let minimap = require('./minimap');
 
 import {oneOffs, setDidFindBeaconCallback} from './one-offs.es6';
 import {createShaneScenes} from './scenes.es6';
@@ -75,6 +76,8 @@ class SecondShane extends ThreeBoiler {
       this.renderCurrentURL();
     });
 
+    this.initMiniMap();
+
     setDidFindBeaconCallback((beacon) => {
       var money = parseInt(Math.random() * 200) + 100;
       moneyMan.addMoney(money);
@@ -116,6 +119,9 @@ class SecondShane extends ThreeBoiler {
         this.shaneScenes[i].update();
       }
 
+      var cameraPosition = this.controls.getObject().position;
+      minimap.update(cameraPosition, this.controls.getObject().rotation.y);
+
       // perform camera position calculations
       if (this.frame % 30 === 0) {
         this.nearestTalismanScene = this.searchForTalisman();
@@ -127,7 +133,6 @@ class SecondShane extends ThreeBoiler {
           $nearbyArtifactContainer.hide();
         }
 
-        var cameraPosition = this.controls.getObject().position;
         for (i = 0; i < this.oneOffs.length; i++) {
           this.oneOffs[i].relayCameraPosition(cameraPosition);
         }
@@ -219,6 +224,30 @@ class SecondShane extends ThreeBoiler {
     else {
       $pointerLockTip.hide();
     }
+  }
+
+  initMiniMap() {
+    var mapElements = [];
+
+    // add shane scenes to map
+    for (var i = 0; i < this.shaneScenes.length; i++) {
+      var scene = this.shaneScenes[i];
+      mapElements.push({
+        position: scene.talisman.position,
+        symbol: scene.symbolName,
+        length: 32
+      });
+    }
+
+    // add one-offs to map
+    for (i = 0; i < this.oneOffs.length; i++) {
+      var oneOff = this.oneOffs[i];
+      mapElements.push({
+        position: oneOff.position
+      });
+    }
+
+    minimap.init(mapElements);
   }
 
   /// Interaction

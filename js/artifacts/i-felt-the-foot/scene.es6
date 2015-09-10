@@ -16,6 +16,7 @@ export class iFeltTheFoot extends ShaneScene {
     super(renderer, camera, scene, options);
 
     this.name = 'i felt the foot';
+    this.symbolName = '/media/symbols/foot.png';
 
     var host = (this.isLive? urls.iFeltTheFoot.live : urls.iFeltTheFoot.web);
     this.videoBase = host + 'video/';

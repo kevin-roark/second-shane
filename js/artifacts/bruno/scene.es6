@@ -16,6 +16,7 @@ export class Bruno extends ShaneScene {
     super(renderer, camera, scene, options);
 
     this.name = "Bruno?";
+    this.symbolName = '/media/symbols/mars.png';
 
     var host = (this.isLive? urls.bruno.live : urls.bruno.web);
     this.mediaBase = host + 'media/';

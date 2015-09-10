@@ -33,6 +33,7 @@ var ASMR = exports.ASMR = (function (_ShaneScene) {
     _get(Object.getPrototypeOf(ASMR.prototype), "constructor", this).call(this, renderer, camera, scene, options);
 
     this.name = "shane's ASMR treat";
+    this.symbolName = "/media/symbols/ear.png";
 
     var host = this.isLive ? urls.asmr.live : urls.asmr.web;
     this.videoBase = host + "video/";
@@ -303,7 +304,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../shane-mesh":18,"../../shane-scene.es6":19,"../../talisman.es6":20,"../../urls":23,"jquery":27,"kutility":28,"three":30}],2:[function(require,module,exports){
+},{"../../shane-mesh":19,"../../shane-scene.es6":20,"../../talisman.es6":21,"../../urls":24,"jquery":28,"kutility":29,"three":31}],2:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -336,6 +337,7 @@ var Bruno = exports.Bruno = (function (_ShaneScene) {
     _get(Object.getPrototypeOf(Bruno.prototype), "constructor", this).call(this, renderer, camera, scene, options);
 
     this.name = "Bruno?";
+    this.symbolName = "/media/symbols/mars.png";
 
     var host = this.isLive ? urls.bruno.live : urls.bruno.web;
     this.mediaBase = host + "media/";
@@ -619,7 +621,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../shane-mesh":18,"../../shane-scene.es6":19,"../../talisman.es6":20,"../../urls":23,"./static-canvas":3,"jquery":27,"three":30}],3:[function(require,module,exports){
+},{"../../shane-mesh":19,"../../shane-scene.es6":20,"../../talisman.es6":21,"../../urls":24,"./static-canvas":3,"jquery":28,"three":31}],3:[function(require,module,exports){
 "use strict";
 
 module.exports.fuzz = function (canvas) {
@@ -732,7 +734,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"jquery":27}],5:[function(require,module,exports){
+},{"jquery":28}],5:[function(require,module,exports){
 "use strict";
 
 var $ = require("jquery");
@@ -936,7 +938,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 // chorus
 
-},{"jquery":27,"kutility":28}],6:[function(require,module,exports){
+},{"jquery":28,"kutility":29}],6:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -973,6 +975,7 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
     _get(Object.getPrototypeOf(GodIsAMan.prototype), "constructor", this).call(this, renderer, camera, scene, options);
 
     this.name = "God Is A Man";
+    this.symbolName = "/media/symbols/cross.png";
 
     var host = this.isLive ? urls.godIsAMan.live : urls.godIsAMan.web;
     this.videoBase = host + "video/";
@@ -1464,7 +1467,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../shane-scene.es6":19,"../../talisman.es6":20,"../../urls":23,"./basketball.es6":4,"./karaoke.es6":5,"jquery":27,"kutility":28,"three":30}],7:[function(require,module,exports){
+},{"../../shane-scene.es6":20,"../../talisman.es6":21,"../../urls":24,"./basketball.es6":4,"./karaoke.es6":5,"jquery":28,"kutility":29,"three":31}],7:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1497,6 +1500,7 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
     _get(Object.getPrototypeOf(iFeltTheFoot.prototype), "constructor", this).call(this, renderer, camera, scene, options);
 
     this.name = "i felt the foot";
+    this.symbolName = "/media/symbols/foot.png";
 
     var host = this.isLive ? urls.iFeltTheFoot.live : urls.iFeltTheFoot.web;
     this.videoBase = host + "video/";
@@ -2076,7 +2080,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../shane-mesh":18,"../../shane-scene.es6":19,"../../talisman.es6":20,"../../urls":23,"jquery":27,"kutility":28,"three":30}],8:[function(require,module,exports){
+},{"../../shane-mesh":19,"../../shane-scene.es6":20,"../../talisman.es6":21,"../../urls":24,"jquery":28,"kutility":29,"three":31}],8:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2108,6 +2112,7 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
     _get(Object.getPrototypeOf(LiveAtJJs.prototype), "constructor", this).call(this, renderer, camera, scene, options);
 
     this.name = "Mister Shane Live At JJ's";
+    this.symbolName = "/media/symbols/curtain.png";
 
     var host = this.isLive ? urls.liveAtJJs.live : urls.liveAtJJs.web;
     this.videoBase = host + "video/";
@@ -2362,7 +2367,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../shane-mesh":18,"../../shane-scene.es6":19,"../../talisman.es6":20,"../../urls":23,"jquery":27,"three":30}],9:[function(require,module,exports){
+},{"../../shane-mesh":19,"../../shane-scene.es6":20,"../../talisman.es6":21,"../../urls":24,"jquery":28,"three":31}],9:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2396,7 +2401,8 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
 
     _get(Object.getPrototypeOf(PapaJohn.prototype), "constructor", this).call(this, renderer, camera, scene, options);
 
-    this.name = "Shane's Papa, John";
+    this.name = "Shane's Papa John";
+    this.symbolName = "/media/symbols/papa.png";
 
     var host = this.isLive ? urls.papaJohn.live : urls.papaJohn.web;
     this.videoBase = host + "video/";
@@ -2688,7 +2694,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../lib/three.terrain":13,"../../shane-mesh":18,"../../shane-scene.es6":19,"../../talisman.es6":20,"../../urls":23,"../../util/video-mesh":26,"jquery":27,"kutility":28,"three":30}],10:[function(require,module,exports){
+},{"../../lib/three.terrain":13,"../../shane-mesh":19,"../../shane-scene.es6":20,"../../talisman.es6":21,"../../urls":24,"../../util/video-mesh":27,"jquery":28,"kutility":29,"three":31}],10:[function(require,module,exports){
 "use strict";
 
 /**
@@ -3025,7 +3031,7 @@ module.exports = function (camera, options) {
 	this.updateRotationVector();
 };
 
-},{"./pointerlocker":11,"three":30}],11:[function(require,module,exports){
+},{"./pointerlocker":11,"three":31}],11:[function(require,module,exports){
 "use strict";
 
 module.exports = function () {
@@ -3237,7 +3243,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"jquery":27}],13:[function(require,module,exports){
+},{"jquery":28}],13:[function(require,module,exports){
 "use strict";
 
 /**
@@ -5277,7 +5283,7 @@ THREE.Terrain.Influence = function (g, options, f, x, y, r, h, t, e) {
 
 module.exports = THREE.Terrain;
 
-},{"three":30}],14:[function(require,module,exports){
+},{"three":31}],14:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -5296,6 +5302,7 @@ var ThreeBoiler = require("./three-boiler.es6").ThreeBoiler;
 
 var FlyControls = require("./controls/fly-controls");
 var moneyMan = require("./new-money");
+var minimap = require("./minimap");
 
 var _oneOffsEs6 = require("./one-offs.es6");
 
@@ -5374,6 +5381,8 @@ var SecondShane = (function (_ThreeBoiler) {
       _this.renderCurrentURL();
     });
 
+    this.initMiniMap();
+
     setDidFindBeaconCallback(function (beacon) {
       var money = parseInt(Math.random() * 200) + 100;
       moneyMan.addMoney(money);
@@ -5418,6 +5427,9 @@ var SecondShane = (function (_ThreeBoiler) {
             this.shaneScenes[i].update();
           }
 
+          var cameraPosition = this.controls.getObject().position;
+          minimap.update(cameraPosition, this.controls.getObject().rotation.y);
+
           // perform camera position calculations
           if (this.frame % 30 === 0) {
             this.nearestTalismanScene = this.searchForTalisman();
@@ -5429,7 +5441,6 @@ var SecondShane = (function (_ThreeBoiler) {
               $nearbyArtifactContainer.hide();
             }
 
-            var cameraPosition = this.controls.getObject().position;
             for (i = 0; i < this.oneOffs.length; i++) {
               this.oneOffs[i].relayCameraPosition(cameraPosition);
             }
@@ -5524,6 +5535,31 @@ var SecondShane = (function (_ThreeBoiler) {
         } else {
           $pointerLockTip.hide();
         }
+      }
+    },
+    initMiniMap: {
+      value: function initMiniMap() {
+        var mapElements = [];
+
+        // add shane scenes to map
+        for (var i = 0; i < this.shaneScenes.length; i++) {
+          var scene = this.shaneScenes[i];
+          mapElements.push({
+            position: scene.talisman.position,
+            symbol: scene.symbolName,
+            length: 32
+          });
+        }
+
+        // add one-offs to map
+        for (i = 0; i < this.oneOffs.length; i++) {
+          var oneOff = this.oneOffs[i];
+          mapElements.push({
+            position: oneOff.position
+          });
+        }
+
+        minimap.init(mapElements);
       }
     },
     keypress: {
@@ -5726,7 +5762,79 @@ $(function () {
   shane.activate();
 });
 
-},{"./controls/fly-controls":10,"./new-money":15,"./one-offs.es6":16,"./scenes.es6":17,"./theme.es6":21,"./three-boiler.es6":22,"./util/chatterbox.es6":24,"jquery":27,"querystring":33,"three":30}],15:[function(require,module,exports){
+},{"./controls/fly-controls":10,"./minimap":15,"./new-money":16,"./one-offs.es6":17,"./scenes.es6":18,"./theme.es6":22,"./three-boiler.es6":23,"./util/chatterbox.es6":25,"jquery":28,"querystring":34,"three":31}],15:[function(require,module,exports){
+"use strict";
+
+var canvas = document.querySelector("#minimap-canvas");
+var context = canvas.getContext("2d");
+
+var _mapElements;
+
+var sizeOfMinimap = 400;
+var halfSizeOfMinimap = sizeOfMinimap / 2;
+var paddedHalfSizeOfMinimap = halfSizeOfMinimap + 5;
+
+var defaultImage = new Image();
+defaultImage.src = "/media/symbols/dot.png";
+
+/// Map elements should be an array of objects with THREE.Vector3 position and String symbol imagePaths
+module.exports.init = function (mapElements) {
+  _mapElements = mapElements;
+
+  var imageMap = {};
+  for (var i = 0; i < mapElements.length; i++) {
+    var element = mapElements[i];
+    if (element.symbol) {
+      if (!imageMap[element.symbol]) {
+        var image = new Image();
+        image.src = element.symbol;
+        imageMap[element.symbol] = image;
+      }
+      element.image = imageMap[element.symbol];
+    }
+  }
+};
+
+module.exports.update = function (centerPosition, rotation) {
+  if (!_mapElements) {
+    return; // wait for init
+  }
+
+  console.log(rotation);
+  var sinValue = Math.sin(rotation);
+  var cosValue = Math.cos(rotation);
+
+  // clear the map
+  context.clearRect(0, 0, canvas.width, canvas.height);
+
+  // draw nearby symbols
+  for (var i = 0; i < _mapElements.length; i++) {
+    var element = _mapElements[i];
+
+    var xd = element.position.x - centerPosition.x;
+    var zd = element.position.z - centerPosition.z;
+
+    if (Math.abs(xd) <= paddedHalfSizeOfMinimap && Math.abs(zd) <= paddedHalfSizeOfMinimap) {
+      // only pay attention to elements that are close enough to the center
+      var image = element.image || defaultImage;
+      var length = element.length || 8;
+
+      var pixelUnits = canvas.width / sizeOfMinimap;
+      var halfLength = length / 2;
+      var scaledHalfMinimapSize = halfSizeOfMinimap * pixelUnits;
+
+      // rotation gleaned from http://stackoverflow.com/questions/3162643/proper-trigonometry-for-rotating-a-point-around-the-origin
+      var xLocation = xd * pixelUnits - halfLength;
+      var yLocation = zd * pixelUnits - halfLength;
+      var rotatedXLocation = xLocation * cosValue - yLocation * sinValue;
+      var rotatedYLocation = xLocation * sinValue + yLocation * cosValue;
+
+      context.drawImage(image, rotatedXLocation + scaledHalfMinimapSize, rotatedYLocation + scaledHalfMinimapSize, length, length);
+    }
+  }
+};
+
+},{}],16:[function(require,module,exports){
 "use strict";
 
 var $ = require("jquery");
@@ -5796,7 +5904,7 @@ function setMoney(money) {
   odometer.update(money);
 }
 
-},{"jquery":27,"odometer":29}],16:[function(require,module,exports){
+},{"jquery":28,"odometer":30}],17:[function(require,module,exports){
 "use strict";
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
@@ -5824,6 +5932,9 @@ var OneOff = (function () {
     _classCallCheck(this, OneOff);
 
     this.name = options.name || Math.random() * 10000 + "";
+    this.symbolName = options.symbolName;
+    this.position = options.position;
+
     this.active = false;
   }
 
@@ -6016,7 +6127,6 @@ var BeaconOneOff = (function (_MeshedOneOff2) {
     _get(Object.getPrototypeOf(BeaconOneOff.prototype), "constructor", this).call(this, options);
 
     this.$element = options.$element;
-    this.position = options.position;
     this.isNear = false;
     this.nearDistance = options.nearDistance || 20;
   }
@@ -6333,7 +6443,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"./dahmer.es6":12,"./shane-mesh":18,"jquery":27,"kutility":28,"three":30}],17:[function(require,module,exports){
+},{"./dahmer.es6":12,"./shane-mesh":19,"jquery":28,"kutility":29,"three":31}],18:[function(require,module,exports){
 "use strict";
 
 var ASMR = require("./artifacts/asmr/scene.es6").ASMR;
@@ -6362,7 +6472,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"./artifacts/asmr/scene.es6":1,"./artifacts/bruno/scene.es6":2,"./artifacts/god-is-a-man/scene.es6":6,"./artifacts/i-felt-the-foot/scene.es6":7,"./artifacts/live-at-jjs/scene.es6":8,"./artifacts/papa-john/scene.es6":9}],18:[function(require,module,exports){
+},{"./artifacts/asmr/scene.es6":1,"./artifacts/bruno/scene.es6":2,"./artifacts/god-is-a-man/scene.es6":6,"./artifacts/i-felt-the-foot/scene.es6":7,"./artifacts/live-at-jjs/scene.es6":8,"./artifacts/papa-john/scene.es6":9}],19:[function(require,module,exports){
 "use strict";
 
 var THREE = require("three");
@@ -6561,7 +6671,7 @@ ShaneMesh.prototype.fallToFloor = function (threshold, speed) {
 ShaneMesh.prototype.additionalInit = function () {};
 ShaneMesh.prototype.additionalRender = function () {};
 
-},{"kutility":28,"three":30}],19:[function(require,module,exports){
+},{"kutility":29,"three":31}],20:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -6718,7 +6828,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"./dahmer.es6":12,"./talisman.es6":20,"jquery":27,"three":30}],20:[function(require,module,exports){
+},{"./dahmer.es6":12,"./talisman.es6":21,"jquery":28,"three":31}],21:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -6847,7 +6957,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"three":30}],21:[function(require,module,exports){
+},{"three":31}],22:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -6893,7 +7003,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"./util/skybox":25}],22:[function(require,module,exports){
+},{"./util/skybox":26}],23:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -7015,7 +7125,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"jquery":27,"three":30}],23:[function(require,module,exports){
+},{"jquery":28,"three":31}],24:[function(require,module,exports){
 "use strict";
 
 module.exports.asmr = {
@@ -7048,7 +7158,7 @@ module.exports.bruno = {
   live: "http://localhost:5560/"
 };
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 "use strict";
 
 var $ = require("jquery");
@@ -7133,7 +7243,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"jquery":27}],25:[function(require,module,exports){
+},{"jquery":28}],26:[function(require,module,exports){
 "use strict";
 
 var THREE = require("three");
@@ -7203,7 +7313,7 @@ module.exports.blocker = function (size) {
   return new THREE.Mesh(geometry, material);
 };
 
-},{"three":30}],26:[function(require,module,exports){
+},{"three":31}],27:[function(require,module,exports){
 "use strict";
 
 var THREE = require("three");
@@ -7266,7 +7376,7 @@ VideoMesh.prototype.rotateTo = function (rx, ry, rz) {
   this.mesh.rotation.set(rx, ry, rz);
 };
 
-},{"jquery":27,"three":30}],27:[function(require,module,exports){
+},{"jquery":28,"three":31}],28:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.3
  * http://jquery.com/
@@ -16473,7 +16583,7 @@ return jQuery;
 
 }));
 
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 
 /* export something */
 module.exports = new Kutility();
@@ -17047,7 +17157,7 @@ Kutility.prototype.blur = function(el, x) {
   this.setFilter(el, cf + f);
 };
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 (function() {
   var COUNT_FRAMERATE, COUNT_MS_PER_FRAME, DIGIT_FORMAT, DIGIT_HTML, DIGIT_SPEEDBOOST, DURATION, FORMAT_MARK_HTML, FORMAT_PARSER, FRAMERATE, FRAMES_PER_VALUE, MS_PER_FRAME, MutationObserver, Odometer, RIBBON_HTML, TRANSITION_END_EVENTS, TRANSITION_SUPPORT, VALUE_HTML, addClass, createFromHTML, fractionalPart, now, removeClass, requestAnimationFrame, round, transitionCheckStyles, trigger, truncate, wrapJQuery, _jQueryWrapped, _old, _ref, _ref1,
     __slice = [].slice;
@@ -17702,7 +17812,7 @@ Kutility.prototype.blur = function(el, x) {
 
 }).call(this);
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 var self = self || {};// File:src/Three.js
 
 /**
@@ -52850,7 +52960,7 @@ if (typeof exports !== 'undefined') {
   this['THREE'] = THREE;
 }
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -52936,7 +53046,7 @@ var isArray = Array.isArray || function (xs) {
   return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -53023,10 +53133,10 @@ var objectKeys = Object.keys || function (obj) {
   return res;
 };
 
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 'use strict';
 
 exports.decode = exports.parse = require('./decode');
 exports.encode = exports.stringify = require('./encode');
 
-},{"./decode":31,"./encode":32}]},{},[14]);
+},{"./decode":32,"./encode":33}]},{},[14]);

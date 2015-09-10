@@ -13,6 +13,9 @@ var didFindBeaconCallback;
 class OneOff {
   constructor(options) {
     this.name = options.name || (Math.random() * 10000) + '';
+    this.symbolName = options.symbolName;
+    this.position = options.position;
+
     this.active = false;
   }
 
@@ -166,7 +169,6 @@ class BeaconOneOff extends MeshedOneOff {
     super(options);
 
     this.$element = options.$element;
-    this.position = options.position;
     this.isNear = false;
     this.nearDistance = options.nearDistance || 20;
   }

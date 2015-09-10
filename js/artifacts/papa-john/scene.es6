@@ -17,7 +17,8 @@ export class PapaJohn extends ShaneScene {
   constructor(renderer, camera, scene, options) {
     super(renderer, camera, scene, options);
 
-    this.name = "Shane's Papa, John";
+    this.name = "Shane's Papa John";
+    this.symbolName = '/media/symbols/papa.png';
 
     var host = (this.isLive? urls.papaJohn.live : urls.papaJohn.web);
     this.videoBase = host + 'video/';
