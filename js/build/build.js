@@ -6080,7 +6080,22 @@ var BeaconOneOff = (function (_MeshedOneOff2) {
   return BeaconOneOff;
 })(MeshedOneOff);
 
-var VideoOneOff = (function (_BeaconOneOff) {
+var PoeticOneOff = (function (_BeaconOneOff) {
+  function PoeticOneOff(options) {
+    _classCallCheck(this, PoeticOneOff);
+
+    var text = options.text;
+    options.$element = $("<div class=\"one-off-text\">" + text + "</div>");
+
+    _get(Object.getPrototypeOf(PoeticOneOff.prototype), "constructor", this).call(this, options);
+  }
+
+  _inherits(PoeticOneOff, _BeaconOneOff);
+
+  return PoeticOneOff;
+})(BeaconOneOff);
+
+var VideoOneOff = (function (_BeaconOneOff2) {
   function VideoOneOff(options) {
     _classCallCheck(this, VideoOneOff);
 
@@ -6089,7 +6104,7 @@ var VideoOneOff = (function (_BeaconOneOff) {
     this.videoName = options.videoName;
   }
 
-  _inherits(VideoOneOff, _BeaconOneOff);
+  _inherits(VideoOneOff, _BeaconOneOff2);
 
   _createClass(VideoOneOff, {
     updateForNear: {
@@ -6132,7 +6147,7 @@ var oneOffs = [
 // rotating men
 new RotatingMan({
   name: "it is just sex man",
-  text: "It's just ... sex ...",
+  text: "It's just... sex...",
   textColor: 16711818,
   position: new THREE.Vector3(0, 0, -25)
 }), new RotatingMan({
@@ -6142,7 +6157,7 @@ new RotatingMan({
   position: new THREE.Vector3(25, 0, -25)
 }), new RotatingMan({
   name: "old man",
-  text: "My old man's ... that old man",
+  text: "My old man's... that old man",
   textColor: 6710886,
   position: new THREE.Vector3(-25, 0, -25)
 }), new RotatingMan({
@@ -6223,25 +6238,83 @@ new RotatingMan({
   position: new THREE.Vector3(100, 0, -20)
 }),
 
+// material
+new RotatingMan({
+  name: "Material Metaphor",
+  text: "Material is the metaphor",
+  textColor: 4138941,
+  position: new THREE.Vector3(-100, 0, -300)
+}), new RotatingMan({
+  name: "Meaningful Motion",
+  text: "Motion provides meaning",
+  textColor: 4138941,
+  position: new THREE.Vector3(-75, 0, -325)
+}), new PoeticOneOff({
+  name: "What is the material metaphor?",
+  text: "A material metaphor is the unifying theory of a rationalized space and a system of motion. The material is grounded in tactile reality, inspired by the study of paper and ink, yet technologically advanced and open to imagination and magic.",
+  position: new THREE.Vector3(-50, -5, -310)
+}), new PoeticOneOff({
+  name: "Surfaces and Edges",
+  text: "Surfaces and edges of the material provide visual cues that are grounded in reality. The use of familiar tactile attributes helps users quickly understand affordances. Yet the flexibility of the material creates new affordances that supercede those in the physical world, without breaking the rules of physics.",
+  position: new THREE.Vector3(-25, -5, -300)
+}), new RotatingMan({
+  name: "1 Environment",
+  text: "All action takes place in a single environment",
+  textColor: 4138941,
+  position: new THREE.Vector3(0, 0, -310)
+}), new PoeticOneOff({
+  name: "Fundamentals of light and surface",
+  text: "The fundamentals of light, surface, and movement are key to conveying how objects move, interact, and exist in space and in relation to each other. Realistic lighting shows seams, divides space, and indicates moving parts.",
+  position: new THREE.Vector3(25, -5, -325)
+}), new RotatingMan({
+  name: "meaningful and appropriate",
+  text: "Motion is meaningful and appropriate",
+  textColor: 4138941,
+  position: new THREE.Vector3(50, 0, -345)
+}), new RotatingMan({
+  name: "subtle yet clear",
+  text: "Feedback is subtle yet clear",
+  textColor: 4138941,
+  position: new THREE.Vector3(75, 0, -360)
+}), new RotatingMan({
+  name: "efficient yet coherent",
+  text: "Transitions are efﬁcient yet coherent",
+  textColor: 4138941,
+  position: new THREE.Vector3(100, 0, -345)
+}), new PoeticOneOff({
+  name: "Material has properties",
+  text: "Material has certain immutable characteristics and inherent behaviors. Understanding these qualities will help you manipulate material in a way that’s consistent.<br>Material casts shadows. Shadows result naturally from the relative elevation (z-position) between material elements.<br>Content is displayed on material, in any shape and color. Content does not add thickness to material.<br>Content can behave independently of the material, but is limited within the bounds of the material.",
+  position: new THREE.Vector3(75, -5, -380)
+}), new RotatingMan({
+  name: "solid material",
+  text: "Material Is Solid",
+  textColor: 4138941,
+  position: new THREE.Vector3(125, 0, -360)
+}), new PoeticOneOff({
+  name: "Material never bends",
+  text: "Material never bends or folds.<br>Sheets of material can join together to become a single sheet of material.<br>When split, material can heal. For example, if you remove a portion of material from a sheet of material, the sheet of material will become a whole sheet again.<br>Material can be spontaneously generated or destroyed anywhere in the environment.",
+  position: new THREE.Vector3(-125, -5, -310)
+}),
+
 // isolated poems
-new BeaconOneOff({
+new PoeticOneOff({
   name: "My Dog's Life",
-  $element: $("<div class=\"one-off-text\">" + dogPoemOneOffText + "</div>"),
+  text: dogPoemOneOffText,
   position: new THREE.Vector3(-15, -5, -20)
 }),
 
 // life hacks
-new BeaconOneOff({
+new PoeticOneOff({
   name: "Life Hack I",
-  $element: $("<div class=\"one-off-text\">Life Hack I.<br>If you want to die gamble everything until:<br>1. You have enough money to live as a king<br>2. You have nothing</div>"),
+  text: "Life Hack I.<br>If you want to die gamble everything until:<br>1. You have enough money to live as a king<br>2. You have nothing",
   position: new THREE.Vector3(-30, -5, -25)
-}), new BeaconOneOff({
+}), new PoeticOneOff({
   name: "Life Hack II",
-  $element: $("<div class=\"one-off-text\">Life Hack II.<br>If you want to die<br>Never pay taxes and you'll have more money<br>to thrive<br>and when They finally come for you<br>just do what you wanted</div>"),
+  text: "Life Hack II.<br>If you want to die<br>Never pay taxes and you'll have more money<br>to thrive<br>and when They finally come for you<br>just do what you wanted",
   position: new THREE.Vector3(-75, -5, -25)
-}), new BeaconOneOff({
+}), new PoeticOneOff({
   name: "Life Hack III",
-  $element: $("<div class=\"one-off-text\">Life Hack III.<br>If you want to die<br>just Find a way<br>to accumulate power<br>and soon you are ready to<br>live again</div>"),
+  text: "Life Hack III.<br>If you want to die<br>just Find a way<br>to accumulate power<br>and soon you are ready to<br>live again",
   position: new THREE.Vector3(200, -5, -25)
 }),
 
