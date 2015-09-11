@@ -49,9 +49,9 @@ var ASMR = exports.ASMR = (function (_ShaneScene) {
     createTalisman: {
       value: function createTalisman() {
         var talisman = new Talisman({
-          position: new THREE.Vector3(-10, -1.4, -10),
+          position: new THREE.Vector3(-90, -8, -80),
           modelPath: "/js/models/mug.json",
-          modelScale: 1.2
+          modelScale: 8
         });
         return talisman;
       }
@@ -349,9 +349,9 @@ var Bruno = exports.Bruno = (function (_ShaneScene) {
     createTalisman: {
       value: function createTalisman() {
         var talisman = new Talisman({
-          position: new THREE.Vector3(-150, 100, -300),
+          position: new THREE.Vector3(-200, 666, -666),
           geometryCreator: function () {
-            return new THREE.SphereGeometry(5, 32, 32);
+            return new THREE.SphereGeometry(16, 32, 32);
           },
           materialOptions: {
             color: 16777215
@@ -1513,12 +1513,13 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
     createTalisman: {
       value: function createTalisman() {
         var talisman = new Talisman({
-          position: new THREE.Vector3(0, 0, -10),
+          position: new THREE.Vector3(20, 0, 140),
           materialOptions: {
             map: THREE.ImageUtils.loadTexture("/media/talisman-images/cad_foot.jpg")
           },
           geometryCreator: function () {
-            return new THREE.BoxGeometry(2.7, 2.7, 2.7);
+            var size = 12;
+            return new THREE.BoxGeometry(size, size, size);
           }
         });
         return talisman;
@@ -2127,9 +2128,9 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
     createTalisman: {
       value: function createTalisman() {
         var talisman = new Talisman({
-          position: new THREE.Vector3(-5, -1.3, -10),
+          position: new THREE.Vector3(-75, -14, -200),
           modelPath: "/js/models/popcorn-popper.json",
-          modelScale: 1
+          modelScale: 7
         });
         return talisman;
       }

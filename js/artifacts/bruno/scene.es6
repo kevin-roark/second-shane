@@ -24,9 +24,9 @@ export class Bruno extends ShaneScene {
 
   createTalisman() {
     let talisman = new Talisman({
-      position: new THREE.Vector3(-150, 100, -300),
+      position: new THREE.Vector3(-200, 666, -666),
       geometryCreator: () => {
-        return new THREE.SphereGeometry(5, 32, 32);
+        return new THREE.SphereGeometry(16, 32, 32);
       },
       materialOptions: {
         color: 0xffffff

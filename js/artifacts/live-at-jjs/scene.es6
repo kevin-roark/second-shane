@@ -26,9 +26,9 @@ export class LiveAtJJs extends ShaneScene {
 
   createTalisman() {
     let talisman = new Talisman({
-      position: new THREE.Vector3(-5, -1.3, -10),
+      position: new THREE.Vector3(-75, -14, -200),
       modelPath: '/js/models/popcorn-popper.json',
-      modelScale: 1.0
+      modelScale: 7.0
     });
     return talisman;
   }
