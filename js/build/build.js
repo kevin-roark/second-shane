@@ -5541,6 +5541,16 @@ var SecondShane = (function (_ThreeBoiler) {
       value: function initMiniMap() {
         var mapElements = [];
 
+        // add one-offs to map
+        for (i = 0; i < this.oneOffs.length; i++) {
+          var oneOff = this.oneOffs[i];
+          mapElements.push({
+            position: oneOff.position,
+            symbol: oneOff.symbolName,
+            length: oneOff.symbolLength
+          });
+        }
+
         // add shane scenes to map
         for (var i = 0; i < this.shaneScenes.length; i++) {
           var scene = this.shaneScenes[i];
@@ -5548,14 +5558,6 @@ var SecondShane = (function (_ThreeBoiler) {
             position: scene.talisman.position,
             symbol: scene.symbolName,
             length: 32
-          });
-        }
-
-        // add one-offs to map
-        for (i = 0; i < this.oneOffs.length; i++) {
-          var oneOff = this.oneOffs[i];
-          mapElements.push({
-            position: oneOff.position
           });
         }
 
@@ -5943,6 +5945,7 @@ var OneOff = (function () {
 
     this.name = options.name || Math.random() * 10000 + "";
     this.symbolName = options.symbolName;
+    this.symbolLength = options.symbolLength;
     this.position = options.position;
 
     this.active = false;
@@ -6029,6 +6032,13 @@ var RotatingMan = (function (_MeshedOneOff) {
     _classCallCheck(this, RotatingMan);
 
     options.modelName = "/js/models/male.js";
+
+    if (!options.symbolName) {
+      options.symbolName = "/media/symbols/mannequin.png";
+    }
+    if (!options.symbolLength) {
+      options.symbolLength = 18;
+    }
 
     _get(Object.getPrototypeOf(RotatingMan.prototype), "constructor", this).call(this, options);
 
@@ -6207,6 +6217,13 @@ var PoeticOneOff = (function (_BeaconOneOff) {
     var text = options.text;
     options.$element = $("<div class=\"one-off-text\">" + text + "</div>");
 
+    if (!options.symbolName) {
+      options.symbolName = "/media/symbols/pencil.png";
+    }
+    if (!options.symbolLength) {
+      options.symbolLength = 24;
+    }
+
     _get(Object.getPrototypeOf(PoeticOneOff.prototype), "constructor", this).call(this, options);
   }
 
@@ -6218,6 +6235,13 @@ var PoeticOneOff = (function (_BeaconOneOff) {
 var VideoOneOff = (function (_BeaconOneOff2) {
   function VideoOneOff(options) {
     _classCallCheck(this, VideoOneOff);
+
+    if (!options.symbolName) {
+      options.symbolName = "/media/symbols/camcorder.png";
+    }
+    if (!options.symbolLength) {
+      options.symbolLength = 24;
+    }
 
     _get(Object.getPrototypeOf(VideoOneOff.prototype), "constructor", this).call(this, options);
 

@@ -229,6 +229,16 @@ class SecondShane extends ThreeBoiler {
   initMiniMap() {
     var mapElements = [];
 
+    // add one-offs to map
+    for (i = 0; i < this.oneOffs.length; i++) {
+      var oneOff = this.oneOffs[i];
+      mapElements.push({
+        position: oneOff.position,
+        symbol: oneOff.symbolName,
+        length: oneOff.symbolLength
+      });
+    }
+
     // add shane scenes to map
     for (var i = 0; i < this.shaneScenes.length; i++) {
       var scene = this.shaneScenes[i];
@@ -236,14 +246,6 @@ class SecondShane extends ThreeBoiler {
         position: scene.talisman.position,
         symbol: scene.symbolName,
         length: 32
-      });
-    }
-
-    // add one-offs to map
-    for (i = 0; i < this.oneOffs.length; i++) {
-      var oneOff = this.oneOffs[i];
-      mapElements.push({
-        position: oneOff.position
       });
     }
 

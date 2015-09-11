@@ -14,6 +14,7 @@ class OneOff {
   constructor(options) {
     this.name = options.name || (Math.random() * 10000) + '';
     this.symbolName = options.symbolName;
+    this.symbolLength = options.symbolLength;
     this.position = options.position;
 
     this.active = false;
@@ -75,6 +76,13 @@ class MeshedOneOff extends OneOff {
 class RotatingMan extends MeshedOneOff {
   constructor(options) {
     options.modelName = '/js/models/male.js';
+
+    if (!options.symbolName) {
+      options.symbolName = '/media/symbols/mannequin.png';
+    }
+    if (!options.symbolLength) {
+      options.symbolLength = 18;
+    }
 
     super(options);
 
@@ -226,12 +234,27 @@ class PoeticOneOff extends BeaconOneOff {
     var text = options.text;
     options.$element = $('<div class="one-off-text">' + text + '</div>');
 
+    if (!options.symbolName) {
+      options.symbolName = '/media/symbols/pencil.png';
+    }
+    if (!options.symbolLength) {
+      options.symbolLength = 24;
+    }
+
     super(options);
   }
 }
 
 class VideoOneOff extends BeaconOneOff {
   constructor(options) {
+
+    if (!options.symbolName) {
+      options.symbolName = '/media/symbols/camcorder.png';
+    }
+    if (!options.symbolLength) {
+      options.symbolLength = 24;
+    }
+
     super(options);
 
     this.videoName = options.videoName;
