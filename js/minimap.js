@@ -13,7 +13,6 @@ var scaledHalfMinimapSize = halfSizeOfMinimap * pixelUnits;
 var arrowImage = new Image();
 arrowImage.src = '/media/symbols/arrow.png';
 var arrowLength = 32;
-var centeredArrowPosition = scaledHalfMinimapSize - arrowLength / 2;
 
 var defaultImage = new Image();
 defaultImage.src = '/media/symbols/dot.png';
@@ -41,9 +40,6 @@ module.exports.update = function(centerPosition, rotation) {
     return; // wait for init
   }
 
-  var sinValue = Math.sin(rotation);
-  var cosValue = Math.cos(rotation);
-
   // clear the map
   context.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -60,13 +56,11 @@ module.exports.update = function(centerPosition, rotation) {
       var length = element.length || 8;
       var halfLength = length / 2;
 
-      // rotation gleaned from http://stackoverflow.com/questions/3162643/proper-trigonometry-for-rotating-a-point-around-the-origin
+      // rotation (now unused) gleaned from http://stackoverflow.com/questions/3162643/proper-trigonometry-for-rotating-a-point-around-the-origin
       var xLocation = xd * pixelUnits - halfLength;
       var yLocation = zd * pixelUnits - halfLength;
-      var rotatedXLocation = xLocation * cosValue - yLocation * sinValue;
-      var rotatedYLocation = xLocation * sinValue + yLocation * cosValue;
 
-      context.drawImage(image, rotatedXLocation + scaledHalfMinimapSize, rotatedYLocation + scaledHalfMinimapSize, length, length);
+      context.drawImage(image, xLocation + scaledHalfMinimapSize, yLocation + scaledHalfMinimapSize, length, length);
     }
   }
 
@@ -74,6 +68,16 @@ module.exports.update = function(centerPosition, rotation) {
   context.save();
   context.shadowColor = '#20eb83';
   context.shadowBlur = 25;
-  context.drawImage(arrowImage, centeredArrowPosition, centeredArrowPosition, arrowLength, arrowLength);
+  drawRotatedImage(context, arrowImage, scaledHalfMinimapSize, scaledHalfMinimapSize, arrowLength, arrowLength, -rotation);
   context.restore();
 };
+
+function drawRotatedImage(context, image, x, y, width, height, rotation) {
+	context.save();
+
+	context.translate(x, y); // move context origin to center point
+	context.rotate(rotation); // rotate the context about its new origin
+	context.drawImage(image, -width / 2, -height / 2, width, height); // draw image at given size
+
+	context.restore();
+}
