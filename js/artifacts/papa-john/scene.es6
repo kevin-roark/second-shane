@@ -27,9 +27,9 @@ export class PapaJohn extends ShaneScene {
 
   createTalisman() {
     let talisman = new Talisman({
-      position: new THREE.Vector3(5, 0, -10),
+      position: new THREE.Vector3(196, 0, -30),
       modelPath: '/js/models/cactus/low_poly_cactus.json',
-      modelScale: 0.5
+      modelScale: 3.0
     });
     return talisman;
   }

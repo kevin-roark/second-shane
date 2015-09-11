@@ -32,9 +32,9 @@ export class GodIsAMan extends ShaneScene {
 
   createTalisman() {
     let talisman = new Talisman({
-      position: new THREE.Vector3(10, 0, -10),
+      position: new THREE.Vector3(220, 0, -220),
       modelPath: '/js/models/basketball/basketball.json',
-      modelScale: 0.8
+      modelScale: 3.0
     });
     return talisman;
   }

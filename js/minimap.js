@@ -4,7 +4,7 @@ var context = canvas.getContext('2d');
 
 var _mapElements;
 
-var sizeOfMinimap = 400;
+var sizeOfMinimap = 500;
 var halfSizeOfMinimap = sizeOfMinimap / 2;
 var paddedHalfSizeOfMinimap = halfSizeOfMinimap + 5;
 var pixelUnits = canvas.width / sizeOfMinimap;

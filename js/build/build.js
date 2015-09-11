@@ -990,9 +990,9 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
     createTalisman: {
       value: function createTalisman() {
         var talisman = new Talisman({
-          position: new THREE.Vector3(10, 0, -10),
+          position: new THREE.Vector3(220, 0, -220),
           modelPath: "/js/models/basketball/basketball.json",
-          modelScale: 0.8
+          modelScale: 3
         });
         return talisman;
       }
@@ -2416,9 +2416,9 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
     createTalisman: {
       value: function createTalisman() {
         var talisman = new Talisman({
-          position: new THREE.Vector3(5, 0, -10),
+          position: new THREE.Vector3(196, 0, -30),
           modelPath: "/js/models/cactus/low_poly_cactus.json",
-          modelScale: 0.5
+          modelScale: 3
         });
         return talisman;
       }
@@ -5773,7 +5773,7 @@ var context = canvas.getContext("2d");
 
 var _mapElements;
 
-var sizeOfMinimap = 400;
+var sizeOfMinimap = 500;
 var halfSizeOfMinimap = sizeOfMinimap / 2;
 var paddedHalfSizeOfMinimap = halfSizeOfMinimap + 5;
 var pixelUnits = canvas.width / sizeOfMinimap;
