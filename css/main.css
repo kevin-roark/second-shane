@@ -52,12 +52,13 @@ body {
 
 #bottom-left-hud {
   position: fixed;
-  bottom: 10px;
-  left: 10px;
+  bottom: 9px;
+  left: 9px;
 }
 
 #minimap-canvas {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(225, 225, 225, 1.0);
+  box-shadow: 0px 0px 20px 5px rgba(255, 255, 255, 0.75);
 }
 
 #bottom-right-hud {
