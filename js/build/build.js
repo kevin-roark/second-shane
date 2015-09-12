@@ -305,7 +305,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../shane-mesh":19,"../../shane-scene.es6":20,"../../talisman.es6":21,"../../urls":24,"jquery":28,"kutility":29,"three":31}],2:[function(require,module,exports){
+},{"../../shane-mesh":19,"../../shane-scene.es6":20,"../../talisman.es6":21,"../../urls":24,"jquery":29,"kutility":30,"three":32}],2:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -623,7 +623,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../shane-mesh":19,"../../shane-scene.es6":20,"../../talisman.es6":21,"../../urls":24,"./static-canvas":3,"jquery":28,"three":31}],3:[function(require,module,exports){
+},{"../../shane-mesh":19,"../../shane-scene.es6":20,"../../talisman.es6":21,"../../urls":24,"./static-canvas":3,"jquery":29,"three":32}],3:[function(require,module,exports){
 "use strict";
 
 module.exports.fuzz = function (canvas) {
@@ -736,7 +736,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"jquery":28}],5:[function(require,module,exports){
+},{"jquery":29}],5:[function(require,module,exports){
 "use strict";
 
 var $ = require("jquery");
@@ -940,7 +940,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 // chorus
 
-},{"jquery":28,"kutility":29}],6:[function(require,module,exports){
+},{"jquery":29,"kutility":30}],6:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1470,7 +1470,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../shane-scene.es6":20,"../../talisman.es6":21,"../../urls":24,"./basketball.es6":4,"./karaoke.es6":5,"jquery":28,"kutility":29,"three":31}],7:[function(require,module,exports){
+},{"../../shane-scene.es6":20,"../../talisman.es6":21,"../../urls":24,"./basketball.es6":4,"./karaoke.es6":5,"jquery":29,"kutility":30,"three":32}],7:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2085,7 +2085,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../shane-mesh":19,"../../shane-scene.es6":20,"../../talisman.es6":21,"../../urls":24,"jquery":28,"kutility":29,"three":31}],8:[function(require,module,exports){
+},{"../../shane-mesh":19,"../../shane-scene.es6":20,"../../talisman.es6":21,"../../urls":24,"jquery":29,"kutility":30,"three":32}],8:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2373,7 +2373,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../shane-mesh":19,"../../shane-scene.es6":20,"../../talisman.es6":21,"../../urls":24,"jquery":28,"three":31}],9:[function(require,module,exports){
+},{"../../shane-mesh":19,"../../shane-scene.es6":20,"../../talisman.es6":21,"../../urls":24,"jquery":29,"three":32}],9:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2701,7 +2701,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../lib/three.terrain":13,"../../shane-mesh":19,"../../shane-scene.es6":20,"../../talisman.es6":21,"../../urls":24,"../../util/video-mesh":27,"jquery":28,"kutility":29,"three":31}],10:[function(require,module,exports){
+},{"../../lib/three.terrain":13,"../../shane-mesh":19,"../../shane-scene.es6":20,"../../talisman.es6":21,"../../urls":24,"../../util/video-mesh":28,"jquery":29,"kutility":30,"three":32}],10:[function(require,module,exports){
 "use strict";
 
 /**
@@ -3038,7 +3038,7 @@ module.exports = function (camera, options) {
 	this.updateRotationVector();
 };
 
-},{"./pointerlocker":11,"three":31}],11:[function(require,module,exports){
+},{"./pointerlocker":11,"three":32}],11:[function(require,module,exports){
 "use strict";
 
 module.exports = function () {
@@ -3250,7 +3250,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"jquery":28}],13:[function(require,module,exports){
+},{"jquery":29}],13:[function(require,module,exports){
 "use strict";
 
 /**
@@ -5290,7 +5290,7 @@ THREE.Terrain.Influence = function (g, options, f, x, y, r, h, t, e) {
 
 module.exports = THREE.Terrain;
 
-},{"three":31}],14:[function(require,module,exports){
+},{"three":32}],14:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -5771,7 +5771,7 @@ $(function () {
   shane.activate();
 });
 
-},{"./controls/fly-controls":10,"./minimap":15,"./new-money":16,"./one-offs.es6":17,"./scenes.es6":18,"./theme.es6":22,"./three-boiler.es6":23,"./util/chatterbox.es6":25,"jquery":28,"querystring":34,"three":31}],15:[function(require,module,exports){
+},{"./controls/fly-controls":10,"./minimap":15,"./new-money":16,"./one-offs.es6":17,"./scenes.es6":18,"./theme.es6":22,"./three-boiler.es6":23,"./util/chatterbox.es6":25,"jquery":29,"querystring":35,"three":32}],15:[function(require,module,exports){
 "use strict";
 
 var canvas = document.querySelector("#minimap-canvas");
@@ -5927,7 +5927,7 @@ function setMoney(money) {
   odometer.update(money);
 }
 
-},{"jquery":28,"odometer":30}],17:[function(require,module,exports){
+},{"jquery":29,"odometer":31}],17:[function(require,module,exports){
 "use strict";
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
@@ -6488,7 +6488,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"./dahmer.es6":12,"./shane-mesh":19,"jquery":28,"kutility":29,"three":31}],18:[function(require,module,exports){
+},{"./dahmer.es6":12,"./shane-mesh":19,"jquery":29,"kutility":30,"three":32}],18:[function(require,module,exports){
 "use strict";
 
 var ASMR = require("./artifacts/asmr/scene.es6").ASMR;
@@ -6522,10 +6522,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var THREE = require("three");
 var kt = require("kutility");
+var loader = require("./util/model-loader");
 
 module.exports = ShaneMesh;
-
-var loader = new THREE.JSONLoader();
 
 function ShaneMesh(options) {
   var startPos = options.position || new THREE.Vector3();
@@ -6605,7 +6604,7 @@ ShaneMesh.prototype.createMesh = function (callback) {
       }
     }
 
-    loader.load(self.modelName, function (geometry, materials) {
+    loader(self.modelName, function (geometry, materials) {
       self.geometry = geometry;
       self.materials = materials;
 
@@ -6716,7 +6715,7 @@ ShaneMesh.prototype.fallToFloor = function (threshold, speed) {
 ShaneMesh.prototype.additionalInit = function () {};
 ShaneMesh.prototype.additionalRender = function () {};
 
-},{"kutility":29,"three":31}],20:[function(require,module,exports){
+},{"./util/model-loader":26,"kutility":30,"three":32}],20:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -6873,7 +6872,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"./dahmer.es6":12,"./talisman.es6":21,"jquery":28,"three":31}],21:[function(require,module,exports){
+},{"./dahmer.es6":12,"./talisman.es6":21,"jquery":29,"three":32}],21:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -7002,7 +7001,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"three":31}],22:[function(require,module,exports){
+},{"three":32}],22:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -7048,7 +7047,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"./util/skybox":26}],23:[function(require,module,exports){
+},{"./util/skybox":27}],23:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -7170,7 +7169,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"jquery":28,"three":31}],24:[function(require,module,exports){
+},{"jquery":29,"three":32}],24:[function(require,module,exports){
 "use strict";
 
 module.exports.asmr = {
@@ -7288,7 +7287,54 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"jquery":28}],26:[function(require,module,exports){
+},{"jquery":29}],26:[function(require,module,exports){
+"use strict";
+
+var THREE = require("three");
+
+var cache = {};
+
+var loader = new THREE.JSONLoader();
+
+module.exports = function loadModel(name, callback) {
+  if (typeof callback !== "function") {
+    return;
+  }if (cache[name]) {
+    fetch(name, callback);
+    return;
+  }
+
+  loader.load(name, function (geometry, materials) {
+    add(name, geometry, materials);
+    fetch(name, callback);
+  });
+};
+
+function add(name, geometry, materials) {
+  cache[name] = {
+    geometry: geometry,
+    materials: materials
+  };
+}
+
+function fetch(name, callback) {
+  var cached = cache[name];
+
+  var geometry = cached.geometry.clone();
+  var materials;
+  if (Array.isArray(cached.materials)) {
+    materials = [];
+    for (var i = 0; i < cached.materials.length; i++) {
+      materials.push(cached.materials[i].clone());
+    }
+  } else {
+    materials = cached.materials.clone();
+  }
+
+  callback(geometry, materials);
+}
+
+},{"three":32}],27:[function(require,module,exports){
 "use strict";
 
 var THREE = require("three");
@@ -7358,7 +7404,7 @@ module.exports.blocker = function (size) {
   return new THREE.Mesh(geometry, material);
 };
 
-},{"three":31}],27:[function(require,module,exports){
+},{"three":32}],28:[function(require,module,exports){
 "use strict";
 
 var THREE = require("three");
@@ -7421,7 +7467,7 @@ VideoMesh.prototype.rotateTo = function (rx, ry, rz) {
   this.mesh.rotation.set(rx, ry, rz);
 };
 
-},{"jquery":28,"three":31}],28:[function(require,module,exports){
+},{"jquery":29,"three":32}],29:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.3
  * http://jquery.com/
@@ -16628,7 +16674,7 @@ return jQuery;
 
 }));
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 
 /* export something */
 module.exports = new Kutility();
@@ -17202,7 +17248,7 @@ Kutility.prototype.blur = function(el, x) {
   this.setFilter(el, cf + f);
 };
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 (function() {
   var COUNT_FRAMERATE, COUNT_MS_PER_FRAME, DIGIT_FORMAT, DIGIT_HTML, DIGIT_SPEEDBOOST, DURATION, FORMAT_MARK_HTML, FORMAT_PARSER, FRAMERATE, FRAMES_PER_VALUE, MS_PER_FRAME, MutationObserver, Odometer, RIBBON_HTML, TRANSITION_END_EVENTS, TRANSITION_SUPPORT, VALUE_HTML, addClass, createFromHTML, fractionalPart, now, removeClass, requestAnimationFrame, round, transitionCheckStyles, trigger, truncate, wrapJQuery, _jQueryWrapped, _old, _ref, _ref1,
     __slice = [].slice;
@@ -17857,7 +17903,7 @@ Kutility.prototype.blur = function(el, x) {
 
 }).call(this);
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 var self = self || {};// File:src/Three.js
 
 /**
@@ -53005,7 +53051,7 @@ if (typeof exports !== 'undefined') {
   this['THREE'] = THREE;
 }
 
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -53091,7 +53137,7 @@ var isArray = Array.isArray || function (xs) {
   return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -53178,10 +53224,10 @@ var objectKeys = Object.keys || function (obj) {
   return res;
 };
 
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 'use strict';
 
 exports.decode = exports.parse = require('./decode');
 exports.encode = exports.stringify = require('./encode');
 
-},{"./decode":32,"./encode":33}]},{},[14]);
+},{"./decode":33,"./encode":34}]},{},[14]);

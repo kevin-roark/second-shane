@@ -1,10 +1,9 @@
 
 let THREE = require('three');
 let kt = require('kutility');
+var loader = require('./util/model-loader');
 
 module.exports = ShaneMesh;
-
-var loader = new THREE.JSONLoader();
 
 function ShaneMesh(options) {
   var startPos = options.position || new THREE.Vector3();
@@ -86,7 +85,7 @@ ShaneMesh.prototype.createMesh = function(callback) {
       }
     }
 
-    loader.load(self.modelName, function(geometry, materials) {
+    loader(self.modelName, function(geometry, materials) {
       self.geometry = geometry;
       self.materials = materials;
 
