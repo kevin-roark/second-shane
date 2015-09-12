@@ -319,61 +319,61 @@ export var oneOffs = [
     name: 'it is just sex man',
     text: "It's just... sex...",
     textColor: 0xff008a,
-    position: new THREE.Vector3(0, 0, -25)
+    position: new THREE.Vector3(-30, 0, -60)
   }),
   new RotatingMan({
     name: 'dog man',
     text: "I want my dog's life",
     textColor: 0x035d32,
-    position: new THREE.Vector3(25, 0, -25)
+    position: new THREE.Vector3(0, 0, -25)
   }),
   new RotatingMan({
     name: 'old man',
     text: "My old man's... that old man",
     textColor: 0x666666,
-    position: new THREE.Vector3(-25, 0, -25)
+    position: new THREE.Vector3(-300, 0, 100)
   }),
   new RotatingMan({
     name: 'man man',
     text: "I don't want to be a man anymore",
     textColor: 0x0d035d,
-    position: new THREE.Vector3(50, 0, -25)
+    position: new THREE.Vector3(45, 0, 400)
   }),
   new RotatingMan({
     name: 'break a man',
     text: "His Job, His Wife, His House, His Dog",
     textColor: 0xccad4f,
-    position: new THREE.Vector3(-50, 0, -25)
+    position: new THREE.Vector3(15, 0, -100)
   }),
   new RotatingMan({
     name: 'chris',
     text: "A Hopelessly Romantic Man Of Integrity",
     textColor: 0xff0017,
-    position: new THREE.Vector3(0, 0, -50)
+    position: new THREE.Vector3(70, 0, -175)
   }),
   new RotatingMan({
     name: 'something to cherish',
     text: 'Art used to be something to Cherish',
     textColor: 0x7a3caa,
-    position: new THREE.Vector3(40, 0, 20)
+    position: new THREE.Vector3(40, 0, 200)
   }),
   new RotatingMan({
     name: 'fragile',
     text: 'Fragile Masculinity',
     textColor: 0x0d15f0,
-    position: new THREE.Vector3(-40, 0, 20)
+    position: new THREE.Vector3(-30, 0, 24)
   }),
   new RotatingMan({
     name: 'stationary monitors',
     text: 'Monitors stay where positioned',
     textColor: 0x44cca7,
-    position: new THREE.Vector3(20, 0, -100)
+    position: new THREE.Vector3(150, 0, 150)
   }),
   new RotatingMan({
     name: 'facial monitors',
     text: 'Monitors can be placed close to the face',
     textColor: 0x6ccc44,
-    position: new THREE.Vector3(-10, 0, -100)
+    position: new THREE.Vector3(175, 0, 175)
   }),
 
   // dog as god
@@ -381,25 +381,25 @@ export var oneOffs = [
     name: 'dog as god I',
     text: 'I have known dogs that gave their lives for their masters',
     textColor: 0x372708,
-    position: new THREE.Vector3(25, 0, -50)
+    position: new THREE.Vector3(250, 0, -125)
   }),
   new RotatingMan({
     name: 'dog as god II',
     text: 'And if you give your heart to a dog he will not break it',
     textColor: 0x372708,
-    position: new THREE.Vector3(-25, 0, -50)
+    position: new THREE.Vector3(250, 0, -185)
   }),
   new RotatingMan({
     name: 'dog as god III',
     text: 'If you seek loyalty unto death, look no further than a dog',
     textColor: 0x372708,
-    position: new THREE.Vector3(50, 0, -50)
+    position: new THREE.Vector3(250, 0, -65)
   }),
   new RotatingMan({
     name: 'dog as god IV',
     text: "I don’t think that Dog is God spelled backwards",
     textColor: 0x372708,
-    position: new THREE.Vector3(-50, 0, -50)
+    position: new THREE.Vector3(290, 0, -125)
   }),
 
   // the flat
@@ -495,35 +495,35 @@ export var oneOffs = [
   new PoeticOneOff({
     name: "My Dog's Life",
     text: dogPoemOneOffText,
-    position: new THREE.Vector3(-15, -5, -20)
+    position: new THREE.Vector3(-200, -5, -20)
   }),
 
   // life hacks
   new PoeticOneOff({
     name: 'Life Hack I',
     text: 'Life Hack I.<br>If you want to die gamble everything until:<br>1. You have enough money to live as a king<br>2. You have nothing',
-    position: new THREE.Vector3(-30, -5, -25)
+    position: new THREE.Vector3(-140, -5, 150)
   }),
   new PoeticOneOff({
     name: 'Life Hack II',
     text: 'Life Hack II.<br>If you want to die<br>Never pay taxes and you\'ll have more money<br>to thrive<br>and when They finally come for you<br>just do what you wanted',
-    position: new THREE.Vector3(-75, -5, -25)
+    position: new THREE.Vector3(60, -5, 250)
   }),
   new PoeticOneOff({
     name: 'Life Hack III',
     text: 'Life Hack III.<br>If you want to die<br>just Find a way<br>to accumulate power<br>and soon you are ready to<br>live again',
-    position: new THREE.Vector3(200, -5, -25)
+    position: new THREE.Vector3(200, -5, 100)
   }),
 
   // vids
   new VideoOneOff({
     name: 'I Watched the Woods',
     videoName: 'media/videos/bigsur',
-    position: new THREE.Vector3(50, -5, 0)
+    position: new THREE.Vector3(80, -5, -40)
   }),
   new VideoOneOff({
     name: 'I Watched the Car',
     videoName: 'media/videos/brakes',
-    position: new THREE.Vector3(-50, -5, -50)
+    position: new THREE.Vector3(-60, -5, 90)
   })
 ];
