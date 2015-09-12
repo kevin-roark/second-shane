@@ -6526,6 +6526,8 @@ var loader = require("./util/model-loader");
 
 module.exports = ShaneMesh;
 
+var _meshCloningCache = {};
+
 function ShaneMesh(options) {
   var startPos = options.position || new THREE.Vector3();
   this.startX = startPos.x;
@@ -6588,8 +6590,6 @@ ShaneMesh.prototype.createMesh = function (callback) {
 
   if (self.meshCreator) {
     self.meshCreator(function (geometry, material, mesh) {
-      self.geometry = geometry;
-      self.material = material;
       self.mesh = mesh;
       if (callback) {
         callback();
@@ -6604,12 +6604,20 @@ ShaneMesh.prototype.createMesh = function (callback) {
       }
     }
 
-    loader(self.modelName, function (geometry, materials) {
-      self.geometry = geometry;
-      self.materials = materials;
+    var cloneableMesh = _meshCloningCache[self.modelName];
+    if (cloneableMesh) {
+      self.mesh = cloneableMesh.clone();
+      if (callback) {
+        callback();
+      }
+      return;
+    }
 
-      self.material = new THREE.MeshFaceMaterial(materials);
-      self.mesh = new THREE.Mesh(geometry, self.material);
+    loader(self.modelName, function (geometry, materials) {
+      var faceMaterial = new THREE.MeshFaceMaterial(materials);
+      self.mesh = new THREE.Mesh(geometry, faceMaterial);
+
+      _meshCloningCache[self.modelName] = self.mesh;
 
       if (callback) {
         callback();
