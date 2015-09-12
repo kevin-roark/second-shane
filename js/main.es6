@@ -155,7 +155,7 @@ class SecondShane extends ThreeBoiler {
     if (currentQuery.shaneScene) {
       if (!this.activeScene) {
         this.transitioning = false;
-        this.transitionToSceneWithName(currentQuery.shaneScene);
+        this.transitionToSceneWithSlug(currentQuery.shaneScene);
       }
     }
     else {
@@ -169,7 +169,7 @@ class SecondShane extends ThreeBoiler {
   updateHistoryForScene(scene) {
     var currentQuery = queryString.parse(window.location.search.substring(1));
 
-    currentQuery.shaneScene = scene.name;
+    currentQuery.shaneScene = scene.slug;
 
     this.updateHistoryWithQuery(currentQuery);
   }
@@ -346,10 +346,10 @@ class SecondShane extends ThreeBoiler {
     });
   }
 
-  transitionToSceneWithName(name) {
+  transitionToSceneWithSlug(slug) {
     for (var i = 0; i < this.shaneScenes.length; i++) {
       var scene = this.shaneScenes[i];
-      if (scene.name === name) {
+      if (scene.slug === slug) {
         this.transitionToScene(scene);
         return;
       }

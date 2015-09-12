@@ -18,6 +18,7 @@ export class PapaJohn extends ShaneScene {
     super(renderer, camera, scene, options);
 
     this.name = "Shane's Papa John";
+    this.slug = 'papa-john-revalation';
     this.symbolName = '/media/symbols/papa.png';
 
     var host = (this.isLive? urls.papaJohn.live : urls.papaJohn.web);

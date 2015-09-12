@@ -18,6 +18,7 @@ export class ASMR extends ShaneScene {
     super(renderer, camera, scene, options);
 
     this.name = "shane's ASMR treat";
+    this.slug = 'asmr-treat';
     this.symbolName = '/media/symbols/ear.png';
 
     var host = (this.isLive? urls.asmr.live : urls.asmr.web);

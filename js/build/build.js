@@ -33,6 +33,7 @@ var ASMR = exports.ASMR = (function (_ShaneScene) {
     _get(Object.getPrototypeOf(ASMR.prototype), "constructor", this).call(this, renderer, camera, scene, options);
 
     this.name = "shane's ASMR treat";
+    this.slug = "asmr-treat";
     this.symbolName = "/media/symbols/ear.png";
 
     var host = this.isLive ? urls.asmr.live : urls.asmr.web;
@@ -337,6 +338,7 @@ var Bruno = exports.Bruno = (function (_ShaneScene) {
     _get(Object.getPrototypeOf(Bruno.prototype), "constructor", this).call(this, renderer, camera, scene, options);
 
     this.name = "Bruno?";
+    this.slug = "bruno";
     this.symbolName = "/media/symbols/mars.png";
 
     var host = this.isLive ? urls.bruno.live : urls.bruno.web;
@@ -975,6 +977,7 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
     _get(Object.getPrototypeOf(GodIsAMan.prototype), "constructor", this).call(this, renderer, camera, scene, options);
 
     this.name = "God Is A Man";
+    this.slug = "god-is-a-man";
     this.symbolName = "/media/symbols/cross.png";
 
     var host = this.isLive ? urls.godIsAMan.live : urls.godIsAMan.web;
@@ -1500,6 +1503,7 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
     _get(Object.getPrototypeOf(iFeltTheFoot.prototype), "constructor", this).call(this, renderer, camera, scene, options);
 
     this.name = "i felt the foot";
+    this.slug = "i-felt-the-foot";
     this.symbolName = "/media/symbols/foot.png";
 
     var host = this.isLive ? urls.iFeltTheFoot.live : urls.iFeltTheFoot.web;
@@ -2113,6 +2117,7 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
     _get(Object.getPrototypeOf(LiveAtJJs.prototype), "constructor", this).call(this, renderer, camera, scene, options);
 
     this.name = "Mister Shane Live At JJ's";
+    this.slug = "live-at-jjs-place";
     this.symbolName = "/media/symbols/curtain.png";
 
     var host = this.isLive ? urls.liveAtJJs.live : urls.liveAtJJs.web;
@@ -2403,6 +2408,7 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
     _get(Object.getPrototypeOf(PapaJohn.prototype), "constructor", this).call(this, renderer, camera, scene, options);
 
     this.name = "Shane's Papa John";
+    this.slug = "papa-john-revalation";
     this.symbolName = "/media/symbols/papa.png";
 
     var host = this.isLive ? urls.papaJohn.live : urls.papaJohn.web;
@@ -5466,7 +5472,7 @@ var SecondShane = (function (_ThreeBoiler) {
         if (currentQuery.shaneScene) {
           if (!this.activeScene) {
             this.transitioning = false;
-            this.transitionToSceneWithName(currentQuery.shaneScene);
+            this.transitionToSceneWithSlug(currentQuery.shaneScene);
           }
         } else {
           if (this.activeScene) {
@@ -5480,7 +5486,7 @@ var SecondShane = (function (_ThreeBoiler) {
       value: function updateHistoryForScene(scene) {
         var currentQuery = queryString.parse(window.location.search.substring(1));
 
-        currentQuery.shaneScene = scene.name;
+        currentQuery.shaneScene = scene.slug;
 
         this.updateHistoryWithQuery(currentQuery);
       }
@@ -5671,11 +5677,11 @@ var SecondShane = (function (_ThreeBoiler) {
         });
       }
     },
-    transitionToSceneWithName: {
-      value: function transitionToSceneWithName(name) {
+    transitionToSceneWithSlug: {
+      value: function transitionToSceneWithSlug(slug) {
         for (var i = 0; i < this.shaneScenes.length; i++) {
           var scene = this.shaneScenes[i];
-          if (scene.name === name) {
+          if (scene.slug === slug) {
             this.transitionToScene(scene);
             return;
           }

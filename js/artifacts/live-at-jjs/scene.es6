@@ -15,6 +15,7 @@ export class LiveAtJJs extends ShaneScene {
     super(renderer, camera, scene, options);
 
     this.name = "Mister Shane Live At JJ's";
+    this.slug = 'live-at-jjs-place';
     this.symbolName = '/media/symbols/curtain.png';
 
     var host = (this.isLive? urls.liveAtJJs.live : urls.liveAtJJs.web);

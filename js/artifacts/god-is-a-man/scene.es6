@@ -21,6 +21,7 @@ export class GodIsAMan extends ShaneScene {
     super(renderer, camera, scene, options);
 
     this.name = 'God Is A Man';
+    this.slug = 'god-is-a-man';
     this.symbolName = '/media/symbols/cross.png';
 
     var host = (this.isLive? urls.godIsAMan.live : urls.godIsAMan.web);
