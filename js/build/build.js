@@ -2745,11 +2745,21 @@ module.exports = function (camera, options) {
 		return yawObject;
 	};
 
+	this.setEnabled = function (enabled) {
+		this.enabled = enabled;
+	};
+
 	this.requestPointerlock = function () {
 		this.locker.requestPointerlock();
 	};
 	this.exitPointerlock = function () {
 		this.locker.exitPointerlock();
+	};
+
+	this.reset = function () {
+		[yawObject, pitchObject, camera].forEach(function (obj) {
+			obj.position.set(0, 0, 0);obj.rotation.set(0, 0, 0);
+		});
 	};
 
 	// internals
@@ -2763,8 +2773,6 @@ module.exports = function (camera, options) {
 	this.rotationVector = new THREE.Vector3(0, 0, 0);
 
 	this.keydown = function (event) {
-		if (!this.enabled) return;
-
 		if (event.altKey) {
 			return;
 		}
@@ -2833,8 +2841,6 @@ module.exports = function (camera, options) {
 	};
 
 	this.keyup = function (event) {
-		if (!this.enabled) return;
-
 		switch (event.keyCode) {
 			case 16:
 				/* shift */this.movementSpeedMultiplier = 1;break;
@@ -2891,14 +2897,8 @@ module.exports = function (camera, options) {
 		this.updateRotationVector();
 	};
 
-	this.reset = function () {
-		[yawObject, pitchObject, camera].forEach(function (obj) {
-			obj.position.set(0, 0, 0);obj.rotation.set(0, 0, 0);
-		});
-	};
-
 	this.mousedown = function (event) {
-		if (!this.enabled || !this.locker.currentlyHasPointerlock) return;
+		if (!this.locker.currentlyHasPointerlock) return;
 
 		if (this.domElement !== document) {
 			this.domElement.focus();
@@ -2922,7 +2922,7 @@ module.exports = function (camera, options) {
 	};
 
 	this.mousemove = function (event) {
-		if (!this.enabled || !this.locker.currentlyHasPointerlock) return;
+		if (!this.locker.currentlyHasPointerlock) return;
 
 		if (!this.dragToLook || this.mouseStatus > 0) {
 			var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
@@ -2947,7 +2947,7 @@ module.exports = function (camera, options) {
 	};
 
 	this.mouseup = function (event) {
-		if (!this.enabled || !this.locker.currentlyHasPointerlock) return;
+		if (!this.locker.currentlyHasPointerlock) return;
 
 		event.preventDefault();
 		event.stopPropagation();
@@ -2973,17 +2973,19 @@ module.exports = function (camera, options) {
 		var time = performance.now();
 		var delta = (time - this.prevTime) / 1000;
 
-		var moveMult = delta * this.movementSpeed;
-		var rotMult = delta * this.rollSpeed;
+		if (this.enabled) {
+			var moveMult = delta * this.movementSpeed;
+			var rotMult = delta * this.rollSpeed;
 
-		yawObject.translateX(this.moveVector.x * moveMult);
-		yawObject.translateY(this.moveVector.y * moveMult);
-		yawObject.translateZ(this.moveVector.z * moveMult);
+			yawObject.translateX(this.moveVector.x * moveMult);
+			yawObject.translateY(this.moveVector.y * moveMult);
+			yawObject.translateZ(this.moveVector.z * moveMult);
 
-		if (this.keysAsRotation) {
-			yawObject.rotateX(this.rotationVector.x * rotMult);
-			yawObject.rotateY(this.rotationVector.y * rotMult);
-			yawObject.rotateZ(this.rotationVector.z * rotMult);
+			if (this.keysAsRotation) {
+				yawObject.rotateX(this.rotationVector.x * rotMult);
+				yawObject.rotateY(this.rotationVector.y * rotMult);
+				yawObject.rotateZ(this.rotationVector.z * rotMult);
+			}
 		}
 
 		this.prevTime = time;
@@ -5365,7 +5367,7 @@ var SecondShane = (function (_ThreeBoiler) {
       if (_this.controls.requestPointerlock) {
         _this.controls.requestPointerlock();
       }
-      _this.controls.enabled = true;
+      _this.controls.setEnabled(true);
     });
 
     this.oneOffs = oneOffs;
@@ -5396,9 +5398,13 @@ var SecondShane = (function (_ThreeBoiler) {
       moneyMan.setMoneyReason("Won $" + money + " for discovering \"" + beacon.name + "\"!");
 
       _this.waitBeforeAddingMoney = true;
+      _this.controls.setEnabled(false);
       setTimeout(function () {
         _this.waitBeforeAddingMoney = false;
       }, 3000);
+      setTimeout(function () {
+        _this.controls.setEnabled(true);
+      }, 566);
     });
 
     setTimeout(function () {
@@ -5658,7 +5664,7 @@ var SecondShane = (function (_ThreeBoiler) {
 
           _this.addSharedObjects();
           _this.controls.getObject().position.copy(_this.sharedCameraPosition);
-          _this.controls.enabled = true;
+          _this.controls.setEnabled(true);
         }, function () {
           _this.transitioning = false;
 
@@ -5698,7 +5704,7 @@ var SecondShane = (function (_ThreeBoiler) {
 
         this.transitioning = true;
         this.activeScene = shaneScene;
-        this.controls.enabled = false;
+        this.controls.setEnabled(false);
         this.controls.exitPointerlock();
         this.sharedCameraPosition.copy(this.controls.getObject().position);
 

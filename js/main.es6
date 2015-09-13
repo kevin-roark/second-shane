@@ -53,7 +53,7 @@ class SecondShane extends ThreeBoiler {
       if (this.controls.requestPointerlock) {
         this.controls.requestPointerlock();
       }
-      this.controls.enabled = true;
+      this.controls.setEnabled(true);
     });
 
     this.oneOffs = oneOffs;
@@ -84,9 +84,13 @@ class SecondShane extends ThreeBoiler {
       moneyMan.setMoneyReason('Won $' + money + ' for discovering "' + beacon.name + '"!');
 
       this.waitBeforeAddingMoney = true;
+      this.controls.setEnabled(false);
       setTimeout(() => {
         this.waitBeforeAddingMoney = false;
       }, 3000);
+      setTimeout(() => {
+        this.controls.setEnabled(true);
+      }, 566);
     });
 
     setTimeout(() => {
@@ -326,7 +330,7 @@ class SecondShane extends ThreeBoiler {
 
       this.addSharedObjects();
       this.controls.getObject().position.copy(this.sharedCameraPosition);
-      this.controls.enabled = true;
+      this.controls.setEnabled(true);
     }, () => {
       this.transitioning = false;
 
@@ -363,7 +367,7 @@ class SecondShane extends ThreeBoiler {
 
     this.transitioning = true;
     this.activeScene = shaneScene;
-    this.controls.enabled = false;
+    this.controls.setEnabled(false);
     this.controls.exitPointerlock();
     this.sharedCameraPosition.copy(this.controls.getObject().position);
 
