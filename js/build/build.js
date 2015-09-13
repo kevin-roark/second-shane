@@ -5398,13 +5398,16 @@ var SecondShane = (function (_ThreeBoiler) {
       moneyMan.setMoneyReason("Won $" + money + " for discovering \"" + beacon.name + "\"!");
 
       _this.waitBeforeAddingMoney = true;
-      _this.controls.setEnabled(false);
       setTimeout(function () {
         _this.waitBeforeAddingMoney = false;
       }, 3000);
-      setTimeout(function () {
-        _this.controls.setEnabled(true);
-      }, 566);
+
+      if (beacon.$element) {
+        _this.controls.setEnabled(false);
+        setTimeout(function () {
+          _this.controls.setEnabled(true);
+        }, 566);
+      }
     });
 
     setTimeout(function () {
@@ -6198,9 +6201,11 @@ var BeaconOneOff = (function (_MeshedOneOff2) {
       value: function updateForNear() {
         this.isNear = true;
 
-        this.$element.css("display", "none");
-        domContainer.append(this.$element);
-        this.$element.fadeIn();
+        if (this.$element) {
+          this.$element.css("display", "none");
+          domContainer.append(this.$element);
+          this.$element.fadeIn();
+        }
 
         if (didFindBeaconCallback) {
           didFindBeaconCallback(this);
@@ -6252,6 +6257,7 @@ var ImageBeacon = (function (_BeaconOneOff2) {
       var longEdgeSize = 9;
       var geometry = options.portait ? new THREE.PlaneGeometry(longEdgeSize * 0.75, longEdgeSize) : new THREE.PlaneGeometry(longEdgeSize, longEdgeSize * 0.75);
       var texture = THREE.ImageUtils.loadTexture(options.imageName);
+      texture.minFilter = THREE.NearestFilter;
       var material = new THREE.MeshBasicMaterial({
         color: 16777215,
         map: texture,
@@ -6265,7 +6271,10 @@ var ImageBeacon = (function (_BeaconOneOff2) {
       options.symbolName = "/media/symbols/lens.png";
     }
     if (!options.symbolLength) {
-      options.symbolLength = 20;
+      options.symbolLength = 12;
+    }
+    if (!options.nearDistance) {
+      options.nearDistance = 10;
     }
 
     _get(Object.getPrototypeOf(ImageBeacon.prototype), "constructor", this).call(this, options);

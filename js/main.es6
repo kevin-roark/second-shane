@@ -84,13 +84,16 @@ class SecondShane extends ThreeBoiler {
       moneyMan.setMoneyReason('Won $' + money + ' for discovering "' + beacon.name + '"!');
 
       this.waitBeforeAddingMoney = true;
-      this.controls.setEnabled(false);
       setTimeout(() => {
         this.waitBeforeAddingMoney = false;
       }, 3000);
-      setTimeout(() => {
-        this.controls.setEnabled(true);
-      }, 566);
+
+      if (beacon.$element) {
+        this.controls.setEnabled(false);
+        setTimeout(() => {
+          this.controls.setEnabled(true);
+        }, 566);
+      }
     });
 
     setTimeout(() => {

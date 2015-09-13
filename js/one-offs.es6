@@ -206,9 +206,11 @@ class BeaconOneOff extends MeshedOneOff {
   updateForNear() {
     this.isNear = true;
 
-    this.$element.css('display', 'none');
-    domContainer.append(this.$element);
-    this.$element.fadeIn();
+    if (this.$element) {
+      this.$element.css('display', 'none');
+      domContainer.append(this.$element);
+      this.$element.fadeIn();
+    }
 
     if (didFindBeaconCallback) {
       didFindBeaconCallback(this);
@@ -247,6 +249,7 @@ class ImageBeacon extends BeaconOneOff {
       var longEdgeSize = 9;
       var geometry = options.portait ? new THREE.PlaneGeometry(longEdgeSize * 0.75, longEdgeSize) : new THREE.PlaneGeometry(longEdgeSize, longEdgeSize * 0.75);
       var texture = THREE.ImageUtils.loadTexture(options.imageName);
+      texture.minFilter = THREE.NearestFilter;
       var material = new THREE.MeshBasicMaterial({
         color: 0xffffff,
         map: texture,
@@ -260,7 +263,10 @@ class ImageBeacon extends BeaconOneOff {
       options.symbolName = '/media/symbols/lens.png';
     }
     if (!options.symbolLength) {
-      options.symbolLength = 20;
+      options.symbolLength = 12;
+    }
+    if (!options.nearDistance) {
+      options.nearDistance = 10;
     }
 
     super(options);
