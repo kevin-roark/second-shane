@@ -5439,10 +5439,6 @@ var SecondShane = (function (_ThreeBoiler) {
             this.oneOffs[i].update();
           }
 
-          for (i = 0; i < this.shaneScenes.length; i++) {
-            this.shaneScenes[i].update();
-          }
-
           var cameraPosition = this.controls.getObject().position;
           minimap.update(cameraPosition, this.controls.getObject().rotation.y);
 
@@ -6290,7 +6286,7 @@ var VideoBeacon = (function (_BeaconOneOff3) {
     _classCallCheck(this, VideoBeacon);
 
     options.modelName = "/js/models/tv.json";
-    options.scale = 8;
+    options.scale = 12;
     options.postLoadRotation = { x: 0, y: Math.random() * Math.PI * 2, z: 0 };
 
     if (!options.symbolName) {
@@ -6303,11 +6299,33 @@ var VideoBeacon = (function (_BeaconOneOff3) {
     _get(Object.getPrototypeOf(VideoBeacon.prototype), "constructor", this).call(this, options);
 
     this.videoName = options.videoName;
+    this.previewImageName = options.videoName + ".jpg";
   }
 
   _inherits(VideoBeacon, _BeaconOneOff3);
 
   _createClass(VideoBeacon, {
+    meshWasLoaded: {
+      value: function meshWasLoaded() {
+        _get(Object.getPrototypeOf(VideoBeacon.prototype), "meshWasLoaded", this).call(this);
+
+        var geometry = new THREE.PlaneGeometry(0.75, 0.75 * 0.5); // tuned to line up with tv
+        var texture = THREE.ImageUtils.loadTexture(this.previewImageName);
+        texture.minFilter = THREE.NearestFilter;
+        var material = new THREE.MeshBasicMaterial({
+          color: 16777215,
+          map: texture,
+          side: THREE.DoubleSide
+        });
+        var previewImageMesh = new THREE.Mesh(geometry, material);
+        var mirrorPreviewMesh = previewImageMesh.clone();
+        previewImageMesh.position.set(0, 0.29, 0.015); // tuned to line up with tv
+        mirrorPreviewMesh.position.set(0, 0.29, -0.015);
+
+        this.shaneMesh.mesh.add(previewImageMesh);
+        this.shaneMesh.mesh.add(mirrorPreviewMesh);
+      }
+    },
     updateForNear: {
       value: function updateForNear() {
         var video = dahmer.makeVideo(this.videoName);

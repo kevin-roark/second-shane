@@ -122,10 +122,6 @@ class SecondShane extends ThreeBoiler {
         this.oneOffs[i].update();
       }
 
-      for (i = 0; i < this.shaneScenes.length; i++) {
-        this.shaneScenes[i].update();
-      }
-
       var cameraPosition = this.controls.getObject().position;
       minimap.update(cameraPosition, this.controls.getObject().rotation.y);
 

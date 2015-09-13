@@ -276,7 +276,7 @@ class ImageBeacon extends BeaconOneOff {
 class VideoBeacon extends BeaconOneOff {
   constructor(options) {
     options.modelName = '/js/models/tv.json';
-    options.scale = 8;
+    options.scale = 12;
     options.postLoadRotation = {x: 0, y: Math.random() * Math.PI * 2, z: 0};
 
     if (!options.symbolName) {
@@ -289,6 +289,27 @@ class VideoBeacon extends BeaconOneOff {
     super(options);
 
     this.videoName = options.videoName;
+    this.previewImageName = options.videoName + '.jpg';
+  }
+
+  meshWasLoaded() {
+    super.meshWasLoaded();
+
+    var geometry = new THREE.PlaneGeometry(0.75, 0.75 * 0.5); // tuned to line up with tv
+    var texture = THREE.ImageUtils.loadTexture(this.previewImageName);
+    texture.minFilter = THREE.NearestFilter;
+    var material = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      map: texture,
+      side: THREE.DoubleSide
+    });
+    var previewImageMesh = new THREE.Mesh(geometry, material);
+    var mirrorPreviewMesh = previewImageMesh.clone();
+    previewImageMesh.position.set(0, 0.29, 0.015); // tuned to line up with tv
+    mirrorPreviewMesh.position.set(0, 0.29, -0.015);
+
+    this.shaneMesh.mesh.add(previewImageMesh);
+    this.shaneMesh.mesh.add(mirrorPreviewMesh);
   }
 
   updateForNear() {
