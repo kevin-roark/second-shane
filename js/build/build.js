@@ -6222,9 +6222,9 @@ var BeaconOneOff = (function (_MeshedOneOff2) {
   return BeaconOneOff;
 })(MeshedOneOff);
 
-var PoeticOneOff = (function (_BeaconOneOff) {
-  function PoeticOneOff(options) {
-    _classCallCheck(this, PoeticOneOff);
+var PoeticBeacon = (function (_BeaconOneOff) {
+  function PoeticBeacon(options) {
+    _classCallCheck(this, PoeticBeacon);
 
     var text = options.text;
     options.$element = $("<div class=\"one-off-text\">" + text + "</div>");
@@ -6236,17 +6236,17 @@ var PoeticOneOff = (function (_BeaconOneOff) {
       options.symbolLength = 24;
     }
 
-    _get(Object.getPrototypeOf(PoeticOneOff.prototype), "constructor", this).call(this, options);
+    _get(Object.getPrototypeOf(PoeticBeacon.prototype), "constructor", this).call(this, options);
   }
 
-  _inherits(PoeticOneOff, _BeaconOneOff);
+  _inherits(PoeticBeacon, _BeaconOneOff);
 
-  return PoeticOneOff;
+  return PoeticBeacon;
 })(BeaconOneOff);
 
-var ImageOneOff = (function (_BeaconOneOff2) {
-  function ImageOneOff(options) {
-    _classCallCheck(this, ImageOneOff);
+var ImageBeacon = (function (_BeaconOneOff2) {
+  function ImageBeacon(options) {
+    _classCallCheck(this, ImageBeacon);
 
     options.meshCreator = function (callback) {
       var longEdgeSize = 9;
@@ -6268,17 +6268,17 @@ var ImageOneOff = (function (_BeaconOneOff2) {
       options.symbolLength = 20;
     }
 
-    _get(Object.getPrototypeOf(ImageOneOff.prototype), "constructor", this).call(this, options);
+    _get(Object.getPrototypeOf(ImageBeacon.prototype), "constructor", this).call(this, options);
   }
 
-  _inherits(ImageOneOff, _BeaconOneOff2);
+  _inherits(ImageBeacon, _BeaconOneOff2);
 
-  return ImageOneOff;
+  return ImageBeacon;
 })(BeaconOneOff);
 
-var VideoOneOff = (function (_BeaconOneOff3) {
-  function VideoOneOff(options) {
-    _classCallCheck(this, VideoOneOff);
+var VideoBeacon = (function (_BeaconOneOff3) {
+  function VideoBeacon(options) {
+    _classCallCheck(this, VideoBeacon);
 
     options.modelName = "/js/models/tv.json";
     options.scale = 8;
@@ -6291,28 +6291,28 @@ var VideoOneOff = (function (_BeaconOneOff3) {
       options.symbolLength = 24;
     }
 
-    _get(Object.getPrototypeOf(VideoOneOff.prototype), "constructor", this).call(this, options);
+    _get(Object.getPrototypeOf(VideoBeacon.prototype), "constructor", this).call(this, options);
 
     this.videoName = options.videoName;
   }
 
-  _inherits(VideoOneOff, _BeaconOneOff3);
+  _inherits(VideoBeacon, _BeaconOneOff3);
 
-  _createClass(VideoOneOff, {
+  _createClass(VideoBeacon, {
     updateForNear: {
       value: function updateForNear() {
         var video = dahmer.makeVideo(this.videoName);
         this.$element = $(video);
         this.$element.addClass("one-off-video");
 
-        _get(Object.getPrototypeOf(VideoOneOff.prototype), "updateForNear", this).call(this);
+        _get(Object.getPrototypeOf(VideoBeacon.prototype), "updateForNear", this).call(this);
 
         video.play();
       }
     },
     updateForFar: {
       value: function updateForFar() {
-        _get(Object.getPrototypeOf(VideoOneOff.prototype), "updateForFar", this).call(this);
+        _get(Object.getPrototypeOf(VideoBeacon.prototype), "updateForFar", this).call(this);
 
         if (this.$element && this.$element.get(0)) {
           this.$element.get(0).src = "";
@@ -6323,7 +6323,7 @@ var VideoOneOff = (function (_BeaconOneOff3) {
     }
   });
 
-  return VideoOneOff;
+  return VideoBeacon;
 })(BeaconOneOff);
 
 /** EXPORTS */
@@ -6441,11 +6441,11 @@ new RotatingMan({
   text: "Motion provides meaning",
   textColor: 4138941,
   position: new THREE.Vector3(-75, 0, -325)
-}), new PoeticOneOff({
+}), new PoeticBeacon({
   name: "What is the material metaphor?",
   text: "A material metaphor is the unifying theory of a rationalized space and a system of motion. The material is grounded in tactile reality, inspired by the study of paper and ink, yet technologically advanced and open to imagination and magic.",
   position: new THREE.Vector3(-50, -5, -310)
-}), new PoeticOneOff({
+}), new PoeticBeacon({
   name: "Surfaces and Edges",
   text: "Surfaces and edges of the material provide visual cues that are grounded in reality. The use of familiar tactile attributes helps users quickly understand affordances. Yet the flexibility of the material creates new affordances that supercede those in the physical world, without breaking the rules of physics.",
   position: new THREE.Vector3(-25, -5, -300)
@@ -6454,7 +6454,7 @@ new RotatingMan({
   text: "All action takes place in a single environment",
   textColor: 4138941,
   position: new THREE.Vector3(0, 0, -310)
-}), new PoeticOneOff({
+}), new PoeticBeacon({
   name: "Fundamentals of light and surface",
   text: "The fundamentals of light, surface, and movement are key to conveying how objects move, interact, and exist in space and in relation to each other. Realistic lighting shows seams, divides space, and indicates moving parts.",
   position: new THREE.Vector3(25, -5, -325)
@@ -6473,7 +6473,7 @@ new RotatingMan({
   text: "Transitions are efﬁcient yet coherent",
   textColor: 4138941,
   position: new THREE.Vector3(100, 0, -345)
-}), new PoeticOneOff({
+}), new PoeticBeacon({
   name: "Material has properties",
   text: "Material has certain immutable characteristics and inherent behaviors. Understanding these qualities will help you manipulate material in a way that’s consistent.<br>Material casts shadows. Shadows result naturally from the relative elevation (z-position) between material elements.<br>Content is displayed on material, in any shape and color. Content does not add thickness to material.<br>Content can behave independently of the material, but is limited within the bounds of the material.",
   position: new THREE.Vector3(75, -5, -380)
@@ -6482,40 +6482,40 @@ new RotatingMan({
   text: "Material Is Solid",
   textColor: 4138941,
   position: new THREE.Vector3(125, 0, -360)
-}), new PoeticOneOff({
+}), new PoeticBeacon({
   name: "Material never bends",
   text: "Material never bends or folds.<br>Sheets of material can join together to become a single sheet of material.<br>When split, material can heal. For example, if you remove a portion of material from a sheet of material, the sheet of material will become a whole sheet again.<br>Material can be spontaneously generated or destroyed anywhere in the environment.",
   position: new THREE.Vector3(-125, -5, -310)
 }),
 
 // isolated poems
-new PoeticOneOff({
+new PoeticBeacon({
   name: "My Dog's Life",
   text: dogPoemOneOffText,
   position: new THREE.Vector3(-200, -5, -20)
 }),
 
 // life hacks
-new PoeticOneOff({
+new PoeticBeacon({
   name: "Life Hack I",
   text: "Life Hack I.<br>If you want to die gamble everything until:<br>1. You have enough money to live as a king<br>2. You have nothing",
   position: new THREE.Vector3(-140, -5, 150)
-}), new PoeticOneOff({
+}), new PoeticBeacon({
   name: "Life Hack II",
   text: "Life Hack II.<br>If you want to die<br>Never pay taxes and you'll have more money<br>to thrive<br>and when They finally come for you<br>just do what you wanted",
   position: new THREE.Vector3(60, -5, 250)
-}), new PoeticOneOff({
+}), new PoeticBeacon({
   name: "Life Hack III",
   text: "Life Hack III.<br>If you want to die<br>just Find a way<br>to accumulate power<br>and soon you are ready to<br>live again",
   position: new THREE.Vector3(200, -5, 100)
 }),
 
 // images
-new ImageOneOff({
+new ImageBeacon({
   name: "Garden Obelisk",
   imageName: "media/beacon-images/obelisk.jpg",
   position: new THREE.Vector3(20, 3, -30)
-}), new ImageOneOff({
+}), new ImageBeacon({
   name: "Snips Got My Minion",
   imageName: "media/beacon-images/snips_minion.jpg",
   portait: true,
@@ -6523,11 +6523,11 @@ new ImageOneOff({
 }),
 
 // vids
-new VideoOneOff({
+new VideoBeacon({
   name: "I Watched the Woods",
   videoName: "media/videos/bigsur",
   position: new THREE.Vector3(80, -2, -40)
-}), new VideoOneOff({
+}), new VideoBeacon({
   name: "I Watched the Car",
   videoName: "media/videos/brakes",
   position: new THREE.Vector3(-60, -2, 90)
