@@ -6244,7 +6244,39 @@ var PoeticOneOff = (function (_BeaconOneOff) {
   return PoeticOneOff;
 })(BeaconOneOff);
 
-var VideoOneOff = (function (_BeaconOneOff2) {
+var ImageOneOff = (function (_BeaconOneOff2) {
+  function ImageOneOff(options) {
+    _classCallCheck(this, ImageOneOff);
+
+    options.meshCreator = function (callback) {
+      var longEdgeSize = 9;
+      var geometry = options.portait ? new THREE.PlaneGeometry(longEdgeSize * 0.75, longEdgeSize) : new THREE.PlaneGeometry(longEdgeSize, longEdgeSize * 0.75);
+      var texture = THREE.ImageUtils.loadTexture(options.imageName);
+      var material = new THREE.MeshBasicMaterial({
+        color: 16777215,
+        map: texture,
+        side: THREE.DoubleSide
+      });
+      var mesh = new THREE.Mesh(geometry, material);
+      callback(geometry, material, mesh);
+    };
+
+    if (!options.symbolName) {
+      options.symbolName = "/media/symbols/lens.png";
+    }
+    if (!options.symbolLength) {
+      options.symbolLength = 20;
+    }
+
+    _get(Object.getPrototypeOf(ImageOneOff.prototype), "constructor", this).call(this, options);
+  }
+
+  _inherits(ImageOneOff, _BeaconOneOff2);
+
+  return ImageOneOff;
+})(BeaconOneOff);
+
+var VideoOneOff = (function (_BeaconOneOff3) {
   function VideoOneOff(options) {
     _classCallCheck(this, VideoOneOff);
 
@@ -6264,7 +6296,7 @@ var VideoOneOff = (function (_BeaconOneOff2) {
     this.videoName = options.videoName;
   }
 
-  _inherits(VideoOneOff, _BeaconOneOff2);
+  _inherits(VideoOneOff, _BeaconOneOff3);
 
   _createClass(VideoOneOff, {
     updateForNear: {
@@ -6476,6 +6508,18 @@ new PoeticOneOff({
   name: "Life Hack III",
   text: "Life Hack III.<br>If you want to die<br>just Find a way<br>to accumulate power<br>and soon you are ready to<br>live again",
   position: new THREE.Vector3(200, -5, 100)
+}),
+
+// images
+new ImageOneOff({
+  name: "Garden Obelisk",
+  imageName: "media/beacon-images/obelisk.jpg",
+  position: new THREE.Vector3(20, 3, -30)
+}), new ImageOneOff({
+  name: "Snips Got My Minion",
+  imageName: "media/beacon-images/snips_minion.jpg",
+  portait: true,
+  position: new THREE.Vector3(15, 3, -50)
 }),
 
 // vids
