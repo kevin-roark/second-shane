@@ -39,7 +39,7 @@ class MeshedOneOff extends OneOff {
   constructor(options) {
     super(options);
 
-    this.shaneMesh = this.createShaneMesh(options);
+    this.shaneMesh = new ShaneMesh(options);
   }
 
   activate(scene) {
@@ -66,10 +66,6 @@ class MeshedOneOff extends OneOff {
     if (this.active) {
       this.shaneMesh.update();
     }
-  }
-
-  createShaneMesh(options) {
-    return new ShaneMesh(options);
   }
 }
 
@@ -158,7 +154,7 @@ function makeStyledGeometry(geometryStyle, geometrySize) {
 
 class BeaconOneOff extends MeshedOneOff {
   constructor(options) {
-    if (!options.meshCreator) {
+    if (!options.meshCreator && !options.modelName) {
       let geometryStyle = options.geometryStyle || kt.choice(['cube', 'sphere', 'cone', 'cylinder']);
       let geometrySize = options.geometrySize || 3;
       let materialColor = options.color || parseInt(Math.random() * 16777215);
@@ -247,6 +243,9 @@ class PoeticOneOff extends BeaconOneOff {
 
 class VideoOneOff extends BeaconOneOff {
   constructor(options) {
+    options.modelName = '/js/models/tv.json';
+    options.scale = 8;
+    options.postLoadRotation = {x: 0, y: Math.random() * Math.PI * 2, z: 0};
 
     if (!options.symbolName) {
       options.symbolName = '/media/symbols/camcorder.png';
@@ -519,11 +518,11 @@ export var oneOffs = [
   new VideoOneOff({
     name: 'I Watched the Woods',
     videoName: 'media/videos/bigsur',
-    position: new THREE.Vector3(80, -5, -40)
+    position: new THREE.Vector3(80, -2, -40)
   }),
   new VideoOneOff({
     name: 'I Watched the Car',
     videoName: 'media/videos/brakes',
-    position: new THREE.Vector3(-60, -5, 90)
+    position: new THREE.Vector3(-60, -2, 90)
   })
 ];

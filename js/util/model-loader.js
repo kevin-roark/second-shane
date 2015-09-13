@@ -36,8 +36,12 @@ function fetch(name, callback) {
     for (var i = 0; i < cached.materials.length; i++) {
       materials.push(cached.materials[i].clone());
     }
-  } else {
+  }
+  else if (materials) {
     materials = cached.materials.clone();
+  }
+  else {
+    materials = new THREE.MeshBasicMaterial();
   }
 
   callback(geometry, materials);

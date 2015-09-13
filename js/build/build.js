@@ -5992,7 +5992,7 @@ var MeshedOneOff = (function (_OneOff) {
 
     _get(Object.getPrototypeOf(MeshedOneOff.prototype), "constructor", this).call(this, options);
 
-    this.shaneMesh = this.createShaneMesh(options);
+    this.shaneMesh = new ShaneMesh(options);
   }
 
   _inherits(MeshedOneOff, _OneOff);
@@ -6026,11 +6026,6 @@ var MeshedOneOff = (function (_OneOff) {
         if (this.active) {
           this.shaneMesh.update();
         }
-      }
-    },
-    createShaneMesh: {
-      value: function createShaneMesh(options) {
-        return new ShaneMesh(options);
       }
     }
   });
@@ -6137,7 +6132,7 @@ var BeaconOneOff = (function (_MeshedOneOff2) {
   function BeaconOneOff(options) {
     _classCallCheck(this, BeaconOneOff);
 
-    if (!options.meshCreator) {
+    if (!options.meshCreator && !options.modelName) {
       (function () {
         var geometryStyle = options.geometryStyle || kt.choice(["cube", "sphere", "cone", "cylinder"]);
         var geometrySize = options.geometrySize || 3;
@@ -6246,6 +6241,10 @@ var PoeticOneOff = (function (_BeaconOneOff) {
 var VideoOneOff = (function (_BeaconOneOff2) {
   function VideoOneOff(options) {
     _classCallCheck(this, VideoOneOff);
+
+    options.modelName = "/js/models/tv.json";
+    options.scale = 8;
+    options.postLoadRotation = { x: 0, y: Math.random() * Math.PI * 2, z: 0 };
 
     if (!options.symbolName) {
       options.symbolName = "/media/symbols/camcorder.png";
@@ -6477,11 +6476,11 @@ new PoeticOneOff({
 new VideoOneOff({
   name: "I Watched the Woods",
   videoName: "media/videos/bigsur",
-  position: new THREE.Vector3(80, -5, -40)
+  position: new THREE.Vector3(80, -2, -40)
 }), new VideoOneOff({
   name: "I Watched the Car",
   videoName: "media/videos/brakes",
-  position: new THREE.Vector3(-60, -5, 90)
+  position: new THREE.Vector3(-60, -2, 90)
 })];
 exports.oneOffs = oneOffs;
 Object.defineProperty(exports, "__esModule", {
@@ -6533,6 +6532,8 @@ function ShaneMesh(options) {
   this.startX = startPos.x;
   this.startY = startPos.y;
   this.startZ = startPos.z;
+
+  this.postLoadRotation = options.postLoadRotation;
 
   this.scale = options.scale || 1;
 
@@ -6642,6 +6643,10 @@ ShaneMesh.prototype.addTo = function (scene, callback) {
       self.scaleBody(self.scale);
 
       self.moveTo(self.startX, self.startY, self.startZ);
+
+      if (self.postLoadRotation) {
+        self.rotate(self.postLoadRotation.x, self.postLoadRotation.y, self.postLoadRotation.z);
+      }
 
       self.additionalInit();
 
@@ -7335,8 +7340,10 @@ function fetch(name, callback) {
     for (var i = 0; i < cached.materials.length; i++) {
       materials.push(cached.materials[i].clone());
     }
-  } else {
+  } else if (materials) {
     materials = cached.materials.clone();
+  } else {
+    materials = new THREE.MeshBasicMaterial();
   }
 
   callback(geometry, materials);

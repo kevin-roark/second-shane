@@ -13,6 +13,8 @@ function ShaneMesh(options) {
   this.startY = startPos.y;
   this.startZ = startPos.z;
 
+  this.postLoadRotation = options.postLoadRotation;
+
   this.scale = options.scale || 1;
 
   this.modelName = options.modelName;
@@ -123,6 +125,10 @@ ShaneMesh.prototype.addTo = function(scene, callback) {
       self.scaleBody(self.scale);
 
       self.moveTo(self.startX, self.startY, self.startZ);
+
+      if (self.postLoadRotation) {
+        self.rotate(self.postLoadRotation.x, self.postLoadRotation.y, self.postLoadRotation.z);
+      }
 
       self.additionalInit();
 
