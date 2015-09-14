@@ -6558,6 +6558,77 @@ new VideoBeacon({
   name: "I Watched the Car",
   videoName: "media/videos/brakes",
   position: new THREE.Vector3(-60, -2, 90)
+}), new VideoBeacon({
+  name: "An Attempt to Sculpt God",
+  videoName: "media/videos/obelisk",
+  position: new THREE.Vector3(155, -2, 155)
+}), new VideoBeacon({
+  name: "Beans on a Plate",
+  videoName: "media/videos/beans",
+  position: new THREE.Vector3(-40, -2, -70)
+}), new VideoBeacon({
+  name: "Air Marshall",
+  videoName: "media/videos/cops_on_a_plane",
+  position: new THREE.Vector3(-80, -2, -190)
+}), new VideoBeacon({
+  name: "Want to go to a party?",
+  videoName: "media/videos/dark_roof",
+  position: new THREE.Vector3(120, -2, -240)
+}), new VideoBeacon({
+  name: "Outdoor Gaming",
+  videoName: "media/videos/gamer",
+  position: new THREE.Vector3(-20, -2, 75)
+}), new VideoBeacon({
+  name: "Gracias Madre",
+  videoName: "media/videos/guitar_madre",
+  position: new THREE.Vector3(111, -2, 225)
+}), new VideoBeacon({
+  name: "Run Away With Me (Shane)",
+  videoName: "media/videos/gym",
+  position: new THREE.Vector3(200, -2, -200)
+}), new VideoBeacon({
+  name: "iThai",
+  videoName: "media/videos/ithai",
+  position: new THREE.Vector3(20, -2, -300)
+}), new VideoBeacon({
+  name: "Joel Returns",
+  videoName: "media/videos/joel_osteen",
+  position: new THREE.Vector3(120, -2, 250)
+}), new VideoBeacon({
+  name: "A Kiss and A Hug",
+  videoName: "media/videos/love",
+  position: new THREE.Vector3(400, -2, 0)
+}), new VideoBeacon({
+  name: "Which Whip is This?",
+  videoName: "media/videos/porsche",
+  position: new THREE.Vector3(-222, -2, 66)
+}), new VideoBeacon({
+  name: "Sing Along With the Rock Band",
+  videoName: "media/videos/stasis",
+  position: new THREE.Vector3(0, -2, -300)
+}), new VideoBeacon({
+  name: "A New One",
+  videoName: "media/videos/vape_shop",
+  position: new THREE.Vector3(0, -2, 300)
+}),
+
+// Google Photos Content
+new VideoBeacon({
+  name: "Google and Jerry I",
+  videoName: "media/videos/google_dart_jerry",
+  position: new THREE.Vector3(-194, -2, 100)
+}), new VideoBeacon({
+  name: "Google's Graduation",
+  videoName: "media/videos/google_graduation",
+  position: new THREE.Vector3(-194, -2, 140)
+}), new VideoBeacon({
+  name: "Google Strolling and Fighting",
+  videoName: "media/videos/google_hoodslam",
+  position: new THREE.Vector3(-194, -2, 180)
+}), new VideoBeacon({
+  name: "Google Eats Itself",
+  videoName: "media/videos/google_eats_itself",
+  position: new THREE.Vector3(-194, -2, 220)
 })];
 exports.oneOffs = oneOffs;
 Object.defineProperty(exports, "__esModule", {
