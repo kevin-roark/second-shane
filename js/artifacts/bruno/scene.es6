@@ -219,7 +219,7 @@ export class Bruno extends ShaneScene {
     });
 
     this.addMesh(coin, () => {
-      coin.geometry.center();
+      coin.mesh.geometry.center();
       coin.rotate(Math.PI / 2, 0, 0);
     });
 

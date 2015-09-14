@@ -563,7 +563,7 @@ var Bruno = exports.Bruno = (function (_ShaneScene) {
         });
 
         this.addMesh(coin, function () {
-          coin.geometry.center();
+          coin.mesh.geometry.center();
           coin.rotate(Math.PI / 2, 0, 0);
         });
 
