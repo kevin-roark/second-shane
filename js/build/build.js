@@ -5405,7 +5405,7 @@ var SecondShane = (function (_ThreeBoiler) {
     setDidFindBeaconCallback(function (beacon) {
       var money = parseInt(Math.random() * 200) + 100;
       moneyMan.addMoney(money);
-      moneyMan.setMoneyReason("Won $" + money + " for discovering \"" + beacon.name + "\"!");
+      moneyMan.setMoneyReason("Earned $" + money + " for discovering \"" + beacon.name + "\"!");
 
       _this.waitBeforeAddingMoney = true;
       setTimeout(function () {
@@ -6261,6 +6261,22 @@ var PoeticBeacon = (function (_BeaconOneOff) {
   function PoeticBeacon(options) {
     _classCallCheck(this, PoeticBeacon);
 
+    options.meshCreator = function (callback) {
+      var longEdgeSize = options.longEdgeSize || 8;
+      var geometry = new THREE.PlaneGeometry(longEdgeSize * (Math.random() * 0.25 + 0.5), longEdgeSize);
+
+      var texture = new THREE.ImageUtils.loadTexture("/media/textures/paper.jpg");
+      texture.wrapS = texture.wrapT = THREE.ClampToEdgeWrapping;
+      texture.minFilter = THREE.NearestFilter;
+      var material = new THREE.MeshBasicMaterial({
+        map: texture,
+        side: THREE.DoubleSide
+      });
+
+      var mesh = new THREE.Mesh(geometry, material);
+      callback(geometry, material, mesh);
+    };
+
     var text = options.text;
     options.$element = $("<div class=\"one-off-text\">" + text + "</div>");
 
@@ -6284,7 +6300,7 @@ var ImageBeacon = (function (_BeaconOneOff2) {
     _classCallCheck(this, ImageBeacon);
 
     options.meshCreator = function (callback) {
-      var longEdgeSize = 9;
+      var longEdgeSize = options.longEdgeSize || 11;
       var geometry = options.portait ? new THREE.PlaneGeometry(longEdgeSize * 0.75, longEdgeSize) : new THREE.PlaneGeometry(longEdgeSize, longEdgeSize * 0.75);
       var texture = THREE.ImageUtils.loadTexture(options.imageName);
       texture.minFilter = THREE.NearestFilter;
@@ -6296,6 +6312,8 @@ var ImageBeacon = (function (_BeaconOneOff2) {
       var mesh = new THREE.Mesh(geometry, material);
       callback(geometry, material, mesh);
     };
+
+    options.postLoadRotation = { x: 0, y: Math.random() * Math.PI * 2, z: 0 };
 
     if (!options.symbolName) {
       options.symbolName = "/media/symbols/lens.png";
@@ -6505,11 +6523,11 @@ new RotatingMan({
 }), new PoeticBeacon({
   name: "What is the material metaphor?",
   text: "A material metaphor is the unifying theory of a rationalized space and a system of motion. The material is grounded in tactile reality, inspired by the study of paper and ink, yet technologically advanced and open to imagination and magic.",
-  position: new THREE.Vector3(-50, -5, -310)
+  position: new THREE.Vector3(-50, 2, -310)
 }), new PoeticBeacon({
   name: "Surfaces and Edges",
   text: "Surfaces and edges of the material provide visual cues that are grounded in reality. The use of familiar tactile attributes helps users quickly understand affordances. Yet the flexibility of the material creates new affordances that supercede those in the physical world, without breaking the rules of physics.",
-  position: new THREE.Vector3(-25, -5, -300)
+  position: new THREE.Vector3(-25, 2, -300)
 }), new RotatingMan({
   name: "1 Environment",
   text: "All action takes place in a single environment",
@@ -6518,7 +6536,7 @@ new RotatingMan({
 }), new PoeticBeacon({
   name: "Fundamentals of light and surface",
   text: "The fundamentals of light, surface, and movement are key to conveying how objects move, interact, and exist in space and in relation to each other. Realistic lighting shows seams, divides space, and indicates moving parts.",
-  position: new THREE.Vector3(25, -5, -325)
+  position: new THREE.Vector3(25, 2, -325)
 }), new RotatingMan({
   name: "meaningful and appropriate",
   text: "Motion is meaningful and appropriate",
@@ -6537,7 +6555,7 @@ new RotatingMan({
 }), new PoeticBeacon({
   name: "Material has properties",
   text: "Material has certain immutable characteristics and inherent behaviors. Understanding these qualities will help you manipulate material in a way that’s consistent.<br>Material casts shadows. Shadows result naturally from the relative elevation (z-position) between material elements.<br>Content is displayed on material, in any shape and color. Content does not add thickness to material.<br>Content can behave independently of the material, but is limited within the bounds of the material.",
-  position: new THREE.Vector3(75, -5, -380)
+  position: new THREE.Vector3(75, 2, -380)
 }), new RotatingMan({
   name: "solid material",
   text: "Material Is Solid",
@@ -6546,29 +6564,29 @@ new RotatingMan({
 }), new PoeticBeacon({
   name: "Material never bends",
   text: "Material never bends or folds.<br>Sheets of material can join together to become a single sheet of material.<br>When split, material can heal. For example, if you remove a portion of material from a sheet of material, the sheet of material will become a whole sheet again.<br>Material can be spontaneously generated or destroyed anywhere in the environment.",
-  position: new THREE.Vector3(-125, -5, -310)
+  position: new THREE.Vector3(-125, 2, -310)
 }),
 
 // isolated poems
 new PoeticBeacon({
   name: "My Dog's Life",
   text: dogPoemOneOffText,
-  position: new THREE.Vector3(-200, -5, -20)
+  position: new THREE.Vector3(-200, 2, -20)
 }),
 
 // life hacks
 new PoeticBeacon({
   name: "Life Hack I",
   text: "Life Hack I.<br>If you want to die gamble everything until:<br>1. You have enough money to live as a king<br>2. You have nothing",
-  position: new THREE.Vector3(-140, -5, 150)
+  position: new THREE.Vector3(-140, 2, 150)
 }), new PoeticBeacon({
   name: "Life Hack II",
   text: "Life Hack II.<br>If you want to die<br>Never pay taxes and you'll have more money<br>to thrive<br>and when They finally come for you<br>just do what you wanted",
-  position: new THREE.Vector3(60, -5, 250)
+  position: new THREE.Vector3(60, 2, 250)
 }), new PoeticBeacon({
   name: "Life Hack III",
   text: "Life Hack III.<br>If you want to die<br>just Find a way<br>to accumulate power<br>and soon you are ready to<br>live again",
-  position: new THREE.Vector3(200, -5, 100)
+  position: new THREE.Vector3(200, 2, 100)
 }),
 
 // images

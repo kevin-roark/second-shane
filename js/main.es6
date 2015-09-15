@@ -89,7 +89,7 @@ class SecondShane extends ThreeBoiler {
     setDidFindBeaconCallback((beacon) => {
       var money = parseInt(Math.random() * 200) + 100;
       moneyMan.addMoney(money);
-      moneyMan.setMoneyReason('Won $' + money + ' for discovering "' + beacon.name + '"!');
+      moneyMan.setMoneyReason('Earned $' + money + ' for discovering "' + beacon.name + '"!');
 
       this.waitBeforeAddingMoney = true;
       setTimeout(() => {
