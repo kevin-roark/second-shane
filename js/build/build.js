@@ -50,9 +50,9 @@ var ASMR = exports.ASMR = (function (_ShaneScene) {
     createTalisman: {
       value: function createTalisman() {
         var talisman = new Talisman({
-          position: new THREE.Vector3(-90, -16, -80),
-          modelPath: "/js/models/mug.json",
-          modelScale: 8
+          position: new THREE.Vector3(-90, 0, -80),
+          modelPath: "/js/models/human_ear.json",
+          modelScale: 2
         });
         return talisman;
       }
@@ -2133,9 +2133,9 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
     createTalisman: {
       value: function createTalisman() {
         var talisman = new Talisman({
-          position: new THREE.Vector3(-75, -14, -200),
-          modelPath: "/js/models/popcorn-popper.json",
-          modelScale: 7
+          position: new THREE.Vector3(-75, -4, -200),
+          modelPath: "/js/models/projector.json",
+          modelScale: 10
         });
         return talisman;
       }
@@ -6569,7 +6569,7 @@ new VideoBeacon({
 }), new VideoBeacon({
   name: "Air Marshall",
   videoName: "media/videos/cops_on_a_plane",
-  position: new THREE.Vector3(-80, -2, -190)
+  position: new THREE.Vector3(-140, -2, -190)
 }), new VideoBeacon({
   name: "Want to go to a party?",
   videoName: "media/videos/dark_roof",

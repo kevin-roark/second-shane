@@ -604,7 +604,7 @@ export var oneOffs = [
   new VideoBeacon({
     name: 'Air Marshall',
     videoName: 'media/videos/cops_on_a_plane',
-    position: new THREE.Vector3(-80, -2, -190)
+    position: new THREE.Vector3(-140, -2, -190)
   }),
   new VideoBeacon({
     name: 'Want to go to a party?',
