@@ -567,6 +567,11 @@ export var oneOffs = [
     text: dogPoemOneOffText,
     position: new THREE.Vector3(-200, 2, -20)
   }),
+  new PoeticBeacon({
+    name: "Excavate Everything",
+    text: 'Excavate Everything<br>Leave Nothing Unturned<br>Find What\'s your\'s<br>Or They Will<br>Unearth The Now<br>Dig Into Me<br>Dig Into Us<br>Get What\'s Your\'s',
+    position: new THREE.Vector3(100, 2, -333)
+  }),
 
   // life hacks
   new PoeticBeacon({
@@ -596,6 +601,222 @@ export var oneOffs = [
     imageName: 'media/beacon-images/snips_minion.jpg',
     portait: true,
     position: new THREE.Vector3(15, 3, -50)
+  }),
+  new ImageBeacon({
+    name: 'Director of Swamp People',
+    imageName: 'media/beacon-images/director_of_swamp_people.jpg',
+    portrait: true,
+    position: new THREE.Vector3(375, 3, -477)
+  }),
+  new ImageBeacon({
+    name: 'An Exercise In Total Loss',
+    imageName: 'media/beacon-images/an_exercise_in_total_loss.jpg',
+    portrait: true,
+    position: new THREE.Vector3(-69, 3, 136)
+  }),
+  new ImageBeacon({
+    name: 'High Hopes, Big Dreams',
+    imageName: 'media/beacon-images/high_hopes_big_dreams.jpg',
+    position: new THREE.Vector3(-87, 3, 238)
+  }),
+  new ImageBeacon({
+    name: 'Admit Nothing!',
+    imageName: 'media/beacon-images/admit_nothing.jpg',
+    portrait: true,
+    position: new THREE.Vector3(-367, 3, -66)
+  }),
+  new ImageBeacon({
+    name: 'John Goodman and Friend',
+    imageName: 'media/beacon-images/john_goodman_and_friend.jpg',
+    portrait: true,
+    position: new THREE.Vector3(95, 3, 156)
+  }),
+  new ImageBeacon({
+    name: 'Dark Energy Queen',
+    imageName: 'media/beacon-images/dark_energy_queen.jpg',
+    portrait: true,
+    position: new THREE.Vector3(-303, 3, -125)
+  }),
+  new ImageBeacon({
+    name: 'French Quarter Task Force',
+    imageName: 'media/beacon-images/french_quarter_task_force.jpg',
+    portrait: true,
+    position: new THREE.Vector3(64, 3, 1)
+  }),
+  new ImageBeacon({
+    name: 'Prodigal Son',
+    imageName: 'media/beacon-images/young_sean.jpg',
+    position: new THREE.Vector3(-143, 3, -142)
+  }),
+  new ImageBeacon({
+    name: 'My Own Hand',
+    imageName: 'media/beacon-images/typer.jpg',
+    position: new THREE.Vector3(-29, 3, 316)
+  }),
+  new ImageBeacon({
+    name: 'Trout Fishing',
+    imageName: 'media/beacon-images/trout_fishing.jpg',
+    position: new THREE.Vector3(-119, 3, 45)
+  }),
+  new ImageBeacon({
+    name: 'Henry and Her Cigar',
+    imageName: 'media/beacon-images/henry_cigar.jpg',
+    portrait: true,
+    position: new THREE.Vector3(-315, 3, 276)
+  }),
+  new ImageBeacon({
+    name: 'And now, I Marry Her',
+    imageName: 'media/beacon-images/now_i_marry_her.jpg',
+    position: new THREE.Vector3(-371, 3, -40)
+  }),
+  new ImageBeacon({
+    name: 'Casual Carl',
+    imageName: 'media/beacon-images/casual_carl.jpg',
+    position: new THREE.Vector3(421, 3, -6)
+  }),
+  new ImageBeacon({
+    name: 'Canada and Her Cigar',
+    imageName: 'media/beacon-images/canada_cigar.jpg',
+    portrait: true,
+    position: new THREE.Vector3(103, 3, 113)
+  }),
+  new ImageBeacon({
+    name: 'To Sleep With The One You Love',
+    imageName: 'media/beacon-images/bedtime.jpg',
+    portrait: true,
+    position: new THREE.Vector3(-324, 3, -356)
+  }),
+  new ImageBeacon({
+    name: 'I have No Tools',
+    imageName: 'media/beacon-images/i_am_miserable.jpg',
+    position: new THREE.Vector3(-190, 3, 337)
+  }),
+  new ImageBeacon({
+    name: 'Organic Fresh Young Coconut Milk',
+    imageName: 'media/beacon-images/organic_fresh_young_coconut_milk.jpg',
+    position: new THREE.Vector3(488, 3, -114)
+  }),
+  new ImageBeacon({
+    name: 'Guy Ate Here',
+    imageName: 'media/beacon-images/guy_ate_here.jpg',
+    portrait: true,
+    position: new THREE.Vector3(413, 3, 196)
+  }),
+  new ImageBeacon({
+    name: 'He Was A Genius',
+    imageName: 'media/beacon-images/genius_burger.jpg',
+    position: new THREE.Vector3(-4, 3, -445)
+  }),
+  new ImageBeacon({
+    name: 'My Friend and Me',
+    imageName: 'media/beacon-images/air_force_ones.jpg',
+    position: new THREE.Vector3(-462, 3, 36)
+  }),
+  new ImageBeacon({
+    name: 'My Own Two Feet',
+    imageName: 'media/beacon-images/birks_at_work.jpg',
+    portrait: true,
+    position: new THREE.Vector3(-61, 3, -232)
+  }),
+  new ImageBeacon({
+    name: 'A new employee',
+    imageName: 'media/beacon-images/work_gaming.jpg',
+    portrait: true,
+    position: new THREE.Vector3(-491, 3, 311)
+  }),
+  new ImageBeacon({
+    name: 'MY LID (MINE)',
+    imageName: 'media/beacon-images/my_lid.jpg',
+    portrait: true,
+    position: new THREE.Vector3(76, 3, 394)
+  }),
+  new ImageBeacon({
+    name: 'In My Heart',
+    imageName: 'media/beacon-images/wolf_nature.jpg',
+    portrait: true,
+    position: new THREE.Vector3(-69, 3, -458)
+  }),
+  new ImageBeacon({
+    name: 'He Licks It',
+    imageName: 'media/beacon-images/cream.jpg',
+    portrait: true,
+    position: new THREE.Vector3(434, 3, 271)
+  }),
+  new ImageBeacon({
+    name: 'Thank You, Jerry',
+    imageName: 'media/beacon-images/thank_you_jerry.jpg',
+    portrait: true,
+    position: new THREE.Vector3(258, 3, -268)
+  }),
+  new ImageBeacon({
+    name: 'The Carving or the Stump?',
+    imageName: 'media/beacon-images/this_carving.jpg',
+    portrait: true,
+    position: new THREE.Vector3(-331, 3, -326)
+  }),
+  new ImageBeacon({
+    name: 'Gerald',
+    imageName: 'media/beacon-images/gerald.jpg',
+    portrait: true,
+    position: new THREE.Vector3(24, 3, 408)
+  }),
+  new ImageBeacon({
+    name: 'Drinking Friends',
+    imageName: 'media/beacon-images/gnomes.jpg',
+    portrait: true,
+    position: new THREE.Vector3(182, 3, 382)
+  }),
+  new ImageBeacon({
+    name: '13ye',
+    imageName: 'media/beacon-images/jaq_eye.jpg',
+    position: new THREE.Vector3(-8, 3, 284)
+  }),
+  new ImageBeacon({
+    name: 'Unrepentance',
+    imageName: 'media/beacon-images/louie_beard.jpg',
+    portrait: true,
+    position: new THREE.Vector3(-63, 3, -435)
+  }),
+  new ImageBeacon({
+    name: 'His Majesty',
+    imageName: 'media/beacon-images/special_tiger.jpg',
+    portrait: true,
+    position: new THREE.Vector3(-473, 3, -194)
+  }),
+  new ImageBeacon({
+    name: 'Two Men, Fighting',
+    imageName: 'media/beacon-images/two_fighters.jpg',
+    portrait: true,
+    position: new THREE.Vector3(-141, 3, -381)
+  }),
+  new ImageBeacon({
+    name: 'A New Approach',
+    imageName: 'media/beacon-images/french_toast_sandwich.jpg',
+    portrait: true,
+    position: new THREE.Vector3(128, 3, 336)
+  }),
+  new ImageBeacon({
+    name: 'Natal Glow',
+    imageName: 'media/beacon-images/bulb.jpg',
+    portrait: true,
+    position: new THREE.Vector3(-469, 3, -62)
+  }),
+  new ImageBeacon({
+    name: 'A Collection Of Tools',
+    imageName: 'media/beacon-images/tools.jpg',
+    position: new THREE.Vector3(397, 3, -409)
+  }),
+  new ImageBeacon({
+    name: 'Go on ... You Deserve It',
+    imageName: 'media/beacon-images/you_deserve_it.jpg',
+    portrait: true,
+    position: new THREE.Vector3(-315, 3, 476)
+  }),
+  new ImageBeacon({
+    name: 'A Singular Grape',
+    imageName: 'media/beacon-images/grape.jpg',
+    portrait: true,
+    position: new THREE.Vector3(423, 3, -76)
   }),
 
   // vids
