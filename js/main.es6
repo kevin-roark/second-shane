@@ -97,10 +97,10 @@ class SecondShane extends ThreeBoiler {
       }, 3000);
 
       if (beacon.$element) {
-        this.controls.setEnabled(false);
+        this.controls.movementSpeedMultiplier = 0.5;
         setTimeout(() => {
-          this.controls.setEnabled(true);
-        }, 566);
+          this.controls.movementSpeedMultiplier = 1.0;
+        }, 2666);
       }
     });
   }

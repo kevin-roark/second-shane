@@ -26,6 +26,7 @@ module.exports = function (camera, options) {
 
 	this.movementSpeed = options.movementSpeed || 9.0;
 	this.rollSpeed = options.rollSpeed || 0.5;
+	this.movementSpeedMultiplier = 1.0;
 
 	this.dragToLook = options.dragToLook || false;
 	this.autoForward = options.autoForward || false;
@@ -238,7 +239,7 @@ module.exports = function (camera, options) {
 		var delta = ( time - this.prevTime ) / 1000;
 
 		if (this.enabled) {
-			var moveMult = delta * this.movementSpeed;
+			var moveMult = delta * this.movementSpeed * this.movementSpeedMultiplier;
 			var rotMult = delta * this.rollSpeed;
 
 			yawObject.translateX( this.moveVector.x * moveMult );

@@ -2732,6 +2732,7 @@ module.exports = function (camera, options) {
 
 	this.movementSpeed = options.movementSpeed || 9;
 	this.rollSpeed = options.rollSpeed || 0.5;
+	this.movementSpeedMultiplier = 1;
 
 	this.dragToLook = options.dragToLook || false;
 	this.autoForward = options.autoForward || false;
@@ -2974,7 +2975,7 @@ module.exports = function (camera, options) {
 		var delta = (time - this.prevTime) / 1000;
 
 		if (this.enabled) {
-			var moveMult = delta * this.movementSpeed;
+			var moveMult = delta * this.movementSpeed * this.movementSpeedMultiplier;
 			var rotMult = delta * this.rollSpeed;
 
 			yawObject.translateX(this.moveVector.x * moveMult);
@@ -5412,10 +5413,10 @@ var SecondShane = (function (_ThreeBoiler) {
       }, 3000);
 
       if (beacon.$element) {
-        _this.controls.setEnabled(false);
+        _this.controls.movementSpeedMultiplier = 0.5;
         setTimeout(function () {
-          _this.controls.setEnabled(true);
-        }, 566);
+          _this.controls.movementSpeedMultiplier = 1;
+        }, 2666);
       }
     });
   }
