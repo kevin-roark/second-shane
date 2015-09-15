@@ -1,6 +1,7 @@
 
 var canvas = document.querySelector('#minimap-canvas');
 var context = canvas.getContext('2d');
+context.font = "10px Roboto Mono";
 
 var _mapElements;
 
@@ -70,6 +71,10 @@ module.exports.update = function(centerPosition, rotation) {
   context.shadowBlur = 25;
   drawRotatedImage(context, arrowImage, scaledHalfMinimapSize, scaledHalfMinimapSize, arrowLength, arrowLength, -rotation);
   context.restore();
+
+  // draw the current position
+  var positionString = "(" + parseInt(centerPosition.x) + "," + parseInt(centerPosition.z) + ")";
+  context.fillText(positionString, canvas.width - context.measureText(positionString).width - 3, canvas.height - 8);
 };
 
 function drawRotatedImage(context, image, x, y, width, height, rotation) {

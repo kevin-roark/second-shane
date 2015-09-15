@@ -2157,7 +2157,8 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
         this.curtainBackdrop.css("top", "10px");
         this.curtainBackdrop.css("z-index", "-10");
 
-        this.dvd = this.dahmer.makeVideo(this.videoBase + "live_liveatjjs");
+        var filename = this.isLive ? "live_liveatjjs" : "liveatjjs";
+        this.dvd = this.dahmer.makeVideo(this.videoBase + filename);
         this.dvd.style.height = "365px";
         this.dvd.style.top = "135px";
         this.dvd.style.left = "50%";
@@ -5815,6 +5816,7 @@ $(function () {
 
 var canvas = document.querySelector("#minimap-canvas");
 var context = canvas.getContext("2d");
+context.font = "10px Roboto Mono";
 
 var _mapElements;
 
@@ -5884,6 +5886,10 @@ module.exports.update = function (centerPosition, rotation) {
   context.shadowBlur = 25;
   drawRotatedImage(context, arrowImage, scaledHalfMinimapSize, scaledHalfMinimapSize, arrowLength, arrowLength, -rotation);
   context.restore();
+
+  // draw the current position
+  var positionString = "(" + parseInt(centerPosition.x) + "," + parseInt(centerPosition.z) + ")";
+  context.fillText(positionString, canvas.width - context.measureText(positionString).width - 3, canvas.height - 8);
 };
 
 function drawRotatedImage(context, image, x, y, width, height, rotation) {
