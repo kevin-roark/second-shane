@@ -47,7 +47,8 @@ export class LiveAtJJs extends ShaneScene {
     this.curtainBackdrop.css('top', '10px');
     this.curtainBackdrop.css('z-index', '-10');
 
-    this.dvd = this.dahmer.makeVideo(this.videoBase + 'live_liveatjjs');
+    var filename = this.isLive ? 'live_liveatjjs' : 'liveatjjs';
+    this.dvd = this.dahmer.makeVideo(this.videoBase + filename);
     this.dvd.style.height = '365px';
     this.dvd.style.top = '135px';
     this.dvd.style.left = '50%';
