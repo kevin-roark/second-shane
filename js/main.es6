@@ -14,6 +14,9 @@ import {createShaneScenes} from './scenes.es6';
 import {currentTheme} from './theme.es6';
 import {chatter} from './util/chatterbox.es6';
 
+let $loadingOverlay = $('#loading-overlay');
+let $loadingText = $('#loading-text');
+let $clickToStartText = $('#click-to-start-text');
 let $sceneOverlay = $('#scene-overlay');
 let $nearbyArtifactContainer = $('#nearby-artifact-container');
 let $nearbyArtifactName = $('#nearby-artifact-name');
@@ -46,8 +49,13 @@ class SecondShane extends ThreeBoiler {
     };
 
     $(document).click(() => {
-      if (this.activeScene) {
+      if (this.activeScene || !this.hasLoaded) {
         return;
+      }
+
+      if (!this.hasQuitLoadingScreen) {
+        this.exitLoadingScreen();
+        this.hasQuitLoadingScreen = true;
       }
 
       if (this.controls.requestPointerlock) {
@@ -95,18 +103,6 @@ class SecondShane extends ThreeBoiler {
         }, 566);
       }
     });
-
-    setTimeout(() => {
-      this.waitBeforeAddingMoney = false;
-      moneyMan.init();
-      moneyMan.setMoneyReason('Keep an eye on your New Money accumulation!');
-
-      setTimeout(() => {
-        if (!this.activeScene) {
-          this.showIntroChatter();
-        }
-      }, 3333);
-    }, 3333);
   }
 
   render() {
@@ -117,6 +113,11 @@ class SecondShane extends ThreeBoiler {
     }
     else {
       this.controls.update();
+
+      if (!this.hasLoaded && this.controls.mostRecentDelta && this.controls.mostRecentDelta < 0.05) {
+        this.performDidLoadTransition();
+        this.hasLoaded = true;
+      }
 
       for (var i = 0; i < this.oneOffs.length; i++) {
         this.oneOffs[i].update();
@@ -148,6 +149,32 @@ class SecondShane extends ThreeBoiler {
         }
       }
     }
+  }
+
+  /// Loading
+
+  performDidLoadTransition() {
+    let dur = 966;
+    $loadingText.fadeOut(dur);
+    $clickToStartText.fadeIn(dur);
+  }
+
+  exitLoadingScreen() {
+    $loadingOverlay.fadeOut(1566, function() {
+      $loadingOverlay.remove();
+    });
+
+    setTimeout(() => {
+      this.waitBeforeAddingMoney = false;
+      moneyMan.init();
+      moneyMan.setMoneyReason('Keep an eye on your New Money accumulation!');
+
+      setTimeout(() => {
+        if (!this.activeScene) {
+          this.showIntroChatter();
+        }
+      }, 3333);
+    }, 3333);
   }
 
   /// History
@@ -335,11 +362,11 @@ class SecondShane extends ThreeBoiler {
 
       if (!didCancel) {
         moneyMan.addMoney(1000);
-        moneyMan.setMoneyReason('Won $1000 for completing ' + shaneScene.name + '!');
+        moneyMan.setMoneyReason('Earned $1000 for completing ' + shaneScene.name + '!');
       }
       else {
         moneyMan.addMoney(-500);
-        moneyMan.setMoneyReason('Lost $500 for lack of honor');
+        moneyMan.setMoneyReason('Lost $500 for Lack of Honor');
       }
 
       this.waitBeforeAddingMoney = true;

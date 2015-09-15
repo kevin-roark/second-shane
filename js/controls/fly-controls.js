@@ -252,6 +252,7 @@ module.exports = function (camera, options) {
 			}
 		}
 
+		this.mostRecentDelta = delta;
 		this.prevTime = time;
 	};
 

@@ -30,6 +30,29 @@ body {
   z-index: 999;
 }
 
+#loading-overlay {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  background-color: white;
+  z-index: 1000;
+}
+
+.loading-overlay-text {
+  position: absolute; top: 50%; left: 0; width: 100%;
+  text-shadow: 3px 3px 3px rgba(255, 253, 18, 0.88);
+  text-align: center;
+}
+
+#loading-text {
+  font-size: 40px; margin-top: -40px;
+  color: rgb(90, 90, 90);
+}
+
+#click-to-start-text {
+  display: none;
+  font-size: 60px; margin-top: -60px;
+  color: rgb(15, 143, 249);
+}
+
 /** HUD */
 
 #hud {

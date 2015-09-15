@@ -2988,6 +2988,7 @@ module.exports = function (camera, options) {
 			}
 		}
 
+		this.mostRecentDelta = delta;
 		this.prevTime = time;
 	};
 
@@ -5324,6 +5325,9 @@ var currentTheme = require("./theme.es6").currentTheme;
 
 var chatter = require("./util/chatterbox.es6").chatter;
 
+var $loadingOverlay = $("#loading-overlay");
+var $loadingText = $("#loading-text");
+var $clickToStartText = $("#click-to-start-text");
 var $sceneOverlay = $("#scene-overlay");
 var $nearbyArtifactContainer = $("#nearby-artifact-container");
 var $nearbyArtifactName = $("#nearby-artifact-name");
@@ -5360,8 +5364,13 @@ var SecondShane = (function (_ThreeBoiler) {
     };
 
     $(document).click(function () {
-      if (_this.activeScene) {
+      if (_this.activeScene || !_this.hasLoaded) {
         return;
+      }
+
+      if (!_this.hasQuitLoadingScreen) {
+        _this.exitLoadingScreen();
+        _this.hasQuitLoadingScreen = true;
       }
 
       if (_this.controls.requestPointerlock) {
@@ -5409,18 +5418,6 @@ var SecondShane = (function (_ThreeBoiler) {
         }, 566);
       }
     });
-
-    setTimeout(function () {
-      _this.waitBeforeAddingMoney = false;
-      moneyMan.init();
-      moneyMan.setMoneyReason("Keep an eye on your New Money accumulation!");
-
-      setTimeout(function () {
-        if (!_this.activeScene) {
-          _this.showIntroChatter();
-        }
-      }, 3333);
-    }, 3333);
   }
 
   _inherits(SecondShane, _ThreeBoiler);
@@ -5434,6 +5431,11 @@ var SecondShane = (function (_ThreeBoiler) {
           this.activeScene.update();
         } else {
           this.controls.update();
+
+          if (!this.hasLoaded && this.controls.mostRecentDelta && this.controls.mostRecentDelta < 0.05) {
+            this.performDidLoadTransition();
+            this.hasLoaded = true;
+          }
 
           for (var i = 0; i < this.oneOffs.length; i++) {
             this.oneOffs[i].update();
@@ -5465,6 +5467,37 @@ var SecondShane = (function (_ThreeBoiler) {
             }
           }
         }
+      }
+    },
+    performDidLoadTransition: {
+
+      /// Loading
+
+      value: function performDidLoadTransition() {
+        var dur = 966;
+        $loadingText.fadeOut(dur);
+        $clickToStartText.fadeIn(dur);
+      }
+    },
+    exitLoadingScreen: {
+      value: function exitLoadingScreen() {
+        var _this = this;
+
+        $loadingOverlay.fadeOut(1566, function () {
+          $loadingOverlay.remove();
+        });
+
+        setTimeout(function () {
+          _this.waitBeforeAddingMoney = false;
+          moneyMan.init();
+          moneyMan.setMoneyReason("Keep an eye on your New Money accumulation!");
+
+          setTimeout(function () {
+            if (!_this.activeScene) {
+              _this.showIntroChatter();
+            }
+          }, 3333);
+        }, 3333);
       }
     },
     renderCurrentURL: {
@@ -5669,10 +5702,10 @@ var SecondShane = (function (_ThreeBoiler) {
 
           if (!didCancel) {
             moneyMan.addMoney(1000);
-            moneyMan.setMoneyReason("Won $1000 for completing " + shaneScene.name + "!");
+            moneyMan.setMoneyReason("Earned $1000 for completing " + shaneScene.name + "!");
           } else {
             moneyMan.addMoney(-500);
-            moneyMan.setMoneyReason("Lost $500 for lack of honor");
+            moneyMan.setMoneyReason("Lost $500 for Lack of Honor");
           }
 
           _this.waitBeforeAddingMoney = true;
