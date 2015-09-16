@@ -10,6 +10,8 @@ let VideoMesh = require('../../util/video-mesh');
 
 navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
+var frontPanePosition = new THREE.Vector3(0, -3, -8);
+
 export class GetTheMinion extends ShaneScene {
 
   /// Init
@@ -39,32 +41,37 @@ export class GetTheMinion extends ShaneScene {
     super.enter();
 
     this.makeLights();
-    this.makeGround();
+    //this.makeGround();
+    this.makeWorld();
 
-    this.makeMinion(new THREE.Vector3(-10, 0, -25));
-    this.makeMinion(new THREE.Vector3(-5, 0, -25));
-    this.makeMinion(new THREE.Vector3(0, 0, -25));
-    this.makeMinion(new THREE.Vector3(5, 0, -25));
-    this.makeMinion(new THREE.Vector3(10, 0, -25));
-    this.makeMinion(new THREE.Vector3(-10, 5, -25));
-    this.makeMinion(new THREE.Vector3(-5, 5, -25));
-    this.makeMinion(new THREE.Vector3(0, 5, -25));
-    this.makeMinion(new THREE.Vector3(5, 5, -25));
-    this.makeMinion(new THREE.Vector3(10, 5, -25));
-    this.makeMinion(new THREE.Vector3(-10, -5, -25));
-    this.makeMinion(new THREE.Vector3(-5, -5, -25));
-    this.makeMinion(new THREE.Vector3(0, -5, -25));
-    this.makeMinion(new THREE.Vector3(5, -5, -25));
-    this.makeMinion(new THREE.Vector3(10, -5, -25));
+    // this.makeMinion(new THREE.Vector3(-10, 0, -25));
+    // this.makeMinion(new THREE.Vector3(-5, 0, -25));
+    // this.makeMinion(new THREE.Vector3(0, 0, -25));
+    // this.makeMinion(new THREE.Vector3(5, 0, -25));
+    // this.makeMinion(new THREE.Vector3(10, 0, -25));
+    // this.makeMinion(new THREE.Vector3(-10, 5, -25));
+    // this.makeMinion(new THREE.Vector3(-5, 5, -25));
+    // this.makeMinion(new THREE.Vector3(0, 5, -25));
+    // this.makeMinion(new THREE.Vector3(5, 5, -25));
+    // this.makeMinion(new THREE.Vector3(10, 5, -25));
+    // this.makeMinion(new THREE.Vector3(-10, -5, -25));
+    // this.makeMinion(new THREE.Vector3(-5, -5, -25));
+    // this.makeMinion(new THREE.Vector3(0, -5, -25));
+    // this.makeMinion(new THREE.Vector3(5, -5, -25));
+    // this.makeMinion(new THREE.Vector3(10, -5, -25));
+
+    //this.setupWebcamStream();
   }
 
   doTimedWork() {
     super.doTimedWork();
 
-    this.setupWebcamStream();
-
     var beginShowingMyselfOffset = 13 * 1000;
     this.addTimeout(() => {
+      if (!this.mirrorVideoMesh) {
+        return;
+      }
+
       this.showMyselfInterval = setInterval(() => {
         if (this.mirrorVideoMesh.videoMaterial.opacity < 0.5) {
           this.mirrorVideoMesh.videoMaterial.opacity += 0.002;
@@ -82,6 +89,7 @@ export class GetTheMinion extends ShaneScene {
 
     this.scene.remove(this.hemiLight);
     this.scene.remove(this.dirLight);
+    this.scene.remove(this.ambientLight);
 
     if (this.localMediaStream) {
       this.localMediaStream.stop();
@@ -122,14 +130,49 @@ export class GetTheMinion extends ShaneScene {
     this.hemiLight.position.set( 0, 500, 0 );
     this.scene.add(this.hemiLight);
 
-    var dirLight = new THREE.DirectionalLight( 0xffffff, 0.25);
-    dirLight.color.setHex(0xFFD86C);
-    dirLight.position.set(0, 75, 100);
-    dirLight.castShadow = true;
-    dirLight.shadowMapWidth = dirLight.shadowMapHeight = 8192;
+    this.dirLight = new THREE.DirectionalLight( 0xffffff, 0.25);
+    this.dirLight.color.setHex(0xFFD86C);
+    this.dirLight.position.set(0, 75, 100);
+    this.dirLight.castShadow = true;
+    this.dirLight.shadowMapWidth = this.dirLight.shadowMapHeight = 8192;
+    this.scene.add(this.dirLight);
 
-    this.dirLight = dirLight;
-    this.scene.add(dirLight);
+    this.ambientLight = new THREE.AmbientLight(0xffffff);
+    this.scene.add(this.ambientLight);
+  }
+
+  makeWorld() {
+		var textureBase = "/media/textures/minion/";
+    var cubeUrls = [textureBase + 'arcade1.jpg', textureBase + 'arcade2.jpg', textureBase + 'arcade3.jpg',
+                    textureBase + 'arcade1.jpg', textureBase + 'arcade2.jpg', textureBase + 'arcade3.jpg'];
+
+		var reflectionCube = THREE.ImageUtils.loadTextureCube(cubeUrls);
+		reflectionCube.format = THREE.RGBFormat;
+
+		var refractionCube = THREE.ImageUtils.loadTextureCube(cubeUrls);
+		refractionCube.mapping = THREE.CubeRefractionMapping;
+		refractionCube.format = THREE.RGBFormat;
+
+		//dark orange head: var glassMaterial = new THREE.MeshLambertMaterial({color: 0xff6600, envMap: reflectionCube, combine: THREE.MixOperation, reflectivity: 0.3});
+		var glassMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, envMap: refractionCube, refractionRatio: 0.95 } );
+		// perfect reflections var glassMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, envMap: reflectionCube } );
+    var glassGeometry = new THREE.PlaneBufferGeometry(9, 6);
+    var glass = new THREE.Mesh(glassGeometry, glassMaterial);
+    glass.position.set(frontPanePosition.x, 0, frontPanePosition.z);
+    this.scene.add(glass);
+
+		var skyboxShader = THREE.ShaderLib.cube;
+		skyboxShader.uniforms.tCube.value = reflectionCube;
+		var skyboxMaterial = new THREE.ShaderMaterial({
+			fragmentShader: skyboxShader.fragmentShader,
+			vertexShader: skyboxShader.vertexShader,
+			uniforms: skyboxShader.uniforms,
+			depthWrite: false,
+			side: THREE.BackSide
+		});
+    var skyboxGeometry = new THREE.BoxGeometry(100, 100, 100);
+		this.skyboxMesh = new THREE.Mesh(skyboxGeometry,skyboxMaterial);
+		this.scene.add(this.skyboxMesh);
   }
 
   makeMinion(position) {
@@ -197,7 +240,7 @@ export class GetTheMinion extends ShaneScene {
           renderedVideoWidth: 9,
           renderedVideoHeight: 9 * (this.videoHeight / this.videoWidth)
         });
-        self.mirrorVideoMesh.moveTo(0, -3, -8);
+        self.mirrorVideoMesh.moveTo(frontPanePosition.x, frontPanePosition.y, frontPanePosition.z);
         self.mirrorVideoMesh.addTo(self.scene);
         self.mirrorVideoMesh.mesh.castShadow = true;
         self.mirrorVideoMesh.videoMaterial.opacity = 0.0;
