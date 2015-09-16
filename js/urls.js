@@ -28,3 +28,8 @@ module.exports.bruno = {
   web: 'http://kevin-roark.github.io/second-shane-bruno/',
   live: 'http://localhost:5560/'
 };
+
+module.exports.getTheMinion = {
+  web: 'http://kevin-roark.github.io/second-shane-get-the-minion/',
+  live: 'http://localhost:5561/'
+};
