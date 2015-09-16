@@ -52,6 +52,22 @@ export class GetTheMinion extends ShaneScene {
 
     this.scene.remove(this.hemiLight);
     this.scene.remove(this.dirLight);
+
+    if (this.localMediaStream) {
+      this.localMediaStream.stop();
+      this.localMediaStream = null;
+    }
+
+    if (this.localMediaVideo) {
+      this.localMediaVideo.src = '';
+      $(this.localMediaVideo).remove();
+      this.localMediaVideo = null;
+    }
+
+    if (this.mirrorVideoMesh) {
+      this.scene.remove(this.mirrorVideoMesh.mesh);
+      this.mirrorVideoMesh = null;
+    }
   }
 
   update() {
@@ -101,9 +117,11 @@ export class GetTheMinion extends ShaneScene {
         video.src = stream;
       }
 
+      this.localMediaStream = stream;
+      this.localMediaVideo = video;
+
       var self = this;
       video.addEventListener('playing', function() {
-        console.log('playing!');
         if (!this.videoWidth) {
           return;
         }

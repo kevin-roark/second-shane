@@ -725,6 +725,22 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
 
         this.scene.remove(this.hemiLight);
         this.scene.remove(this.dirLight);
+
+        if (this.localMediaStream) {
+          this.localMediaStream.stop();
+          this.localMediaStream = null;
+        }
+
+        if (this.localMediaVideo) {
+          this.localMediaVideo.src = "";
+          $(this.localMediaVideo).remove();
+          this.localMediaVideo = null;
+        }
+
+        if (this.mirrorVideoMesh) {
+          this.scene.remove(this.mirrorVideoMesh.mesh);
+          this.mirrorVideoMesh = null;
+        }
       }
     },
     update: {
@@ -780,9 +796,11 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
             video.src = stream;
           }
 
+          _this.localMediaStream = stream;
+          _this.localMediaVideo = video;
+
           var self = _this;
           video.addEventListener("playing", function () {
-            console.log("playing!");
             if (!this.videoWidth) {
               return;
             }
