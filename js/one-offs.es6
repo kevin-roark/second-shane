@@ -231,7 +231,7 @@ class PoeticBeacon extends BeaconOneOff {
   constructor(options) {
     options.meshCreator = function(callback) {
       var longEdgeSize = options.longEdgeSize || 8;
-      var geometry = new THREE.PlaneGeometry(longEdgeSize * (Math.random() * 0.25 + 0.5), longEdgeSize);
+      var geometry = new THREE.PlaneBufferGeometry(longEdgeSize * (Math.random() * 0.25 + 0.5), longEdgeSize);
 
       var texture = new THREE.ImageUtils.loadTexture('/media/textures/paper.jpg');
       texture.wrapS = texture.wrapT = THREE.ClampToEdgeWrapping;
@@ -263,7 +263,7 @@ class ImageBeacon extends BeaconOneOff {
   constructor(options) {
     options.meshCreator = function(callback) {
       var longEdgeSize = options.longEdgeSize || 11;
-      var geometry = options.portait ? new THREE.PlaneGeometry(longEdgeSize * 0.75, longEdgeSize) : new THREE.PlaneGeometry(longEdgeSize, longEdgeSize * 0.75);
+      var geometry = options.portait ? new THREE.PlaneBufferGeometry(longEdgeSize * 0.75, longEdgeSize) : new THREE.PlaneBufferGeometry(longEdgeSize, longEdgeSize * 0.75);
       var texture = THREE.ImageUtils.loadTexture(options.imageName);
       texture.minFilter = THREE.NearestFilter;
       var material = new THREE.MeshBasicMaterial({
@@ -313,7 +313,7 @@ class VideoBeacon extends BeaconOneOff {
   meshWasLoaded() {
     super.meshWasLoaded();
 
-    var geometry = new THREE.PlaneGeometry(0.75, 0.75 * 0.5); // tuned to line up with tv
+    var geometry = new THREE.PlaneBufferGeometry(0.75, 0.75 * 0.5); // tuned to line up with tv
     var texture = THREE.ImageUtils.loadTexture(this.previewImageName);
     texture.minFilter = THREE.NearestFilter;
     var material = new THREE.MeshBasicMaterial({
