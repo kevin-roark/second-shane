@@ -79,11 +79,6 @@ class SecondShane extends ThreeBoiler {
     this.activeScene = null;
     this.nearestTalismanScene = null;
 
-    this.renderCurrentURL();
-    window.addEventListener('popstate', () => {
-      this.renderCurrentURL();
-    });
-
     this.initMiniMap();
 
     setDidFindBeaconCallback((beacon) => {
@@ -162,6 +157,11 @@ class SecondShane extends ThreeBoiler {
   exitLoadingScreen() {
     $loadingOverlay.fadeOut(1566, function() {
       $loadingOverlay.remove();
+    });
+
+    this.renderCurrentURL();
+    window.addEventListener('popstate', () => {
+      this.renderCurrentURL();
     });
 
     setTimeout(() => {

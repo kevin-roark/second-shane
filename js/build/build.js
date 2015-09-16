@@ -5651,11 +5651,6 @@ var SecondShane = (function (_ThreeBoiler) {
     this.activeScene = null;
     this.nearestTalismanScene = null;
 
-    this.renderCurrentURL();
-    window.addEventListener("popstate", function () {
-      _this.renderCurrentURL();
-    });
-
     this.initMiniMap();
 
     setDidFindBeaconCallback(function (beacon) {
@@ -5742,6 +5737,11 @@ var SecondShane = (function (_ThreeBoiler) {
 
         $loadingOverlay.fadeOut(1566, function () {
           $loadingOverlay.remove();
+        });
+
+        this.renderCurrentURL();
+        window.addEventListener("popstate", function () {
+          _this.renderCurrentURL();
         });
 
         setTimeout(function () {
