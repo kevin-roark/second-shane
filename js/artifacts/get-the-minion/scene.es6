@@ -39,12 +39,42 @@ export class GetTheMinion extends ShaneScene {
     super.enter();
 
     this.makeLights();
+    this.makeGround();
+
+    this.makeMinion(new THREE.Vector3(-10, 0, -25));
+    this.makeMinion(new THREE.Vector3(-5, 0, -25));
+    this.makeMinion(new THREE.Vector3(0, 0, -25));
+    this.makeMinion(new THREE.Vector3(5, 0, -25));
+    this.makeMinion(new THREE.Vector3(10, 0, -25));
+    this.makeMinion(new THREE.Vector3(-10, 5, -25));
+    this.makeMinion(new THREE.Vector3(-5, 5, -25));
+    this.makeMinion(new THREE.Vector3(0, 5, -25));
+    this.makeMinion(new THREE.Vector3(5, 5, -25));
+    this.makeMinion(new THREE.Vector3(10, 5, -25));
+    this.makeMinion(new THREE.Vector3(-10, -5, -25));
+    this.makeMinion(new THREE.Vector3(-5, -5, -25));
+    this.makeMinion(new THREE.Vector3(0, -5, -25));
+    this.makeMinion(new THREE.Vector3(5, -5, -25));
+    this.makeMinion(new THREE.Vector3(10, -5, -25));
   }
 
   doTimedWork() {
     super.doTimedWork();
 
     this.setupWebcamStream();
+
+    var beginShowingMyselfOffset = 13 * 1000;
+    this.addTimeout(() => {
+      this.showMyselfInterval = setInterval(() => {
+        if (this.mirrorVideoMesh.videoMaterial.opacity < 0.5) {
+          this.mirrorVideoMesh.videoMaterial.opacity += 0.002;
+        }
+        else {
+          clearInterval(this.showMyselfInterval);
+          this.showMyselfInterval = null;
+        }
+      }, 200);
+    }, beginShowingMyselfOffset);
   }
 
   exit() {
@@ -68,6 +98,11 @@ export class GetTheMinion extends ShaneScene {
       this.scene.remove(this.mirrorVideoMesh.mesh);
       this.mirrorVideoMesh = null;
     }
+
+    if (this.showMyselfInterval) {
+      clearInterval(this.showMyselfInterval);
+      this.showMyselfInterval = null;
+    }
   }
 
   update() {
@@ -87,20 +122,49 @@ export class GetTheMinion extends ShaneScene {
     this.hemiLight.position.set( 0, 500, 0 );
     this.scene.add(this.hemiLight);
 
-    var dirLight = new THREE.DirectionalLight( 0xffffff, 1 );
-		dirLight.color.setHSL( 0.1, 1, 0.95 );
-		dirLight.position.set(0, 372, 400);
-
-		dirLight.castShadow = true;
-		dirLight.shadowMapWidth = 2048;
-		dirLight.shadowMapHeight = 2048;
-
-		dirLight.shadowCameraFar = 3500;
-		dirLight.shadowBias = -0.0001;
-		dirLight.shadowDarkness = 0.35;
+    var dirLight = new THREE.DirectionalLight( 0xffffff, 0.25);
+    dirLight.color.setHex(0xFFD86C);
+    dirLight.position.set(0, 75, 100);
+    dirLight.castShadow = true;
+    dirLight.shadowMapWidth = dirLight.shadowMapHeight = 8192;
 
     this.dirLight = dirLight;
     this.scene.add(dirLight);
+  }
+
+  makeMinion(position) {
+    var minion = new ShaneMesh({
+      modelName: '/js/models/minion.json',
+      position: position
+    });
+
+    this.addMesh(minion, () => {
+      minion.mesh.castShadow = true;
+    });
+  }
+
+  makeGround() {
+    let ground = new ShaneMesh({
+      meshCreator: (callback) => {
+        let groundLength = 100;
+        let geometry = new THREE.PlaneGeometry(groundLength, groundLength);
+
+        let material = new THREE.MeshBasicMaterial({
+          color: 0xffffff,
+          side: THREE.DoubleSide
+        });
+
+        let mesh = new THREE.Mesh(geometry, material);
+        mesh.rotation.x = -Math.PI / 2;
+        mesh.receiveShadow = true;
+
+        callback(geometry, material, mesh);
+      },
+
+      position: new THREE.Vector3(0, -10, 0)
+    });
+
+    this.addMesh(ground);
   }
 
   setupWebcamStream() {
@@ -133,11 +197,10 @@ export class GetTheMinion extends ShaneScene {
           renderedVideoWidth: 9,
           renderedVideoHeight: 9 * (this.videoHeight / this.videoWidth)
         });
-        self.mirrorVideoMesh.moveTo(0, 0, -30);
+        self.mirrorVideoMesh.moveTo(0, -3, -8);
         self.mirrorVideoMesh.addTo(self.scene);
-        //this.mirrorVideoMesh.mesh.castShadow = true;
-        //this.mirrorVideoMesh.mesh.receiveShadow = true;
-        self.mirrorVideoMesh.videoMaterial.opacity = 0.5;
+        self.mirrorVideoMesh.mesh.castShadow = true;
+        self.mirrorVideoMesh.videoMaterial.opacity = 0.0;
       }, false);
     };
 
