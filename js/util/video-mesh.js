@@ -33,7 +33,7 @@ function VideoMesh(options) {
     opacity: 1.0
   });
 
-  this.videoGeometry = new THREE.PlaneGeometry(this.renderedVideoWidth, this.renderedVideoHeight);
+  this.videoGeometry = new THREE.PlaneBufferGeometry(this.renderedVideoWidth, this.renderedVideoHeight);
   this.mesh = new THREE.Mesh(this.videoGeometry, this.videoMaterial);
 }
 

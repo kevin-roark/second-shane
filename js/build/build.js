@@ -669,6 +669,9 @@ var Talisman = require("../../talisman.es6").Talisman;
 var ShaneScene = require("../../shane-scene.es6").ShaneScene;
 
 var ShaneMesh = require("../../shane-mesh");
+var VideoMesh = require("../../util/video-mesh");
+
+navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
 var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
 
@@ -692,7 +695,7 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
     createTalisman: {
       value: function createTalisman() {
         var talisman = new Talisman({
-          position: new THREE.Vector3(-50, 0, -50),
+          position: new THREE.Vector3(-25, 0, -25),
           modelPath: "/js/models/minion.json",
           modelScale: 3
         });
@@ -712,6 +715,8 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
     doTimedWork: {
       value: function doTimedWork() {
         _get(Object.getPrototypeOf(GetTheMinion.prototype), "doTimedWork", this).call(this);
+
+        this.setupWebcamStream();
       }
     },
     exit: {
@@ -725,6 +730,10 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
     update: {
       value: function update() {
         _get(Object.getPrototypeOf(GetTheMinion.prototype), "update", this).call(this);
+
+        if (this.mirrorVideoMesh) {
+          this.mirrorVideoMesh.update();
+        }
       }
     },
     makeLights: {
@@ -753,6 +762,53 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
         this.dirLight = dirLight;
         this.scene.add(dirLight);
       }
+    },
+    setupWebcamStream: {
+      value: function setupWebcamStream() {
+        var _this = this;
+
+        if (!navigator.getUserMedia) {
+          return;
+        }
+
+        var onSuccess = function (stream) {
+          var video = document.createElement("video");
+          video.autoplay = true;
+          if (window.URL) {
+            video.src = window.URL.createObjectURL(stream);
+          } else {
+            video.src = stream;
+          }
+
+          var self = _this;
+          video.addEventListener("playing", function () {
+            console.log("playing!");
+            if (!this.videoWidth) {
+              return;
+            }
+
+            self.mirrorVideoMesh = new VideoMesh({
+              video: video,
+              sourceVideoWidth: this.videoWidth,
+              sourceVideoHeight: this.videoHeight,
+              renderedVideoWidth: 9,
+              renderedVideoHeight: 9 * (this.videoHeight / this.videoWidth)
+            });
+            self.mirrorVideoMesh.moveTo(0, 0, -30);
+            self.mirrorVideoMesh.addTo(self.scene);
+            //this.mirrorVideoMesh.mesh.castShadow = true;
+            //this.mirrorVideoMesh.mesh.receiveShadow = true;
+            self.mirrorVideoMesh.videoMaterial.opacity = 0.5;
+          }, false);
+        };
+
+        var onError = function (error) {
+          console.log("navigator.getUserMedia error: ", error);
+        };
+
+        var mediaConstraints = { audio: false, video: true };
+        navigator.getUserMedia(mediaConstraints, onSuccess, onError);
+      }
     }
   });
 
@@ -763,7 +819,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../shane-mesh":20,"../../shane-scene.es6":21,"../../talisman.es6":22,"../../urls":25,"jquery":30,"three":33}],5:[function(require,module,exports){
+},{"../../shane-mesh":20,"../../shane-scene.es6":21,"../../talisman.es6":22,"../../urls":25,"../../util/video-mesh":29,"jquery":30,"three":33}],5:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -7966,7 +8022,7 @@ function VideoMesh(options) {
     opacity: 1
   });
 
-  this.videoGeometry = new THREE.PlaneGeometry(this.renderedVideoWidth, this.renderedVideoHeight);
+  this.videoGeometry = new THREE.PlaneBufferGeometry(this.renderedVideoWidth, this.renderedVideoHeight);
   this.mesh = new THREE.Mesh(this.videoGeometry, this.videoMaterial);
 }
 

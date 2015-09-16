@@ -6,6 +6,9 @@ let urls = require('../../urls');
 import {Talisman} from '../../talisman.es6';
 import {ShaneScene} from '../../shane-scene.es6';
 let ShaneMesh = require('../../shane-mesh');
+let VideoMesh = require('../../util/video-mesh');
+
+navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
 export class GetTheMinion extends ShaneScene {
 
@@ -23,7 +26,7 @@ export class GetTheMinion extends ShaneScene {
 
   createTalisman() {
     let talisman = new Talisman({
-      position: new THREE.Vector3(-50, 0, -50),
+      position: new THREE.Vector3(-25, 0, -25),
       modelPath: '/js/models/minion.json',
       modelScale: 3.0
     });
@@ -40,6 +43,8 @@ export class GetTheMinion extends ShaneScene {
 
   doTimedWork() {
     super.doTimedWork();
+
+    this.setupWebcamStream();
   }
 
   exit() {
@@ -51,6 +56,10 @@ export class GetTheMinion extends ShaneScene {
 
   update() {
     super.update();
+
+    if (this.mirrorVideoMesh) {
+      this.mirrorVideoMesh.update();
+    }
   }
 
   /// Creation
@@ -76,6 +85,50 @@ export class GetTheMinion extends ShaneScene {
 
     this.dirLight = dirLight;
     this.scene.add(dirLight);
+  }
+
+  setupWebcamStream() {
+    if (!navigator.getUserMedia) {
+      return;
+    }
+
+    var onSuccess = (stream) => {
+      var video = document.createElement('video');
+      video.autoplay = true;
+      if (window.URL) {
+        video.src = window.URL.createObjectURL(stream);
+      } else {
+        video.src = stream;
+      }
+
+      var self = this;
+      video.addEventListener('playing', function() {
+        console.log('playing!');
+        if (!this.videoWidth) {
+          return;
+        }
+
+        self.mirrorVideoMesh = new VideoMesh({
+          video: video,
+          sourceVideoWidth: this.videoWidth,
+          sourceVideoHeight: this.videoHeight,
+          renderedVideoWidth: 9,
+          renderedVideoHeight: 9 * (this.videoHeight / this.videoWidth)
+        });
+        self.mirrorVideoMesh.moveTo(0, 0, -30);
+        self.mirrorVideoMesh.addTo(self.scene);
+        //this.mirrorVideoMesh.mesh.castShadow = true;
+        //this.mirrorVideoMesh.mesh.receiveShadow = true;
+        self.mirrorVideoMesh.videoMaterial.opacity = 0.5;
+      }, false);
+    };
+
+    var onError = (error) => {
+      console.log('navigator.getUserMedia error: ', error);
+    };
+
+    var mediaConstraints = {audio: false, video: true};
+    navigator.getUserMedia(mediaConstraints, onSuccess, onError);
   }
 
 }
