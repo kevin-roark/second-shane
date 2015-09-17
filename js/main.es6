@@ -26,6 +26,7 @@ var $hud = $('#hud');
 var $pointerLockTip = $('#pointer-lock-tip');
 
 let IS_LIVE = false;
+let SCRATCH_PAD = true;
 
 class SecondShane extends ThreeBoiler {
   constructor() {
@@ -64,11 +65,6 @@ class SecondShane extends ThreeBoiler {
       this.controls.setEnabled(true);
     });
 
-    this.oneOffs = oneOffs;
-    for (var i = 0; i < oneOffs.length; i++) {
-      this.oneOffs[i].activate(this.scene);
-    }
-
     this.shaneScenes = createShaneScenes(this.transitionFromScene.bind(this), this.renderer, this.camera, this.scene);
 
     this.theme = currentTheme;
@@ -78,6 +74,16 @@ class SecondShane extends ThreeBoiler {
 
     this.activeScene = null;
     this.nearestTalismanScene = null;
+
+    if (SCRATCH_PAD) {
+      this.oneOffs = [];
+      return;
+    }
+
+    this.oneOffs = oneOffs;
+    for (var i = 0; i < oneOffs.length; i++) {
+      this.oneOffs[i].activate(this.scene);
+    }
 
     this.initMiniMap();
 
@@ -159,10 +165,12 @@ class SecondShane extends ThreeBoiler {
       $loadingOverlay.remove();
     });
 
-    this.renderCurrentURL();
-    window.addEventListener('popstate', () => {
+    setTimeout(() => {
       this.renderCurrentURL();
-    });
+      window.addEventListener('popstate', () => {
+        this.renderCurrentURL();
+      });
+    }, 2666);
 
     setTimeout(() => {
       this.waitBeforeAddingMoney = false;

@@ -673,6 +673,27 @@ var VideoMesh = require("../../util/video-mesh");
 
 navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
+/**
+ * LAYOUT OF SCENE
+ *
+ * 1. starts with all white
+ * 2. Text from boy stuck article (https://uk.news.yahoo.com/boy-trying-to-win-a-minion-teddy-got-himself-stuck-inside-an-arcade-machine-121454521.html)
+ *    begins to dom sroll in giant times new roman over everything
+ * 3. Next, the images of the boy begin to fly in from the screen, casting shadow onto the white ground. they fall like cards
+      and rest for the remainder of the scene.
+ * 4. $sceneOverlay.show(), and when it fadeOut(), the scene has transformed to have a skybox with
+      carpet floor, office ceiling, and four images of the inside of an arcade. There is a claw machine
+      made from four glass panels. It is stuffed with minions (they can be added periodically in the begining with timeouts).
+      There is a red base. Make sure the carpet shows shadows.
+      reference claw: http://adsoftheworld.com/sites/default/files/images/AFGHANISTAN.jpg
+   5. A claw is visible above the machine. User uses the arrow keys to move the claw, and another key to slam it down.
+      The claw never picks up a minion, but it rattles them pretty good.
+   6. After a while, the front glass panel begins to reveal the user's face. It is a startling sensation,
+      to feel like that boy.
+   7. A male.json mesh with a head made from a webcam still appears and slowly grows over the entire claw machine,
+      enveloping itself into the minions. You got the minion. The claw rests.
+ */
+
 var frontPanePosition = new THREE.Vector3(0, -3, -8);
 
 var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
@@ -712,9 +733,9 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
         _get(Object.getPrototypeOf(GetTheMinion.prototype), "enter", this).call(this);
 
         this.makeLights();
-        //this.makeGround();
-        this.makeWorld();
+        this.makeWhiteGround();
 
+        //this.makeArcade();
         // this.makeMinion(new THREE.Vector3(-10, 0, -25));
         // this.makeMinion(new THREE.Vector3(-5, 0, -25));
         // this.makeMinion(new THREE.Vector3(0, 0, -25));
@@ -730,31 +751,33 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
         // this.makeMinion(new THREE.Vector3(0, -5, -25));
         // this.makeMinion(new THREE.Vector3(5, -5, -25));
         // this.makeMinion(new THREE.Vector3(10, -5, -25));
-
         //this.setupWebcamStream();
       }
     },
     doTimedWork: {
       value: function doTimedWork() {
-        var _this = this;
-
         _get(Object.getPrototypeOf(GetTheMinion.prototype), "doTimedWork", this).call(this);
 
-        var beginShowingMyselfOffset = 13 * 1000;
-        this.addTimeout(function () {
-          if (!_this.mirrorVideoMesh) {
-            return;
-          }
+        this.showArticleText(function () {
+          console.log("i call u");
+        });
 
-          _this.showMyselfInterval = setInterval(function () {
-            if (_this.mirrorVideoMesh.videoMaterial.opacity < 0.5) {
-              _this.mirrorVideoMesh.videoMaterial.opacity += 0.002;
-            } else {
-              clearInterval(_this.showMyselfInterval);
-              _this.showMyselfInterval = null;
-            }
-          }, 200);
-        }, beginShowingMyselfOffset);
+        // var beginShowingMyselfOffset = 13 * 1000;
+        // this.addTimeout(() => {
+        //   if (!this.mirrorVideoMesh) {
+        //     return;
+        //   }
+        //
+        //   this.showMyselfInterval = setInterval(() => {
+        //     if (this.mirrorVideoMesh.videoMaterial.opacity < 0.5) {
+        //       this.mirrorVideoMesh.videoMaterial.opacity += 0.002;
+        //     }
+        //     else {
+        //       clearInterval(this.showMyselfInterval);
+        //       this.showMyselfInterval = null;
+        //     }
+        //   }, 200);
+        // }, beginShowingMyselfOffset);
       }
     },
     exit: {
@@ -764,6 +787,8 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
         this.scene.remove(this.hemiLight);
         this.scene.remove(this.dirLight);
         this.scene.remove(this.ambientLight);
+
+        this.removePart1Portions();
 
         if (this.localMediaStream) {
           this.localMediaStream.stop();
@@ -798,7 +823,7 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
     },
     makeLights: {
 
-      /// Creation
+      /// PART 1
 
       value: function makeLights() {
         this.hemiLight = new THREE.HemisphereLight(16777215, 16777215, 0.8);
@@ -818,8 +843,84 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
         this.scene.add(this.ambientLight);
       }
     },
-    makeWorld: {
-      value: function makeWorld() {
+    makeWhiteGround: {
+      value: function makeWhiteGround() {
+        var ground = new ShaneMesh({
+          meshCreator: function (callback) {
+            var groundLength = 100;
+            var geometry = new THREE.PlaneGeometry(groundLength, groundLength);
+
+            var material = new THREE.MeshBasicMaterial({
+              color: 16777215,
+              side: THREE.DoubleSide
+            });
+
+            var mesh = new THREE.Mesh(geometry, material);
+            mesh.rotation.x = -Math.PI / 2;
+            mesh.receiveShadow = true;
+
+            callback(geometry, material, mesh);
+          },
+
+          position: new THREE.Vector3(0, -10, 0)
+        });
+
+        ground.addTo(this.scene);
+        this.whiteGround = ground;
+      }
+    },
+    showArticleText: {
+      value: function showArticleText(callback) {
+        var _this = this;
+
+        var text = "Boy Aged Four Gets Stuck Inside Arcade Machine After Trying To Win Minion Teddy. Henry Howes took matters into his own hands in his desperate quest to land a stuffed Despicable Me toy. There is nothing more agonising as a child than dropping a teddy in an arcade claw machine. Four-year-old Henry Howes experienced just that at his local Staffordshire swimming pool, after convincing his mum to give him £1 for the game. Things didn’t go quite as planned when the claw machine released the teddy. But Henry refused to give up, so he took matters into his own hand and attempted to put his hand inside the hatch to grab the toy - but reached too far. His bottom slipped under the trap door on the front of the machine, trapping him inside. The drama was witnessed by older brother Harvey, nine, who ran to get their mum.It took staff half an hour to find the keys to free Henry, so mum Emma took the opportunity to snap the scene. Mum-of-three Emma, 33, said: ‘He asked if he could have a go on the teddy machine so I gave him a £1 and told him to go with his big brother. ‘Off they went round the corner and then his brother came back and said 'Henry is stuck in the machine'.‘I assumed he meant his hand - I didn't think he'd be inside the machine. He was completely inside it. ‘I don't know how he managed to get in there. He's only four but he's a tall lad.‘I was laughing my head off. I could see that he was fine and he wasn't upset.Henry's adventure ended happily as he went home with the teddy when staff allowed him to keep it.Emma said: ‘I said to the lady 'I hope you'll let him have it' and they did.'<br><br><br><br>He hasn't let go of it since.";
+        var $articleDiv = $("<div>" + text + "</div>");
+        $articleDiv.css("position", "fixed");$articleDiv.css("top", "0px");$articleDiv.css("left", "0px");
+        $articleDiv.css("padding", "666px 100px");
+        $articleDiv.css("color", "rgb(237, 61, 14)");
+        $articleDiv.css("font-size", "40px");
+        $articleDiv.css("font-weight", "bold");
+        $articleDiv.css("line-height", "70px");
+        $articleDiv.css("letter-spacing", "1px");
+        this.domContainer.append($articleDiv);
+
+        this.addTimeout(function () {
+          if (!_this.$articleDiv) return;
+
+          var scrollDuration = 40 * 1000;
+          var height = $articleDiv.height() + window.innerHeight;
+          $articleDiv.animate({ top: -height + "px" }, scrollDuration, "linear", function () {
+            if (_this.$articleDiv) {
+              _this.$articleDiv.remove();
+              _this.$articleDiv = null;
+            }
+            if (callback) {
+              callback();
+            }
+          });
+        }, 1000);
+
+        this.$articleDiv = $articleDiv;
+      }
+    },
+    removePart1Portions: {
+      value: function removePart1Portions() {
+        if (this.whiteGround) {
+          this.whiteGround.removeFrom(this.scene);
+          this.whiteGround = null;
+        }
+
+        if (this.$articleDiv) {
+          this.$articleDiv.remove();
+          this.$articleDiv = null;
+        }
+      }
+    },
+    makeArcade: {
+
+      // PART 2
+
+      value: function makeArcade() {
         var textureBase = "/media/textures/minion/";
         var cubeUrls = [textureBase + "arcade1.jpg", textureBase + "arcade2.jpg", textureBase + "arcade3.jpg", textureBase + "arcade1.jpg", textureBase + "arcade2.jpg", textureBase + "arcade3.jpg"];
 
@@ -862,31 +963,6 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
         this.addMesh(minion, function () {
           minion.mesh.castShadow = true;
         });
-      }
-    },
-    makeGround: {
-      value: function makeGround() {
-        var ground = new ShaneMesh({
-          meshCreator: function (callback) {
-            var groundLength = 100;
-            var geometry = new THREE.PlaneGeometry(groundLength, groundLength);
-
-            var material = new THREE.MeshBasicMaterial({
-              color: 16777215,
-              side: THREE.DoubleSide
-            });
-
-            var mesh = new THREE.Mesh(geometry, material);
-            mesh.rotation.x = -Math.PI / 2;
-            mesh.receiveShadow = true;
-
-            callback(geometry, material, mesh);
-          },
-
-          position: new THREE.Vector3(0, -10, 0)
-        });
-
-        this.addMesh(ground);
       }
     },
     setupWebcamStream: {
@@ -5637,6 +5713,7 @@ var $hud = $("#hud");
 var $pointerLockTip = $("#pointer-lock-tip");
 
 var IS_LIVE = false;
+var SCRATCH_PAD = true;
 
 var SecondShane = (function (_ThreeBoiler) {
   function SecondShane() {
@@ -5679,11 +5756,6 @@ var SecondShane = (function (_ThreeBoiler) {
       _this.controls.setEnabled(true);
     });
 
-    this.oneOffs = oneOffs;
-    for (var i = 0; i < oneOffs.length; i++) {
-      this.oneOffs[i].activate(this.scene);
-    }
-
     this.shaneScenes = createShaneScenes(this.transitionFromScene.bind(this), this.renderer, this.camera, this.scene);
 
     this.theme = currentTheme;
@@ -5693,6 +5765,16 @@ var SecondShane = (function (_ThreeBoiler) {
 
     this.activeScene = null;
     this.nearestTalismanScene = null;
+
+    if (SCRATCH_PAD) {
+      this.oneOffs = [];
+      return;
+    }
+
+    this.oneOffs = oneOffs;
+    for (var i = 0; i < oneOffs.length; i++) {
+      this.oneOffs[i].activate(this.scene);
+    }
 
     this.initMiniMap();
 
