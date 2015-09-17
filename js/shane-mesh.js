@@ -22,6 +22,9 @@ function ShaneMesh(options) {
 
   this.meshCreator = options.meshCreator;
 
+  this.velocity = options.velocity;
+  this.rotationalVelocity = options.rotationalVelocity;
+  this.acceleration = options.acceleration;
   this.melting = false;
   this.twitching = false;
 }
@@ -174,7 +177,28 @@ ShaneMesh.prototype.update = function() {
     this.fluctuate(1);
   }
 
+  if (this.velocity) {
+    this.move(this.velocity.x, this.velocity.y, this.velocity.z);
+  }
+  if (this.rotationalVelocity) {
+    this.rotate(this.rotationalVelocity.x, this.rotationalVelocity.y, this.rotationalVelocity.z);
+  }
+  if (this.acceleration) {
+    this.velocity.x += this.acceleration.x;
+    this.velocity.y += this.acceleration.y;
+    this.velocity.z += this.acceleration.z;
+  }
+
   this.additionalRender();
+};
+
+ShaneMesh.prototype.stopAllMovement = function() {
+  this.velocity = null;
+  this.acceleration = null;
+};
+
+ShaneMesh.prototype.stopAllRotation = function() {
+  this.rotationalVelocity = null;
 };
 
 ShaneMesh.prototype.twitch = function(scalar) {

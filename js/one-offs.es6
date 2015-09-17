@@ -63,7 +63,7 @@ class MeshedOneOff extends OneOff {
   update() {
     super.update();
 
-    if (this.active) {
+    if (this.active && this.meshesNeedUpdate) {
       this.shaneMesh.update();
     }
   }

@@ -1,12 +1,18 @@
 
 let THREE = require('three');
 let $ = require('jquery');
+let kt = require('kutility');
 
 let urls = require('../../urls');
 import {Talisman} from '../../talisman.es6';
 import {ShaneScene} from '../../shane-scene.es6';
 let ShaneMesh = require('../../shane-mesh');
 let VideoMesh = require('../../util/video-mesh');
+
+let GroundYPosition = -10;
+let PI_OVER_2 = Math.PI / 2;
+let PI_3_OVER_2 = 3 * PI_OVER_2;
+let PI2 = Math.PI * 2;
 
 navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
@@ -87,7 +93,10 @@ export class GetTheMinion extends ShaneScene {
     super.doTimedWork();
 
     this.showArticleText(() => {
-      console.log('i call u');
+      console.log('done with article');
+      setTimeout(() => {
+        this.performBoyCardFlyingAnimation();
+      }, 4444);
     });
 
     // var beginShowingMyselfOffset = 13 * 1000;
@@ -142,6 +151,26 @@ export class GetTheMinion extends ShaneScene {
   update() {
     super.update();
 
+    if (this.flyingCards) {
+      var cards = this.flyingCards;
+      for (var i = 0; i < cards.length; i++) {
+        var card = cards[i];
+        card.update();
+        if (!card.mesh) continue;
+        if (!card.__hasStopped && card.mesh.position.y <= GroundYPosition + 0.15) {
+          card.stopAllMovement();
+          card.__hasStopped = true;
+        }
+        if (card.__hasStopped && !card.__hasKilledRotation) {
+          var rot = Math.abs(card.mesh.rotation.x % PI2);
+          if (Math.abs(rot - PI_OVER_2) < 0.1 || Math.abs(rot - PI_3_OVER_2) < 0.1) {
+            card.stopAllRotation();
+            card.__hasKilledRotation = true;
+          }
+        }
+      }
+    }
+
     if (this.mirrorVideoMesh) {
       this.mirrorVideoMesh.update();
     }
@@ -170,7 +199,7 @@ export class GetTheMinion extends ShaneScene {
   makeWhiteGround() {
     let ground = new ShaneMesh({
       meshCreator: (callback) => {
-        let groundLength = 100;
+        let groundLength = 666;
         let geometry = new THREE.PlaneGeometry(groundLength, groundLength);
 
         let material = new THREE.MeshBasicMaterial({
@@ -185,7 +214,7 @@ export class GetTheMinion extends ShaneScene {
         callback(geometry, material, mesh);
       },
 
-      position: new THREE.Vector3(0, -10, 0)
+      position: new THREE.Vector3(0, GroundYPosition, 0)
     });
 
     ground.addTo(this.scene);
@@ -223,6 +252,51 @@ export class GetTheMinion extends ShaneScene {
     this.$articleDiv = $articleDiv;
   }
 
+  performBoyCardFlyingAnimation() {
+    this.flyingCards = [];
+
+    var currentTimeout = 0;
+    for (var i = 0; i < 13; i++) {
+      this.addTimeout(this.makeFlyingCard.bind(this), currentTimeout);
+      currentTimeout += Math.random() * 2222 + 1111;
+    }
+  }
+
+  makeFlyingCard() {
+    let textures = ['/media/textures/minionboy1.jpg', '/media/textures/minionboy2.jpg', '/media/textures/minionboy3.jpg'];
+    let position = new THREE.Vector3((Math.random() - 0.5) * 28, -2 + Math.random() * 10, 3);
+    let velocity = new THREE.Vector3((Math.random() - 0.5) * 0.005, 0, -0.08 + Math.random() * -0.2);
+    let acceleration = new THREE.Vector3(0, -0.00015, 0);
+    let rotationMult = Math.random() > 0.5 ? 1 : -1;
+    let rotationalVelocity = new THREE.Vector3(Math.random() * rotationMult * 0.02 + rotationMult * 0.02, 0, 0);
+    let length = 3.5 + Math.random() * 6;
+
+    let card = new ShaneMesh({
+      meshCreator: (callback) => {
+        var geometry = new THREE.BoxGeometry(length, length, 0.1);
+
+        var texture = new THREE.ImageUtils.loadTexture(kt.choice(textures));
+        texture.wrapS = texture.wrapT = THREE.ClampToEdgeWrapping;
+        texture.minFilter = THREE.NearestFilter;
+        var material = new THREE.MeshBasicMaterial({
+          map: texture,
+          side: THREE.DoubleSide
+        });
+
+        var mesh = new THREE.Mesh(geometry, material);
+        mesh.castShadow = true;
+        callback(geometry, material, mesh);
+      },
+      position: position,
+      velocity: velocity,
+      acceleration: acceleration,
+      rotationalVelocity: rotationalVelocity
+    });
+    card.__length = length;
+    this.addMesh(card);
+    this.flyingCards.push(card);
+  }
+
   removePart1Portions() {
     if (this.whiteGround) {
       this.whiteGround.removeFrom(this.scene);
@@ -233,6 +307,8 @@ export class GetTheMinion extends ShaneScene {
       this.$articleDiv.remove();
       this.$articleDiv = null;
     }
+
+    this.flyingCards = null;
   }
 
   // PART 2

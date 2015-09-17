@@ -661,6 +661,7 @@ var _classCallCheck = function (instance, Constructor) { if (!(instance instance
 
 var THREE = require("three");
 var $ = require("jquery");
+var kt = require("kutility");
 
 var urls = require("../../urls");
 
@@ -670,6 +671,11 @@ var ShaneScene = require("../../shane-scene.es6").ShaneScene;
 
 var ShaneMesh = require("../../shane-mesh");
 var VideoMesh = require("../../util/video-mesh");
+
+var GroundYPosition = -10;
+var PI_OVER_2 = Math.PI / 2;
+var PI_3_OVER_2 = 3 * PI_OVER_2;
+var PI2 = Math.PI * 2;
 
 navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
@@ -756,10 +762,15 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
     },
     doTimedWork: {
       value: function doTimedWork() {
+        var _this = this;
+
         _get(Object.getPrototypeOf(GetTheMinion.prototype), "doTimedWork", this).call(this);
 
         this.showArticleText(function () {
-          console.log("i call u");
+          console.log("done with article");
+          setTimeout(function () {
+            _this.performBoyCardFlyingAnimation();
+          }, 4444);
         });
 
         // var beginShowingMyselfOffset = 13 * 1000;
@@ -816,6 +827,26 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
       value: function update() {
         _get(Object.getPrototypeOf(GetTheMinion.prototype), "update", this).call(this);
 
+        if (this.flyingCards) {
+          var cards = this.flyingCards;
+          for (var i = 0; i < cards.length; i++) {
+            var card = cards[i];
+            card.update();
+            if (!card.mesh) continue;
+            if (!card.__hasStopped && card.mesh.position.y <= GroundYPosition + 0.15) {
+              card.stopAllMovement();
+              card.__hasStopped = true;
+            }
+            if (card.__hasStopped && !card.__hasKilledRotation) {
+              var rot = Math.abs(card.mesh.rotation.x % PI2);
+              if (Math.abs(rot - PI_OVER_2) < 0.1 || Math.abs(rot - PI_3_OVER_2) < 0.1) {
+                card.stopAllRotation();
+                card.__hasKilledRotation = true;
+              }
+            }
+          }
+        }
+
         if (this.mirrorVideoMesh) {
           this.mirrorVideoMesh.update();
         }
@@ -847,7 +878,7 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
       value: function makeWhiteGround() {
         var ground = new ShaneMesh({
           meshCreator: function (callback) {
-            var groundLength = 100;
+            var groundLength = 666;
             var geometry = new THREE.PlaneGeometry(groundLength, groundLength);
 
             var material = new THREE.MeshBasicMaterial({
@@ -862,7 +893,7 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
             callback(geometry, material, mesh);
           },
 
-          position: new THREE.Vector3(0, -10, 0)
+          position: new THREE.Vector3(0, GroundYPosition, 0)
         });
 
         ground.addTo(this.scene);
@@ -903,6 +934,53 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
         this.$articleDiv = $articleDiv;
       }
     },
+    performBoyCardFlyingAnimation: {
+      value: function performBoyCardFlyingAnimation() {
+        this.flyingCards = [];
+
+        var currentTimeout = 0;
+        for (var i = 0; i < 13; i++) {
+          this.addTimeout(this.makeFlyingCard.bind(this), currentTimeout);
+          currentTimeout += Math.random() * 2222 + 1111;
+        }
+      }
+    },
+    makeFlyingCard: {
+      value: function makeFlyingCard() {
+        var textures = ["/media/textures/minionboy1.jpg", "/media/textures/minionboy2.jpg", "/media/textures/minionboy3.jpg"];
+        var position = new THREE.Vector3((Math.random() - 0.5) * 28, -2 + Math.random() * 10, 3);
+        var velocity = new THREE.Vector3((Math.random() - 0.5) * 0.005, 0, -0.08 + Math.random() * -0.2);
+        var acceleration = new THREE.Vector3(0, -0.00015, 0);
+        var rotationMult = Math.random() > 0.5 ? 1 : -1;
+        var rotationalVelocity = new THREE.Vector3(Math.random() * rotationMult * 0.02 + rotationMult * 0.02, 0, 0);
+        var length = 3.5 + Math.random() * 6;
+
+        var card = new ShaneMesh({
+          meshCreator: function (callback) {
+            var geometry = new THREE.BoxGeometry(length, length, 0.1);
+
+            var texture = new THREE.ImageUtils.loadTexture(kt.choice(textures));
+            texture.wrapS = texture.wrapT = THREE.ClampToEdgeWrapping;
+            texture.minFilter = THREE.NearestFilter;
+            var material = new THREE.MeshBasicMaterial({
+              map: texture,
+              side: THREE.DoubleSide
+            });
+
+            var mesh = new THREE.Mesh(geometry, material);
+            mesh.castShadow = true;
+            callback(geometry, material, mesh);
+          },
+          position: position,
+          velocity: velocity,
+          acceleration: acceleration,
+          rotationalVelocity: rotationalVelocity
+        });
+        card.__length = length;
+        this.addMesh(card);
+        this.flyingCards.push(card);
+      }
+    },
     removePart1Portions: {
       value: function removePart1Portions() {
         if (this.whiteGround) {
@@ -914,6 +992,8 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
           this.$articleDiv.remove();
           this.$articleDiv = null;
         }
+
+        this.flyingCards = null;
       }
     },
     makeArcade: {
@@ -1022,7 +1102,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../shane-mesh":20,"../../shane-scene.es6":21,"../../talisman.es6":22,"../../urls":25,"../../util/video-mesh":29,"jquery":30,"three":33}],5:[function(require,module,exports){
+},{"../../shane-mesh":20,"../../shane-scene.es6":21,"../../talisman.es6":22,"../../urls":25,"../../util/video-mesh":29,"jquery":30,"kutility":31,"three":33}],5:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -5864,10 +5944,12 @@ var SecondShane = (function (_ThreeBoiler) {
           $loadingOverlay.remove();
         });
 
-        this.renderCurrentURL();
-        window.addEventListener("popstate", function () {
+        setTimeout(function () {
           _this.renderCurrentURL();
-        });
+          window.addEventListener("popstate", function () {
+            _this.renderCurrentURL();
+          });
+        }, 2666);
 
         setTimeout(function () {
           _this.waitBeforeAddingMoney = false;
@@ -6448,7 +6530,7 @@ var MeshedOneOff = (function (_OneOff) {
       value: function update() {
         _get(Object.getPrototypeOf(MeshedOneOff.prototype), "update", this).call(this);
 
-        if (this.active) {
+        if (this.active && this.meshesNeedUpdate) {
           this.shaneMesh.update();
         }
       }
@@ -7312,6 +7394,9 @@ function ShaneMesh(options) {
 
   this.meshCreator = options.meshCreator;
 
+  this.velocity = options.velocity;
+  this.rotationalVelocity = options.rotationalVelocity;
+  this.acceleration = options.acceleration;
   this.melting = false;
   this.twitching = false;
 }
@@ -7461,7 +7546,28 @@ ShaneMesh.prototype.update = function () {
     this.fluctuate(1);
   }
 
+  if (this.velocity) {
+    this.move(this.velocity.x, this.velocity.y, this.velocity.z);
+  }
+  if (this.rotationalVelocity) {
+    this.rotate(this.rotationalVelocity.x, this.rotationalVelocity.y, this.rotationalVelocity.z);
+  }
+  if (this.acceleration) {
+    this.velocity.x += this.acceleration.x;
+    this.velocity.y += this.acceleration.y;
+    this.velocity.z += this.acceleration.z;
+  }
+
   this.additionalRender();
+};
+
+ShaneMesh.prototype.stopAllMovement = function () {
+  this.velocity = null;
+  this.acceleration = null;
+};
+
+ShaneMesh.prototype.stopAllRotation = function () {
+  this.rotationalVelocity = null;
 };
 
 ShaneMesh.prototype.twitch = function (scalar) {
