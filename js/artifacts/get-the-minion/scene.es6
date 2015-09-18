@@ -68,7 +68,7 @@ export class GetTheMinion extends ShaneScene {
     super.enter();
 
     this.makeLights();
-    this.makeWhiteGround();
+    //this.makeWhiteGround();
 
     //this.makeArcade();
     // this.makeMinion(new THREE.Vector3(-10, 0, -25));
@@ -92,12 +92,14 @@ export class GetTheMinion extends ShaneScene {
   doTimedWork() {
     super.doTimedWork();
 
-    this.showArticleText(() => {
-      console.log('done with article');
-      setTimeout(() => {
-        this.performBoyCardFlyingAnimation();
-      }, 4444);
-    });
+    // this.showArticleText(() => {
+    //   console.log('done with article');
+    //   setTimeout(() => {
+    //     this.performBoyCardFlyingAnimation();
+    //   }, 4444);
+    // });
+
+    this.makeArcade();
 
     // var beginShowingMyselfOffset = 13 * 1000;
     // this.addTimeout(() => {
@@ -315,8 +317,9 @@ export class GetTheMinion extends ShaneScene {
 
   makeArcade() {
 		var textureBase = "/media/textures/minion/";
-    var cubeUrls = [textureBase + 'arcade1.jpg', textureBase + 'arcade2.jpg', textureBase + 'arcade3.jpg',
-                    textureBase + 'arcade1.jpg', textureBase + 'arcade2.jpg', textureBase + 'arcade3.jpg'];
+    var cubeUrls = [textureBase + 'arcade-1.jpg', textureBase + 'arcade-2.jpg',
+                    textureBase + 'ceiling.jpg', textureBase + 'carpet.jpg',
+                    textureBase + 'arcade-3.jpg', textureBase + 'arcade-4.jpg'];
 
 		var reflectionCube = THREE.ImageUtils.loadTextureCube(cubeUrls);
 		reflectionCube.format = THREE.RGBFormat;
@@ -325,12 +328,13 @@ export class GetTheMinion extends ShaneScene {
 		refractionCube.mapping = THREE.CubeRefractionMapping;
 		refractionCube.format = THREE.RGBFormat;
 
-		//dark orange head: var glassMaterial = new THREE.MeshLambertMaterial({color: 0xff6600, envMap: reflectionCube, combine: THREE.MixOperation, reflectivity: 0.3});
-		var glassMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, envMap: refractionCube, refractionRatio: 0.95 } );
-		// perfect reflections var glassMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, envMap: reflectionCube } );
-    var glassGeometry = new THREE.PlaneBufferGeometry(9, 6);
+		//var glassMaterial = new THREE.MeshLambertMaterial({color: 0xff6600, envMap: reflectionCube, combine: THREE.MixOperation, reflectivity: 0.3});
+		var glassMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, envMap: refractionCube, refractionRatio: 0.95, transparent: true, alpha: 0.5 } );
+		//var glassMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, envMap: reflectionCube } );
+    var glassGeometry = new THREE.BoxGeometry(9, 6, 0.1);
     var glass = new THREE.Mesh(glassGeometry, glassMaterial);
-    glass.position.set(frontPanePosition.x, 0, frontPanePosition.z);
+    glass.castShadow = true;
+    glass.position.set(frontPanePosition.x, 2, frontPanePosition.z);
     this.scene.add(glass);
 
 		var skyboxShader = THREE.ShaderLib.cube;
@@ -342,9 +346,16 @@ export class GetTheMinion extends ShaneScene {
 			depthWrite: false,
 			side: THREE.BackSide
 		});
-    var skyboxGeometry = new THREE.BoxGeometry(100, 100, 100);
-		this.skyboxMesh = new THREE.Mesh(skyboxGeometry,skyboxMaterial);
+    var arcadeLength = 222;
+    var skyboxGeometry = new THREE.BoxGeometry(arcadeLength, arcadeLength, arcadeLength);
+		this.skyboxMesh = new THREE.Mesh(skyboxGeometry, skyboxMaterial);
+    this.skyboxMesh.receiveShadow = true;
+    this.skyboxMesh.position.set(0, (arcadeLength/2 + GroundYPosition), -arcadeLength/2 + 40);
 		this.scene.add(this.skyboxMesh);
+  }
+
+  makeClawMachine() {
+
   }
 
   makeMinion(position) {
