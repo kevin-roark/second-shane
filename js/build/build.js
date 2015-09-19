@@ -1040,6 +1040,27 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
         rightPane.rotation.y = PI_OVER_2;
         rightPane.position.set(frontPanePosition.x + ClawMachineWidth / 2, frontPanePosition.y, frontPanePosition.z - ClawMachineDepth / 2);
 
+        var verticalBarTexture = THREE.ImageUtils.loadTexture("/media/textures/minion/claw-machine-border.jpg");
+        verticalBarTexture.minFilter = THREE.NearestFilter;
+        var verticalBarMaterial = new THREE.MeshBasicMaterial({
+          map: verticalBarTexture
+        });
+        var verticalBarGeometry = new THREE.BoxGeometry(0.1, ClawMachineHeight, 0.1);
+        var frontPaneLeftBar = new THREE.Mesh(verticalBarGeometry, verticalBarMaterial);
+        frontPaneLeftBar.position.set(-ClawMachineWidth / 2 + 0.1, 0, 0);
+        frontPane.add(frontPaneLeftBar);
+        var frontPaneRightBar = frontPaneLeftBar.clone();
+        frontPaneRightBar.position.set(ClawMachineWidth / 2 - 0.1, 0, 0);
+        frontPane.add(frontPaneRightBar);
+        var backPaneLeftBar = frontPaneLeftBar.clone();
+        backPaneLeftBar.position.set(-ClawMachineWidth / 2 + 0.1, 0, 0);
+        backPane.add(backPaneLeftBar);
+        var backPaneRightBar = frontPaneLeftBar.clone();
+        backPaneRightBar.position.set(ClawMachineWidth / 2 - 0.1, 0, 0);
+        backPane.add(backPaneRightBar);
+        frontPaneLeftBar.rotation.z = Math.PI;
+        backPaneLeftBar.rotation.z = Math.PI;
+
         var clawMachineBottomTexture = THREE.ImageUtils.loadTexture("/media/textures/minion/claw-machine-front.jpg");
         clawMachineBottomTexture.minFilter = THREE.NearestFilter;
         var clawMachineBottomMaterial = new THREE.MeshBasicMaterial({
