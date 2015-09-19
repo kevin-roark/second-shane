@@ -379,27 +379,50 @@ export class GetTheMinion extends ShaneScene {
 
     var clawMachineBottomTexture = THREE.ImageUtils.loadTexture('/media/textures/minion/claw-machine-front.jpg');
     clawMachineBottomTexture.minFilter = THREE.NearestFilter;
-    var clawMachineBottomMaterial = new THREE.MeshBasicMaterial({
-      map: clawMachineBottomTexture
-      /*,color: 0xff0000*/
-    });
+    var clawMachineBottomMaterial = new THREE.MeshBasicMaterial({map: clawMachineBottomTexture/*,color: 0xff0000*/});
     var clawMachineBottomGeometry = new THREE.BoxGeometry(ClawMachineWidth, 0.75, ClawMachineDepth);
     this.clawMachineBottomMesh = new THREE.Mesh(clawMachineBottomGeometry, clawMachineBottomMaterial);
     frontPane.add(this.clawMachineBottomMesh);
     this.clawMachineBottomMesh.position.set(0, -1.3, -ClawMachineDepth/2);
 
+    var topFrontTexture = THREE.ImageUtils.loadTexture('/media/textures/minion/claw-machine-top.jpg');
+    var bumpyMetalMaterial;
+    var topMaterials = [];
+    for (var idx = 0; idx < 6; idx++) {
+      var texture;
+      if (idx === 4) {
+        texture = topFrontTexture;
+      }
+      else {
+        if (!bumpyMetalMaterial) {
+          bumpyMetalMaterial = THREE.ImageUtils.loadTexture('/media/textures/minion/bumpy-metal.jpg');
+          texture = bumpyMetalMaterial;
+        }
+        else {
+          texture = bumpyMetalMaterial.clone();
+        }
+      }
+      texture.minFilter = THREE.NearestFilter;
+      topMaterials.push(new THREE.MeshBasicMaterial({map: texture}));
+    }
+    var clawMachineTopMaterial = new THREE.MeshFaceMaterial(topMaterials);
+    var clawMachineTopGeometry = new THREE.BoxGeometry(ClawMachineWidth, 0.5, ClawMachineDepth);
+    this.clawMachineTopMesh = new THREE.Mesh(clawMachineTopGeometry, clawMachineTopMaterial);
+    frontPane.add(this.clawMachineTopMesh);
+    this.clawMachineTopMesh.position.set(0, 1.2, -ClawMachineDepth/2);
+
     var joystickMaterial = new THREE.MeshLambertMaterial({
       color: 0x000000
     });
-    var joystickGeometry = new THREE.CylinderGeometry(0.05, 0.025, 0.3);
+    var joystickGeometry = new THREE.CylinderGeometry(0.05, 0.025, 0.4);
     var joystickMesh = new THREE.Mesh(joystickGeometry, joystickMaterial);
     joystickMesh.rotation.x = Math.PI / 6;
-    joystickMesh.position.set(0.06, 0.5, ClawMachineDepth/2 + 0.5);
+    joystickMesh.position.set(0.06, 0.6, ClawMachineDepth/2 + 0.5);
     this.clawMachineBottomMesh.add(joystickMesh);
 
     this.glassPanes = [frontPane, leftPane, rightPane, backPane];
-    for (var i = 0; i < this.glassPanes.length; i++) {
-      this.scene.add(this.glassPanes[i]);
+    for (idx = 0; idx < this.glassPanes.length; idx++) {
+      this.scene.add(this.glassPanes[idx]);
     }
   }
 
