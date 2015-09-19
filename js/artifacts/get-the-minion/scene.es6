@@ -337,9 +337,9 @@ export class GetTheMinion extends ShaneScene {
     //var glassMaterial = new THREE.MeshLambertMaterial({color: 0x666666, envMap: this.reflectionCube, combine: THREE.MixOperation, reflectivity: 0.3});
     var glassMaterial = new THREE.MeshLambertMaterial({color: 0x666666, envMap: this.refractionCube, refractionRatio: 0.95, transparent: true, opacity: 0.25});
     //var glassMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, envMap: this.reflectionCube});
-    //var glassMaterial = new THREE.MeshBasicMaterial({color: 0xffffff, transparent: true, opacity: 0.25});
+    //var glassMaterial = new THREE.MeshBasicMaterial({color: 0xffffff});
 
-    var glassGeometry = new THREE.BoxGeometry(ClawMachineWidth, ClawMachineHeight, 0.1);
+    var glassGeometry = new THREE.BoxGeometry(ClawMachineWidth, ClawMachineHeight, 0.05);
 
     var frontPane = new THREE.Mesh(glassGeometry, glassMaterial);
     frontPane.castShadow = true;
@@ -355,6 +355,17 @@ export class GetTheMinion extends ShaneScene {
     var rightPane = frontPane.clone();
     rightPane.rotation.y = PI_OVER_2;
     rightPane.position.set(frontPanePosition.x + ClawMachineWidth/2, frontPanePosition.y, frontPanePosition.z - ClawMachineDepth/2);
+
+    var clawMachineBottomTexture = THREE.ImageUtils.loadTexture('/media/textures/minion/claw-machine-front.jpg');
+    clawMachineBottomTexture.minFilter = THREE.NearestFilter;
+    var clawMachineBottomMaterial = new THREE.MeshBasicMaterial({
+      map: clawMachineBottomTexture
+      /*,color: 0xff0000*/
+    });
+    var clawMachineBottomGeometry = new THREE.BoxGeometry(ClawMachineWidth, 0.75, ClawMachineDepth);
+    this.clawMachineBottomMesh = new THREE.Mesh(clawMachineBottomGeometry, clawMachineBottomMaterial);
+    frontPane.add(this.clawMachineBottomMesh);
+    this.clawMachineBottomMesh.position.set(0, -1.3, -ClawMachineDepth/2);
 
     this.glassPanes = [frontPane, leftPane, rightPane, backPane];
     for (var i = 0; i < this.glassPanes.length; i++) {
