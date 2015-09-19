@@ -1051,6 +1051,15 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
         frontPane.add(this.clawMachineBottomMesh);
         this.clawMachineBottomMesh.position.set(0, -1.3, -ClawMachineDepth / 2);
 
+        var joystickMaterial = new THREE.MeshLambertMaterial({
+          color: 0
+        });
+        var joystickGeometry = new THREE.CylinderGeometry(0.05, 0.025, 0.3);
+        var joystickMesh = new THREE.Mesh(joystickGeometry, joystickMaterial);
+        joystickMesh.rotation.x = Math.PI / 6;
+        joystickMesh.position.set(0.06, 0.5, ClawMachineDepth / 2 + 0.5);
+        this.clawMachineBottomMesh.add(joystickMesh);
+
         this.glassPanes = [frontPane, leftPane, rightPane, backPane];
         for (var i = 0; i < this.glassPanes.length; i++) {
           this.scene.add(this.glassPanes[i]);
