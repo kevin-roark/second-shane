@@ -50,7 +50,10 @@ class SecondShane extends ThreeBoiler {
     };
 
     $(document).click(() => {
-      if (this.activeScene || !this.hasLoaded) {
+      if (!this.hasLoaded) {
+        return;
+      }
+      if (this.activeScene && !SCRATCH_PAD) {
         return;
       }
 
@@ -401,7 +404,9 @@ class SecondShane extends ThreeBoiler {
 
     this.transitioning = true;
     this.activeScene = shaneScene;
-    this.controls.setEnabled(false);
+    if (!SCRATCH_PAD) {
+      this.controls.setEnabled(false);
+    }
     this.controls.exitPointerlock();
     this.sharedCameraPosition.copy(this.controls.getObject().position);
 
