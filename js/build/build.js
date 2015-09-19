@@ -676,10 +676,10 @@ var GroundYPosition = -10;
 var PI_OVER_2 = Math.PI / 2;
 var PI_3_OVER_2 = 3 * PI_OVER_2;
 var PI2 = Math.PI * 2;
-var ClawMachineDepth = 3;
-var ClawMachineWidth = 3;
-var ClawMachineHeight = 3;
-var frontPanePosition = new THREE.Vector3(0, ClawMachineHeight / 2 + 0.1, -2);
+var ClawMachineDepth = 2;
+var ClawMachineWidth = 2;
+var ClawMachineHeight = 2;
+var frontPanePosition = new THREE.Vector3(0, ClawMachineHeight / 2 - 0.5, -3);
 
 navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
@@ -743,22 +743,6 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
         this.makeLights();
         //this.makeWhiteGround();
 
-        //this.makeArcade();
-        // this.makeMinion(new THREE.Vector3(-10, 0, -25));
-        // this.makeMinion(new THREE.Vector3(-5, 0, -25));
-        // this.makeMinion(new THREE.Vector3(0, 0, -25));
-        // this.makeMinion(new THREE.Vector3(5, 0, -25));
-        // this.makeMinion(new THREE.Vector3(10, 0, -25));
-        // this.makeMinion(new THREE.Vector3(-10, 5, -25));
-        // this.makeMinion(new THREE.Vector3(-5, 5, -25));
-        // this.makeMinion(new THREE.Vector3(0, 5, -25));
-        // this.makeMinion(new THREE.Vector3(5, 5, -25));
-        // this.makeMinion(new THREE.Vector3(10, 5, -25));
-        // this.makeMinion(new THREE.Vector3(-10, -5, -25));
-        // this.makeMinion(new THREE.Vector3(-5, -5, -25));
-        // this.makeMinion(new THREE.Vector3(0, -5, -25));
-        // this.makeMinion(new THREE.Vector3(5, -5, -25));
-        // this.makeMinion(new THREE.Vector3(10, -5, -25));
         //this.setupWebcamStream();
       }
     },
@@ -775,6 +759,7 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
 
         this.makeArcade();
         this.makeClawMachine();
+        this.addMinionsToClawMachine();
 
         // var beginShowingMyselfOffset = 13 * 1000;
         // this.addTimeout(() => {
@@ -1027,15 +1012,16 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
         var skyboxGeometry = new THREE.BoxGeometry(arcadeLength, arcadeLength, arcadeLength);
         this.skyboxMesh = new THREE.Mesh(skyboxGeometry, skyboxMaterial);
         this.skyboxMesh.receiveShadow = true;
-        this.skyboxMesh.position.set(0, arcadeLength / 2 + GroundYPosition, -arcadeLength / 2 + 40);
+        this.skyboxMesh.position.set(0, arcadeLength / 2 + GroundYPosition - 40, -arcadeLength / 2 + 40);
         this.scene.add(this.skyboxMesh);
       }
     },
     makeClawMachine: {
       value: function makeClawMachine() {
         //var glassMaterial = new THREE.MeshLambertMaterial({color: 0x666666, envMap: this.reflectionCube, combine: THREE.MixOperation, reflectivity: 0.3});
-        var glassMaterial = new THREE.MeshLambertMaterial({ color: 6710886, envMap: this.refractionCube, refractionRatio: 0.95 });
+        var glassMaterial = new THREE.MeshLambertMaterial({ color: 6710886, envMap: this.refractionCube, refractionRatio: 0.95, transparent: true, opacity: 0.25 });
         //var glassMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, envMap: this.reflectionCube});
+        //var glassMaterial = new THREE.MeshBasicMaterial({color: 0xffffff, transparent: true, opacity: 0.25});
 
         var glassGeometry = new THREE.BoxGeometry(ClawMachineWidth, ClawMachineHeight, 0.1);
 
@@ -1060,12 +1046,33 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
         }
       }
     },
+    addMinionsToClawMachine: {
+      value: function addMinionsToClawMachine() {
+        var _this = this;
+
+        this.minions = [];
+
+        var minionCount = 20;
+        for (var i = 0; i < minionCount; i++) {
+          setTimeout(function () {
+            var x = (Math.random() - 0.5) * (ClawMachineWidth * 0.9);
+            var y = -0.5 + ClawMachineHeight * 0.05 + Math.random() * (ClawMachineHeight * 0.8);
+            var z = frontPanePosition.z + Math.random() * -ClawMachineDepth;
+            var position = new THREE.Vector3(x, y, z);
+            _this.makeMinion(position);
+          }, i * 30);
+        }
+      }
+    },
     makeMinion: {
       value: function makeMinion(position) {
         var minion = new ShaneMesh({
           modelName: "/js/models/minion.json",
-          position: position
+          position: position,
+          scale: 0.1
         });
+
+        this.minions.push(minion);
 
         this.addMesh(minion, function () {
           minion.mesh.castShadow = true;
@@ -1146,7 +1153,6 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-/*transparent: true, alpha: 0.25*/
 
 },{"../../shane-mesh":20,"../../shane-scene.es6":21,"../../talisman.es6":22,"../../urls":25,"../../util/video-mesh":29,"jquery":30,"kutility":31,"three":33}],5:[function(require,module,exports){
 "use strict";
