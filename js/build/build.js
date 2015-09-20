@@ -679,6 +679,7 @@ var PI2 = Math.PI * 2;
 var ClawMachineDepth = 2;
 var ClawMachineWidth = 2;
 var ClawMachineHeight = 2;
+var RestingJoystickRotation = Math.PI / 6;
 var frontPanePosition = new THREE.Vector3(0, ClawMachineHeight / 2 - 0.5, -3);
 
 navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
@@ -723,6 +724,9 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
 
     window.addEventListener("keydown", function (ev) {
       _this.clawKeyDown(ev);
+    }, false);
+    window.addEventListener("keyup", function (ev) {
+      _this.clawKeyUp(ev);
     }, false);
   }
 
@@ -1113,9 +1117,9 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
         var joystickMaterial = new THREE.MeshLambertMaterial({
           color: 0
         });
-        var joystickGeometry = new THREE.CylinderGeometry(0.05, 0.025, 0.4);
+        var joystickGeometry = new THREE.CylinderGeometry(0.05, 0.04, 0.7);
         this.joystickMesh = new THREE.Mesh(joystickGeometry, joystickMaterial);
-        this.joystickMesh.rotation.x = Math.PI / 6;
+        this.joystickMesh.rotation.x = RestingJoystickRotation;
         this.joystickMesh.position.set(0.06, 0.6, ClawMachineDepth / 2 + 0.5);
         this.clawMachineBottomMesh.add(this.joystickMesh);
 
@@ -1151,10 +1155,20 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
           dz = 0;
         } else if (key === 13) {}
 
+        if (dx || dz) {
+          ev.preventDefault();
+        }
+
         if (dx) {
           var newX = this.clawMesh.position.x + dx;
           if (newX >= -ClawMachineWidth / 2 && newX <= ClawMachineWidth / 2) {
             this.clawMesh.position.x = newX;
+          }
+
+          if (dx > 0) {
+            this.joystickMesh.rotation.z = -Math.PI / 8;
+          } else {
+            this.joystickMesh.rotation.z = Math.PI / 8;
           }
         }
         if (dz) {
@@ -1162,6 +1176,30 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
           if (newZ <= 0 && newZ >= -ClawMachineDepth) {
             this.clawMesh.position.z = newZ;
           }
+
+          if (dz > 0) {
+            this.joystickMesh.rotation.x = Math.PI / 3;
+          } else {
+            this.joystickMesh.rotation.x = -Math.PI / 3;
+          }
+        }
+      }
+    },
+    clawKeyUp: {
+      value: function clawKeyUp(ev) {
+        if (!this.clawMesh) {
+          return;
+        }
+
+        var key = ev.keyCode;
+        if (key === 38 || key === 40) {
+          // up/down
+          this.joystickMesh.rotation.x = RestingJoystickRotation;
+          ev.preventDefault();
+        } else if (key === 37 || key === 39) {
+          // left/right
+          this.joystickMesh.rotation.z = 0;
+          ev.preventDefault();
         }
       }
     },

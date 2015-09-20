@@ -9,13 +9,14 @@ import {ShaneScene} from '../../shane-scene.es6';
 let ShaneMesh = require('../../shane-mesh');
 let VideoMesh = require('../../util/video-mesh');
 
-let GroundYPosition = -10;
-let PI_OVER_2 = Math.PI / 2;
-let PI_3_OVER_2 = 3 * PI_OVER_2;
-let PI2 = Math.PI * 2;
+var GroundYPosition = -10;
+var PI_OVER_2 = Math.PI / 2;
+var PI_3_OVER_2 = 3 * PI_OVER_2;
+var PI2 = Math.PI * 2;
 var ClawMachineDepth = 2;
 var ClawMachineWidth = 2;
 var ClawMachineHeight = 2;
+var RestingJoystickRotation = Math.PI / 6;
 var frontPanePosition = new THREE.Vector3(0, ClawMachineHeight/2 - 0.5, -3);
 
 navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
@@ -54,9 +55,12 @@ export class GetTheMinion extends ShaneScene {
 
     this.host = (this.isLive? urls.getTheMinion.live : urls.getTheMinion.web);
 
-    window.addEventListener( 'keydown', (ev) => {
+    window.addEventListener('keydown', (ev) => {
       this.clawKeyDown(ev);
-    }, false );
+    }, false);
+    window.addEventListener('keyup', (ev) => {
+      this.clawKeyUp(ev);
+    }, false);
   }
 
   createTalisman() {
@@ -427,9 +431,9 @@ export class GetTheMinion extends ShaneScene {
     var joystickMaterial = new THREE.MeshLambertMaterial({
       color: 0x000000
     });
-    var joystickGeometry = new THREE.CylinderGeometry(0.05, 0.025, 0.4);
+    var joystickGeometry = new THREE.CylinderGeometry(0.05, 0.04, 0.7);
     this.joystickMesh = new THREE.Mesh(joystickGeometry, joystickMaterial);
-    this.joystickMesh.rotation.x = Math.PI / 6;
+    this.joystickMesh.rotation.x = RestingJoystickRotation;
     this.joystickMesh.position.set(0.06, 0.6, ClawMachineDepth/2 + 0.5);
     this.clawMachineBottomMesh.add(this.joystickMesh);
 
@@ -466,10 +470,21 @@ export class GetTheMinion extends ShaneScene {
 
     }
 
+    if (dx || dz) {
+      ev.preventDefault();
+    }
+
     if (dx) {
       var newX = this.clawMesh.position.x + dx;
       if (newX >= -ClawMachineWidth/2 && newX <= ClawMachineWidth/2) {
         this.clawMesh.position.x = newX;
+      }
+
+      if (dx > 0) {
+        this.joystickMesh.rotation.z = -Math.PI / 8;
+      }
+      else {
+        this.joystickMesh.rotation.z = Math.PI / 8;
       }
     }
     if (dz) {
@@ -477,6 +492,29 @@ export class GetTheMinion extends ShaneScene {
       if (newZ <= 0 && newZ >= -ClawMachineDepth) {
         this.clawMesh.position.z = newZ;
       }
+
+      if (dz > 0) {
+        this.joystickMesh.rotation.x = Math.PI / 3;
+      }
+      else {
+        this.joystickMesh.rotation.x = -Math.PI / 3;
+      }
+    }
+  }
+
+  clawKeyUp(ev) {
+    if (!this.clawMesh) {
+      return;
+    }
+
+    let key = ev.keyCode;
+    if (key === 38 || key === 40) { // up/down
+      this.joystickMesh.rotation.x = RestingJoystickRotation;
+      ev.preventDefault();
+    }
+    else if (key === 37 || key === 39) { // left/right
+      this.joystickMesh.rotation.z = 0;
+      ev.preventDefault();
     }
   }
 
