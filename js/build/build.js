@@ -709,6 +709,8 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
   /// Init
 
   function GetTheMinion(renderer, camera, scene, options) {
+    var _this = this;
+
     _classCallCheck(this, GetTheMinion);
 
     _get(Object.getPrototypeOf(GetTheMinion.prototype), "constructor", this).call(this, renderer, camera, scene, options);
@@ -718,6 +720,10 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
     this.symbolName = "/media/symbols/minion.png";
 
     this.host = this.isLive ? urls.getTheMinion.live : urls.getTheMinion.web;
+
+    window.addEventListener("keydown", function (ev) {
+      _this.clawKeyDown(ev);
+    }, false);
   }
 
   _inherits(GetTheMinion, _ShaneScene);
@@ -1018,6 +1024,8 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
     },
     makeClawMachine: {
       value: function makeClawMachine() {
+        var _this = this;
+
         //var glassMaterial = new THREE.MeshLambertMaterial({color: 0x666666, envMap: this.reflectionCube, combine: THREE.MixOperation, reflectivity: 0.3});
         var glassMaterial = new THREE.MeshLambertMaterial({ color: 6710886, envMap: this.refractionCube, refractionRatio: 0.95, transparent: true, opacity: 0.25 });
         //var glassMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, envMap: this.reflectionCube});
@@ -1093,18 +1101,67 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
         frontPane.add(this.clawMachineTopMesh);
         this.clawMachineTopMesh.position.set(0, 1.2, -ClawMachineDepth / 2);
 
+        var loader = new THREE.JSONLoader();
+        loader.load("/js/models/claw.json", function (geometry, materials) {
+          var faceMaterial = new THREE.MeshFaceMaterial(materials);
+          _this.clawMesh = new THREE.Mesh(geometry, faceMaterial);
+          _this.clawMachineTopMesh.add(_this.clawMesh);
+          _this.clawMesh.scale.set(0.15, 0.15, 0.15);
+          _this.clawMesh.position.set(0, -1.6, -ClawMachineDepth / 2);
+        });
+
         var joystickMaterial = new THREE.MeshLambertMaterial({
           color: 0
         });
         var joystickGeometry = new THREE.CylinderGeometry(0.05, 0.025, 0.4);
-        var joystickMesh = new THREE.Mesh(joystickGeometry, joystickMaterial);
-        joystickMesh.rotation.x = Math.PI / 6;
-        joystickMesh.position.set(0.06, 0.6, ClawMachineDepth / 2 + 0.5);
-        this.clawMachineBottomMesh.add(joystickMesh);
+        this.joystickMesh = new THREE.Mesh(joystickGeometry, joystickMaterial);
+        this.joystickMesh.rotation.x = Math.PI / 6;
+        this.joystickMesh.position.set(0.06, 0.6, ClawMachineDepth / 2 + 0.5);
+        this.clawMachineBottomMesh.add(this.joystickMesh);
 
         this.glassPanes = [frontPane, leftPane, rightPane, backPane];
         for (idx = 0; idx < this.glassPanes.length; idx++) {
           this.scene.add(this.glassPanes[idx]);
+        }
+      }
+    },
+    clawKeyDown: {
+      value: function clawKeyDown(ev) {
+        if (!this.clawMesh) {
+          return;
+        }
+
+        var dx, dz;
+        var key = ev.keyCode;
+        if (key === 38) {
+          // up
+          dx = 0;
+          dz = -0.01;
+        } else if (key === 40) {
+          // down
+          dx = 0;
+          dz = 0.01;
+        } else if (key === 37) {
+          // left
+          dx = -0.01;
+          dz = 0;
+        } else if (key === 39) {
+          // right
+          dx = 0.01;
+          dz = 0;
+        } else if (key === 13) {}
+
+        if (dx) {
+          var newX = this.clawMesh.position.x + dx;
+          if (newX >= -ClawMachineWidth / 2 && newX <= ClawMachineWidth / 2) {
+            this.clawMesh.position.x = newX;
+          }
+        }
+        if (dz) {
+          var newZ = this.clawMesh.position.z + dz;
+          if (newZ <= 0 && newZ >= -ClawMachineDepth) {
+            this.clawMesh.position.z = newZ;
+          }
         }
       }
     },
@@ -1118,7 +1175,7 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
         for (var i = 0; i < minionCount; i++) {
           setTimeout(function () {
             var x = (Math.random() - 0.5) * (ClawMachineWidth * 0.9);
-            var y = -0.5 + ClawMachineHeight * 0.05 + Math.random() * (ClawMachineHeight * 0.8);
+            var y = -0.5 + ClawMachineHeight * 0.05 + Math.random() * (ClawMachineHeight * 0.4);
             var z = frontPanePosition.z + Math.random() * -ClawMachineDepth;
             var position = new THREE.Vector3(x, y, z);
             _this.makeMinion(position);
@@ -1215,6 +1272,7 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+// enter
 
 },{"../../shane-mesh":20,"../../shane-scene.es6":21,"../../talisman.es6":22,"../../urls":25,"../../util/video-mesh":29,"jquery":30,"kutility":31,"three":33}],5:[function(require,module,exports){
 "use strict";

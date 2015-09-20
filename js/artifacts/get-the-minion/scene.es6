@@ -53,6 +53,10 @@ export class GetTheMinion extends ShaneScene {
     this.symbolName = '/media/symbols/minion.png';
 
     this.host = (this.isLive? urls.getTheMinion.live : urls.getTheMinion.web);
+
+    window.addEventListener( 'keydown', (ev) => {
+      this.clawKeyDown(ev);
+    }, false );
   }
 
   createTalisman() {
@@ -411,18 +415,68 @@ export class GetTheMinion extends ShaneScene {
     frontPane.add(this.clawMachineTopMesh);
     this.clawMachineTopMesh.position.set(0, 1.2, -ClawMachineDepth/2);
 
+    var loader = new THREE.JSONLoader();
+    loader.load('/js/models/claw.json', (geometry, materials) => {
+      var faceMaterial = new THREE.MeshFaceMaterial(materials);
+      this.clawMesh = new THREE.Mesh(geometry, faceMaterial);
+      this.clawMachineTopMesh.add(this.clawMesh);
+      this.clawMesh.scale.set(0.15, 0.15, 0.15);
+      this.clawMesh.position.set(0, -1.6, -ClawMachineDepth/2);
+    });
+
     var joystickMaterial = new THREE.MeshLambertMaterial({
       color: 0x000000
     });
     var joystickGeometry = new THREE.CylinderGeometry(0.05, 0.025, 0.4);
-    var joystickMesh = new THREE.Mesh(joystickGeometry, joystickMaterial);
-    joystickMesh.rotation.x = Math.PI / 6;
-    joystickMesh.position.set(0.06, 0.6, ClawMachineDepth/2 + 0.5);
-    this.clawMachineBottomMesh.add(joystickMesh);
+    this.joystickMesh = new THREE.Mesh(joystickGeometry, joystickMaterial);
+    this.joystickMesh.rotation.x = Math.PI / 6;
+    this.joystickMesh.position.set(0.06, 0.6, ClawMachineDepth/2 + 0.5);
+    this.clawMachineBottomMesh.add(this.joystickMesh);
 
     this.glassPanes = [frontPane, leftPane, rightPane, backPane];
     for (idx = 0; idx < this.glassPanes.length; idx++) {
       this.scene.add(this.glassPanes[idx]);
+    }
+  }
+
+  clawKeyDown(ev) {
+    if (!this.clawMesh) {
+      return;
+    }
+
+    var dx, dz;
+    let key = ev.keyCode;
+    if (key === 38) { // up
+      dx = 0;
+      dz = -0.01;
+    }
+    else if (key === 40) { // down
+      dx = 0;
+      dz = 0.01;
+    }
+    else if (key === 37) { // left
+      dx = -0.01;
+      dz = 0;
+    }
+    else if (key === 39) { // right
+      dx = 0.01;
+      dz = 0;
+    }
+    else if (key === 13) { // enter
+
+    }
+
+    if (dx) {
+      var newX = this.clawMesh.position.x + dx;
+      if (newX >= -ClawMachineWidth/2 && newX <= ClawMachineWidth/2) {
+        this.clawMesh.position.x = newX;
+      }
+    }
+    if (dz) {
+      var newZ = this.clawMesh.position.z + dz;
+      if (newZ <= 0 && newZ >= -ClawMachineDepth) {
+        this.clawMesh.position.z = newZ;
+      }
     }
   }
 
@@ -433,7 +487,7 @@ export class GetTheMinion extends ShaneScene {
     for (var i = 0; i < minionCount; i++) {
       setTimeout(() => {
         var x = (Math.random() - 0.5) * (ClawMachineWidth * 0.9);
-        var y = -0.5 + ClawMachineHeight * 0.05 + Math.random() * (ClawMachineHeight * 0.8);
+        var y = -0.5 + ClawMachineHeight * 0.05 + Math.random() * (ClawMachineHeight * 0.4);
         var z = frontPanePosition.z + Math.random() * -ClawMachineDepth;
         var position = new THREE.Vector3(x, y, z);
         this.makeMinion(position);
