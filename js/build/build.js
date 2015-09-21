@@ -8004,20 +8004,20 @@ ShaneMesh.prototype.createMesh = function (callback) {
       }
     }
 
-    var cloneableMesh = _meshCloningCache[self.modelName];
-    if (cloneableMesh) {
-      self.mesh = cloneableMesh.clone();
-      if (callback) {
-        callback();
-      }
-      return;
-    }
+    // var cloneableMesh = _meshCloningCache[self.modelName];
+    // if (cloneableMesh) {
+    //   self.mesh = cloneableMesh.clone();
+    //   if (callback) {
+    //     callback();
+    //   }
+    //   return;
+    // }
 
     loader(self.modelName, function (geometry, materials) {
       var faceMaterial = new THREE.MeshFaceMaterial(materials);
       self.mesh = new THREE.Mesh(geometry, faceMaterial);
 
-      _meshCloningCache[self.modelName] = self.mesh;
+      //_meshCloningCache[self.modelName] = self.mesh;
 
       if (callback) {
         callback();
@@ -8737,14 +8737,15 @@ var loader = new THREE.JSONLoader();
 module.exports = function loadModel(name, callback) {
   if (typeof callback !== "function") {
     return;
-  }if (cache[name]) {
-    fetch(name, callback);
-    return;
-  }
+  } // if (cache[name]) {
+  //   fetch(name, callback);
+  //   return;
+  // }
 
   loader.load(name, function (geometry, materials) {
-    add(name, geometry, materials);
-    fetch(name, callback);
+    callback(geometry, materials);
+    // add(name, geometry, materials);
+    // fetch(name, callback);
   });
 };
 
