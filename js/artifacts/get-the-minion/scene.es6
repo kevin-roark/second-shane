@@ -14,9 +14,11 @@ var PI_OVER_2 = Math.PI / 2;
 var PI_3_OVER_2 = 3 * PI_OVER_2;
 var PI2 = Math.PI * 2;
 var ClawMachineDepth = 2;
-var ClawMachineWidth = 2;
+var ClawMachineWidth = 2; var HalfClawMachineWidth = ClawMachineWidth/2;
 var ClawMachineHeight = 2;
 var RestingJoystickRotation = Math.PI / 6;
+var RestingClawYPosition = -1.6;
+var MinimumMinionY = -0.5 + ClawMachineHeight * 0.05;
 var frontPanePosition = new THREE.Vector3(0, ClawMachineHeight/2 - 0.5, -3);
 
 navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
@@ -96,6 +98,7 @@ export class GetTheMinion extends ShaneScene {
     this.makeArcade();
     this.makeClawMachine();
     this.addMinionsToClawMachine();
+    this.showClawMachineInstructions();
 
     // var beginShowingMyselfOffset = 13 * 1000;
     // this.addTimeout(() => {
@@ -167,6 +170,10 @@ export class GetTheMinion extends ShaneScene {
           }
         }
       }
+    }
+
+    if (this.clawDownUpdate) {
+      this.clawDownUpdate();
     }
 
     if (this.mirrorVideoMesh) {
@@ -358,11 +365,11 @@ export class GetTheMinion extends ShaneScene {
 
     var leftPane = frontPane.clone();
     leftPane.rotation.y = PI_OVER_2;
-    leftPane.position.set(frontPanePosition.x - ClawMachineWidth/2, frontPanePosition.y, frontPanePosition.z - ClawMachineDepth/2);
+    leftPane.position.set(frontPanePosition.x - HalfClawMachineWidth, frontPanePosition.y, frontPanePosition.z - ClawMachineDepth/2);
 
     var rightPane = frontPane.clone();
     rightPane.rotation.y = PI_OVER_2;
-    rightPane.position.set(frontPanePosition.x + ClawMachineWidth/2, frontPanePosition.y, frontPanePosition.z - ClawMachineDepth/2);
+    rightPane.position.set(frontPanePosition.x + HalfClawMachineWidth, frontPanePosition.y, frontPanePosition.z - ClawMachineDepth/2);
 
     var verticalBarTexture = THREE.ImageUtils.loadTexture('/media/textures/minion/claw-machine-border.jpg');
     verticalBarTexture.minFilter = THREE.NearestFilter;
@@ -371,16 +378,16 @@ export class GetTheMinion extends ShaneScene {
     });
     var verticalBarGeometry = new THREE.BoxGeometry(0.1, ClawMachineHeight, 0.1);
     var frontPaneLeftBar = new THREE.Mesh(verticalBarGeometry, verticalBarMaterial);
-    frontPaneLeftBar.position.set(-ClawMachineWidth/2 + 0.1, 0, 0);
+    frontPaneLeftBar.position.set(-HalfClawMachineWidth + 0.1, 0, 0);
     frontPane.add(frontPaneLeftBar);
     var frontPaneRightBar = frontPaneLeftBar.clone();
-    frontPaneRightBar.position.set(ClawMachineWidth/2 - 0.1, 0, 0);
+    frontPaneRightBar.position.set(HalfClawMachineWidth - 0.1, 0, 0);
     frontPane.add(frontPaneRightBar);
     var backPaneLeftBar = frontPaneLeftBar.clone();
-    backPaneLeftBar.position.set(-ClawMachineWidth/2 + 0.1, 0, 0);
+    backPaneLeftBar.position.set(-HalfClawMachineWidth + 0.1, 0, 0);
     backPane.add(backPaneLeftBar);
     var backPaneRightBar = frontPaneLeftBar.clone();
-    backPaneRightBar.position.set(ClawMachineWidth/2 - 0.1, 0, 0);
+    backPaneRightBar.position.set(HalfClawMachineWidth - 0.1, 0, 0);
     backPane.add(backPaneRightBar);
     frontPaneLeftBar.rotation.z = Math.PI;
     backPaneLeftBar.rotation.z = Math.PI;
@@ -425,22 +432,37 @@ export class GetTheMinion extends ShaneScene {
       this.clawMesh = new THREE.Mesh(geometry, faceMaterial);
       this.clawMachineTopMesh.add(this.clawMesh);
       this.clawMesh.scale.set(0.15, 0.15, 0.15);
-      this.clawMesh.position.set(0, -1.6, -ClawMachineDepth/2);
+      this.clawMesh.position.set(0, RestingClawYPosition, -ClawMachineDepth/2);
     });
 
     var joystickMaterial = new THREE.MeshLambertMaterial({
-      color: 0x000000
+      color: 0xff0000,
+      transparent: true,
+      opacity: 0.9
     });
-    var joystickGeometry = new THREE.CylinderGeometry(0.05, 0.04, 0.7);
+    var joystickGeometry = new THREE.CylinderGeometry(0.05, 0.04, 0.45);
     this.joystickMesh = new THREE.Mesh(joystickGeometry, joystickMaterial);
     this.joystickMesh.rotation.x = RestingJoystickRotation;
-    this.joystickMesh.position.set(0.06, 0.6, ClawMachineDepth/2 + 0.5);
+    this.joystickMesh.position.set(0.074, 0.6, ClawMachineDepth/2 + 0.44);
     this.clawMachineBottomMesh.add(this.joystickMesh);
 
     this.glassPanes = [frontPane, leftPane, rightPane, backPane];
     for (idx = 0; idx < this.glassPanes.length; idx++) {
       this.scene.add(this.glassPanes[idx]);
     }
+  }
+
+  showClawMachineInstructions() {
+    var div = $('<div style="position: absolute; left: 10px; top: 10px;">Work the Machine to Get the Minion. Use the Arrows to move the Claw. Press Enter to Submit the Claw.</div>');
+    div.css('color', 'rgb(249, 240, 45)');
+    div.css('font-size', '16px');
+    div.css('font-family', 'Roboto Mono, monospace');
+    div.css('font-weight', 'bold');
+    div.css('max-width', '160px');
+    div.css('text-shadow', '3px 3px 3px rgba(255, 253, 18, 0.5)');
+
+    this.domContainer.append(div);
+    this.$clawMachineInstructions = div;
   }
 
   clawKeyDown(ev) {
@@ -467,7 +489,8 @@ export class GetTheMinion extends ShaneScene {
       dz = 0;
     }
     else if (key === 13) { // enter
-
+      this.doClawDown();
+      ev.preventDefault();
     }
 
     if (dx || dz) {
@@ -476,7 +499,7 @@ export class GetTheMinion extends ShaneScene {
 
     if (dx) {
       var newX = this.clawMesh.position.x + dx;
-      if (newX >= -ClawMachineWidth/2 && newX <= ClawMachineWidth/2) {
+      if (newX >= -HalfClawMachineWidth && newX <= HalfClawMachineWidth) {
         this.clawMesh.position.x = newX;
       }
 
@@ -518,6 +541,29 @@ export class GetTheMinion extends ShaneScene {
     }
   }
 
+  doClawDown() {
+    if (this.clawDownUpdate) {
+      return;
+    }
+
+    var movingClawDown = true;
+    this.clawDownUpdate = () => {
+      if (movingClawDown) {
+        this.shakeMinions();
+        this.clawMesh.position.y -= 0.01;
+        if (this.clawMesh.position.y <= -2.75) {
+          movingClawDown = false;
+        }
+      }
+      else {
+        this.clawMesh.position.y += 0.015;
+        if (this.clawMesh.position.y >= RestingClawYPosition) {
+          this.clawDownUpdate = null;
+        }
+      }
+    };
+  }
+
   addMinionsToClawMachine() {
     this.minions = [];
 
@@ -525,11 +571,48 @@ export class GetTheMinion extends ShaneScene {
     for (var i = 0; i < minionCount; i++) {
       setTimeout(() => {
         var x = (Math.random() - 0.5) * (ClawMachineWidth * 0.9);
-        var y = -0.5 + ClawMachineHeight * 0.05 + Math.random() * (ClawMachineHeight * 0.4);
+        var y = MinimumMinionY + Math.random() * (ClawMachineHeight * 0.4);
         var z = frontPanePosition.z + Math.random() * -ClawMachineDepth;
         var position = new THREE.Vector3(x, y, z);
         this.makeMinion(position);
       }, i * 30);
+    }
+  }
+
+  shakeMinions(strength) {
+    if (!this.minions) {
+      return;
+    }
+
+    if (!strength) {
+      strength = 0.04;
+    }
+
+    var minions = this.minions;
+    for (var i = 0; i < minions.length; i++) {
+      var minion = minions[i];
+      var dx = (Math.random() - 0.5) * strength;
+      var dy = (Math.random() - 0.5) * strength;
+      var dz = (Math.random() - 0.5) * strength;
+
+      var pos = minion.mesh.position;
+
+      var newX = pos.x + dx;
+      if (newX > -HalfClawMachineWidth * 0.9 && newX < HalfClawMachineWidth * 0.9) {
+        pos.x = newX;
+      }
+
+      var newY = pos.y + dy;
+      if (newY > MinimumMinionY && newY < MinimumMinionY + ClawMachineHeight * 0.4) {
+        pos.y = newY;
+      }
+
+      var newZ = pos.z + dz;
+      if (newZ > frontPanePosition.z && newX < frontPanePosition.z - ClawMachineDepth) {
+        pos.z = newZ;
+      }
+
+      minion.move(dx, dy, dz);
     }
   }
 
@@ -606,6 +689,11 @@ export class GetTheMinion extends ShaneScene {
         this.scene.remove(this.glassPanes[i]);
       }
       this.glassPanes = null;
+    }
+
+    if (this.$clawMachineInstructions) {
+      this.$clawMachineInstructions.remove()
+      this.$clawMachineInstructions = null;
     }
   }
 
