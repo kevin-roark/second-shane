@@ -11,6 +11,9 @@ class ShaneTheme {
   }
 
   applyTo(scene) {
+    if (this.skybox.__shaneShaderReset) {
+      this.skybox.__shaneShaderReset();
+    }
     scene.add(this.skybox);
   }
 

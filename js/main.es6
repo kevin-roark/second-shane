@@ -8,6 +8,7 @@ import {ThreeBoiler} from './three-boiler.es6';
 let FlyControls = require('./controls/fly-controls');
 let moneyMan = require('./new-money');
 let minimap = require('./minimap');
+let fadeSceneOverlay = require('./overlay');
 
 import {oneOffs, setDidFindBeaconCallback} from './one-offs.es6';
 import {createShaneScenes} from './scenes.es6';
@@ -17,7 +18,6 @@ import {chatter} from './util/chatterbox.es6';
 let $loadingOverlay = $('#loading-overlay');
 let $loadingText = $('#loading-text');
 let $clickToStartText = $('#click-to-start-text');
-let $sceneOverlay = $('#scene-overlay');
 let $nearbyArtifactContainer = $('#nearby-artifact-container');
 let $nearbyArtifactName = $('#nearby-artifact-name');
 let $introBox = $('#intro-box');
@@ -27,6 +27,7 @@ var $pointerLockTip = $('#pointer-lock-tip');
 
 let IS_LIVE = false;
 let SCRATCH_PAD = true;
+let SceneFadeDuration = IS_LIVE? 3000 : 1000;
 
 class SecondShane extends ThreeBoiler {
   constructor() {
@@ -360,7 +361,7 @@ class SecondShane extends ThreeBoiler {
 
     this.transitioning = true;
 
-    this.fadeSceneOverlay(() => {
+    fadeSceneOverlay(SceneFadeDuration, () => {
       shaneScene.exit();
       this.activeScene = null;
 
@@ -414,7 +415,7 @@ class SecondShane extends ThreeBoiler {
     this.controls.exitPointerlock();
     this.sharedCameraPosition.copy(this.controls.getObject().position);
 
-    this.fadeSceneOverlay(() => {
+    fadeSceneOverlay(SceneFadeDuration, () => {
       this.removeSharedObjects();
       $introBox.fadeOut();
       $hud.hide();
@@ -426,17 +427,6 @@ class SecondShane extends ThreeBoiler {
       shaneScene.startScene();
     }, () => {
       this.transitioning = false;
-    });
-  }
-
-  fadeSceneOverlay(behavior, callback) {
-    let duration = IS_LIVE? 3000 : 1000;
-
-    $sceneOverlay.fadeIn(duration, () => {
-      behavior();
-      $sceneOverlay.fadeOut(duration, () => {
-        if (callback) callback();
-      });
     });
   }
 

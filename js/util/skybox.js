@@ -24,8 +24,8 @@ function makeCubemap(textureURL, repeatX, repeatY) {
 }
 
 function makeShader(cubemap) {
-  var shader = THREE.ShaderLib['cube']; // init cube shader from built-in lib
-  shader.uniforms['tCube'].value = cubemap; // apply textures to shader
+  var shader = THREE.ShaderLib.cube; // init cube shader from built-in lib
+  shader.uniforms.tCube.value = cubemap; // apply textures to shader
   return shader;
 }
 
@@ -33,7 +33,7 @@ function skyboxMaterial(textureURL) {
   var cubemap = makeCubemap(textureURL);
   var shader = makeShader(cubemap);
 
-  return new THREE.ShaderMaterial({
+  var material = new THREE.ShaderMaterial({
     fragmentShader: shader.fragmentShader,
     vertexShader: shader.vertexShader,
     uniforms: shader.uniforms,
@@ -41,6 +41,8 @@ function skyboxMaterial(textureURL) {
     side: THREE.BackSide,
     opacity: 0.5
   });
+  material.__shaneCubeMap = cubemap;
+  return material;
 }
 
 module.exports.create = function(options) {
@@ -49,7 +51,11 @@ module.exports.create = function(options) {
 
   var geometry = new THREE.BoxGeometry(size.x, size.y, size.z);
   var material = skyboxMaterial(textureURL);
-  return new THREE.Mesh(geometry, material);
+  var skybox = new THREE.Mesh(geometry, material);
+  skybox.__shaneShaderReset = function() {
+    makeShader(material.__shaneCubeMap);
+  };
+  return skybox;
 };
 
 module.exports.blocker = function(size) {

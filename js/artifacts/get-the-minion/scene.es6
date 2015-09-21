@@ -8,6 +8,7 @@ import {Talisman} from '../../talisman.es6';
 import {ShaneScene} from '../../shane-scene.es6';
 let ShaneMesh = require('../../shane-mesh');
 let VideoMesh = require('../../util/video-mesh');
+let fadeSceneOverlay = require('../../overlay');
 
 var GroundYPosition = -10;
 var PI_OVER_2 = Math.PI / 2;
@@ -80,57 +81,59 @@ export class GetTheMinion extends ShaneScene {
     super.enter();
 
     this.makeLights();
-    //this.makeWhiteGround();
+    this.makeWhiteGround();
   }
 
   doTimedWork() {
     super.doTimedWork();
 
-    // this.showArticleText(() => {
-    //   console.log('done with article');
-    //   setTimeout(() => {
-    //     this.performBoyCardFlyingAnimation();
-    //   }, 4444);
-    // });
+    // part 1
+    this.showArticleText(() => {
+      this.addTimeout(() => {
+        this.performBoyCardFlyingAnimation();
+      }, 3333);
+    });
 
-    this.makeArcade();
-    this.makeClawMachine();
-    this.addMinionsToClawMachine();
-    this.showClawMachineInstructions();
-
-    var beginShowingMyselfOffset = 5 * 1000;
+    // part 2
+    let part2Onset = 75 * 1000;
     this.addTimeout(() => {
-      this.setupWebcamStream();
+      fadeSceneOverlay(
+        1500,
+        () => {
+          this.removePart1Portions();
 
-      this.mirrorUpdate = () => {
-        if (!this.mirrorVideoMesh) {
-          return;
+          this.makeArcade();
+          this.makeClawMachine();
+          this.addMinionsToClawMachine();
+          this.showClawMachineInstructions();
         }
+      );
 
-        if (this.mirrorVideoMesh.videoMaterial.opacity < 0.45) {
-          this.mirrorVideoMesh.videoMaterial.opacity += 0.001;
-        }
-        else {
-          this.mirrorUpdate = null;
-        }
-      };
-    }, beginShowingMyselfOffset);
+      var beginShowingMyselfOffset = 35 * 1000;
+      this.addTimeout(() => {
+        this.setupWebcamStream();
+      }, beginShowingMyselfOffset);
 
-    var makeTheMinionsMeOffset = 15 * 1000;
-    this.addTimeout(() => {
-      this.makeTheMinionsMe();
-    }, makeTheMinionsMeOffset);
+      var makeTheMinionsMeOffset = 65 * 1000;
+      this.addTimeout(() => {
+        this.makeTheMinionsMe();
+      }, makeTheMinionsMeOffset);
+    }, part2Onset);
+
+    // end it
+    let trackDuration = 180 * 1000;
+    this.addTimeout(this.iWantOut.bind(this), trackDuration);
   }
 
   exit() {
-    super.exit();
+    this.removePart1Portions();
+    this.removePart2Portions();
 
     this.scene.remove(this.hemiLight);
     this.scene.remove(this.dirLight);
     this.scene.remove(this.ambientLight);
 
-    this.removePart1Portions();
-    this.removePart2Portions();
+    super.exit();
   }
 
   update() {
@@ -195,7 +198,7 @@ export class GetTheMinion extends ShaneScene {
     let ground = new ShaneMesh({
       meshCreator: (callback) => {
         let groundLength = 666;
-        let geometry = new THREE.PlaneGeometry(groundLength, groundLength);
+        let geometry = new THREE.PlaneBufferGeometry(groundLength, groundLength);
 
         let material = new THREE.MeshBasicMaterial({
           color: 0xffffff,
@@ -220,7 +223,7 @@ export class GetTheMinion extends ShaneScene {
     let text = 'Boy Aged Four Gets Stuck Inside Arcade Machine After Trying To Win Minion Teddy. Henry Howes took matters into his own hands in his desperate quest to land a stuffed Despicable Me toy. There is nothing more agonising as a child than dropping a teddy in an arcade claw machine. Four-year-old Henry Howes experienced just that at his local Staffordshire swimming pool, after convincing his mum to give him £1 for the game. Things didn’t go quite as planned when the claw machine released the teddy. But Henry refused to give up, so he took matters into his own hand and attempted to put his hand inside the hatch to grab the toy - but reached too far. His bottom slipped under the trap door on the front of the machine, trapping him inside. The drama was witnessed by older brother Harvey, nine, who ran to get their mum.It took staff half an hour to find the keys to free Henry, so mum Emma took the opportunity to snap the scene. Mum-of-three Emma, 33, said: ‘He asked if he could have a go on the teddy machine so I gave him a £1 and told him to go with his big brother. ‘Off they went round the corner and then his brother came back and said \'Henry is stuck in the machine\'.‘I assumed he meant his hand - I didn\'t think he\'d be inside the machine. He was completely inside it. ‘I don\'t know how he managed to get in there. He\'s only four but he\'s a tall lad.‘I was laughing my head off. I could see that he was fine and he wasn\'t upset.Henry\'s adventure ended happily as he went home with the teddy when staff allowed him to keep it.Emma said: ‘I said to the lady \'I hope you\'ll let him have it\' and they did.\'<br><br><br><br>He hasn\'t let go of it since.';
     let $articleDiv = $('<div>' + text + '</div>');
     $articleDiv.css('position', 'fixed'); $articleDiv.css('top', '0px'); $articleDiv.css('left', '0px');
-    $articleDiv.css('padding', '666px 100px');
+    $articleDiv.css('padding', window.innerHeight + 'px 100px');
     $articleDiv.css('color', 'rgb(237, 61, 14)');
     $articleDiv.css('font-size', '40px');
     $articleDiv.css('font-weight', 'bold');
@@ -231,7 +234,7 @@ export class GetTheMinion extends ShaneScene {
     this.addTimeout(() => {
       if (!this.$articleDiv) return;
 
-      let scrollDuration = 40 * 1000;
+      let scrollDuration = 36 * 1000;
       let height = $articleDiv.height() + window.innerHeight;
       $articleDiv.animate( {top: -height + 'px'}, scrollDuration,'linear', () => {
         if (this.$articleDiv) {
@@ -443,13 +446,17 @@ export class GetTheMinion extends ShaneScene {
   }
 
   showClawMachineInstructions() {
-    var div = $('<div style="position: absolute; left: 10px; top: 10px;">Work the Machine to Get the Minion. Use the Arrows to move the Claw. Press Enter to Submit the Claw.</div>');
+    var div = $('<div style="position: absolute; right: 10px; top: 10px;">Work the Machine to Get the Minion. Use the Arrows to move the Claw. Press Enter to Submit the Claw.</div>');
     div.css('color', 'rgb(249, 240, 45)');
     div.css('font-size', '16px');
     div.css('font-family', 'Roboto Mono, monospace');
     div.css('font-weight', 'bold');
     div.css('max-width', '160px');
     div.css('text-shadow', '3px 3px 3px rgba(255, 253, 18, 0.5)');
+    div.css('box-shadow', '0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.23);');
+    div.css('border', '4px solid rgb(61, 254, 98)');
+    div.css('padding', '2px');
+    div.css('background-color', 'rgba(54, 228, 223, 0.8)');
 
     this.domContainer.append(div);
     this.$clawMachineInstructions = div;
@@ -559,7 +566,7 @@ export class GetTheMinion extends ShaneScene {
 
     var minionCount = 20;
     for (var i = 0; i < minionCount; i++) {
-      setTimeout(() => {
+      this.addTimeout(() => {
         var x = (Math.random() - 0.5) * (ClawMachineWidth * 0.9);
         var y = MinimumMinionY + Math.random() * (ClawMachineHeight * 0.4);
         var z = frontPanePosition.z + Math.random() * -ClawMachineDepth;
@@ -657,7 +664,7 @@ export class GetTheMinion extends ShaneScene {
 
       meMinionMesh.rotation.y -= 0.05;
 
-      if (scale < 8.5) {
+      if (scale < 10) {
         scale *= 1.0025;
         meMinionMesh.scale.set(scale, scale, scale);
       }
@@ -687,7 +694,7 @@ export class GetTheMinion extends ShaneScene {
           return;
         }
 
-        var videoMeshWidth = ClawMachineWidth * 0.9;
+        var videoMeshWidth = ClawMachineWidth * 0.85;
         var videoMeshHeight = videoMeshWidth * (this.videoHeight / this.videoWidth);
 
         self.mirrorVideoMesh = new VideoMesh({
@@ -701,6 +708,19 @@ export class GetTheMinion extends ShaneScene {
         self.mirrorVideoMesh.addTo(self.scene);
         self.mirrorVideoMesh.mesh.castShadow = true;
         self.mirrorVideoMesh.videoMaterial.opacity = 0.0;
+
+        self.mirrorUpdate = () => {
+          if (!self.mirrorVideoMesh) {
+            return;
+          }
+
+          if (self.mirrorVideoMesh.videoMaterial.opacity < 0.48) {
+            self.mirrorVideoMesh.videoMaterial.opacity += 0.0012;
+          }
+          else {
+            self.mirrorUpdate = null;
+          }
+        };
       }, false);
     };
 
@@ -713,12 +733,6 @@ export class GetTheMinion extends ShaneScene {
   }
 
   removePart2Portions() {
-    this.refractionCube = null;
-    this.reflectionCube = null;
-    this.mirrorUpdate = null;
-    this.clawDownUpdate = null;
-    this.meMinionUpdate = null;
-
     if (this.skyboxMesh) {
       this.scene.remove(this.skyboxMesh);
       this.skyboxMesh = null;
@@ -737,7 +751,16 @@ export class GetTheMinion extends ShaneScene {
     }
 
     if (this.localMediaStream) {
-      this.localMediaStream.stop();
+      if (this.localMediaStream.stop) {
+        this.localMediaStream.stop();
+      }
+      // https://developers.google.com/web/updates/2015/07/mediastream-deprecations
+      if (this.localMediaStream.getTracks) {
+        var tracks = this.localMediaStream.getTracks();
+        for (var i = 0; i < tracks.length; i++) {
+          tracks[i].stop();
+        }
+      }
       this.localMediaStream = null;
     }
 
@@ -756,6 +779,12 @@ export class GetTheMinion extends ShaneScene {
       this.scene.remove(this.meMinionMesh);
       this.meMinionMesh = null;
     }
+
+    this.refractionCube = null;
+    this.reflectionCube = null;
+    this.mirrorUpdate = null;
+    this.clawDownUpdate = null;
+    this.meMinionUpdate = null;
   }
 
 }

@@ -305,7 +305,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../shane-mesh":21,"../../shane-scene.es6":22,"../../talisman.es6":23,"../../urls":26,"jquery":31,"kutility":32,"three":34}],2:[function(require,module,exports){
+},{"../../shane-mesh":22,"../../shane-scene.es6":23,"../../talisman.es6":24,"../../urls":27,"jquery":32,"kutility":33,"three":35}],2:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -623,7 +623,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../shane-mesh":21,"../../shane-scene.es6":22,"../../talisman.es6":23,"../../urls":26,"./static-canvas":3,"jquery":31,"three":34}],3:[function(require,module,exports){
+},{"../../shane-mesh":22,"../../shane-scene.es6":23,"../../talisman.es6":24,"../../urls":27,"./static-canvas":3,"jquery":32,"three":35}],3:[function(require,module,exports){
 "use strict";
 
 module.exports.fuzz = function (canvas) {
@@ -671,6 +671,7 @@ var ShaneScene = require("../../shane-scene.es6").ShaneScene;
 
 var ShaneMesh = require("../../shane-mesh");
 var VideoMesh = require("../../util/video-mesh");
+var fadeSceneOverlay = require("../../overlay");
 
 var GroundYPosition = -10;
 var PI_OVER_2 = Math.PI / 2;
@@ -753,7 +754,7 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
         _get(Object.getPrototypeOf(GetTheMinion.prototype), "enter", this).call(this);
 
         this.makeLights();
-        //this.makeWhiteGround();
+        this.makeWhiteGround();
       }
     },
     doTimedWork: {
@@ -762,51 +763,51 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
 
         _get(Object.getPrototypeOf(GetTheMinion.prototype), "doTimedWork", this).call(this);
 
-        // this.showArticleText(() => {
-        //   console.log('done with article');
-        //   setTimeout(() => {
-        //     this.performBoyCardFlyingAnimation();
-        //   }, 4444);
-        // });
+        // part 1
+        this.showArticleText(function () {
+          _this.addTimeout(function () {
+            _this.performBoyCardFlyingAnimation();
+          }, 3333);
+        });
 
-        this.makeArcade();
-        this.makeClawMachine();
-        this.addMinionsToClawMachine();
-        this.showClawMachineInstructions();
-
-        var beginShowingMyselfOffset = 5 * 1000;
+        // part 2
+        var part2Onset = 75 * 1000;
         this.addTimeout(function () {
-          _this.setupWebcamStream();
+          fadeSceneOverlay(1500, function () {
+            _this.removePart1Portions();
 
-          _this.mirrorUpdate = function () {
-            if (!_this.mirrorVideoMesh) {
-              return;
-            }
+            _this.makeArcade();
+            _this.makeClawMachine();
+            _this.addMinionsToClawMachine();
+            _this.showClawMachineInstructions();
+          });
 
-            if (_this.mirrorVideoMesh.videoMaterial.opacity < 0.45) {
-              _this.mirrorVideoMesh.videoMaterial.opacity += 0.001;
-            } else {
-              _this.mirrorUpdate = null;
-            }
-          };
-        }, beginShowingMyselfOffset);
+          var beginShowingMyselfOffset = 35 * 1000;
+          _this.addTimeout(function () {
+            _this.setupWebcamStream();
+          }, beginShowingMyselfOffset);
 
-        var makeTheMinionsMeOffset = 15 * 1000;
-        this.addTimeout(function () {
-          _this.makeTheMinionsMe();
-        }, makeTheMinionsMeOffset);
+          var makeTheMinionsMeOffset = 65 * 1000;
+          _this.addTimeout(function () {
+            _this.makeTheMinionsMe();
+          }, makeTheMinionsMeOffset);
+        }, part2Onset);
+
+        // end it
+        var trackDuration = 180 * 1000;
+        this.addTimeout(this.iWantOut.bind(this), trackDuration);
       }
     },
     exit: {
       value: function exit() {
-        _get(Object.getPrototypeOf(GetTheMinion.prototype), "exit", this).call(this);
+        this.removePart1Portions();
+        this.removePart2Portions();
 
         this.scene.remove(this.hemiLight);
         this.scene.remove(this.dirLight);
         this.scene.remove(this.ambientLight);
 
-        this.removePart1Portions();
-        this.removePart2Portions();
+        _get(Object.getPrototypeOf(GetTheMinion.prototype), "exit", this).call(this);
       }
     },
     update: {
@@ -875,7 +876,7 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
         var ground = new ShaneMesh({
           meshCreator: function (callback) {
             var groundLength = 666;
-            var geometry = new THREE.PlaneGeometry(groundLength, groundLength);
+            var geometry = new THREE.PlaneBufferGeometry(groundLength, groundLength);
 
             var material = new THREE.MeshBasicMaterial({
               color: 16777215,
@@ -903,7 +904,7 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
         var text = "Boy Aged Four Gets Stuck Inside Arcade Machine After Trying To Win Minion Teddy. Henry Howes took matters into his own hands in his desperate quest to land a stuffed Despicable Me toy. There is nothing more agonising as a child than dropping a teddy in an arcade claw machine. Four-year-old Henry Howes experienced just that at his local Staffordshire swimming pool, after convincing his mum to give him £1 for the game. Things didn’t go quite as planned when the claw machine released the teddy. But Henry refused to give up, so he took matters into his own hand and attempted to put his hand inside the hatch to grab the toy - but reached too far. His bottom slipped under the trap door on the front of the machine, trapping him inside. The drama was witnessed by older brother Harvey, nine, who ran to get their mum.It took staff half an hour to find the keys to free Henry, so mum Emma took the opportunity to snap the scene. Mum-of-three Emma, 33, said: ‘He asked if he could have a go on the teddy machine so I gave him a £1 and told him to go with his big brother. ‘Off they went round the corner and then his brother came back and said 'Henry is stuck in the machine'.‘I assumed he meant his hand - I didn't think he'd be inside the machine. He was completely inside it. ‘I don't know how he managed to get in there. He's only four but he's a tall lad.‘I was laughing my head off. I could see that he was fine and he wasn't upset.Henry's adventure ended happily as he went home with the teddy when staff allowed him to keep it.Emma said: ‘I said to the lady 'I hope you'll let him have it' and they did.'<br><br><br><br>He hasn't let go of it since.";
         var $articleDiv = $("<div>" + text + "</div>");
         $articleDiv.css("position", "fixed");$articleDiv.css("top", "0px");$articleDiv.css("left", "0px");
-        $articleDiv.css("padding", "666px 100px");
+        $articleDiv.css("padding", window.innerHeight + "px 100px");
         $articleDiv.css("color", "rgb(237, 61, 14)");
         $articleDiv.css("font-size", "40px");
         $articleDiv.css("font-weight", "bold");
@@ -914,7 +915,7 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
         this.addTimeout(function () {
           if (!_this.$articleDiv) return;
 
-          var scrollDuration = 40 * 1000;
+          var scrollDuration = 36 * 1000;
           var height = $articleDiv.height() + window.innerHeight;
           $articleDiv.animate({ top: -height + "px" }, scrollDuration, "linear", function () {
             if (_this.$articleDiv) {
@@ -1131,13 +1132,17 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
     },
     showClawMachineInstructions: {
       value: function showClawMachineInstructions() {
-        var div = $("<div style=\"position: absolute; left: 10px; top: 10px;\">Work the Machine to Get the Minion. Use the Arrows to move the Claw. Press Enter to Submit the Claw.</div>");
+        var div = $("<div style=\"position: absolute; right: 10px; top: 10px;\">Work the Machine to Get the Minion. Use the Arrows to move the Claw. Press Enter to Submit the Claw.</div>");
         div.css("color", "rgb(249, 240, 45)");
         div.css("font-size", "16px");
         div.css("font-family", "Roboto Mono, monospace");
         div.css("font-weight", "bold");
         div.css("max-width", "160px");
         div.css("text-shadow", "3px 3px 3px rgba(255, 253, 18, 0.5)");
+        div.css("box-shadow", "0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.23);");
+        div.css("border", "4px solid rgb(61, 254, 98)");
+        div.css("padding", "2px");
+        div.css("background-color", "rgba(54, 228, 223, 0.8)");
 
         this.domContainer.append(div);
         this.$clawMachineInstructions = div;
@@ -1254,7 +1259,7 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
 
         var minionCount = 20;
         for (var i = 0; i < minionCount; i++) {
-          setTimeout(function () {
+          this.addTimeout(function () {
             var x = (Math.random() - 0.5) * (ClawMachineWidth * 0.9);
             var y = MinimumMinionY + Math.random() * (ClawMachineHeight * 0.4);
             var z = frontPanePosition.z + Math.random() * -ClawMachineDepth;
@@ -1356,7 +1361,7 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
 
           meMinionMesh.rotation.y -= 0.05;
 
-          if (scale < 8.5) {
+          if (scale < 10) {
             scale *= 1.0025;
             meMinionMesh.scale.set(scale, scale, scale);
           }
@@ -1389,7 +1394,7 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
               return;
             }
 
-            var videoMeshWidth = ClawMachineWidth * 0.9;
+            var videoMeshWidth = ClawMachineWidth * 0.85;
             var videoMeshHeight = videoMeshWidth * (this.videoHeight / this.videoWidth);
 
             self.mirrorVideoMesh = new VideoMesh({
@@ -1403,6 +1408,18 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
             self.mirrorVideoMesh.addTo(self.scene);
             self.mirrorVideoMesh.mesh.castShadow = true;
             self.mirrorVideoMesh.videoMaterial.opacity = 0;
+
+            self.mirrorUpdate = function () {
+              if (!self.mirrorVideoMesh) {
+                return;
+              }
+
+              if (self.mirrorVideoMesh.videoMaterial.opacity < 0.48) {
+                self.mirrorVideoMesh.videoMaterial.opacity += 0.0012;
+              } else {
+                self.mirrorUpdate = null;
+              }
+            };
           }, false);
         };
 
@@ -1416,12 +1433,6 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
     },
     removePart2Portions: {
       value: function removePart2Portions() {
-        this.refractionCube = null;
-        this.reflectionCube = null;
-        this.mirrorUpdate = null;
-        this.clawDownUpdate = null;
-        this.meMinionUpdate = null;
-
         if (this.skyboxMesh) {
           this.scene.remove(this.skyboxMesh);
           this.skyboxMesh = null;
@@ -1440,7 +1451,16 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
         }
 
         if (this.localMediaStream) {
-          this.localMediaStream.stop();
+          if (this.localMediaStream.stop) {
+            this.localMediaStream.stop();
+          }
+          // https://developers.google.com/web/updates/2015/07/mediastream-deprecations
+          if (this.localMediaStream.getTracks) {
+            var tracks = this.localMediaStream.getTracks();
+            for (var i = 0; i < tracks.length; i++) {
+              tracks[i].stop();
+            }
+          }
           this.localMediaStream = null;
         }
 
@@ -1459,6 +1479,12 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
           this.scene.remove(this.meMinionMesh);
           this.meMinionMesh = null;
         }
+
+        this.refractionCube = null;
+        this.reflectionCube = null;
+        this.mirrorUpdate = null;
+        this.clawDownUpdate = null;
+        this.meMinionUpdate = null;
       }
     }
   });
@@ -1470,7 +1496,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../shane-mesh":21,"../../shane-scene.es6":22,"../../talisman.es6":23,"../../urls":26,"../../util/video-mesh":30,"jquery":31,"kutility":32,"three":34}],5:[function(require,module,exports){
+},{"../../overlay":20,"../../shane-mesh":22,"../../shane-scene.es6":23,"../../talisman.es6":24,"../../urls":27,"../../util/video-mesh":31,"jquery":32,"kutility":33,"three":35}],5:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1558,7 +1584,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"jquery":31}],6:[function(require,module,exports){
+},{"jquery":32}],6:[function(require,module,exports){
 "use strict";
 
 var $ = require("jquery");
@@ -1762,7 +1788,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 // chorus
 
-},{"jquery":31,"kutility":32}],7:[function(require,module,exports){
+},{"jquery":32,"kutility":33}],7:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2292,7 +2318,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../shane-scene.es6":22,"../../talisman.es6":23,"../../urls":26,"./basketball.es6":5,"./karaoke.es6":6,"jquery":31,"kutility":32,"three":34}],8:[function(require,module,exports){
+},{"../../shane-scene.es6":23,"../../talisman.es6":24,"../../urls":27,"./basketball.es6":5,"./karaoke.es6":6,"jquery":32,"kutility":33,"three":35}],8:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2907,7 +2933,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../shane-mesh":21,"../../shane-scene.es6":22,"../../talisman.es6":23,"../../urls":26,"jquery":31,"kutility":32,"three":34}],9:[function(require,module,exports){
+},{"../../shane-mesh":22,"../../shane-scene.es6":23,"../../talisman.es6":24,"../../urls":27,"jquery":32,"kutility":33,"three":35}],9:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -3196,7 +3222,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../shane-mesh":21,"../../shane-scene.es6":22,"../../talisman.es6":23,"../../urls":26,"jquery":31,"three":34}],10:[function(require,module,exports){
+},{"../../shane-mesh":22,"../../shane-scene.es6":23,"../../talisman.es6":24,"../../urls":27,"jquery":32,"three":35}],10:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -3357,7 +3383,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../shane-mesh":21,"../../shane-scene.es6":22,"../../talisman.es6":23,"../../urls":26,"jquery":31,"three":34}],11:[function(require,module,exports){
+},{"../../shane-mesh":22,"../../shane-scene.es6":23,"../../talisman.es6":24,"../../urls":27,"jquery":32,"three":35}],11:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -3685,7 +3711,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../lib/three.terrain":15,"../../shane-mesh":21,"../../shane-scene.es6":22,"../../talisman.es6":23,"../../urls":26,"../../util/video-mesh":30,"jquery":31,"kutility":32,"three":34}],12:[function(require,module,exports){
+},{"../../lib/three.terrain":15,"../../shane-mesh":22,"../../shane-scene.es6":23,"../../talisman.es6":24,"../../urls":27,"../../util/video-mesh":31,"jquery":32,"kutility":33,"three":35}],12:[function(require,module,exports){
 "use strict";
 
 /**
@@ -4026,7 +4052,7 @@ module.exports = function (camera, options) {
 	this.updateRotationVector();
 };
 
-},{"./pointerlocker":13,"three":34}],13:[function(require,module,exports){
+},{"./pointerlocker":13,"three":35}],13:[function(require,module,exports){
 "use strict";
 
 module.exports = function () {
@@ -4238,7 +4264,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"jquery":31}],15:[function(require,module,exports){
+},{"jquery":32}],15:[function(require,module,exports){
 "use strict";
 
 /**
@@ -6278,7 +6304,7 @@ THREE.Terrain.Influence = function (g, options, f, x, y, r, h, t, e) {
 
 module.exports = THREE.Terrain;
 
-},{"three":34}],16:[function(require,module,exports){
+},{"three":35}],16:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -6298,6 +6324,7 @@ var ThreeBoiler = require("./three-boiler.es6").ThreeBoiler;
 var FlyControls = require("./controls/fly-controls");
 var moneyMan = require("./new-money");
 var minimap = require("./minimap");
+var fadeSceneOverlay = require("./overlay");
 
 var _oneOffsEs6 = require("./one-offs.es6");
 
@@ -6313,7 +6340,6 @@ var chatter = require("./util/chatterbox.es6").chatter;
 var $loadingOverlay = $("#loading-overlay");
 var $loadingText = $("#loading-text");
 var $clickToStartText = $("#click-to-start-text");
-var $sceneOverlay = $("#scene-overlay");
 var $nearbyArtifactContainer = $("#nearby-artifact-container");
 var $nearbyArtifactName = $("#nearby-artifact-name");
 var $introBox = $("#intro-box");
@@ -6323,6 +6349,7 @@ var $pointerLockTip = $("#pointer-lock-tip");
 
 var IS_LIVE = false;
 var SCRATCH_PAD = true;
+var SceneFadeDuration = IS_LIVE ? 3000 : 1000;
 
 var SecondShane = (function (_ThreeBoiler) {
   function SecondShane() {
@@ -6685,7 +6712,7 @@ var SecondShane = (function (_ThreeBoiler) {
 
         this.transitioning = true;
 
-        this.fadeSceneOverlay(function () {
+        fadeSceneOverlay(SceneFadeDuration, function () {
           shaneScene.exit();
           _this.activeScene = null;
 
@@ -6742,7 +6769,7 @@ var SecondShane = (function (_ThreeBoiler) {
         this.controls.exitPointerlock();
         this.sharedCameraPosition.copy(this.controls.getObject().position);
 
-        this.fadeSceneOverlay(function () {
+        fadeSceneOverlay(SceneFadeDuration, function () {
           _this.removeSharedObjects();
           $introBox.fadeOut();
           $hud.hide();
@@ -6754,18 +6781,6 @@ var SecondShane = (function (_ThreeBoiler) {
           shaneScene.startScene();
         }, function () {
           _this.transitioning = false;
-        });
-      }
-    },
-    fadeSceneOverlay: {
-      value: function fadeSceneOverlay(behavior, callback) {
-        var duration = IS_LIVE ? 3000 : 1000;
-
-        $sceneOverlay.fadeIn(duration, function () {
-          behavior();
-          $sceneOverlay.fadeOut(duration, function () {
-            if (callback) callback();
-          });
         });
       }
     },
@@ -6815,7 +6830,7 @@ $(function () {
   shane.activate();
 });
 
-},{"./controls/fly-controls":12,"./minimap":17,"./new-money":18,"./one-offs.es6":19,"./scenes.es6":20,"./theme.es6":24,"./three-boiler.es6":25,"./util/chatterbox.es6":27,"jquery":31,"querystring":37,"three":34}],17:[function(require,module,exports){
+},{"./controls/fly-controls":12,"./minimap":17,"./new-money":18,"./one-offs.es6":19,"./overlay":20,"./scenes.es6":21,"./theme.es6":25,"./three-boiler.es6":26,"./util/chatterbox.es6":28,"jquery":32,"querystring":38,"three":35}],17:[function(require,module,exports){
 "use strict";
 
 var canvas = document.querySelector("#minimap-canvas");
@@ -6976,7 +6991,7 @@ function setMoney(money) {
   odometer.update(money);
 }
 
-},{"jquery":31,"odometer":33}],19:[function(require,module,exports){
+},{"jquery":32,"odometer":34}],19:[function(require,module,exports){
 "use strict";
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
@@ -7791,8 +7806,91 @@ new ImageBeacon({
   imageName: "media/beacon-images/grape.jpg",
   portrait: true,
   position: new THREE.Vector3(423, 3, -76)
+}), new ImageBeacon({
+  name: "U Haul It",
+  imageName: "media/beacon-images/u_haul_it.jpg",
+  position: new THREE.Vector3(-398, 0, -221)
+}), new ImageBeacon({
+  name: "Alien Arrival",
+  imageName: "media/beacon-images/alien_arrival.jpg",
+  portrait: true,
+  position: new THREE.Vector3(53, 4, 106)
+}), new ImageBeacon({
+  name: "Moose and Penguins",
+  imageName: "media/beacon-images/moose_penguin.jpg",
+  portrait: true,
+  position: new THREE.Vector3(144, 0, -493)
+}), new ImageBeacon({
+  name: "Moose and Cat",
+  imageName: "media/beacon-images/moose_cat.jpg",
+  portrait: true,
+  position: new THREE.Vector3(-43, -5, 459)
+}), new ImageBeacon({
+  name: "Man in Suit",
+  imageName: "media/beacon-images/mufon_suit.jpg",
+  portrait: true,
+  position: new THREE.Vector3(245, 0, -130)
+}), new ImageBeacon({
+  name: "A Gathering of Men",
+  imageName: "media/beacon-images/mufon_men.jpg",
+  position: new THREE.Vector3(-304, 3, 240)
+}), new ImageBeacon({
+  name: "A Conference of Men",
+  imageName: "media/beacon-images/mufon_conference.jpg",
+  position: new THREE.Vector3(-27, 2, 160)
+}), new ImageBeacon({
+  name: "A Man Speaks",
+  imageName: "media/beacon-images/mufon_speaker.jpg",
+  portrait: true,
+  position: new THREE.Vector3(-237, 0, 463)
+}), new ImageBeacon({
+  name: "MUFON Man",
+  imageName: "media/beacon-images/mufon_man.jpg",
+  portrait: true,
+  position: new THREE.Vector3(-218, 0, -452)
+}), new ImageBeacon({
+  name: "Who Is the Object and Who Is the Occupant?",
+  imageName: "media/beacon-images/object_occupant.jpg",
+  position: new THREE.Vector3(123, 0, 237)
+}), new ImageBeacon({
+  name: "Jane and Her Husband, Clint",
+  imageName: "media/beacon-images/jane_and_clint_chapin.jpg",
+  position: new THREE.Vector3(163, 0, -476)
+}), new ImageBeacon({
+  name: "Faded Figure",
+  imageName: "media/beacon-images/mufon_figure.jpg",
+  portrait: true,
+  position: new THREE.Vector3(130, 0, 490)
+}), new ImageBeacon({
+  name: "Kevin Roark",
+  imageName: "media/beacon-images/kevin_roark.jpg",
+  position: new THREE.Vector3(403, 0, -72)
+}), new ImageBeacon({
+  name: "Saucey Sidewalk",
+  imageName: "media/beacon-images/sauce_views.jpg",
+  position: new THREE.Vector3(-355, 0, -189)
+}), new ImageBeacon({
+  name: "Dog Solves Task",
+  imageName: "media/beacon-images/dog_task.jpg",
+  position: new THREE.Vector3(-163, 0, 47)
+}), new ImageBeacon({
+  name: "Son Manh",
+  imageName: "media/beacon-images/son_manh.jpg",
+  position: new THREE.Vector3(16, 0, 360)
+}), new ImageBeacon({
+  name: "Deputy Sheriffs Car After Skidding to a Halt",
+  imageName: "media/beacon-images/sheriffs_car.jpg",
+  position: new THREE.Vector3(89, 0, -150)
+}), new ImageBeacon({
+  name: "Deputy Sheriff Val Johnson",
+  imageName: "media/beacon-images/deputy_johnson.jpg",
+  portrait: true,
+  position: new THREE.Vector3(-462, 0, -217)
+}), new ImageBeacon({
+  name: "Men on the Beach",
+  imageName: "media/beacon-images/beach_men.jpg",
+  position: new THREE.Vector3(-307, 0, 28)
 }),
-
 // vids
 new VideoBeacon({
   name: "I Watched the Woods",
@@ -7879,7 +7977,24 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"./dahmer.es6":14,"./shane-mesh":21,"jquery":31,"kutility":32,"three":34}],20:[function(require,module,exports){
+},{"./dahmer.es6":14,"./shane-mesh":22,"jquery":32,"kutility":33,"three":35}],20:[function(require,module,exports){
+"use strict";
+
+var $ = require("jquery");
+var $sceneOverlay = $("#scene-overlay");
+
+module.exports = function fadeSceneOverlay(duration, behavior, callback) {
+  if (!duration) duration = 1000;
+
+  $sceneOverlay.fadeIn(duration, function () {
+    if (behavior) behavior();
+    $sceneOverlay.fadeOut(duration, function () {
+      if (callback) callback();
+    });
+  });
+};
+
+},{"jquery":32}],21:[function(require,module,exports){
 "use strict";
 
 var ASMR = require("./artifacts/asmr/scene.es6").ASMR;
@@ -7912,7 +8027,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"./artifacts/asmr/scene.es6":1,"./artifacts/bruno/scene.es6":2,"./artifacts/get-the-minion/scene.es6":4,"./artifacts/god-is-a-man/scene.es6":7,"./artifacts/i-felt-the-foot/scene.es6":8,"./artifacts/live-at-jjs/scene.es6":9,"./artifacts/my-job-my-home-my-wife/scene.es6":10,"./artifacts/papa-john/scene.es6":11}],21:[function(require,module,exports){
+},{"./artifacts/asmr/scene.es6":1,"./artifacts/bruno/scene.es6":2,"./artifacts/get-the-minion/scene.es6":4,"./artifacts/god-is-a-man/scene.es6":7,"./artifacts/i-felt-the-foot/scene.es6":8,"./artifacts/live-at-jjs/scene.es6":9,"./artifacts/my-job-my-home-my-wife/scene.es6":10,"./artifacts/papa-john/scene.es6":11}],22:[function(require,module,exports){
 "use strict";
 
 var THREE = require("three");
@@ -8148,7 +8263,7 @@ ShaneMesh.prototype.fallToFloor = function (threshold, speed) {
 ShaneMesh.prototype.additionalInit = function () {};
 ShaneMesh.prototype.additionalRender = function () {};
 
-},{"./util/model-loader":28,"kutility":32,"three":34}],22:[function(require,module,exports){
+},{"./util/model-loader":29,"kutility":33,"three":35}],23:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -8305,7 +8420,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"./dahmer.es6":14,"./talisman.es6":23,"jquery":31,"three":34}],23:[function(require,module,exports){
+},{"./dahmer.es6":14,"./talisman.es6":24,"jquery":32,"three":35}],24:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -8434,7 +8549,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"three":34}],24:[function(require,module,exports){
+},{"three":35}],25:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -8457,6 +8572,9 @@ var ShaneTheme = (function () {
   _createClass(ShaneTheme, {
     applyTo: {
       value: function applyTo(scene) {
+        if (this.skybox.__shaneShaderReset) {
+          this.skybox.__shaneShaderReset();
+        }
         scene.add(this.skybox);
       }
     },
@@ -8480,7 +8598,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"./util/skybox":29}],25:[function(require,module,exports){
+},{"./util/skybox":30}],26:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -8602,7 +8720,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"jquery":31,"three":34}],26:[function(require,module,exports){
+},{"jquery":32,"three":35}],27:[function(require,module,exports){
 "use strict";
 
 module.exports.asmr = {
@@ -8640,7 +8758,7 @@ module.exports.getTheMinion = {
   live: "http://localhost:5561/"
 };
 
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 "use strict";
 
 var $ = require("jquery");
@@ -8725,7 +8843,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"jquery":31}],28:[function(require,module,exports){
+},{"jquery":32}],29:[function(require,module,exports){
 "use strict";
 
 var THREE = require("three");
@@ -8775,7 +8893,7 @@ function fetch(name, callback) {
   callback(geometry, materials);
 }
 
-},{"three":34}],29:[function(require,module,exports){
+},{"three":35}],30:[function(require,module,exports){
 "use strict";
 
 var THREE = require("three");
@@ -8813,7 +8931,7 @@ function skyboxMaterial(textureURL) {
   var cubemap = makeCubemap(textureURL);
   var shader = makeShader(cubemap);
 
-  return new THREE.ShaderMaterial({
+  var material = new THREE.ShaderMaterial({
     fragmentShader: shader.fragmentShader,
     vertexShader: shader.vertexShader,
     uniforms: shader.uniforms,
@@ -8821,6 +8939,8 @@ function skyboxMaterial(textureURL) {
     side: THREE.BackSide,
     opacity: 0.5
   });
+  material.__shaneCubeMap = cubemap;
+  return material;
 }
 
 module.exports.create = function (options) {
@@ -8829,7 +8949,11 @@ module.exports.create = function (options) {
 
   var geometry = new THREE.BoxGeometry(size.x, size.y, size.z);
   var material = skyboxMaterial(textureURL);
-  return new THREE.Mesh(geometry, material);
+  var skybox = new THREE.Mesh(geometry, material);
+  skybox.__shaneShaderReset = function () {
+    makeShader(material.__shaneCubeMap);
+  };
+  return skybox;
 };
 
 module.exports.blocker = function (size) {
@@ -8845,7 +8969,7 @@ module.exports.blocker = function (size) {
   return new THREE.Mesh(geometry, material);
 };
 
-},{"three":34}],30:[function(require,module,exports){
+},{"three":35}],31:[function(require,module,exports){
 "use strict";
 
 var THREE = require("three");
@@ -8908,7 +9032,7 @@ VideoMesh.prototype.rotateTo = function (rx, ry, rz) {
   this.mesh.rotation.set(rx, ry, rz);
 };
 
-},{"jquery":31,"three":34}],31:[function(require,module,exports){
+},{"jquery":32,"three":35}],32:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.3
  * http://jquery.com/
@@ -18115,7 +18239,7 @@ return jQuery;
 
 }));
 
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 
 /* export something */
 module.exports = new Kutility();
@@ -18689,7 +18813,7 @@ Kutility.prototype.blur = function(el, x) {
   this.setFilter(el, cf + f);
 };
 
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 (function() {
   var COUNT_FRAMERATE, COUNT_MS_PER_FRAME, DIGIT_FORMAT, DIGIT_HTML, DIGIT_SPEEDBOOST, DURATION, FORMAT_MARK_HTML, FORMAT_PARSER, FRAMERATE, FRAMES_PER_VALUE, MS_PER_FRAME, MutationObserver, Odometer, RIBBON_HTML, TRANSITION_END_EVENTS, TRANSITION_SUPPORT, VALUE_HTML, addClass, createFromHTML, fractionalPart, now, removeClass, requestAnimationFrame, round, transitionCheckStyles, trigger, truncate, wrapJQuery, _jQueryWrapped, _old, _ref, _ref1,
     __slice = [].slice;
@@ -19344,7 +19468,7 @@ Kutility.prototype.blur = function(el, x) {
 
 }).call(this);
 
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 var self = self || {};// File:src/Three.js
 
 /**
@@ -54492,7 +54616,7 @@ if (typeof exports !== 'undefined') {
   this['THREE'] = THREE;
 }
 
-},{}],35:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -54578,7 +54702,7 @@ var isArray = Array.isArray || function (xs) {
   return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -54665,10 +54789,10 @@ var objectKeys = Object.keys || function (obj) {
   return res;
 };
 
-},{}],37:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 'use strict';
 
 exports.decode = exports.parse = require('./decode');
 exports.encode = exports.stringify = require('./encode');
 
-},{"./decode":35,"./encode":36}]},{},[16]);
+},{"./decode":36,"./encode":37}]},{},[16]);
