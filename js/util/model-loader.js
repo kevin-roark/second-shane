@@ -8,14 +8,15 @@ var loader = new THREE.JSONLoader();
 module.exports = function loadModel(name, callback) {
   if (typeof callback !== 'function') return;
 
-  if (cache[name]) {
-    fetch(name, callback);
-    return;
-  }
+  // if (cache[name]) {
+  //   fetch(name, callback);
+  //   return;
+  // }
 
   loader.load(name, function(geometry, materials) {
-    add(name, geometry, materials);
-    fetch(name, callback);
+    callback(geometry, materials);
+    // add(name, geometry, materials);
+    // fetch(name, callback);
   });
 };
 

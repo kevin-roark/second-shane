@@ -73,6 +73,10 @@ class SecondShane extends ThreeBoiler {
     this.theme = currentTheme;
     this.theme.applyTo(this.scene);
 
+    this.sharedWorldLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.5);
+    this.sharedWorldLight.position.set(0, 500, 0);
+    this.scene.add(this.sharedWorldLight);
+
     this.sharedCameraPosition = new THREE.Vector3(0, 0, 0);
 
     this.activeScene = null;
@@ -447,6 +451,8 @@ class SecondShane extends ThreeBoiler {
     });
 
     this.theme.applyTo(this.scene);
+
+    this.scene.add(this.sharedWorldLight);
   }
 
   removeSharedObjects() {
@@ -460,6 +466,8 @@ class SecondShane extends ThreeBoiler {
     });
 
     this.theme.removeFrom(this.scene);
+
+    this.scene.remove(this.sharedWorldLight);
   }
 }
 

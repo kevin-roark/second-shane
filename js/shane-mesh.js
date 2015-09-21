@@ -90,20 +90,20 @@ ShaneMesh.prototype.createMesh = function(callback) {
       }
     }
 
-    var cloneableMesh = _meshCloningCache[self.modelName];
-    if (cloneableMesh) {
-      self.mesh = cloneableMesh.clone();
-      if (callback) {
-        callback();
-      }
-      return;
-    }
+    // var cloneableMesh = _meshCloningCache[self.modelName];
+    // if (cloneableMesh) {
+    //   self.mesh = cloneableMesh.clone();
+    //   if (callback) {
+    //     callback();
+    //   }
+    //   return;
+    // }
 
     loader(self.modelName, function(geometry, materials) {
       var faceMaterial = new THREE.MeshFaceMaterial(materials);
       self.mesh = new THREE.Mesh(geometry, faceMaterial);
 
-      _meshCloningCache[self.modelName] = self.mesh;
+      //_meshCloningCache[self.modelName] = self.mesh;
 
       if (callback) {
         callback();
