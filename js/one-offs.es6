@@ -818,7 +818,109 @@ export var oneOffs = [
     portrait: true,
     position: new THREE.Vector3(423, 3, -76)
   }),
-
+  new ImageBeacon({
+    name: 'U Haul It',
+    imageName: 'media/beacon-images/u_haul_it.jpg',
+    position: new THREE.Vector3(-398, 0, -221)
+  }),
+  new ImageBeacon({
+    name: 'Alien Arrival',
+    imageName: 'media/beacon-images/alien_arrival.jpg',
+    portrait: true,
+    position: new THREE.Vector3(53, 4, 106)
+  }),
+  new ImageBeacon({
+    name: 'Moose and Penguins',
+    imageName: 'media/beacon-images/moose_penguin.jpg',
+    portrait: true,
+    position: new THREE.Vector3(144, 0, -493)
+  }),
+  new ImageBeacon({
+    name: 'Moose and Cat',
+    imageName: 'media/beacon-images/moose_cat.jpg',
+    portrait: true,
+    position: new THREE.Vector3(-43, -5, 459)
+  }),
+  new ImageBeacon({
+    name: 'Man in Suit',
+    imageName: 'media/beacon-images/mufon_suit.jpg',
+    portrait: true,
+    position: new THREE.Vector3(245, 0, -130)
+  }),
+  new ImageBeacon({
+    name: 'A Gathering of Men',
+    imageName: 'media/beacon-images/mufon_men.jpg',
+    position: new THREE.Vector3(-304, 3, 240)
+  }),
+  new ImageBeacon({
+    name: 'A Conference of Men',
+    imageName: 'media/beacon-images/mufon_conference.jpg',
+    position: new THREE.Vector3(-27, 2, 160)
+  }),
+  new ImageBeacon({
+    name: 'A Man Speaks',
+    imageName: 'media/beacon-images/mufon_speaker.jpg',
+    portrait: true,
+    position: new THREE.Vector3(-237, 0, 463)
+  }),
+  new ImageBeacon({
+    name: 'MUFON Man',
+    imageName: 'media/beacon-images/mufon_man.jpg',
+    portrait: true,
+    position: new THREE.Vector3(-218, 0, -452)
+  }),
+  new ImageBeacon({
+    name: 'Who Is the Object and Who Is the Occupant?',
+    imageName: 'media/beacon-images/object_occupant.jpg',
+    position: new THREE.Vector3(123, 0, 237)
+  }),
+  new ImageBeacon({
+    name: 'Jane and Her Husband, Clint',
+    imageName: 'media/beacon-images/jane_and_clint_chapin.jpg',
+    position: new THREE.Vector3(163, 0, -476)
+  }),
+  new ImageBeacon({
+    name: 'Faded Figure',
+    imageName: 'media/beacon-images/mufon_figure.jpg',
+    portrait: true,
+    position: new THREE.Vector3(130, 0, 490)
+  }),
+  new ImageBeacon({
+    name: 'Kevin Roark',
+    imageName: 'media/beacon-images/kevin_roark.jpg',
+    position: new THREE.Vector3(403, 0, -72)
+  }),
+  new ImageBeacon({
+    name: 'Saucey Sidewalk',
+    imageName: 'media/beacon-images/sauce_views.jpg',
+    position: new THREE.Vector3(-355, 0, -189)
+  }),
+  new ImageBeacon({
+    name: 'Dog Solves Task',
+    imageName: 'media/beacon-images/dog_task.jpg',
+    position: new THREE.Vector3(-163, 0, 47)
+  }),
+  new ImageBeacon({
+    name: 'Son Manh',
+    imageName: 'media/beacon-images/son_manh.jpg',
+    position: new THREE.Vector3(16, 0, 360)
+  }),
+  new ImageBeacon({
+    name: 'Deputy Sheriffs Car After Skidding to a Halt',
+    imageName: 'media/beacon-images/sheriffs_car.jpg',
+    position: new THREE.Vector3(89, 0, -150)
+  }),
+  new ImageBeacon({
+    name: 'Deputy Sheriff Val Johnson',
+    imageName: 'media/beacon-images/deputy_johnson.jpg',
+    portrait: true,
+    position: new THREE.Vector3(-462, 0, -217)
+  }),
+  new ImageBeacon({
+    name: 'Men on the Beach',
+    imageName: 'media/beacon-images/beach_men.jpg',
+    position: new THREE.Vector3(-307, 0, 28)
+  }),
   // vids
   new VideoBeacon({
     name: 'I Watched the Woods',
