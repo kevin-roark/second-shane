@@ -81,8 +81,6 @@ export class GetTheMinion extends ShaneScene {
 
     this.makeLights();
     //this.makeWhiteGround();
-
-    //this.setupWebcamStream();
   }
 
   doTimedWork() {
@@ -100,22 +98,23 @@ export class GetTheMinion extends ShaneScene {
     this.addMinionsToClawMachine();
     this.showClawMachineInstructions();
 
-    // var beginShowingMyselfOffset = 13 * 1000;
-    // this.addTimeout(() => {
-    //   if (!this.mirrorVideoMesh) {
-    //     return;
-    //   }
-    //
-    //   this.showMyselfInterval = setInterval(() => {
-    //     if (this.mirrorVideoMesh.videoMaterial.opacity < 0.5) {
-    //       this.mirrorVideoMesh.videoMaterial.opacity += 0.002;
-    //     }
-    //     else {
-    //       clearInterval(this.showMyselfInterval);
-    //       this.showMyselfInterval = null;
-    //     }
-    //   }, 200);
-    // }, beginShowingMyselfOffset);
+    var beginShowingMyselfOffset = 15 * 1000;
+    this.addTimeout(() => {
+      this.setupWebcamStream();
+
+      this.mirrorUpdate = () => {
+        if (!this.mirrorVideoMesh) {
+          return;
+        }
+
+        if (this.mirrorVideoMesh.videoMaterial.opacity < 0.45) {
+          this.mirrorVideoMesh.videoMaterial.opacity += 0.0008;
+        }
+        else {
+          this.mirrorUpdate = null;
+        }
+      };
+    }, beginShowingMyselfOffset);
   }
 
   exit() {
@@ -126,27 +125,7 @@ export class GetTheMinion extends ShaneScene {
     this.scene.remove(this.ambientLight);
 
     this.removePart1Portions();
-
-    if (this.localMediaStream) {
-      this.localMediaStream.stop();
-      this.localMediaStream = null;
-    }
-
-    if (this.localMediaVideo) {
-      this.localMediaVideo.src = '';
-      $(this.localMediaVideo).remove();
-      this.localMediaVideo = null;
-    }
-
-    if (this.mirrorVideoMesh) {
-      this.scene.remove(this.mirrorVideoMesh.mesh);
-      this.mirrorVideoMesh = null;
-    }
-
-    if (this.showMyselfInterval) {
-      clearInterval(this.showMyselfInterval);
-      this.showMyselfInterval = null;
-    }
+    this.removePart2Portions();
   }
 
   update() {
@@ -178,6 +157,9 @@ export class GetTheMinion extends ShaneScene {
 
     if (this.mirrorVideoMesh) {
       this.mirrorVideoMesh.update();
+    }
+    if (this.mirrorUpdate) {
+      this.mirrorUpdate();
     }
   }
 
@@ -653,14 +635,17 @@ export class GetTheMinion extends ShaneScene {
           return;
         }
 
+        var videoMeshWidth = ClawMachineWidth * 0.9;
+        var videoMeshHeight = videoMeshWidth * (this.videoHeight / this.videoWidth);
+
         self.mirrorVideoMesh = new VideoMesh({
           video: video,
           sourceVideoWidth: this.videoWidth,
           sourceVideoHeight: this.videoHeight,
-          renderedVideoWidth: 9,
-          renderedVideoHeight: 9 * (this.videoHeight / this.videoWidth)
+          renderedVideoWidth: videoMeshWidth,
+          renderedVideoHeight: videoMeshHeight
         });
-        self.mirrorVideoMesh.moveTo(frontPanePosition.x, frontPanePosition.y, frontPanePosition.z);
+        self.mirrorVideoMesh.moveTo(frontPanePosition.x, frontPanePosition.y - videoMeshHeight/2, frontPanePosition.z + 0.1);
         self.mirrorVideoMesh.addTo(self.scene);
         self.mirrorVideoMesh.mesh.castShadow = true;
         self.mirrorVideoMesh.videoMaterial.opacity = 0.0;
@@ -694,6 +679,22 @@ export class GetTheMinion extends ShaneScene {
     if (this.$clawMachineInstructions) {
       this.$clawMachineInstructions.remove()
       this.$clawMachineInstructions = null;
+    }
+
+    if (this.localMediaStream) {
+      this.localMediaStream.stop();
+      this.localMediaStream = null;
+    }
+
+    if (this.localMediaVideo) {
+      this.localMediaVideo.src = '';
+      $(this.localMediaVideo).remove();
+      this.localMediaVideo = null;
+    }
+
+    if (this.mirrorVideoMesh) {
+      this.scene.remove(this.mirrorVideoMesh.mesh);
+      this.mirrorVideoMesh = null;
     }
   }
 
