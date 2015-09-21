@@ -774,7 +774,7 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
         this.addMinionsToClawMachine();
         this.showClawMachineInstructions();
 
-        var beginShowingMyselfOffset = 15 * 1000;
+        var beginShowingMyselfOffset = 5 * 1000;
         this.addTimeout(function () {
           _this.setupWebcamStream();
 
@@ -784,12 +784,17 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
             }
 
             if (_this.mirrorVideoMesh.videoMaterial.opacity < 0.45) {
-              _this.mirrorVideoMesh.videoMaterial.opacity += 0.0008;
+              _this.mirrorVideoMesh.videoMaterial.opacity += 0.001;
             } else {
               _this.mirrorUpdate = null;
             }
           };
         }, beginShowingMyselfOffset);
+
+        var makeTheMinionsMeOffset = 15 * 1000;
+        this.addTimeout(function () {
+          _this.makeTheMinionsMe();
+        }, makeTheMinionsMeOffset);
       }
     },
     exit: {
@@ -837,6 +842,9 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
         }
         if (this.mirrorUpdate) {
           this.mirrorUpdate();
+        }
+        if (this.meMinionUpdate) {
+          this.meMinionUpdate();
         }
       }
     },
@@ -1252,7 +1260,7 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
             var z = frontPanePosition.z + Math.random() * -ClawMachineDepth;
             var position = new THREE.Vector3(x, y, z);
             _this.makeMinion(position);
-          }, i * 30);
+          }, i * 250);
         }
       }
     },
@@ -1262,35 +1270,38 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
           return;
         }
 
+        var minions = this.minions;
+        for (var i = 0; i < minions.length; i++) {
+          var minion = minions[i];
+          this.shakeMinion(minion.mesh, strength);
+        }
+      }
+    },
+    shakeMinion: {
+      value: function shakeMinion(mesh, strength) {
         if (!strength) {
           strength = 0.04;
         }
 
-        var minions = this.minions;
-        for (var i = 0; i < minions.length; i++) {
-          var minion = minions[i];
-          var dx = (Math.random() - 0.5) * strength;
-          var dy = (Math.random() - 0.5) * strength;
-          var dz = (Math.random() - 0.5) * strength;
+        var dx = (Math.random() - 0.5) * strength;
+        var dy = (Math.random() - 0.5) * strength;
+        var dz = (Math.random() - 0.5) * strength;
 
-          var pos = minion.mesh.position;
+        var pos = mesh.position;
 
-          var newX = pos.x + dx;
-          if (newX > -HalfClawMachineWidth * 0.9 && newX < HalfClawMachineWidth * 0.9) {
-            pos.x = newX;
-          }
+        var newX = pos.x + dx;
+        if (newX > -HalfClawMachineWidth * 0.9 && newX < HalfClawMachineWidth * 0.9) {
+          pos.x = newX;
+        }
 
-          var newY = pos.y + dy;
-          if (newY > MinimumMinionY && newY < MinimumMinionY + ClawMachineHeight * 0.4) {
-            pos.y = newY;
-          }
+        var newY = pos.y + dy;
+        if (newY > MinimumMinionY && newY < MinimumMinionY + ClawMachineHeight * 0.4) {
+          pos.y = newY;
+        }
 
-          var newZ = pos.z + dz;
-          if (newZ > frontPanePosition.z && newX < frontPanePosition.z - ClawMachineDepth) {
-            pos.z = newZ;
-          }
-
-          minion.move(dx, dy, dz);
+        var newZ = pos.z + dz;
+        if (newZ > frontPanePosition.z && newX < frontPanePosition.z - ClawMachineDepth) {
+          pos.z = newZ;
         }
       }
     },
@@ -1307,6 +1318,49 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
         this.addMesh(minion, function () {
           minion.mesh.castShadow = true;
         });
+      }
+    },
+    makeTheMinionsMe: {
+      value: function makeTheMinionsMe() {
+        if (!this.mirrorVideoMesh) {
+          return;
+        }
+        var minions = this.minions;
+        if (!minions) {
+          return;
+        }
+
+        var meTexture = new THREE.Texture(this.mirrorVideoMesh.videoImage);
+        meTexture.minFilter = meTexture.magFilter = THREE.LinearFilter;
+        meTexture.format = THREE.RGBFormat;
+        meTexture.generateMipmaps = false;
+
+        var meMaterial = new THREE.MeshBasicMaterial({
+          map: meTexture,
+          color: 16777215
+        });
+        var meGeometry = new THREE.SphereGeometry(0.25);
+        var meMinionMesh = new THREE.Mesh(meGeometry, meMaterial);
+        meMinionMesh.position.set(0, 1, frontPanePosition.z - ClawMachineDepth / 3);
+        meMinionMesh.rotation.y = -Math.PI / 3;
+        meTexture.needsUpdate = true;
+        this.scene.add(meMinionMesh);
+        this.meMinionMesh = meMinionMesh;
+
+        var updateCount = 0;
+        var scale = 1;
+        this.meMinionUpdate = function () {
+          if (updateCount++ % 10 === 0) {
+            meTexture.needsUpdate = true;
+          }
+
+          meMinionMesh.rotation.y -= 0.05;
+
+          if (scale < 8.5) {
+            scale *= 1.0025;
+            meMinionMesh.scale.set(scale, scale, scale);
+          }
+        };
       }
     },
     setupWebcamStream: {
@@ -1364,6 +1418,9 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
       value: function removePart2Portions() {
         this.refractionCube = null;
         this.reflectionCube = null;
+        this.mirrorUpdate = null;
+        this.clawDownUpdate = null;
+        this.meMinionUpdate = null;
 
         if (this.skyboxMesh) {
           this.scene.remove(this.skyboxMesh);
@@ -1396,6 +1453,11 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
         if (this.mirrorVideoMesh) {
           this.scene.remove(this.mirrorVideoMesh.mesh);
           this.mirrorVideoMesh = null;
+        }
+
+        if (this.meMinionMesh) {
+          this.scene.remove(this.meMinionMesh);
+          this.meMinionMesh = null;
         }
       }
     }
