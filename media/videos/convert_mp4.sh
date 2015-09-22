@@ -22,3 +22,9 @@
 ~/code/art/shane/mistershane/webm.sh media/videos/vape_shop.mp4 media/videos/vape_shop.webm
 ~/code/art/shane/mistershane/webm.sh media/videos/joel_osteen.mp4 media/videos/joel_osteen.webm
 ~/code/art/shane/mistershane/webm.sh media/videos/love.mp4 media/videos/love.webm
+~/code/art/shane/mistershane/webm.sh media/videos/bubble_eagles.mp4 media/videos/bubble_eagles.webm
+~/code/art/shane/mistershane/webm.sh media/videos/cell_in_the_park.mp4 media/videos/cell_in_the_park.webm
+~/code/art/shane/mistershane/webm.sh media/videos/craps_on_a_train.mp4 media/videos/craps_on_a_train.webm
+~/code/art/shane/mistershane/webm.sh media/videos/fifth_avenue.mp4 media/videos/fifth_avenue.webm
+~/code/art/shane/mistershane/webm.sh media/videos/keg_tapping.mp4 media/videos/keg_tapping.webm
+~/code/art/shane/mistershane/webm.sh media/videos/loves_no_fun.mp4 media/videos/loves_no_fun.webm

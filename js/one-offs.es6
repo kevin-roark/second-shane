@@ -572,6 +572,11 @@ export var oneOffs = [
     text: 'Excavate Everything<br>Leave Nothing Unturned<br>Find What\'s your\'s<br>Or They Will<br>Unearth The Now<br>Dig Into Me<br>Dig Into Us<br>Get What\'s Your\'s',
     position: new THREE.Vector3(100, 2, -333)
   }),
+  new PoeticBeacon({
+    name: "Everything Inside Me",
+    text: "Everyting Inside Me<br>Divides Me From You",
+    position: new THREE.Vector3(-43, 0, 477)
+  }),
 
   // life hacks
   new PoeticBeacon({
@@ -921,6 +926,52 @@ export var oneOffs = [
     imageName: 'media/beacon-images/beach_men.jpg',
     position: new THREE.Vector3(-307, 0, 28)
   }),
+  new ImageBeacon({
+    name: 'A Minion in My Room',
+    imageName: 'media/beacon-images/bedroom_minion_shrine.jpg',
+    position: new THREE.Vector3(220, 0, -342)
+  }),
+  new ImageBeacon({
+    name: 'Brooklyn Mike',
+    imageName: 'media/beacon-images/brooklyn_mike.jpg',
+    position: new THREE.Vector3(364, 0, -171)
+  }),
+  new ImageBeacon({
+    name: 'Me and the Minion',
+    imageName: 'media/beacon-images/minion_reflection.jpg',
+    position: new THREE.Vector3(-289, 0, 418)
+  }),
+  new ImageBeacon({
+    name: 'Something Sinister, in the Park',
+    imageName: 'media/beacon-images/park_observers.jpg',
+    position: new THREE.Vector3(-42, 0, 346)
+  }),
+  new ImageBeacon({
+    name: 'Step 1: Learning Truth',
+    imageName: 'media/beacon-images/psychic_abilities.jpg',
+    position: new THREE.Vector3(-185, 0, -273)
+  }),
+  new ImageBeacon({
+    name: 'Craps On A Train',
+    imageName: 'media/beacon-images/subway_craps.jpg',
+    position: new THREE.Vector3(-119, 0, -157)
+  }),
+  new ImageBeacon({
+    name: 'The Trump Tower on Fifth Avenue',
+    imageName: 'media/beacon-images/trump_tower.jpg',
+    position: new THREE.Vector3(76, 0, -429)
+  }),
+  new ImageBeacon({
+    name: 'Vegan Marinara, For Lunch',
+    imageName: 'media/beacon-images/vegan_marinara.jpg',
+    position: new THREE.Vector3(277, 0, 201)
+  }),
+  new ImageBeacon({
+    name: 'A Dog Looking Through the Window',
+    imageName: 'media/beacon-images/window_dog.jpg',
+    position: new THREE.Vector3(279, 0, -202)
+  }),
+
   // vids
   new VideoBeacon({
     name: 'I Watched the Woods',
@@ -996,6 +1047,36 @@ export var oneOffs = [
     name: 'A New One',
     videoName: 'media/videos/vape_shop',
     position: new THREE.Vector3(0, -2, 300)
+  }),
+  new VideoBeacon({
+    name: 'To Touch An Eagle',
+    videoName: 'media/videos/bubble_eagles',
+    position: new THREE.Vector3(-172, 0, 372)
+  }),
+  new VideoBeacon({
+    name: 'An Impromptu Meeting',
+    videoName: 'media/videos/cell_in_the_park',
+    position: new THREE.Vector3(237, 0, -381)
+  }),
+  new VideoBeacon({
+    name: 'Transit Entertainment — Craps',
+    videoName: 'media/videos/craps_on_a_train',
+    position: new THREE.Vector3(420, 0, -284)
+  }),
+  new VideoBeacon({
+    name: 'Larger Than Life',
+    videoName: 'media/videos/fifth_avenue',
+    position: new THREE.Vector3(278, 0, -297)
+  }),
+  new VideoBeacon({
+    name: 'Draining The Keg',
+    videoName: 'media/videos/keg_tapping',
+    position: new THREE.Vector3(-454, 0, -414)
+  }),
+  new VideoBeacon({
+    name: "Love's No Fun",
+    videoName: 'media/videos/loves_no_fun',
+    position: new THREE.Vector3(109, 0, 365)
   }),
 
   // Google Photos Content
