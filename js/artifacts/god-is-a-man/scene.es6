@@ -111,7 +111,7 @@ export class GodIsAMan extends ShaneScene {
     this.vegasVideo.style.opacity = 0.0;
     $(this.vegasVideo).animate({opacity: 0.8}, 10000);
 
-    setTimeout(() => {
+    this.addTimeout(() => {
       $(this.vegasVideo).animate({opacity: 0.0}, 10000, () => {
         this.vegasVideo.src = '';
         $(this.vegasVideo).remove();
@@ -130,7 +130,7 @@ export class GodIsAMan extends ShaneScene {
     this.papaVideo.style.opacity = 0.0;
     $(this.papaVideo).animate({opacity: 0.9}, 10000);
 
-    setTimeout(() => {
+    this.addTimeout(() => {
       $(this.papaVideo).animate({opacity: 0.0}, 10000, () => {
         this.papaVideo.src = '';
         $(this.papaVideo).remove();
@@ -149,7 +149,7 @@ export class GodIsAMan extends ShaneScene {
     this.cowboyVideo.style.opacity = 0.0;
     $(this.cowboyVideo).animate({opacity: 0.9}, 10000);
 
-    setTimeout(() => {
+    this.addTimeout(() => {
       $(this.cowboyVideo).animate({opacity: 0.0}, 10000, () => {
         this.cowboyVideo.src = '';
         $(this.cowboyVideo).remove();
@@ -168,7 +168,7 @@ export class GodIsAMan extends ShaneScene {
     this.game2Video.style.opacity = 0.0;
     $(this.game2Video).animate({opacity: 0.67}, 10000);
 
-    setTimeout(() => {
+    this.addTimeout(() => {
       $(this.game2Video).animate({opacity: 0.0}, 10000, () => {
         this.game2Video.src = '';
         $(this.game2Video).remove();
@@ -187,7 +187,7 @@ export class GodIsAMan extends ShaneScene {
     this.game1Video.style.opacity = 0.0;
     $(this.game1Video).animate({opacity: 0.67}, 10000);
 
-    setTimeout(() => {
+    this.addTimeout(() => {
       $(this.game1Video).animate({opacity: 0.0}, 10000, () => {
         this.game1Video.src = '';
         $(this.game1Video).remove();
@@ -389,7 +389,7 @@ export class GodIsAMan extends ShaneScene {
     $(vision).animate({opacity: 0.8, left: curOffset.left, top: curOffset.top}, duration);
 
     let length = kt.randInt(36000, 48000);
-    setTimeout(() => {
+    this.addTimeout(() => {
       this.destroyVision(vision);
     }, length);
   }
@@ -427,7 +427,7 @@ export class GodIsAMan extends ShaneScene {
       x: window.innerWidth / 2 - 25,
       time: 100
     });
-    setTimeout(this.bounceBall.bind(this), 500);
+    this.addTimeout(this.bounceBall.bind(this), 500);
   }
 
   upBallWidth(amt) {
@@ -439,7 +439,7 @@ export class GodIsAMan extends ShaneScene {
     this.basketball.setWidth(this.ballWidth);
 
     if (this.ballWidth < window.innerWidth * 0.6) {
-      setTimeout(this.upBallWidth.bind(this), 20);
+      this.addTimeout(this.upBallWidth.bind(this), 20);
     }
   }
 

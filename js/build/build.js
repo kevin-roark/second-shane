@@ -1928,7 +1928,7 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
         this.vegasVideo.style.opacity = 0;
         $(this.vegasVideo).animate({ opacity: 0.8 }, 10000);
 
-        setTimeout(function () {
+        this.addTimeout(function () {
           $(_this.vegasVideo).animate({ opacity: 0 }, 10000, function () {
             _this.vegasVideo.src = "";
             $(_this.vegasVideo).remove();
@@ -1950,7 +1950,7 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
         this.papaVideo.style.opacity = 0;
         $(this.papaVideo).animate({ opacity: 0.9 }, 10000);
 
-        setTimeout(function () {
+        this.addTimeout(function () {
           $(_this.papaVideo).animate({ opacity: 0 }, 10000, function () {
             _this.papaVideo.src = "";
             $(_this.papaVideo).remove();
@@ -1972,7 +1972,7 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
         this.cowboyVideo.style.opacity = 0;
         $(this.cowboyVideo).animate({ opacity: 0.9 }, 10000);
 
-        setTimeout(function () {
+        this.addTimeout(function () {
           $(_this.cowboyVideo).animate({ opacity: 0 }, 10000, function () {
             _this.cowboyVideo.src = "";
             $(_this.cowboyVideo).remove();
@@ -1994,7 +1994,7 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
         this.game2Video.style.opacity = 0;
         $(this.game2Video).animate({ opacity: 0.67 }, 10000);
 
-        setTimeout(function () {
+        this.addTimeout(function () {
           $(_this.game2Video).animate({ opacity: 0 }, 10000, function () {
             _this.game2Video.src = "";
             $(_this.game2Video).remove();
@@ -2016,7 +2016,7 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
         this.game1Video.style.opacity = 0;
         $(this.game1Video).animate({ opacity: 0.67 }, 10000);
 
-        setTimeout(function () {
+        this.addTimeout(function () {
           $(_this.game1Video).animate({ opacity: 0 }, 10000, function () {
             _this.game1Video.src = "";
             $(_this.game1Video).remove();
@@ -2236,7 +2236,7 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
         $(vision).animate({ opacity: 0.8, left: curOffset.left, top: curOffset.top }, duration);
 
         var length = kt.randInt(36000, 48000);
-        setTimeout(function () {
+        this.addTimeout(function () {
           _this.destroyVision(vision);
         }, length);
       }
@@ -2277,7 +2277,7 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
           x: window.innerWidth / 2 - 25,
           time: 100
         });
-        setTimeout(this.bounceBall.bind(this), 500);
+        this.addTimeout(this.bounceBall.bind(this), 500);
       }
     },
     upBallWidth: {
@@ -2290,7 +2290,7 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
         this.basketball.setWidth(this.ballWidth);
 
         if (this.ballWidth < window.innerWidth * 0.6) {
-          setTimeout(this.upBallWidth.bind(this), 20);
+          this.addTimeout(this.upBallWidth.bind(this), 20);
         }
       }
     },
@@ -6346,6 +6346,7 @@ var $introBox = $("#intro-box");
 var $chatterBoxContainer = $("#chatter-box");
 var $hud = $("#hud");
 var $pointerLockTip = $("#pointer-lock-tip");
+var $siteMap = $("#site-map");
 
 var IS_LIVE = false;
 var SCRATCH_PAD = true;
@@ -6376,6 +6377,16 @@ var SecondShane = (function (_ThreeBoiler) {
       _this.reactToPointerLock(hasPointerLock);
     };
 
+    $("#hot-links a").click(function (ev) {
+      var href = event.target.href;
+      var query = queryString.parse(href.substring(href.indexOf("?") + 1));
+      if (query && query.shaneScene) {
+        ev.preventDefault();
+        $siteMap.hide();
+        _this.transitionToSceneWithSlug(query.shaneScene);
+      }
+    });
+
     $(document).click(function () {
       if (!_this.hasLoaded) {
         return;
@@ -6388,6 +6399,8 @@ var SecondShane = (function (_ThreeBoiler) {
         _this.exitLoadingScreen();
         _this.hasQuitLoadingScreen = true;
       }
+
+      $siteMap.hide();
 
       if (_this.controls.requestPointerlock) {
         _this.controls.requestPointerlock();
@@ -6641,10 +6654,12 @@ var SecondShane = (function (_ThreeBoiler) {
       /// Interaction
 
       value: function keypress(keycode) {
-        switch (keycode) {
-          case 32:
-            this.spacebarPressed();
-            break;
+        if (keycode === 32) {
+          // space
+          this.spacebarPressed();
+        } else if (keycode === 112) {
+          // p
+          this.toggleSiteMap();
         }
       }
     },
@@ -6659,6 +6674,11 @@ var SecondShane = (function (_ThreeBoiler) {
         } else {
           this.transitionFromScene(this.activeScene, true);
         }
+      }
+    },
+    toggleSiteMap: {
+      value: function toggleSiteMap() {
+        $siteMap.toggle();
       }
     },
     talismans: {
@@ -6768,6 +6788,7 @@ var SecondShane = (function (_ThreeBoiler) {
         }
         this.controls.exitPointerlock();
         this.sharedCameraPosition.copy(this.controls.getObject().position);
+        $siteMap.hide();
 
         fadeSceneOverlay(SceneFadeDuration, function () {
           _this.removeSharedObjects();

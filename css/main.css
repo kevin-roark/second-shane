@@ -53,6 +53,47 @@ body {
   color: rgb(15, 143, 249);
 }
 
+/** SITE MAP */
+
+#site-map {
+  display: none;
+  position: fixed; top: 40px; left: 50%; margin-left: -250px; width: 500px;
+  padding: 20px;
+  box-shadow: 0 19px 38px rgba(255, 255, 255, 0.30), 0 15px 12px rgba(255, 255, 255, 0.23);
+  background-color: rgb(250, 248, 235);
+  color: rgba(0, 0, 0, 0.8);
+}
+
+#second-shane-info {
+  margin-bottom: 20px;
+}
+  #second-shane-info a {
+    text-decoration: none;
+    color: rgb(22, 228, 160);
+  }
+    #second-shane-info a:hover {
+      text-decoration: underline;
+      font-style: italic;
+    }
+
+#hot-links {
+  font-family: Helvetica, sans-serif;
+  font-size: 20px;
+  line-height: 30px;
+  letter-spacing: 1px;
+}
+  #hot-links-header {
+    margin-bottom: 10px;
+  }
+  #hot-links a {
+    text-decoration: none;
+    color: rgb(159, 83, 255);
+  }
+    #hot-links a:hover {
+      text-decoration: underline;
+      font-style: italic;
+    }
+
 /** HUD */
 
 #hud {

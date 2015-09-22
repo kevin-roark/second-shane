@@ -15,15 +15,16 @@ import {createShaneScenes} from './scenes.es6';
 import {currentTheme} from './theme.es6';
 import {chatter} from './util/chatterbox.es6';
 
-let $loadingOverlay = $('#loading-overlay');
-let $loadingText = $('#loading-text');
-let $clickToStartText = $('#click-to-start-text');
-let $nearbyArtifactContainer = $('#nearby-artifact-container');
-let $nearbyArtifactName = $('#nearby-artifact-name');
-let $introBox = $('#intro-box');
-let $chatterBoxContainer = $('#chatter-box');
+var $loadingOverlay = $('#loading-overlay');
+var $loadingText = $('#loading-text');
+var $clickToStartText = $('#click-to-start-text');
+var $nearbyArtifactContainer = $('#nearby-artifact-container');
+var $nearbyArtifactName = $('#nearby-artifact-name');
+var $introBox = $('#intro-box');
+var $chatterBoxContainer = $('#chatter-box');
 var $hud = $('#hud');
 var $pointerLockTip = $('#pointer-lock-tip');
+var $siteMap = $('#site-map');
 
 let IS_LIVE = false;
 let SCRATCH_PAD = true;
@@ -50,6 +51,16 @@ class SecondShane extends ThreeBoiler {
       this.reactToPointerLock(hasPointerLock);
     };
 
+    $('#hot-links a').click((ev) => {
+      var href = event.target.href;
+      var query = queryString.parse(href.substring(href.indexOf('?') + 1));
+      if (query && query.shaneScene) {
+        ev.preventDefault();
+        $siteMap.hide();
+        this.transitionToSceneWithSlug(query.shaneScene);
+      }
+    });
+
     $(document).click(() => {
       if (!this.hasLoaded) {
         return;
@@ -62,6 +73,8 @@ class SecondShane extends ThreeBoiler {
         this.exitLoadingScreen();
         this.hasQuitLoadingScreen = true;
       }
+
+      $siteMap.hide();
 
       if (this.controls.requestPointerlock) {
         this.controls.requestPointerlock();
@@ -301,10 +314,11 @@ class SecondShane extends ThreeBoiler {
   /// Interaction
 
   keypress(keycode) {
-    switch (keycode) {
-      case 32:
-        this.spacebarPressed();
-        break;
+    if (keycode === 32) { // space
+      this.spacebarPressed();
+    }
+    else if (keycode === 112) { // p
+      this.toggleSiteMap();
     }
   }
 
@@ -318,6 +332,10 @@ class SecondShane extends ThreeBoiler {
     } else {
       this.transitionFromScene(this.activeScene, true);
     }
+  }
+
+  toggleSiteMap() {
+    $siteMap.toggle();
   }
 
   /// Talismans
@@ -414,6 +432,7 @@ class SecondShane extends ThreeBoiler {
     }
     this.controls.exitPointerlock();
     this.sharedCameraPosition.copy(this.controls.getObject().position);
+    $siteMap.hide();
 
     fadeSceneOverlay(SceneFadeDuration, () => {
       this.removeSharedObjects();
