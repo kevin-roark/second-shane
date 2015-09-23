@@ -22,6 +22,7 @@ export class iFeltTheFoot extends ShaneScene {
     var host = (this.isLive? urls.iFeltTheFoot.live : urls.iFeltTheFoot.web);
     this.videoBase = host + 'video/';
     this.imageBase = host + 'images/';
+    this.audioBase = host + 'audio/';
   }
 
   createTalisman() {
@@ -45,6 +46,14 @@ export class iFeltTheFoot extends ShaneScene {
 
     this.renderer.setClearColor(0x000000, 0);
 
+    if (!this.isLive) {
+      this.numMediaToLoad += 1;
+      this.audio = this.dahmer.makeAudio(this.audioBase + 'i_felt_the_foot');
+      this.audio.addEventListener('canplaythrough', () => {
+        this.didLoadMedia();
+      });
+    }
+
     this.marble = this.dahmer.makeImage(this.imageBase + 'marble.jpg', true, -10);
 
     this.makeSpotlight();
@@ -57,36 +66,40 @@ export class iFeltTheFoot extends ShaneScene {
   doTimedWork() {
     super.doTimedWork();
 
+    if (!this.isLive) {
+      this.audio.play();
+    }
+
     this.marbledDigitalFoot.remove();
     this.doMarbledDigitalFoot(4888);
 
     var endOfItAll = 120 * 1000;
 
     this.addTimeout(() => {
-      this.doFootMassage(12666);
-    }, 6666);
+      this.doFootMassage(10666);
+    }, 5555);
     this.addTimeout(() => {
       this.doRotatingFoot(9666);
-    }, 19666);
+    }, 17000);
     this.addTimeout(() => {
       this.doFootSlap(13666);
-    }, 30666);
+    }, 27333);
     this.addTimeout(() => {
-      this.doFootModel(10666);
-    }, 45666);
+      this.doFootModel(9666);
+    }, 42666);
     this.addTimeout(() => {
-      this.doCadFootImage(9666);
-    }, 57666);
+      this.doCadFootImage(7666);
+    }, 53666);
 
-    let seanOffset = 69666;
+    let seanOffset = 60666;
     this.addTimeout(() => {
       this.doSean(endOfItAll - seanOffset);
     }, seanOffset);
-    let kevinOffset = seanOffset + 6000;
+    let kevinOffset = seanOffset + 5000;
     this.addTimeout(() => {
       this.doKevin(endOfItAll - kevinOffset);
     }, kevinOffset);
-    let restOfThemOffset = kevinOffset + 5000;
+    let restOfThemOffset = kevinOffset + 4500;
     this.addTimeout(() => {
       let dur = endOfItAll - restOfThemOffset;
       this.doFootMassage(dur);
@@ -107,6 +120,12 @@ export class iFeltTheFoot extends ShaneScene {
     super.exit();
 
     this.renderer.setClearColor(0xffffff, 1);
+
+    if (!this.isLive) {
+      this.audio.src = '';
+      $(this.audio).remove();
+      this.audio = null;
+    }
 
     this.marble.remove();
 
@@ -257,7 +276,7 @@ export class iFeltTheFoot extends ShaneScene {
 
     this.sean.style.height = '40%';
     this.sean.style.left = '25%';
-    this.sean.style.bottom = '120px';
+    this.sean.style.bottom = '140px';
 
     this.sean.play();
 
@@ -311,7 +330,7 @@ export class iFeltTheFoot extends ShaneScene {
 
     this.footModel = new ShaneMesh({
       modelName: '/js/models/foot.json',
-      position: new THREE.Vector3(-15, -9, -20)
+      position: new THREE.Vector3(-12, -5, -20)
     });
 
     this.footModel.addTo(this.scene, () => {
@@ -356,7 +375,7 @@ export class iFeltTheFoot extends ShaneScene {
     this.cadFootImage = this.makeBodyImage('cad_foot.jpg');
     this.cadFootImage.attr('id', 'cad-foot');
 
-    this.cadFootImage.css('bottom', '5px');
+    this.cadFootImage.css('bottom', '25px');
     this.cadFootImage.css('right', '25%');
     this.cadFootImage.css('width', '220px');
 

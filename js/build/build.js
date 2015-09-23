@@ -2357,6 +2357,7 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
     var host = this.isLive ? urls.iFeltTheFoot.live : urls.iFeltTheFoot.web;
     this.videoBase = host + "video/";
     this.imageBase = host + "images/";
+    this.audioBase = host + "audio/";
   }
 
   _inherits(iFeltTheFoot, _ShaneScene);
@@ -2382,9 +2383,19 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
       /// Shane System
 
       value: function enter() {
+        var _this = this;
+
         _get(Object.getPrototypeOf(iFeltTheFoot.prototype), "enter", this).call(this);
 
         this.renderer.setClearColor(0, 0);
+
+        if (!this.isLive) {
+          this.numMediaToLoad += 1;
+          this.audio = this.dahmer.makeAudio(this.audioBase + "i_felt_the_foot");
+          this.audio.addEventListener("canplaythrough", function () {
+            _this.didLoadMedia();
+          });
+        }
 
         this.marble = this.dahmer.makeImage(this.imageBase + "marble.jpg", true, -10);
 
@@ -2401,36 +2412,40 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
 
         _get(Object.getPrototypeOf(iFeltTheFoot.prototype), "doTimedWork", this).call(this);
 
+        if (!this.isLive) {
+          this.audio.play();
+        }
+
         this.marbledDigitalFoot.remove();
         this.doMarbledDigitalFoot(4888);
 
         var endOfItAll = 120 * 1000;
 
         this.addTimeout(function () {
-          _this.doFootMassage(12666);
-        }, 6666);
+          _this.doFootMassage(10666);
+        }, 5555);
         this.addTimeout(function () {
           _this.doRotatingFoot(9666);
-        }, 19666);
+        }, 17000);
         this.addTimeout(function () {
           _this.doFootSlap(13666);
-        }, 30666);
+        }, 27333);
         this.addTimeout(function () {
-          _this.doFootModel(10666);
-        }, 45666);
+          _this.doFootModel(9666);
+        }, 42666);
         this.addTimeout(function () {
-          _this.doCadFootImage(9666);
-        }, 57666);
+          _this.doCadFootImage(7666);
+        }, 53666);
 
-        var seanOffset = 69666;
+        var seanOffset = 60666;
         this.addTimeout(function () {
           _this.doSean(endOfItAll - seanOffset);
         }, seanOffset);
-        var kevinOffset = seanOffset + 6000;
+        var kevinOffset = seanOffset + 5000;
         this.addTimeout(function () {
           _this.doKevin(endOfItAll - kevinOffset);
         }, kevinOffset);
-        var restOfThemOffset = kevinOffset + 5000;
+        var restOfThemOffset = kevinOffset + 4500;
         this.addTimeout(function () {
           var dur = endOfItAll - restOfThemOffset;
           _this.doFootMassage(dur);
@@ -2452,6 +2467,12 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
         _get(Object.getPrototypeOf(iFeltTheFoot.prototype), "exit", this).call(this);
 
         this.renderer.setClearColor(16777215, 1);
+
+        if (!this.isLive) {
+          this.audio.src = "";
+          $(this.audio).remove();
+          this.audio = null;
+        }
 
         this.marble.remove();
 
@@ -2623,7 +2644,7 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
 
         this.sean.style.height = "40%";
         this.sean.style.left = "25%";
-        this.sean.style.bottom = "120px";
+        this.sean.style.bottom = "140px";
 
         this.sean.play();
 
@@ -2687,7 +2708,7 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
 
         this.footModel = new ShaneMesh({
           modelName: "/js/models/foot.json",
-          position: new THREE.Vector3(-15, -9, -20)
+          position: new THREE.Vector3(-12, -5, -20)
         });
 
         this.footModel.addTo(this.scene, function () {
@@ -2737,7 +2758,7 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
         this.cadFootImage = this.makeBodyImage("cad_foot.jpg");
         this.cadFootImage.attr("id", "cad-foot");
 
-        this.cadFootImage.css("bottom", "5px");
+        this.cadFootImage.css("bottom", "25px");
         this.cadFootImage.css("right", "25%");
         this.cadFootImage.css("width", "220px");
 
