@@ -58,11 +58,12 @@ class SecondShane extends ThreeBoiler {
       if (query && query.shaneScene) {
         ev.preventDefault();
         $siteMap.hide();
+        this.isShowingSiteMap = false;
         this.transitionToSceneWithSlug(query.shaneScene);
       }
     });
 
-    $(document).click(() => {
+    $('canvas, #hud, #loading-overlay').click(() => {
       if (!this.hasLoaded) {
         return;
       }
@@ -70,12 +71,14 @@ class SecondShane extends ThreeBoiler {
         return;
       }
 
+      if (this.isShowingSiteMap) {
+        this.toggleSiteMap();
+      }
+
       if (!this.hasQuitLoadingScreen) {
         this.exitLoadingScreen();
         this.hasQuitLoadingScreen = true;
       }
-
-      $siteMap.hide();
 
       if (this.controls.requestPointerlock) {
         this.controls.requestPointerlock();
@@ -96,6 +99,7 @@ class SecondShane extends ThreeBoiler {
 
     this.activeScene = null;
     this.nearestTalismanScene = null;
+    this.isShowingSiteMap = false;
 
     if (SCRATCH_PAD) {
       this.oneOffs = [];
@@ -172,6 +176,10 @@ class SecondShane extends ThreeBoiler {
         }
       }
     }
+  }
+
+  resize() {
+    super.resize();
   }
 
   /// Loading
@@ -336,6 +344,7 @@ class SecondShane extends ThreeBoiler {
   }
 
   toggleSiteMap() {
+    this.isShowingSiteMap = !this.isShowingSiteMap;
     $siteMap.toggle();
   }
 
@@ -434,6 +443,7 @@ class SecondShane extends ThreeBoiler {
     this.controls.exitPointerlock();
     this.sharedCameraPosition.copy(this.controls.getObject().position);
     $siteMap.hide();
+    this.isShowingSiteMap = false;
 
     fadeSceneOverlay(SceneFadeDuration, () => {
       this.removeSharedObjects();

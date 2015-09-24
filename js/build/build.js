@@ -6572,11 +6572,12 @@ var SecondShane = (function (_ThreeBoiler) {
       if (query && query.shaneScene) {
         ev.preventDefault();
         $siteMap.hide();
+        _this.isShowingSiteMap = false;
         _this.transitionToSceneWithSlug(query.shaneScene);
       }
     });
 
-    $(document).click(function () {
+    $("canvas, #hud, #loading-overlay").click(function () {
       if (!_this.hasLoaded) {
         return;
       }
@@ -6584,12 +6585,14 @@ var SecondShane = (function (_ThreeBoiler) {
         return;
       }
 
+      if (_this.isShowingSiteMap) {
+        _this.toggleSiteMap();
+      }
+
       if (!_this.hasQuitLoadingScreen) {
         _this.exitLoadingScreen();
         _this.hasQuitLoadingScreen = true;
       }
-
-      $siteMap.hide();
 
       if (_this.controls.requestPointerlock) {
         _this.controls.requestPointerlock();
@@ -6610,6 +6613,7 @@ var SecondShane = (function (_ThreeBoiler) {
 
     this.activeScene = null;
     this.nearestTalismanScene = null;
+    this.isShowingSiteMap = false;
 
     if (SCRATCH_PAD) {
       this.oneOffs = [];
@@ -6689,6 +6693,11 @@ var SecondShane = (function (_ThreeBoiler) {
             }
           }
         }
+      }
+    },
+    resize: {
+      value: function resize() {
+        _get(Object.getPrototypeOf(SecondShane.prototype), "resize", this).call(this);
       }
     },
     performDidLoadTransition: {
@@ -6867,6 +6876,7 @@ var SecondShane = (function (_ThreeBoiler) {
     },
     toggleSiteMap: {
       value: function toggleSiteMap() {
+        this.isShowingSiteMap = !this.isShowingSiteMap;
         $siteMap.toggle();
       }
     },
@@ -6978,6 +6988,7 @@ var SecondShane = (function (_ThreeBoiler) {
         this.controls.exitPointerlock();
         this.sharedCameraPosition.copy(this.controls.getObject().position);
         $siteMap.hide();
+        this.isShowingSiteMap = false;
 
         fadeSceneOverlay(SceneFadeDuration, function () {
           _this.removeSharedObjects();
