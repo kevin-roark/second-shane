@@ -3283,6 +3283,9 @@ var MyJobMyHomeMyWife = exports.MyJobMyHomeMyWife = (function (_ShaneScene) {
     this.name = "My Job My Home My Wife";
     this.slug = "my-job-my-home-my-wife";
     this.symbolName = "/media/symbols/home.png";
+
+    var host = this.isLive ? urls.myJobMyHomeMyWife.live : urls.myJobMyHomeMyWife.web;
+    this.audioBase = host + "audio/";
   }
 
   _inherits(MyJobMyHomeMyWife, _ShaneScene);
@@ -3302,20 +3305,48 @@ var MyJobMyHomeMyWife = exports.MyJobMyHomeMyWife = (function (_ShaneScene) {
       /// Shane System
 
       value: function enter() {
+        var _this = this;
+
         _get(Object.getPrototypeOf(MyJobMyHomeMyWife.prototype), "enter", this).call(this);
+
+        if (!this.isLive) {
+          this.numMediaToLoad += 1;
+          this.audio = this.dahmer.makeAudio(this.audioBase + "my_job_my_home_my_wife");
+          this.audio.addEventListener("canplaythrough", function () {
+            _this.didLoadMedia();
+          });
+        }
 
         this.makeLights();
         this.makeWhiteGround();
         this.makeGolfBall();
       }
     },
+    doTimedWork: {
+      value: function doTimedWork() {
+        _get(Object.getPrototypeOf(MyJobMyHomeMyWife.prototype), "doTimedWork", this).call(this);
+
+        if (!this.isLive) {
+          this.audio.play();
+        }
+
+        var trackDuration = (7 * 60 + 33) * 1000; // 7:33
+        this.addTimeout(this.iWantOut.bind(this), trackDuration);
+      }
+    },
     exit: {
       value: function exit() {
         _get(Object.getPrototypeOf(MyJobMyHomeMyWife.prototype), "exit", this).call(this);
 
+        if (!this.isLive) {
+          this.audio.src = "";
+          $(this.audio).remove();
+          this.audio = null;
+        }
+
         this.scene.remove(this.hemiLight);
-        this.scene.remove(this.dirLight);
-        this.hemiLight = null;this.dirLight = null;
+        this.scene.remove(this.spotLight);
+        this.hemiLight = null;this.spotLight = null;
 
         if (this.whiteGround) {
           this.whiteGround.removeFrom(this.scene);
@@ -3344,16 +3375,17 @@ var MyJobMyHomeMyWife = exports.MyJobMyHomeMyWife = (function (_ShaneScene) {
       value: function makeLights() {
         this.hemiLight = new THREE.HemisphereLight(16777215, 16777215, 0.5);
         //this.hemiLight.color.setHSL(0.6, 1, 0.6);
-        this.hemiLight.groundColor.setHSL(0.095, 1, 0.75);
+        this.hemiLight.groundColor.setHSL(0.085, 1, 0.75);
         this.hemiLight.position.set(0, 500, 10);
         this.scene.add(this.hemiLight);
 
-        this.dirLight = new THREE.DirectionalLight(16777215, 0.2);
-        this.dirLight.color.setHex(16774875);
-        this.dirLight.position.set(-25, 30, 100);
-        this.dirLight.castShadow = true;
-        this.dirLight.shadowMapWidth = this.dirLight.shadowMapHeight = 8192;
-        this.scene.add(this.dirLight);
+        this.spotLight = new THREE.SpotLight(16774875, 0.2, 300);
+        this.spotLight.color.setHex(16774875);
+        this.spotLight.position.set(-128, 214, 312);
+        this.spotLight.castShadow = true;
+        this.spotLight.shadowDarkness = 0.4;
+        this.spotLight.shadowMapWidth = this.spotLight.shadowMapHeight = 4096;
+        this.scene.add(this.spotLight);
       }
     },
     makeWhiteGround: {
@@ -3375,7 +3407,7 @@ var MyJobMyHomeMyWife = exports.MyJobMyHomeMyWife = (function (_ShaneScene) {
             callback(geometry, material, mesh);
           },
 
-          position: new THREE.Vector3(0, -3.5, 0)
+          position: new THREE.Vector3(0, -1.55, 0)
         });
 
         ground.addTo(this.scene);
@@ -3388,7 +3420,7 @@ var MyJobMyHomeMyWife = exports.MyJobMyHomeMyWife = (function (_ShaneScene) {
 
         this.golfBall = new ShaneMesh({
           modelName: "/js/models/golfball.json",
-          position: new THREE.Vector3(0, -0.3, -3.5)
+          position: new THREE.Vector3(0, -0.4, -3.5)
         });
         this.golfBall.addTo(this.scene, function () {
           _this.golfBall.mesh.castShadow = true;
@@ -6386,6 +6418,7 @@ var SecondShane = (function (_ThreeBoiler) {
 
     this.renderer.shadowMapEnabled = true;
     this.renderer.shadowMapCullFace = THREE.CullFaceBack;
+    this.renderer.shadowMapType = THREE.PCFSoftShadowMap;
 
     this.renderer.gammaInput = true;
     this.renderer.gammaOutput = true;
@@ -8863,6 +8896,11 @@ module.exports.bruno = {
 module.exports.getTheMinion = {
   web: "http://kevin-roark.github.io/second-shane-get-the-minion/",
   live: "http://localhost:5561/"
+};
+
+module.exports.myJobMyHomeMyWife = {
+  web: "http://kevin-roark.github.io/second-shane-mjmhmw/",
+  live: "http://localhost:5562/"
 };
 
 },{}],28:[function(require,module,exports){

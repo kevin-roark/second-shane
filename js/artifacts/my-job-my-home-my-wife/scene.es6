@@ -23,6 +23,9 @@ export class MyJobMyHomeMyWife extends ShaneScene {
     this.name = "My Job My Home My Wife";
     this.slug = 'my-job-my-home-my-wife';
     this.symbolName = '/media/symbols/home.png';
+
+    var host = (this.isLive? urls.myJobMyHomeMyWife.live : urls.myJobMyHomeMyWife.web);
+    this.audioBase = host + 'audio/';
   }
 
   createTalisman() {
@@ -38,17 +41,42 @@ export class MyJobMyHomeMyWife extends ShaneScene {
   enter() {
     super.enter();
 
+    if (!this.isLive) {
+      this.numMediaToLoad += 1;
+      this.audio = this.dahmer.makeAudio(this.audioBase + 'my_job_my_home_my_wife');
+      this.audio.addEventListener('canplaythrough', () => {
+        this.didLoadMedia();
+      });
+    }
+
     this.makeLights();
     this.makeWhiteGround();
     this.makeGolfBall();
   }
 
+  doTimedWork() {
+    super.doTimedWork();
+
+    if (!this.isLive) {
+      this.audio.play();
+    }
+
+    let trackDuration = (7 * 60 + 33) * 1000; // 7:33
+    this.addTimeout(this.iWantOut.bind(this), trackDuration);
+  }
+
   exit() {
     super.exit();
 
+    if (!this.isLive) {
+      this.audio.src = '';
+      $(this.audio).remove();
+      this.audio = null;
+    }
+
     this.scene.remove(this.hemiLight);
-    this.scene.remove(this.dirLight);
-    this.hemiLight = null; this.dirLight = null;
+    this.scene.remove(this.spotLight);
+    this.hemiLight = null; this.spotLight = null;
 
     if (this.whiteGround) {
       this.whiteGround.removeFrom(this.scene);
@@ -74,16 +102,17 @@ export class MyJobMyHomeMyWife extends ShaneScene {
   makeLights() {
     this.hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.5);
     //this.hemiLight.color.setHSL(0.6, 1, 0.6);
-    this.hemiLight.groundColor.setHSL( 0.095, 1, 0.75 );
+    this.hemiLight.groundColor.setHSL(0.085, 1, 0.75);
     this.hemiLight.position.set(0, 500, 10);
     this.scene.add(this.hemiLight);
 
-    this.dirLight = new THREE.DirectionalLight(0xffffff, 0.2);
-    this.dirLight.color.setHex(0xfff6db);
-    this.dirLight.position.set(-25, 30, 100);
-    this.dirLight.castShadow = true;
-    this.dirLight.shadowMapWidth = this.dirLight.shadowMapHeight = 8192;
-    this.scene.add(this.dirLight);
+    this.spotLight = new THREE.SpotLight(0xfff6db, 0.2, 300);
+    this.spotLight.color.setHex(0xfff6db);
+    this.spotLight.position.set(-128, 214, 312);
+    this.spotLight.castShadow = true;
+    this.spotLight.shadowDarkness = 0.4;
+    this.spotLight.shadowMapWidth = this.spotLight.shadowMapHeight = 4096;
+    this.scene.add(this.spotLight);
   }
 
   makeWhiteGround() {
@@ -104,7 +133,7 @@ export class MyJobMyHomeMyWife extends ShaneScene {
         callback(geometry, material, mesh);
       },
 
-      position: new THREE.Vector3(0, -3.5, 0)
+      position: new THREE.Vector3(0, -1.55, 0)
     });
 
     ground.addTo(this.scene);
@@ -114,7 +143,7 @@ export class MyJobMyHomeMyWife extends ShaneScene {
   makeGolfBall() {
     this.golfBall = new ShaneMesh({
       modelName: '/js/models/golfball.json',
-      position: new THREE.Vector3(0, -0.3, -3.5)
+      position: new THREE.Vector3(0, -0.4, -3.5)
     });
     this.golfBall.addTo(this.scene, () => {
       this.golfBall.mesh.castShadow = true;

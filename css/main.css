@@ -57,6 +57,7 @@ body {
 
 #site-map {
   display: none;
+  z-index: 1000;
   position: fixed; top: 40px; left: 50%; margin-left: -250px; width: 500px;
   padding: 20px;
   box-shadow: 0 19px 38px rgba(255, 255, 255, 0.30), 0 15px 12px rgba(255, 255, 255, 0.23);

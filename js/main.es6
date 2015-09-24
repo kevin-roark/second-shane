@@ -39,6 +39,7 @@ class SecondShane extends ThreeBoiler {
 
     this.renderer.shadowMapEnabled = true;
     this.renderer.shadowMapCullFace = THREE.CullFaceBack;
+    this.renderer.shadowMapType = THREE.PCFSoftShadowMap;
 
     this.renderer.gammaInput = true;
 	  this.renderer.gammaOutput = true;

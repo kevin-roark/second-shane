@@ -33,3 +33,8 @@ module.exports.getTheMinion = {
   web: 'http://kevin-roark.github.io/second-shane-get-the-minion/',
   live: 'http://localhost:5561/'
 };
+
+module.exports.myJobMyHomeMyWife = {
+  web: 'http://kevin-roark.github.io/second-shane-mjmhmw/',
+  live: 'http://localhost:5562/'
+};
