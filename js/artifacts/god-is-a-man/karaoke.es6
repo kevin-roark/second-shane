@@ -65,14 +65,14 @@ var allWords = verse1.concat(verse2).concat(chorus).concat(verse3).concat(chorus
 
 var numberOfLines = 40;
 
-export var doKaraoke = (domContainer, marker) => {
+export var doKaraoke = (domContainer, marker, timeoutSetter) => {
   var karaokeDomContainer = karaokeDiv([]);
   domContainer.append(karaokeDomContainer);
 
   var wordIndex = 0;
   var lineIndex = 0;
 
-  setTimeout(function() {
+  timeoutSetter(function() {
     doLine();
   }, wordOffsets[wordIndex] - spaceBeforeLine);
 
@@ -86,13 +86,13 @@ export var doKaraoke = (domContainer, marker) => {
 
       if (lineIndex < numberOfLines) {
         let timeout = wordOffsets[wordIndex] - spaceBeforeLine - currentOffset;
-        setTimeout(function() {
+        timeoutSetter(function() {
           emptyKaraokeDom();
           doLine();
         }, timeout);
       }
       else {
-        setTimeout(function() {
+        timeoutSetter(function() {
           emptyKaraokeDom();
           karaokeDomContainer.remove();
 
@@ -132,11 +132,11 @@ export var doKaraoke = (domContainer, marker) => {
     function doTimeoutForWord(index) {
       var offset = wordOffsets[index] - (firstWordOffset - spaceBeforeLine);
       lastWordOffset = offset;
-      setTimeout(function() {
+      timeoutSetter(function() {
         let timeUntilNextWord = index === wordOffsets.length - 1 ? 200 : wordOffsets[index + 1] - wordOffsets[index];
         var bounceLength = Math.min(200, timeUntilNextWord);
         activateWord(index - startWordIndex, bounceLength);
-        setTimeout(function() {
+        timeoutSetter(function() {
           let timeRemaining = timeUntilNextWord - bounceLength;
           smallBounce();
           function smallBounce() {
@@ -156,7 +156,7 @@ export var doKaraoke = (domContainer, marker) => {
       doTimeoutForWord(t);
     }
 
-    setTimeout(function() {
+    timeoutSetter(function() {
       if (callback) {
         callback();
       }

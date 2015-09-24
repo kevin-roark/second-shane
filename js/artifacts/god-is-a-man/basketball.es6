@@ -14,6 +14,10 @@ export class Basketball {
     $domContainer.append(this.div);
   }
 
+  remove() {
+    $(this.div).remove();
+  }
+
   setWidth(width) {
     this.img.css('width', width + 'px');
     this.div.css('border-radius', (width / 2) + 'px');

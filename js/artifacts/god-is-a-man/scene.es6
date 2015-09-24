@@ -27,6 +27,7 @@ export class GodIsAMan extends ShaneScene {
     var host = (this.isLive? urls.godIsAMan.live : urls.godIsAMan.web);
     this.videoBase = host + 'video/';
     this.imageBase = host + 'images/';
+    this.audioBase = host + 'audio/';
 
     this.basketballPath = this.imageBase + 'basketball.png';
   }
@@ -48,6 +49,14 @@ export class GodIsAMan extends ShaneScene {
     this.basketball = new Basketball(this.basketballPath);
     this.basketball.addTo(this.domContainer);
 
+    if (!this.isLive) {
+      this.numMediaToLoad += 1;
+      this.audio = this.dahmer.makeAudio(this.audioBase + 'god_is_a_man');
+      this.audio.addEventListener('canplaythrough', () => {
+        this.didLoadMedia();
+      });
+    }
+
     this.numMediaToLoad += 1;
     this.highwayVideo.addEventListener('canplaythrough', () => {
       this.didLoadMedia();
@@ -57,8 +66,12 @@ export class GodIsAMan extends ShaneScene {
   doTimedWork() {
     super.doTimedWork();
 
+    if (!this.isLive) {
+      this.audio.play();
+    }
+
     this.highwayVideo.play();
-    doKaraoke(this.domContainer, this.basketball);
+    doKaraoke(this.domContainer, this.basketball, this.addTimeout.bind(this));
 
     let vegasOffset = 45;
     this.addTimeout(this.vegasTime.bind(this), vegasOffset * 1000); // 45 seconds in, last for a minute
@@ -89,12 +102,125 @@ export class GodIsAMan extends ShaneScene {
     this.addTimeout(this.createPapaJohn.bind(this), (visionOffset + timeBetweenVisions * 11) * 1000);
 
     this.addTimeout(this.transitionToBall.bind(this), 9.5 * 60 * 1000); // 9.5 minutes
+
+    let trackDuration = (11 * 60 + 53) * 1000; // 11:53
+    this.addTimeout(this.iWantOut.bind(this), trackDuration);
   }
 
   exit() {
     super.exit();
 
-    $(this.highwayVideo).remove();
+    if (!this.isLive) {
+      this.audio.src = '';
+      $(this.audio).remove();
+      this.audio = null;
+    }
+
+    if (this.basketball) {
+      this.basketball.remove();
+      this.basketball = null;
+    }
+
+    if (this.finalOverlay) {
+      this.finalOverlay.remove();
+      this.finalOverlay = null;
+    }
+
+    if (this.highwayVideo) {
+      this.highwayVideo.src = '';
+      $(this.highwayVideo).remove();
+      this.highwayVideo = null;
+    }
+
+    if (this.vegasVideo) {
+      this.vegasVideo.src = '';
+      $(this.vegasVideo).remove();
+      this.vegasVideo = null;
+    }
+
+    if (this.papaVideo) {
+      this.papaVideo.src = '';
+      $(this.papaVideo).remove();
+      this.papaVideo = null;
+    }
+
+    if (this.cowboyVideo) {
+      this.cowboyVideo.src = '';
+      $(this.cowboyVideo).remove();
+      this.cowboyVideo = null;
+    }
+
+    if (this.game2Video) {
+      this.game2Video.src = '';
+      $(this.game2Video).remove();
+      this.game2Video = null;
+    }
+
+    if (this.game1Video) {
+      this.game1Video.src = '';
+      $(this.game1Video).remove();
+      this.game1Video = null;
+    }
+
+    if (this.vin) {
+      this.destroyVision(this.vin);
+      this.vin = null;
+    }
+
+    if (this.whitey) {
+      this.destroyVision(this.whitey);
+      this.whitey = null;
+    }
+
+    if (this.papaJohn) {
+      this.destroyVision(this.papaJohn);
+      this.papaJohn = null;
+    }
+
+    if (this.godMan) {
+      this.destroyVision(this.godMan);
+      this.godMan = null;
+    }
+
+    if (this.johnCena) {
+      this.destroyVision(this.johnCena);
+      this.johnCena = null;
+    }
+
+    if (this.bruceWillis) {
+      this.destroyVision(this.bruceWillis);
+      this.bruceWillis = null;
+    }
+
+    if (this.godSistene) {
+      this.destroyVision(this.godSistene);
+      this.godSistene = null;
+    }
+
+    if (this.hulkHogan) {
+      this.destroyVision(this.hulkHogan);
+      this.hulkHogan = null;
+    }
+
+    if (this.lebron) {
+      this.destroyVision(this.lebron);
+      this.lebron = null;
+    }
+
+    if (this.jordan) {
+      this.destroyVision(this.jordan);
+      this.jordan = null;
+    }
+
+    if (this.bigSean) {
+      this.destroyVision(this.bigSean);
+      this.bigSean = null;
+    }
+
+    if (this.lilWayne) {
+      this.destroyVision(this.lilWayne);
+      this.lilWayne = null;
+    }
   }
 
   /// Highway Manipulation
@@ -395,6 +521,10 @@ export class GodIsAMan extends ShaneScene {
   }
 
   destroyVision(vision) {
+    if (!vision) {
+      return;
+    }
+
     $(vision).animate({opacity: 0}, kt.randInt(4444, 6666), () => {
       vision.src = '';
       $(vision).remove();

@@ -1522,6 +1522,11 @@ var Basketball = exports.Basketball = (function () {
         $domContainer.append(this.div);
       }
     },
+    remove: {
+      value: function remove() {
+        $(this.div).remove();
+      }
+    },
     setWidth: {
       value: function setWidth(width) {
         this.img.css("width", width + "px");
@@ -1631,14 +1636,14 @@ var allWords = verse1.concat(verse2).concat(chorus).concat(verse3).concat(chorus
 
 var numberOfLines = 40;
 
-var doKaraoke = function (domContainer, marker) {
+var doKaraoke = function (domContainer, marker, timeoutSetter) {
   var karaokeDomContainer = karaokeDiv([]);
   domContainer.append(karaokeDomContainer);
 
   var wordIndex = 0;
   var lineIndex = 0;
 
-  setTimeout(function () {
+  timeoutSetter(function () {
     doLine();
   }, wordOffsets[wordIndex] - spaceBeforeLine);
 
@@ -1652,12 +1657,12 @@ var doKaraoke = function (domContainer, marker) {
 
       if (lineIndex < numberOfLines) {
         var timeout = wordOffsets[wordIndex] - spaceBeforeLine - currentOffset;
-        setTimeout(function () {
+        timeoutSetter(function () {
           emptyKaraokeDom();
           doLine();
         }, timeout);
       } else {
-        setTimeout(function () {
+        timeoutSetter(function () {
           emptyKaraokeDom();
           karaokeDomContainer.remove();
 
@@ -1697,11 +1702,11 @@ var doKaraoke = function (domContainer, marker) {
     function doTimeoutForWord(index) {
       var offset = wordOffsets[index] - (firstWordOffset - spaceBeforeLine);
       lastWordOffset = offset;
-      setTimeout(function () {
+      timeoutSetter(function () {
         var timeUntilNextWord = index === wordOffsets.length - 1 ? 200 : wordOffsets[index + 1] - wordOffsets[index];
         var bounceLength = Math.min(200, timeUntilNextWord);
         activateWord(index - startWordIndex, bounceLength);
-        setTimeout(function () {
+        timeoutSetter(function () {
           var timeRemaining = timeUntilNextWord - bounceLength;
           smallBounce();
           function smallBounce() {
@@ -1721,7 +1726,7 @@ var doKaraoke = function (domContainer, marker) {
       doTimeoutForWord(t);
     }
 
-    setTimeout(function () {
+    timeoutSetter(function () {
       if (callback) {
         callback();
       }
@@ -1831,6 +1836,7 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
     var host = this.isLive ? urls.godIsAMan.live : urls.godIsAMan.web;
     this.videoBase = host + "video/";
     this.imageBase = host + "images/";
+    this.audioBase = host + "audio/";
 
     this.basketballPath = this.imageBase + "basketball.png";
   }
@@ -1859,6 +1865,14 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
         this.basketball = new Basketball(this.basketballPath);
         this.basketball.addTo(this.domContainer);
 
+        if (!this.isLive) {
+          this.numMediaToLoad += 1;
+          this.audio = this.dahmer.makeAudio(this.audioBase + "god_is_a_man");
+          this.audio.addEventListener("canplaythrough", function () {
+            _this.didLoadMedia();
+          });
+        }
+
         this.numMediaToLoad += 1;
         this.highwayVideo.addEventListener("canplaythrough", function () {
           _this.didLoadMedia();
@@ -1869,8 +1883,12 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
       value: function doTimedWork() {
         _get(Object.getPrototypeOf(GodIsAMan.prototype), "doTimedWork", this).call(this);
 
+        if (!this.isLive) {
+          this.audio.play();
+        }
+
         this.highwayVideo.play();
-        doKaraoke(this.domContainer, this.basketball);
+        doKaraoke(this.domContainer, this.basketball, this.addTimeout.bind(this));
 
         var vegasOffset = 45;
         this.addTimeout(this.vegasTime.bind(this), vegasOffset * 1000); // 45 seconds in, last for a minute
@@ -1901,13 +1919,126 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
         this.addTimeout(this.createPapaJohn.bind(this), (visionOffset + timeBetweenVisions * 11) * 1000);
 
         this.addTimeout(this.transitionToBall.bind(this), 9.5 * 60 * 1000); // 9.5 minutes
+
+        var trackDuration = (11 * 60 + 53) * 1000; // 11:53
+        this.addTimeout(this.iWantOut.bind(this), trackDuration);
       }
     },
     exit: {
       value: function exit() {
         _get(Object.getPrototypeOf(GodIsAMan.prototype), "exit", this).call(this);
 
-        $(this.highwayVideo).remove();
+        if (!this.isLive) {
+          this.audio.src = "";
+          $(this.audio).remove();
+          this.audio = null;
+        }
+
+        if (this.basketball) {
+          this.basketball.remove();
+          this.basketball = null;
+        }
+
+        if (this.finalOverlay) {
+          this.finalOverlay.remove();
+          this.finalOverlay = null;
+        }
+
+        if (this.highwayVideo) {
+          this.highwayVideo.src = "";
+          $(this.highwayVideo).remove();
+          this.highwayVideo = null;
+        }
+
+        if (this.vegasVideo) {
+          this.vegasVideo.src = "";
+          $(this.vegasVideo).remove();
+          this.vegasVideo = null;
+        }
+
+        if (this.papaVideo) {
+          this.papaVideo.src = "";
+          $(this.papaVideo).remove();
+          this.papaVideo = null;
+        }
+
+        if (this.cowboyVideo) {
+          this.cowboyVideo.src = "";
+          $(this.cowboyVideo).remove();
+          this.cowboyVideo = null;
+        }
+
+        if (this.game2Video) {
+          this.game2Video.src = "";
+          $(this.game2Video).remove();
+          this.game2Video = null;
+        }
+
+        if (this.game1Video) {
+          this.game1Video.src = "";
+          $(this.game1Video).remove();
+          this.game1Video = null;
+        }
+
+        if (this.vin) {
+          this.destroyVision(this.vin);
+          this.vin = null;
+        }
+
+        if (this.whitey) {
+          this.destroyVision(this.whitey);
+          this.whitey = null;
+        }
+
+        if (this.papaJohn) {
+          this.destroyVision(this.papaJohn);
+          this.papaJohn = null;
+        }
+
+        if (this.godMan) {
+          this.destroyVision(this.godMan);
+          this.godMan = null;
+        }
+
+        if (this.johnCena) {
+          this.destroyVision(this.johnCena);
+          this.johnCena = null;
+        }
+
+        if (this.bruceWillis) {
+          this.destroyVision(this.bruceWillis);
+          this.bruceWillis = null;
+        }
+
+        if (this.godSistene) {
+          this.destroyVision(this.godSistene);
+          this.godSistene = null;
+        }
+
+        if (this.hulkHogan) {
+          this.destroyVision(this.hulkHogan);
+          this.hulkHogan = null;
+        }
+
+        if (this.lebron) {
+          this.destroyVision(this.lebron);
+          this.lebron = null;
+        }
+
+        if (this.jordan) {
+          this.destroyVision(this.jordan);
+          this.jordan = null;
+        }
+
+        if (this.bigSean) {
+          this.destroyVision(this.bigSean);
+          this.bigSean = null;
+        }
+
+        if (this.lilWayne) {
+          this.destroyVision(this.lilWayne);
+          this.lilWayne = null;
+        }
       }
     },
     vegasTime: {
@@ -2243,6 +2374,10 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
     },
     destroyVision: {
       value: function destroyVision(vision) {
+        if (!vision) {
+          return;
+        }
+
         $(vision).animate({ opacity: 0 }, kt.randInt(4444, 6666), function () {
           vision.src = "";
           $(vision).remove();
