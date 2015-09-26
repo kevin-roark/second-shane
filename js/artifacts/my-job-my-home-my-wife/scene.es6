@@ -76,7 +76,18 @@ export class MyJobMyHomeMyWife extends ShaneScene {
 
     this.scene.remove(this.hemiLight);
     this.scene.remove(this.spotLight);
-    this.hemiLight = null; this.spotLight = null;
+    this.scene.remove(this.leftTopLight);
+    this.scene.remove(this.rightTopLight);
+    this.scene.remove(this.leftBottomLight);
+    this.scene.remove(this.rightBottomLight);
+    this.scene.remove(this.forwardLight);
+    this.hemiLight = null;
+    this.spotLight = null;
+    this.rightTopLight = null;
+    this.leftTopLight = null;
+    this.rightBottomLight = null;
+    this.leftBottomLight = null;
+    this.forwardLight = null;
 
     if (this.whiteGround) {
       this.whiteGround.removeFrom(this.scene);
@@ -100,19 +111,43 @@ export class MyJobMyHomeMyWife extends ShaneScene {
   /// Creation
 
   makeLights() {
-    this.hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.5);
+    this.hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.4);
     //this.hemiLight.color.setHSL(0.6, 1, 0.6);
-    this.hemiLight.groundColor.setHSL(0.085, 1, 0.75);
+    //this.hemiLight.groundColor.setHSL(0.085, 1, 0.75);
     this.hemiLight.position.set(0, 500, 10);
     this.scene.add(this.hemiLight);
 
     this.spotLight = new THREE.SpotLight(0xfff6db, 0.2, 300);
-    this.spotLight.color.setHex(0xfff6db);
     this.spotLight.position.set(-128, 214, 312);
     this.spotLight.castShadow = true;
     this.spotLight.shadowDarkness = 0.4;
     this.spotLight.shadowMapWidth = this.spotLight.shadowMapHeight = 4096;
     this.scene.add(this.spotLight);
+
+    this.leftTopLight = new THREE.PointLight(0xfff6db, 0.35);
+    this.leftTopLight.position.set(-200, 125, 0);
+    this.leftTopLight.distance = 1000;
+    this.scene.add(this.leftTopLight);
+
+    this.rightTopLight = new THREE.PointLight(0xfff6db, 0.35);
+    this.rightTopLight.position.set(200, 125, 0);
+    this.rightTopLight.distance = 1000;
+    this.scene.add(this.rightTopLight);
+
+    this.leftBottomLight = new THREE.PointLight(0xfff6db, 0.35);
+    this.leftBottomLight.position.set(-200, -125, 0);
+    this.leftBottomLight.distance = 1000;
+    this.scene.add(this.leftBottomLight);
+
+    this.rightBottomLight = new THREE.PointLight(0xfff6db, 0.35);
+    this.rightBottomLight.position.set(200, -125, 0);
+    this.rightBottomLight.distance = 1000;
+    this.scene.add(this.rightBottomLight);
+
+    this.forwardLight = new THREE.PointLight(0xfff6db, 0.28);
+    this.forwardLight.position.set(0, 0, 200);
+    this.forwardLight.distance = 1000;
+    this.scene.add(this.forwardLight);
   }
 
   makeWhiteGround() {
@@ -147,6 +182,10 @@ export class MyJobMyHomeMyWife extends ShaneScene {
     });
     this.golfBall.addTo(this.scene, () => {
       this.golfBall.mesh.castShadow = true;
+
+      var material = this.golfBall.mesh.material.materials[0];
+      material.reflectivity = 0.1;
+      material.shininess = 26;
     });
   }
 
