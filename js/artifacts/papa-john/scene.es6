@@ -22,8 +22,7 @@ export class PapaJohn extends ShaneScene {
     this.symbolName = '/media/symbols/papa.png';
 
     var host = (this.isLive? urls.papaJohn.live : urls.papaJohn.web);
-    this.videoBase = host + 'video/';
-    this.imageBase = host + 'images/';
+    this.audioBase = host + 'audio/';
   }
 
   createTalisman() {
@@ -39,6 +38,14 @@ export class PapaJohn extends ShaneScene {
 
   enter() {
     super.enter();
+
+    if (!this.isLive) {
+      this.numMediaToLoad += 1;
+      this.audio = this.dahmer.makeAudio(this.audioBase + 'papa_johns_desert');
+      this.audio.addEventListener('canplaythrough', () => {
+        this.didLoadMedia();
+      });
+    }
 
     this.scene.fog = new THREE.Fog( 0xffffff, 1, 6000);
 		this.scene.fog.color.setHSL( 0.6, 0, 1 );
@@ -62,6 +69,11 @@ export class PapaJohn extends ShaneScene {
   doTimedWork() {
     super.doTimedWork();
 
+    if (!this.isLive) {
+      this.audio.play();
+    }
+
+    var videoOffset = 123 * 1000;
     setTimeout(() => {
       this.papaJohnVideo.play();
 
@@ -73,9 +85,10 @@ export class PapaJohn extends ShaneScene {
           clearInterval(fadeInterval);
         }
       }, 30);
-    }, 45 * 1000);
+    }, videoOffset);
 
-    setTimeout(this.goHome.bind(this), (45 + 175) * 1000);
+    var trackDuration = videoOffset + 175 * 1000;
+    setTimeout(this.goHome.bind(this), trackDuration);
   }
 
   exit() {
@@ -88,6 +101,12 @@ export class PapaJohn extends ShaneScene {
 
     this.scene.remove(this.hemiLight);
     this.scene.remove(this.dirLight);
+
+    if (!this.isLive) {
+      this.audio.src = '';
+      $(this.audio).remove();
+      this.audio = null;
+    }
 
     if (this.papaJohnVideo) {
       this.papaJohnVideo.src = '';

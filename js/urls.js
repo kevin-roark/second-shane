@@ -15,7 +15,7 @@ module.exports.iFeltTheFoot = {
 };
 
 module.exports.papaJohn = {
-  web: 'http://kevin-roark.github.io/second-shane-papa-john/',
+  web: 'http://kevin-roark.github.io/second-shane-papa-johns/',
   live: 'http://localhost:5558/'
 };
 

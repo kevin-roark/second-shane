@@ -3610,8 +3610,7 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
     this.symbolName = "/media/symbols/papa.png";
 
     var host = this.isLive ? urls.papaJohn.live : urls.papaJohn.web;
-    this.videoBase = host + "video/";
-    this.imageBase = host + "images/";
+    this.audioBase = host + "audio/";
   }
 
   _inherits(PapaJohn, _ShaneScene);
@@ -3635,6 +3634,14 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
         var _this = this;
 
         _get(Object.getPrototypeOf(PapaJohn.prototype), "enter", this).call(this);
+
+        if (!this.isLive) {
+          this.numMediaToLoad += 1;
+          this.audio = this.dahmer.makeAudio(this.audioBase + "papa_johns_desert");
+          this.audio.addEventListener("canplaythrough", function () {
+            _this.didLoadMedia();
+          });
+        }
 
         this.scene.fog = new THREE.Fog(16777215, 1, 6000);
         this.scene.fog.color.setHSL(0.6, 0, 1);
@@ -3661,6 +3668,11 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
 
         _get(Object.getPrototypeOf(PapaJohn.prototype), "doTimedWork", this).call(this);
 
+        if (!this.isLive) {
+          this.audio.play();
+        }
+
+        var videoOffset = 123 * 1000;
         setTimeout(function () {
           _this.papaJohnVideo.play();
 
@@ -3672,9 +3684,10 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
               clearInterval(fadeInterval);
             }
           }, 30);
-        }, 45 * 1000);
+        }, videoOffset);
 
-        setTimeout(this.goHome.bind(this), (45 + 175) * 1000);
+        var trackDuration = videoOffset + 175 * 1000;
+        setTimeout(this.goHome.bind(this), trackDuration);
       }
     },
     exit: {
@@ -3688,6 +3701,12 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
 
         this.scene.remove(this.hemiLight);
         this.scene.remove(this.dirLight);
+
+        if (!this.isLive) {
+          this.audio.src = "";
+          $(this.audio).remove();
+          this.audio = null;
+        }
 
         if (this.papaJohnVideo) {
           this.papaJohnVideo.src = "";
@@ -9025,7 +9044,7 @@ module.exports.iFeltTheFoot = {
 };
 
 module.exports.papaJohn = {
-  web: "http://kevin-roark.github.io/second-shane-papa-john/",
+  web: "http://kevin-roark.github.io/second-shane-papa-johns/",
   live: "http://localhost:5558/"
 };
 
