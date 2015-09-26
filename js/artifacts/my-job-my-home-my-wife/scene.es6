@@ -30,9 +30,9 @@ export class MyJobMyHomeMyWife extends ShaneScene {
 
   createTalisman() {
     return new Talisman({
-      position: new THREE.Vector3(25, 0, -25),
+      position: new THREE.Vector3(64, -4, -150),
       modelPath: '/js/models/golfball.json',
-      modelScale: 3.0
+      modelScale: 7.0
     });
   }
 

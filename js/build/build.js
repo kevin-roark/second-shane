@@ -50,7 +50,7 @@ var ASMR = exports.ASMR = (function (_ShaneScene) {
     createTalisman: {
       value: function createTalisman() {
         var talisman = new Talisman({
-          position: new THREE.Vector3(-90, 0, -80),
+          position: new THREE.Vector3(-120, 4, -75),
           modelPath: "/js/models/human_ear.json",
           modelScale: 2
         });
@@ -739,9 +739,9 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
     createTalisman: {
       value: function createTalisman() {
         var talisman = new Talisman({
-          position: new THREE.Vector3(-25, 0, -25),
+          position: new THREE.Vector3(-50, 0, 108),
           modelPath: "/js/models/minion.json",
-          modelScale: 3
+          modelScale: 5
         });
         return talisman;
       }
@@ -1847,9 +1847,9 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
     createTalisman: {
       value: function createTalisman() {
         var talisman = new Talisman({
-          position: new THREE.Vector3(220, 0, -220),
+          position: new THREE.Vector3(200, 0, -220),
           modelPath: "/js/models/basketball/basketball.json",
-          modelScale: 3
+          modelScale: 8
         });
         return talisman;
       }
@@ -2501,12 +2501,12 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
     createTalisman: {
       value: function createTalisman() {
         var talisman = new Talisman({
-          position: new THREE.Vector3(20, 0, 140),
+          position: new THREE.Vector3(90, 2.5, 140),
           materialOptions: {
             map: THREE.ImageUtils.loadTexture("/media/talisman-images/cad_foot.jpg")
           },
           geometryCreator: function () {
-            var size = 12;
+            var size = 15;
             return new THREE.BoxGeometry(size, size, size);
           }
         });
@@ -3137,9 +3137,9 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
     createTalisman: {
       value: function createTalisman() {
         var talisman = new Talisman({
-          position: new THREE.Vector3(-75, -4, -200),
+          position: new THREE.Vector3(-75, 0, -200),
           modelPath: "/js/models/projector.json",
-          modelScale: 10
+          modelScale: 18
         });
         return talisman;
       }
@@ -3429,9 +3429,9 @@ var MyJobMyHomeMyWife = exports.MyJobMyHomeMyWife = (function (_ShaneScene) {
     createTalisman: {
       value: function createTalisman() {
         return new Talisman({
-          position: new THREE.Vector3(25, 0, -25),
+          position: new THREE.Vector3(64, -4, -150),
           modelPath: "/js/models/golfball.json",
-          modelScale: 3
+          modelScale: 7
         });
       }
     },
@@ -3621,7 +3621,7 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
         var talisman = new Talisman({
           position: new THREE.Vector3(196, 0, -30),
           modelPath: "/js/models/cactus/low_poly_cactus.json",
-          modelScale: 3
+          modelScale: 5
         });
         return talisman;
       }
@@ -8208,7 +8208,7 @@ new VideoBeacon({
 }), new VideoBeacon({
   name: "Run Away With Me (Shane)",
   videoName: "media/videos/gym",
-  position: new THREE.Vector3(200, -2, -200)
+  position: new THREE.Vector3(160, -2, -180)
 }), new VideoBeacon({
   name: "iThai",
   videoName: "media/videos/ithai",

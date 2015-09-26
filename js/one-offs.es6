@@ -1016,7 +1016,7 @@ export var oneOffs = [
   new VideoBeacon({
     name: 'Run Away With Me (Shane)',
     videoName: 'media/videos/gym',
-    position: new THREE.Vector3(200, -2, -200)
+    position: new THREE.Vector3(160, -2, -180)
   }),
   new VideoBeacon({
     name: 'iThai',

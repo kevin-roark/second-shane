@@ -68,9 +68,9 @@ export class GetTheMinion extends ShaneScene {
 
   createTalisman() {
     let talisman = new Talisman({
-      position: new THREE.Vector3(-25, 0, -25),
+      position: new THREE.Vector3(-50, 0, 108),
       modelPath: '/js/models/minion.json',
-      modelScale: 3.0
+      modelScale: 5.0
     });
     return talisman;
   }
