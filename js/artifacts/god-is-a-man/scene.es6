@@ -101,7 +101,8 @@ export class GodIsAMan extends ShaneScene {
     this.addTimeout(this.createBigSean.bind(this), (visionOffset + timeBetweenVisions * 10) * 1000);
     this.addTimeout(this.createPapaJohn.bind(this), (visionOffset + timeBetweenVisions * 11) * 1000);
 
-    this.addTimeout(this.transitionToBall.bind(this), 9.5 * 60 * 1000); // 9.5 minutes
+    let ballOffset = 9.5 * 60 * 1000; // 9.5 minutes
+    this.addTimeout(this.transitionToBall.bind(this), ballOffset);
 
     let trackDuration = (11 * 60 + 53) * 1000; // 11:53
     this.addTimeout(this.iWantOut.bind(this), trackDuration);
