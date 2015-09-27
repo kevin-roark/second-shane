@@ -277,3 +277,14 @@ body {
 
   box-shadow: 0 19px 38px rgba(255, 255, 255, 0.30), 0 15px 12px rgba(255, 255, 255, 0.23);
 }
+
+.track-instruction-box {
+  position: absolute;
+  background-color: white;
+  color: rgba(0, 0, 0, 0.87);
+  font-size: 16px;
+  font-family: 'Roboto Mono', monospace;
+  max-width: 160px;
+  padding: 6px;
+  box-shadow: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.23);
+}

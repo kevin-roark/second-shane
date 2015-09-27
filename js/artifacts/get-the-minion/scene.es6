@@ -446,18 +446,7 @@ export class GetTheMinion extends ShaneScene {
   }
 
   showClawMachineInstructions() {
-    var div = $('<div style="position: absolute; right: 10px; top: 10px;">Work the Machine to Get the Minion. Use the Arrows to move the Claw. Press Enter to Submit the Claw.</div>');
-    div.css('color', 'rgb(249, 240, 45)');
-    div.css('font-size', '16px');
-    div.css('font-family', 'Roboto Mono, monospace');
-    div.css('font-weight', 'bold');
-    div.css('max-width', '160px');
-    div.css('text-shadow', '3px 3px 3px rgba(255, 253, 18, 0.5)');
-    div.css('box-shadow', '0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.23);');
-    div.css('border', '4px solid rgb(61, 254, 98)');
-    div.css('padding', '2px');
-    div.css('background-color', 'rgba(54, 228, 223, 0.8)');
-
+    var div = $('<div class="track-instruction-box" style="right: 10px; top: 10px;">Work the Machine to Get the Minion. Use the Arrows to move the Claw. Press Enter to Submit the Claw.</div>');
     this.domContainer.append(div);
     this.$clawMachineInstructions = div;
   }
