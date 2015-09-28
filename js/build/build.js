@@ -780,6 +780,10 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
             _this.makeClawMachine();
             _this.addMinionsToClawMachine();
             _this.showClawMachineInstructions();
+
+            _this.addTimeout(function () {
+              _this.flashGetTheMinionText();
+            }, 3000);
           });
 
           var beginShowingMyselfOffset = 35 * 1000;
@@ -789,6 +793,7 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
 
           var makeTheMinionsMeOffset = 65 * 1000;
           _this.addTimeout(function () {
+            _this.stopFlashingText = true;
             _this.makeTheMinionsMe();
           }, makeTheMinionsMeOffset);
         }, part2Onset);
@@ -1135,6 +1140,38 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
         var div = $("<div class=\"track-instruction-box\" style=\"right: 10px; top: 10px;\">Work the Machine to Get the Minion. Use the Arrows to move the Claw. Press Enter to Submit the Claw.</div>");
         this.domContainer.append(div);
         this.$clawMachineInstructions = div;
+      }
+    },
+    flashGetTheMinionText: {
+      value: function flashGetTheMinionText() {
+        var _this = this;
+
+        if (!this.active || this.stopFlashingText) {
+          return;
+        }
+
+        var textOptions = ["GET THE MINION", "SUBMIT THE CLAW", "USE THE MACHINE", "GRAB THE MINION", "TAKE IT", "EARN IT", "GET IT", "KEEP IT", "MOVE THE CLAW", "FIND YOUR MINION"];
+
+        var text = kt.choice(textOptions);
+        var div = $("<div style=\"position: absolute; font-family: Times New Roman;\">" + text + "</div>");
+        div.css("right", Math.random() * 175 + 5 + "px");
+        div.css("top", (Math.random() - 0.5) * 450 + window.innerHeight / 2 + "px");
+        div.css("color", kt.randColor());
+        div.css("font-size", kt.randInt(28, 56) + "px");
+        if (Math.random() > 0.5) div.css("font-style", "italic");
+        if (Math.random() > 0.5) div.css("text-decoration", "underline");
+
+        this.domContainer.append(div);
+
+        // set timeout intentional here so div is always removed
+        setTimeout(function () {
+          div.remove();
+        }, Math.random() * 6666 + 3333);
+
+        // call myself again
+        this.addTimeout(function () {
+          _this.flashGetTheMinionText();
+        }, Math.random() * 6000 + 666);
       }
     },
     clawKeyDown: {

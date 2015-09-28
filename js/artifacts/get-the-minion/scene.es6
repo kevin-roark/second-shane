@@ -106,6 +106,10 @@ export class GetTheMinion extends ShaneScene {
           this.makeClawMachine();
           this.addMinionsToClawMachine();
           this.showClawMachineInstructions();
+
+          this.addTimeout(() => {
+            this.flashGetTheMinionText();
+          }, 3000);
         }
       );
 
@@ -116,6 +120,7 @@ export class GetTheMinion extends ShaneScene {
 
       var makeTheMinionsMeOffset = 65 * 1000;
       this.addTimeout(() => {
+        this.stopFlashingText = true;
         this.makeTheMinionsMe();
       }, makeTheMinionsMeOffset);
     }, part2Onset);
@@ -449,6 +454,46 @@ export class GetTheMinion extends ShaneScene {
     var div = $('<div class="track-instruction-box" style="right: 10px; top: 10px;">Work the Machine to Get the Minion. Use the Arrows to move the Claw. Press Enter to Submit the Claw.</div>');
     this.domContainer.append(div);
     this.$clawMachineInstructions = div;
+  }
+
+  flashGetTheMinionText() {
+    if (!this.active || this.stopFlashingText) {
+      return;
+    }
+
+    var textOptions = [
+      'GET THE MINION',
+      'SUBMIT THE CLAW',
+      'USE THE MACHINE',
+      'GRAB THE MINION',
+      'TAKE IT',
+      'EARN IT',
+      'GET IT',
+      'KEEP IT',
+      'MOVE THE CLAW',
+      'FIND YOUR MINION'
+    ];
+
+    var text = kt.choice(textOptions);
+    var div = $('<div style="position: absolute; font-family: Times New Roman;">' + text + '</div>');
+    div.css('right', (Math.random() * 175 + 5) + 'px');
+    div.css('top', ((Math.random() - 0.5) * 450 + window.innerHeight / 2) + 'px');
+    div.css('color', kt.randColor());
+    div.css('font-size', kt.randInt(28, 56) + 'px');
+    if (Math.random() > 0.5) div.css('font-style', 'italic');
+    if (Math.random() > 0.5) div.css('text-decoration', 'underline');
+
+    this.domContainer.append(div);
+
+    // set timeout intentional here so div is always removed
+    setTimeout(() => {
+      div.remove();
+    }, Math.random() * 6666 + 3333);
+
+    // call myself again
+    this.addTimeout(() => {
+      this.flashGetTheMinionText();
+    }, Math.random() * 6000 + 666);
   }
 
   clawKeyDown(ev) {
