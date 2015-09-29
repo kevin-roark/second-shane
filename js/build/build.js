@@ -7288,6 +7288,10 @@ function getMoney() {
 }
 
 function setMoney(money) {
+  if (!odometer) {
+    module.exports.init();
+  }
+
   if (window.localStorage) {
     window.localStorage.setItem("myNewMoney", money);
   } else {
