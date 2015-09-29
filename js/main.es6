@@ -1,7 +1,8 @@
 
-let $ = require('jquery');
-let THREE = require('three');
-let queryString = require('querystring');
+var $ = require('jquery');
+var THREE = require('three');
+var queryString = require('querystring');
+var TWEEN = require('tween.js');
 
 import {ThreeBoiler} from './three-boiler.es6';
 
@@ -136,6 +137,8 @@ class SecondShane extends ThreeBoiler {
 
   render() {
     super.render();
+
+    TWEEN.update();
 
     if (this.activeScene) {
       this.activeScene.update();

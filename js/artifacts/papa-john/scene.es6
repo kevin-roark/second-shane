@@ -3,12 +3,15 @@ let THREE = require('three');
 let $ = require('jquery');
 let kt = require('kutility');
 let Terrain = require('../../lib/three.terrain');
+let TWEEN = require('tween.js');
 
 let urls = require('../../urls');
 import {Talisman} from '../../talisman.es6';
 import {ShaneScene} from '../../shane-scene.es6';
 let ShaneMesh = require('../../shane-mesh');
 let VideoMesh = require('../../util/video-mesh');
+
+var TerrainLength = 1024;
 
 export class PapaJohn extends ShaneScene {
 
@@ -73,22 +76,38 @@ export class PapaJohn extends ShaneScene {
       this.audio.play();
     }
 
+    this.addTimeout(() => {
+      this.tweenToNewCameraPosition();
+    }, 5666);
+
     var videoOffset = 123 * 1000;
-    setTimeout(() => {
+    this.addTimeout(() => {
       this.papaJohnVideo.play();
 
       this.makePapaJohnMesh();
 
-      var fadeInterval = setInterval(() => {
+      this.fadeInterval = setInterval(() => {
+        if (!this.papaJohnVideoMesh) {
+          clearInterval(this.fadeInterval);
+          return;
+        }
+
         this.papaJohnVideoMesh.videoMaterial.opacity += 0.00125;
         if (this.papaJohnVideoMesh.videoMaterial.opacity >= 1) {
-          clearInterval(fadeInterval);
+          clearInterval(this.fadeInterval);
         }
       }, 30);
+
+      setTimeout(() => {
+        if (this.currentTween) {
+          this.currentTween.stop();
+        }
+        this.pleaseStopMovingCamera = true;
+      }, 1500);
     }, videoOffset);
 
     var trackDuration = videoOffset + 175 * 1000;
-    setTimeout(this.goHome.bind(this), trackDuration);
+    this.addTimeout(this.goHome.bind(this), trackDuration);
   }
 
   exit() {
@@ -100,7 +119,12 @@ export class PapaJohn extends ShaneScene {
     this.scene.remove(this.sky);
 
     this.scene.remove(this.hemiLight);
-    this.scene.remove(this.dirLight);
+    this.camera.remove(this.dirLight);
+
+    this.terrainScene = null;
+    this.sky = null;
+    this.hemiLight = null;
+    this.dirLight = null;
 
     if (!this.isLive) {
       this.audio.src = '';
@@ -115,8 +139,18 @@ export class PapaJohn extends ShaneScene {
     }
 
     if (this.papaJohnVideoMesh) {
-      this.scene.remove(this.papaJohnVideoMesh.mesh);
+      this.camera.remove(this.papaJohnVideoMesh.mesh);
       this.papaJohnVideoMesh = null;
+    }
+
+    if (this.fadeInterval) {
+      clearInterval(this.fadeInterval);
+      this.fadeInterval = null;
+    }
+
+    if (this.currentTween) {
+      this.currentTween.stop();
+      this.currentTween = null;
     }
   }
 
@@ -149,9 +183,9 @@ export class PapaJohn extends ShaneScene {
       steps: 1,
       useBufferGeometry: false,
       xSegments: 63,
-      xSize: 1024,
+      xSize: TerrainLength,
       ySegments: 63,
-      ySize: 1024,
+      ySize: TerrainLength,
     });
     this.scene.add(this.terrainScene);
 
@@ -218,7 +252,7 @@ export class PapaJohn extends ShaneScene {
 
     var dirLight = new THREE.DirectionalLight( 0xffffff, 1 );
 		dirLight.color.setHSL( 0.1, 1, 0.95 );
-		dirLight.position.set(0, 372, 400);
+		dirLight.position.set(0, 382, 400);
 
 		dirLight.castShadow = true;
 		dirLight.shadowMapWidth = 2048;
@@ -229,7 +263,7 @@ export class PapaJohn extends ShaneScene {
 		dirLight.shadowDarkness = 0.35;
 
     this.dirLight = dirLight;
-    this.scene.add(dirLight);
+    this.camera.add(dirLight);
   }
 
   // lifted from mrdoob.github.io/three.js/examples/webgl_lights_hemisphere.html
@@ -275,18 +309,66 @@ export class PapaJohn extends ShaneScene {
     this.papaJohnVideoMesh.mesh.receiveShadow = true;
     this.papaJohnVideoMesh.videoMaterial.opacity = 0.0;
 
-    this.papaJohnVideoMesh.moveTo(0, -8, -135);
+    this.papaJohnVideoMesh.moveTo(0, 2, -135);
     this.papaJohnVideoMesh.rotateTo(0.1, 0, 0);
-    this.papaJohnVideoMesh.addTo(this.scene);
+    this.papaJohnVideoMesh.addTo(this.camera);
   }
 
-  /// Going Home
+  /// Behavior
+
+  tweenToNewCameraPosition() {
+    if (!this.active || this.pleaseStopMovingCamera) {
+      return;
+    }
+
+    var camera = this.camera;
+    var tweenModel = {
+      px: camera.position.x,
+      pz: camera.position.z,
+      rx: camera.rotation.x,
+      ry: camera.rotation.y,
+      rz: camera.rotation.z
+    };
+    var tweenTarget = {
+      px: (Math.random() - 0.5) * TerrainLength * 0.67,
+      pz: (Math.random() - 0.5) * TerrainLength * 0.67,
+      rx: (Math.random() - 0.5) * 0.4,
+      ry: (Math.random() - 0.5) * Math.PI * 3,
+      rz: (Math.random() - 0.5) * 0.2
+    };
+    var duration = Math.round(Math.random() * 11666) + 9666;
+    var tween = new TWEEN.Tween(tweenModel).to(tweenTarget, duration);
+
+    tween.onUpdate(function() {
+      camera.position.x = tweenModel.px;
+      camera.position.z = tweenModel.pz;
+      camera.rotation.x = tweenModel.rx;
+      camera.rotation.y = tweenModel.ry;
+      camera.rotation.z = tweenModel.rz;
+    });
+    tween.onComplete(() => {
+      var nextTweenTime = kt.randInt(4666, 13666);
+      this.addTimeout(this.tweenToNewCameraPosition.bind(this), nextTweenTime);
+    });
+    tween.start();
+
+    this.currentTween = tween;
+  }
 
   goHome() {
-    var fadeInterval = setInterval(() => {
+    if (this.fadeInterval) {
+      clearInterval(this.fadeInterval);
+    }
+
+    this.fadeInterval = setInterval(() => {
+      if (!this.papaJohnVideoMesh) {
+        clearInterval(this.fadeInterval);
+        return;
+      }
+
       this.papaJohnVideoMesh.videoMaterial.opacity -= 0.0025;
       if (this.papaJohnVideoMesh.videoMaterial.opacity <= 0) {
-        clearInterval(fadeInterval);
+        clearInterval(this.fadeInterval);
 
         this.iWantOut();
       }
