@@ -21,6 +21,10 @@ body {
   z-index: 1000;
 }
 
+canvas, video, img {
+  cursor: none;
+}
+
 #scene-overlay {
   display: none;
   position: absolute;

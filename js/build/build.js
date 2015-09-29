@@ -4377,10 +4377,10 @@ module.exports = function () {
   };
 
   this.exitPointerlock = function () {
-    pointerlockElement.exitPointerLock = pointerlockElement.exitPointerLock || pointerlockElement.mozExitPointerLock || pointerlockElement.webkitExitPointerLock;
+    document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock || document.webkitExitPointerLock;
 
-    if (pointerlockElement.exitPointerLock) {
-      pointerlockElement.exitPointerLock();
+    if (document.exitPointerLock) {
+      document.exitPointerLock();
     }
 
     scope.canRequestPointerlock = false;
@@ -6960,7 +6960,6 @@ var SecondShane = (function (_ThreeBoiler) {
       /// Interaction
 
       value: function keypress(keycode) {
-        console.log(keycode);
         if (keycode === 32) {
           // space
           this.spacebarPressed();
@@ -6995,6 +6994,14 @@ var SecondShane = (function (_ThreeBoiler) {
       value: function toggleSiteMap() {
         this.isShowingSiteMap = !this.isShowingSiteMap;
         $siteMap.toggle();
+
+        if (this.isShowingSiteMap) {
+          this.controls.exitPointerlock();
+        } else {
+          if (this.controls.requestPointerlock) {
+            this.controls.requestPointerlock();
+          }
+        }
       }
     },
     talismans: {
@@ -7065,6 +7072,11 @@ var SecondShane = (function (_ThreeBoiler) {
 
           _this.controls.reset();
 
+          if (_this.controls.requestPointerlock) {
+            _this.controls.requestPointerlock();
+          }
+          _this.reactToPointerLock(_this.controls.locker.currentlyHasPointerlock);
+
           _this.addSharedObjects();
           _this.controls.getObject().position.copy(_this.sharedCameraPosition);
           _this.controls.setEnabled(true);
@@ -7112,7 +7124,9 @@ var SecondShane = (function (_ThreeBoiler) {
         }
         this.controls.exitPointerlock();
         this.sharedCameraPosition.copy(this.controls.getObject().position);
-        $siteMap.hide();
+        if (this.isShowingSiteMap) {
+          this.toggleSiteMap();
+        }
         this.isShowingSiteMap = false;
 
         fadeSceneOverlay(SceneFadeDuration, function () {

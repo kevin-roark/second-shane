@@ -354,7 +354,6 @@ class SecondShane extends ThreeBoiler {
   /// Interaction
 
   keypress(keycode) {
-    console.log(keycode);
     if (keycode === 32) { // space
       this.spacebarPressed();
     }
@@ -386,6 +385,15 @@ class SecondShane extends ThreeBoiler {
   toggleSiteMap() {
     this.isShowingSiteMap = !this.isShowingSiteMap;
     $siteMap.toggle();
+
+    if (this.isShowingSiteMap) {
+      this.controls.exitPointerlock();
+    }
+    else {
+      if (this.controls.requestPointerlock) {
+        this.controls.requestPointerlock();
+      }
+    }
   }
 
   /// Talismans
@@ -446,6 +454,11 @@ class SecondShane extends ThreeBoiler {
 
       this.controls.reset();
 
+      if (this.controls.requestPointerlock) {
+        this.controls.requestPointerlock();
+      }
+      this.reactToPointerLock(this.controls.locker.currentlyHasPointerlock);
+
       this.addSharedObjects();
       this.controls.getObject().position.copy(this.sharedCameraPosition);
       this.controls.setEnabled(true);
@@ -490,7 +503,9 @@ class SecondShane extends ThreeBoiler {
     }
     this.controls.exitPointerlock();
     this.sharedCameraPosition.copy(this.controls.getObject().position);
-    $siteMap.hide();
+    if (this.isShowingSiteMap) {
+      this.toggleSiteMap();
+    }
     this.isShowingSiteMap = false;
 
     fadeSceneOverlay(SceneFadeDuration, () => {

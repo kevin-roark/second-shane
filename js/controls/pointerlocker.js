@@ -40,12 +40,12 @@ module.exports = function() {
   };
 
   this.exitPointerlock = function() {
-    pointerlockElement.exitPointerLock =  pointerlockElement.exitPointerLock    ||
-                                          pointerlockElement.mozExitPointerLock ||
-                                          pointerlockElement.webkitExitPointerLock;
+    document.exitPointerLock =  document.exitPointerLock    ||
+                                document.mozExitPointerLock ||
+                                document.webkitExitPointerLock;
 
-    if (pointerlockElement.exitPointerLock) {
-      pointerlockElement.exitPointerLock();
+    if (document.exitPointerLock) {
+      document.exitPointerLock();
     }
 
     scope.canRequestPointerlock = false;
@@ -58,7 +58,8 @@ module.exports = function() {
   function pointerlockchange() {
     if (document.pointerLockElement === pointerlockElement || document.mozPointerLockElement === pointerlockElement || document.webkitPointerLockElement === pointerlockElement ) {
       scope.currentlyHasPointerlock = true;
-    } else {
+    }
+    else {
       scope.currentlyHasPointerlock = false;
     }
 
