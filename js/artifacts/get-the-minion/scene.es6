@@ -2,6 +2,7 @@
 let THREE = require('three');
 let $ = require('jquery');
 let kt = require('kutility');
+let TWEEN = require('tween.js');
 
 let urls = require('../../urls');
 import {Talisman} from '../../talisman.es6';
@@ -239,9 +240,14 @@ export class GetTheMinion extends ShaneScene {
     this.addTimeout(() => {
       if (!this.$articleDiv) return;
 
+      var articlePosition = {top: 0};
+      var articlePositionTarget = {top: -$articleDiv.height() - window.innerHeight};
       let scrollDuration = 36 * 1000;
-      let height = $articleDiv.height() + window.innerHeight;
-      $articleDiv.animate( {top: -height + 'px'}, scrollDuration,'linear', () => {
+      var tween = new TWEEN.Tween(articlePosition).to(articlePositionTarget, scrollDuration);
+      tween.onUpdate(() => {
+        $articleDiv.css('transform', 'translate(0px, ' + articlePosition.top + 'px)');
+      });
+      tween.onComplete(() => {
         if (this.$articleDiv) {
           this.$articleDiv.remove();
           this.$articleDiv = null;
@@ -250,6 +256,9 @@ export class GetTheMinion extends ShaneScene {
           callback();
         }
       });
+      tween.start();
+
+      this.articleTween = tween;
     }, 1000);
 
     this.$articleDiv = $articleDiv;
@@ -309,6 +318,11 @@ export class GetTheMinion extends ShaneScene {
     if (this.$articleDiv) {
       this.$articleDiv.remove();
       this.$articleDiv = null;
+    }
+
+    if (this.articleTween) {
+      this.articleTween.stop();
+      this.articleTween = null;
     }
 
     this.flyingCards = null;

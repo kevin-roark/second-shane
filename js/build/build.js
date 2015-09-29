@@ -667,6 +667,7 @@ Object.defineProperty(exports, "__esModule", {
 var THREE = require("three");
 var $ = require("jquery");
 var kt = require("kutility");
+var TWEEN = require("tween.js");
 
 var urls = require("../../urls");
 
@@ -925,9 +926,14 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
         this.addTimeout(function () {
           if (!_this.$articleDiv) return;
 
+          var articlePosition = { top: 0 };
+          var articlePositionTarget = { top: -$articleDiv.height() - window.innerHeight };
           var scrollDuration = 36 * 1000;
-          var height = $articleDiv.height() + window.innerHeight;
-          $articleDiv.animate({ top: -height + "px" }, scrollDuration, "linear", function () {
+          var tween = new TWEEN.Tween(articlePosition).to(articlePositionTarget, scrollDuration);
+          tween.onUpdate(function () {
+            $articleDiv.css("transform", "translate(0px, " + articlePosition.top + "px)");
+          });
+          tween.onComplete(function () {
             if (_this.$articleDiv) {
               _this.$articleDiv.remove();
               _this.$articleDiv = null;
@@ -936,6 +942,9 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
               callback();
             }
           });
+          tween.start();
+
+          _this.articleTween = tween;
         }, 1000);
 
         this.$articleDiv = $articleDiv;
@@ -998,6 +1007,11 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
         if (this.$articleDiv) {
           this.$articleDiv.remove();
           this.$articleDiv = null;
+        }
+
+        if (this.articleTween) {
+          this.articleTween.stop();
+          this.articleTween = null;
         }
 
         this.flyingCards = null;
@@ -1523,7 +1537,7 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
   return GetTheMinion;
 })(ShaneScene);
 
-},{"../../overlay":20,"../../shane-mesh":22,"../../shane-scene.es6":23,"../../talisman.es6":24,"../../urls":27,"../../util/video-mesh":31,"jquery":32,"kutility":33,"three":35}],5:[function(require,module,exports){
+},{"../../overlay":20,"../../shane-mesh":22,"../../shane-scene.es6":23,"../../talisman.es6":24,"../../urls":27,"../../util/video-mesh":31,"jquery":32,"kutility":33,"three":35,"tween.js":36}],5:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
