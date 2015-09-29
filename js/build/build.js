@@ -6620,6 +6620,8 @@ var $chatterBoxContainer = $("#chatter-box");
 var $hud = $("#hud");
 var $pointerLockTip = $("#pointer-lock-tip");
 var $siteMap = $("#site-map");
+var $spacebarTip = $("#spacebar-tip");
+var $menuTip = $("#menu-tip");
 
 var IS_LIVE = false;
 var SCRATCH_PAD = true;
@@ -6816,9 +6818,15 @@ var SecondShane = (function (_ThreeBoiler) {
           moneyMan.setMoneyReason("Keep an eye on your New Money accumulation!");
 
           setTimeout(function () {
-            if (!_this.activeScene) {
+            if (!_this.activeScene && !_this.transitioning) {
               _this.showIntroChatter();
             }
+
+            setTimeout(function () {
+              if (!_this.activeScene && !_this.transitioning) {
+                moneyMan.setMoneyReason("Remember... Press \"M\" to learn more about Second Shane!");
+              }
+            }, 30666);
           }, 3333);
         }, 3333);
       }
@@ -6878,14 +6886,29 @@ var SecondShane = (function (_ThreeBoiler) {
       /// Behavior
 
       value: function showIntroChatter() {
-        setTimeout(function () {
-          var words = ["Hello... Welcome to Second Shane... The ever-present and evolving realm of Mister Shane's sounds, sights, and feelings. I, the Red Bull™ Goblin, will be your trusted guide and companion.", "First thing's first... Second Shane is a self-driven experience. Explore the infinite universe and Hunt For Shane's Treasures. Move your eyes and body with the instructions to the left...", "You will find portals to other worlds along the way. Press the Spacebar to enter them. Fear not for within those worlds lies the reality of Second Shane. This realm is a shell.", "Thank you, and enjoy your time here. Come back soon... Shane is always changing."];
+        var hasVisited = this.userHasVisitedBefore();
 
-          $introBox.fadeIn();
-          chatter($chatterBoxContainer, words, {}, function () {
-            $introBox.fadeOut();
-          });
-        }, 2000);
+        var words;
+        if (!hasVisited) {
+          words = ["Hello... Welcome to Second Shane... The perpetual and evolving realm of Mister Shane, full of Visions Sound Media Money and Art. I, the Red Bull™ Goblin, will be your trusted guide and companion.", "First thing's first... Second Shane is a self-driven experience. No Tour Guides, Haha. Explore the infinite universe and Hunt For Shane's Treasures. Follow the instructions to the left...", "You will find portals to other worlds along the way. Press the Spacebar to enter them. Fear not for within those worlds lies the reality of Second Shane. This realm is a shell.", "Thank you, and enjoy your time here. Come back soon... Shane is always changing."];
+        } else {
+          words = ["Welcome back to Second Shane... You know what to do...", "Remember... Press 'M' at any time to see a site map with useful link portals...", "Shane always wants You to have the most fun. Have fun while you're here...", "Goodbye..."];
+        }
+
+        $introBox.fadeIn();
+        chatter($chatterBoxContainer, words, {}, function () {
+          $introBox.fadeOut();
+        });
+      }
+    },
+    userHasVisitedBefore: {
+      value: function userHasVisitedBefore() {
+        if (window.localStorage) {
+          var hasVisited = window.localStorage.getItem("hasVisited");
+          return !!hasVisited;
+        } else {
+          return false;
+        }
       }
     },
     reactToPointerLock: {
@@ -6937,11 +6960,20 @@ var SecondShane = (function (_ThreeBoiler) {
       /// Interaction
 
       value: function keypress(keycode) {
+        console.log(keycode);
         if (keycode === 32) {
           // space
           this.spacebarPressed();
-        } else if (keycode === 112) {
-          // p
+        } else if (keycode === 109) {
+          // m
+          if (!this.hasQuitLoadingScreen || this.transitioning || this.activeScene) {
+            return;
+          }
+
+          if (!this.hasHiddenMenuTip) {
+            $menuTip.fadeOut();
+            this.hasHiddenMenuTip = true;
+          }
           this.toggleSiteMap();
         }
       }
@@ -7001,7 +7033,15 @@ var SecondShane = (function (_ThreeBoiler) {
       value: function attemptToEnterScene() {
         var scene = this.nearestTalismanScene;
         if (scene) {
-          console.log(scene);
+          if (!this.hasHiddenSpacebarTip) {
+            $spacebarTip.fadeOut();
+            this.hasHiddenSpacebarTip = true;
+          }
+
+          if (window.localStorage) {
+            window.localStorage.setItem("hasVisited", true);
+          }
+
           this.transitionToScene(scene);
         }
       }
