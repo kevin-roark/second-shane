@@ -7288,17 +7288,15 @@ function getMoney() {
 }
 
 function setMoney(money) {
-  if (!odometer) {
-    module.exports.init();
-  }
-
   if (window.localStorage) {
     window.localStorage.setItem("myNewMoney", money);
   } else {
     _myMoneyCount = money;
   }
 
-  odometer.update(money);
+  if (odometer) {
+    odometer.update(money);
+  }
 }
 
 },{"jquery":32,"odometer":34}],19:[function(require,module,exports){

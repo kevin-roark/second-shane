@@ -58,10 +58,6 @@ function getMoney() {
 }
 
 function setMoney(money) {
-  if (!odometer) {
-    module.exports.init();
-  }
-
   if (window.localStorage) {
     window.localStorage.setItem('myNewMoney', money);
   }
@@ -69,5 +65,7 @@ function setMoney(money) {
     _myMoneyCount = money;
   }
 
-  odometer.update(money);
+  if (odometer) {
+    odometer.update(money);
+  }
 }
