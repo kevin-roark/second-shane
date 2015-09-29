@@ -1154,12 +1154,12 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
 
         var text = kt.choice(textOptions);
         var div = $("<div style=\"position: absolute; font-family: Times New Roman;\">" + text + "</div>");
-        div.css("right", Math.random() * 175 + 5 + "px");
+        div.css("right", Math.random() * 120 + 5 + "px");
         div.css("top", (Math.random() - 0.5) * 450 + window.innerHeight / 2 + "px");
         div.css("color", kt.randColor());
         div.css("font-size", kt.randInt(28, 56) + "px");
         if (Math.random() > 0.5) div.css("font-style", "italic");
-        if (Math.random() > 0.5) div.css("text-decoration", "underline");
+        if (Math.random() > 0.25) div.css("text-decoration", "underline");
 
         this.domContainer.append(div);
 
@@ -1171,7 +1171,7 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
         // call myself again
         this.addTimeout(function () {
           _this.flashGetTheMinionText();
-        }, Math.random() * 6000 + 666);
+        }, Math.random() * 5666 + 666);
       }
     },
     clawKeyDown: {
@@ -1385,7 +1385,7 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
             meTexture.needsUpdate = true;
           }
 
-          meMinionMesh.rotation.y -= 0.05;
+          meMinionMesh.rotation.y -= 0.08;
 
           if (scale < 10) {
             scale *= 1.0025;
