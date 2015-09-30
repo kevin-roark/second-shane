@@ -9,6 +9,7 @@ import {ThreeBoiler} from './three-boiler.es6';
 let FlyControls = require('./controls/fly-controls');
 let moneyMan = require('./new-money');
 let minimap = require('./minimap');
+let couponLeader = require('./coupon-leader');
 let fadeSceneOverlay = require('./overlay');
 
 import {oneOffs, setDidFindBeaconCallback} from './one-offs.es6';
@@ -103,6 +104,10 @@ class SecondShane extends ThreeBoiler {
     this.activeScene = null;
     this.nearestTalismanScene = null;
     this.isShowingSiteMap = false;
+
+    couponLeader.init(() => {
+      this.toggleSiteMap();
+    });
 
     if (SCRATCH_PAD) {
       this.oneOffs = [];
