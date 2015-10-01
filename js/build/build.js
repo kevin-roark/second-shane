@@ -9203,7 +9203,7 @@ var ShaneTheme = (function () {
 })();
 
 var universeTheme = new ShaneTheme({
-  skyboxURL: "/media/theme-images/universe/main.jpg"
+  skyboxURL: "/media/theme-images/universe/pure.jpg"
 });
 
 var currentTheme = universeTheme;

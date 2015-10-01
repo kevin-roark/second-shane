@@ -23,7 +23,7 @@ class ShaneTheme {
 }
 
 let universeTheme = new ShaneTheme({
-  skyboxURL: '/media/theme-images/universe/main.jpg'
+  skyboxURL: '/media/theme-images/universe/pure.jpg'
 });
 
 export let currentTheme = universeTheme;
