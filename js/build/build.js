@@ -4541,12 +4541,23 @@ var moneyMan = require("./new-money");
 var $couponError = $("#coupon-error");
 var $couponInput = $("#shane-coupon-input");
 var $submitCouponButton = $("#shane-coupon-submit-button");
+var $themePicker = $("#theme-picker");
 
 var SmallCoupon = "Get What You Earned";
 var LargeCoupon = "The Money You Paid Will Have An Impact On Shane";
 var validCoupons = [SmallCoupon, LargeCoupon];
 
 module.exports.init = function (didFullfillCallback) {
+  setupNewCouponHandler(didFullfillCallback);
+  activateExistingRewards();
+};
+
+module.exports.reset = function () {
+  $couponInput.val("");
+  setErrorMessage("");
+};
+
+function setupNewCouponHandler(didFullfillCallback) {
   $submitCouponButton.click(function () {
     var enteredCoupon = $couponInput.val();
     if (!enteredCoupon.length) {
@@ -4568,12 +4579,7 @@ module.exports.init = function (didFullfillCallback) {
       setErrorMessage("bad Shane Coupon!");
     }
   });
-};
-
-module.exports.reset = function () {
-  $couponInput.val("");
-  setErrorMessage("");
-};
+}
 
 function setErrorMessage(message) {
   $couponError.text(message);
@@ -4581,6 +4587,21 @@ function setErrorMessage(message) {
   setTimeout(function () {
     $couponError.text("");
   }, 4000);
+}
+
+function activateExistingRewards() {
+  if (!window.localStorage) {
+    return;
+  }
+
+  // only persisting behavior reward currently is theme picker from large coupon
+  if (hasCouponBeenUsed(LargeCoupon)) {
+    activateLargeCouponReward();
+  }
+}
+
+function activateLargeCouponReward() {
+  $themePicker.show();
 }
 
 function hasCouponBeenUsed(coupon) {
@@ -4599,11 +4620,19 @@ function setCouponAsUsed(coupon) {
 
 function fulfillCoupon(coupon) {
   setCouponAsUsed(coupon);
+  var message;
 
-  if (coupon === LargeCoupon) {} else {
+  if (coupon === LargeCoupon) {
+    moneyMan.addMoney(96000000); // $96,000,000 New Money
+    message = "Injected with $96,000,000 New Money For An OUTSTANDING PLEDGE. SHANE IS ETERNALLY GREATFUL. " + "You have a surprise reward waiting in the site map!";
+    activateLargeCouponReward();
+  } else {
     // for now assume small coupon
     moneyMan.addMoney(4000000); // $4,000,000 New Money
-    var message = "Injected with $4,000,000 New Money For A Delightful Shane Pledge. Shane Says Thank You!";
+    message = "Injected with $4,000,000 New Money For A Delightful Shane Pledge. Shane Says Thank You!";
+  }
+
+  if (message) {
     moneyMan.setMoneyReason(message, 8666);
   }
 }
@@ -6783,7 +6812,10 @@ var setDidFindBeaconCallback = _oneOffsEs6.setDidFindBeaconCallback;
 
 var createShaneScenes = require("./scenes.es6").createShaneScenes;
 
-var currentTheme = require("./theme.es6").currentTheme;
+var _themeEs6 = require("./theme.es6");
+
+var applyCurrentTheme = _themeEs6.applyCurrentTheme;
+var removeCurrentTheme = _themeEs6.removeCurrentTheme;
 
 var chatter = require("./util/chatterbox.es6").chatter;
 
@@ -6866,8 +6898,7 @@ var SecondShane = (function (_ThreeBoiler) {
 
     this.shaneScenes = createShaneScenes(this.transitionFromScene.bind(this), this.renderer, this.camera, this.scene);
 
-    this.theme = currentTheme;
-    this.theme.applyTo(this.scene);
+    applyCurrentTheme(this.scene);
 
     this.sharedWorldLight = new THREE.HemisphereLight(16777215, 16777215, 0.5);
     this.sharedWorldLight.position.set(0, 500, 0);
@@ -7340,7 +7371,7 @@ var SecondShane = (function (_ThreeBoiler) {
           oneOff.activate(_this.scene);
         });
 
-        this.theme.applyTo(this.scene);
+        applyCurrentTheme(this.scene);
 
         this.scene.add(this.sharedWorldLight);
       }
@@ -7358,7 +7389,7 @@ var SecondShane = (function (_ThreeBoiler) {
           oneOff.deactivate(_this.scene);
         });
 
-        this.theme.removeFrom(this.scene);
+        removeCurrentTheme(this.scene);
 
         this.scene.remove(this.sharedWorldLight);
       }
@@ -9170,6 +9201,8 @@ var _createClass = (function () { function defineProperties(target, props) { for
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
+var $ = require("jquery");
+
 var createSkybox = require("./util/skybox").create;
 
 var ShaneTheme = (function () {
@@ -9202,17 +9235,78 @@ var ShaneTheme = (function () {
   return ShaneTheme;
 })();
 
-var universeTheme = new ShaneTheme({
-  skyboxURL: "/media/theme-images/universe/pure.jpg"
-});
+var themeCache = {};
+var _lastScene;
 
-var currentTheme = universeTheme;
-exports.currentTheme = currentTheme;
+var themeCreator = function (url) {
+  return function () {
+    if (!themeCache[url]) {
+      themeCache[url] = new ShaneTheme({
+        skyboxURL: url
+      });
+    }
+    return themeCache[url];
+  };
+};
+
+var universeTheme = themeCreator("/media/theme-images/universe/pure.jpg");
+var basketballTheme = themeCreator("/media/theme-images/basketball_court.jpg");
+var grassyTheme = themeCreator("/media/theme-images/grassy_field.jpg");
+var papaTheme = themeCreator("/media/theme-images/papa_johns_interior.jpg");
+var marbleTheme = themeCreator("/media/theme-images/marble_walls.jpg");
+
+var idToThemeMap = {
+  "space-theme": universeTheme,
+  "basketball-theme": basketballTheme,
+  "grass-theme": grassyTheme,
+  "papa-theme": papaTheme,
+  "marble-theme": marbleTheme
+};
+
+var currentTheme = universeTheme(); // default theme
+
+// if another theme was used in the most recent session, use it now!
+if (window.localStorage) {
+  var lastUsedThemeID = window.localStorage.getItem("lastUsedThemeID");
+  if (lastUsedThemeID) {
+    var themeFunction = idToThemeMap[lastUsedThemeID];
+    if (themeFunction) {
+      currentTheme = themeFunction();
+    }
+  }
+}
+
+var applyCurrentTheme = function (scene) {
+  _lastScene = scene;
+  currentTheme.applyTo(scene);
+};
+
+exports.applyCurrentTheme = applyCurrentTheme;
+var removeCurrentTheme = function (scene) {
+  _lastScene = scene;
+  currentTheme.removeFrom(scene);
+};
+
+exports.removeCurrentTheme = removeCurrentTheme;
+$(".theme-button").click(function () {
+  var $button = $(this);
+  var id = $button.attr("id");
+  var themeFunction = idToThemeMap[id];
+  if (themeFunction && _lastScene) {
+    removeCurrentTheme(_lastScene);
+    currentTheme = themeFunction();
+    applyCurrentTheme(_lastScene);
+
+    if (window.localStorage) {
+      window.localStorage.setItem("lastUsedThemeID", id);
+    }
+  }
+});
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"./util/skybox":31}],27:[function(require,module,exports){
+},{"./util/skybox":31,"jquery":33}],27:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();

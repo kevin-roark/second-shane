@@ -14,7 +14,7 @@ let fadeSceneOverlay = require('./overlay');
 
 import {oneOffs, setDidFindBeaconCallback} from './one-offs.es6';
 import {createShaneScenes} from './scenes.es6';
-import {currentTheme} from './theme.es6';
+import {applyCurrentTheme, removeCurrentTheme} from './theme.es6';
 import {chatter} from './util/chatterbox.es6';
 
 var $loadingOverlay = $('#loading-overlay');
@@ -92,8 +92,7 @@ class SecondShane extends ThreeBoiler {
 
     this.shaneScenes = createShaneScenes(this.transitionFromScene.bind(this), this.renderer, this.camera, this.scene);
 
-    this.theme = currentTheme;
-    this.theme.applyTo(this.scene);
+    applyCurrentTheme(this.scene);
 
     this.sharedWorldLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.5);
     this.sharedWorldLight.position.set(0, 500, 0);
@@ -541,7 +540,7 @@ class SecondShane extends ThreeBoiler {
       oneOff.activate(this.scene);
     });
 
-    this.theme.applyTo(this.scene);
+    applyCurrentTheme(this.scene);
 
     this.scene.add(this.sharedWorldLight);
   }
@@ -556,7 +555,7 @@ class SecondShane extends ThreeBoiler {
       oneOff.deactivate(this.scene);
     });
 
-    this.theme.removeFrom(this.scene);
+    removeCurrentTheme(this.scene);
 
     this.scene.remove(this.sharedWorldLight);
   }
