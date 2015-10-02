@@ -292,7 +292,7 @@ export class GetTheMinion extends ShaneScene {
     var currentTimeout = 0;
     for (var i = 0; i < 15; i++) {
       this.addTimeout(this.makeFlyingCard.bind(this), currentTimeout);
-      currentTimeout += Math.random() * 1666 + 888;
+      currentTimeout += Math.random() * 999 + 888;
     }
   }
 
@@ -623,6 +623,13 @@ export class GetTheMinion extends ShaneScene {
         this.clawMesh.position.y -= 0.01;
         if (this.clawMesh.position.y <= -2.75) {
           movingClawDown = false;
+
+          var div = $('<div style="position: fixed; left: 0; width: 100%; text-align: center; height: 100px; top: 50%; margin-top: -100px; font-size: 100px; color: white;"></div>');
+          div.text(kt.choice(['CLOSE', 'NICE TRY', 'NEXT TIME', 'ALMOST!', 'ATTEMPT THWARTED', 'SHIT', 'PLEASE', 'ONE MORE INCH', 'JUST.ONE.MORE.']));
+          this.domContainer.append(div);
+          setTimeout(function() {
+            div.remove();
+          }, 490);
         }
       }
       else {
