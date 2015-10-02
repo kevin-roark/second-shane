@@ -14,7 +14,7 @@ export class LiveAtJJs extends ShaneScene {
   constructor(renderer, camera, scene, options) {
     super(renderer, camera, scene, options);
 
-    this.name = "Mister Shane Live At JJ's";
+    this.name = "Mister Shane Live at JJ's";
     this.slug = 'live-at-jjs-place';
     this.symbolName = '/media/symbols/curtain.png';
 
@@ -83,7 +83,7 @@ export class LiveAtJJs extends ShaneScene {
 
     this.addTimeout(this.makeDVDFullScreen.bind(this), 8 * 60 * 1000);
 
-    let videoLength = (9 * 60 + 16) * 1000;
+    let videoLength = this.isLive ? (9 * 60 + 16) * 1000 : (17 * 60 + 41) * 1000;
     this.addTimeout(this.iWantOut.bind(this), videoLength);
   }
 
@@ -157,7 +157,6 @@ export class LiveAtJJs extends ShaneScene {
       this.resize();
 
       if (currentTop + currentHeight >= window.innerHeight) {
-        console.log('clearing growth interval');
         clearInterval(growthInterval);
       }
     }, 25);

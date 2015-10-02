@@ -36,8 +36,8 @@ var ASMR = exports.ASMR = (function (_ShaneScene) {
 
     _get(Object.getPrototypeOf(ASMR.prototype), "constructor", this).call(this, renderer, camera, scene, options);
 
-    this.name = "shane's ASMR treat";
-    this.slug = "asmr-treat";
+    this.name = "Shane's Whisper";
+    this.slug = "shanes-whisper";
     this.symbolName = "/media/symbols/ear.png";
 
     var host = this.isLive ? urls.asmr.live : urls.asmr.web;
@@ -1921,7 +1921,7 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
 
     _get(Object.getPrototypeOf(GodIsAMan.prototype), "constructor", this).call(this, renderer, camera, scene, options);
 
-    this.name = "God Is A Man";
+    this.name = "God Is a Man";
     this.slug = "god-is-a-man";
     this.symbolName = "/media/symbols/cross.png";
 
@@ -2578,7 +2578,7 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
 
     _get(Object.getPrototypeOf(iFeltTheFoot.prototype), "constructor", this).call(this, renderer, camera, scene, options);
 
-    this.name = "i felt the foot";
+    this.name = "I Felt the Foot";
     this.slug = "i-felt-the-foot";
     this.symbolName = "/media/symbols/foot.png";
 
@@ -3213,7 +3213,7 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
 
     _get(Object.getPrototypeOf(LiveAtJJs.prototype), "constructor", this).call(this, renderer, camera, scene, options);
 
-    this.name = "Mister Shane Live At JJ's";
+    this.name = "Mister Shane Live at JJ's";
     this.slug = "live-at-jjs-place";
     this.symbolName = "/media/symbols/curtain.png";
 
@@ -3291,7 +3291,7 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
 
         this.addTimeout(this.makeDVDFullScreen.bind(this), 8 * 60 * 1000);
 
-        var videoLength = (9 * 60 + 16) * 1000;
+        var videoLength = this.isLive ? (9 * 60 + 16) * 1000 : (17 * 60 + 41) * 1000;
         this.addTimeout(this.iWantOut.bind(this), videoLength);
       }
     },
@@ -3372,7 +3372,6 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
           _this.resize();
 
           if (currentTop + currentHeight >= window.innerHeight) {
-            console.log("clearing growth interval");
             clearInterval(growthInterval);
           }
         }, 25);
@@ -3740,8 +3739,8 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
 
     _get(Object.getPrototypeOf(PapaJohn.prototype), "constructor", this).call(this, renderer, camera, scene, options);
 
-    this.name = "Shane's Papa John";
-    this.slug = "papa-john-revalation";
+    this.name = "Shane's Papa John Revelation";
+    this.slug = "papa-john-revelation";
     this.symbolName = "/media/symbols/papa.png";
 
     var host = this.isLive ? urls.papaJohn.live : urls.papaJohn.web;
