@@ -108,11 +108,11 @@ export class GetTheMinion extends ShaneScene {
     this.showArticleText(() => {
       this.addTimeout(() => {
         this.performBoyCardFlyingAnimation();
-      }, 3333);
+      }, 666);
     });
 
     // part 2
-    let part2Onset = 75 * 1000;
+    let part2Onset = 48 * 1000;
     this.addTimeout(() => {
       fadeSceneOverlay(
         1500,
@@ -130,12 +130,12 @@ export class GetTheMinion extends ShaneScene {
         }
       );
 
-      var beginShowingMyselfOffset = 35 * 1000;
+      var beginShowingMyselfOffset = 58 * 1000;
       this.addTimeout(() => {
         this.setupWebcamStream();
       }, beginShowingMyselfOffset);
 
-      var makeTheMinionsMeOffset = 65 * 1000;
+      var makeTheMinionsMeOffset = 108 * 1000;
       this.addTimeout(() => {
         this.stopFlashingText = true;
         this.makeTheMinionsMe();
@@ -290,17 +290,17 @@ export class GetTheMinion extends ShaneScene {
     this.flyingCards = [];
 
     var currentTimeout = 0;
-    for (var i = 0; i < 13; i++) {
+    for (var i = 0; i < 15; i++) {
       this.addTimeout(this.makeFlyingCard.bind(this), currentTimeout);
-      currentTimeout += Math.random() * 2222 + 1111;
+      currentTimeout += Math.random() * 1666 + 888;
     }
   }
 
   makeFlyingCard() {
     let textures = ['/media/textures/minionboy1.jpg', '/media/textures/minionboy2.jpg', '/media/textures/minionboy3.jpg'];
     let position = new THREE.Vector3((Math.random() - 0.5) * 28, -2 + Math.random() * 10, 3);
-    let velocity = new THREE.Vector3((Math.random() - 0.5) * 0.005, 0, -0.08 + Math.random() * -0.2);
-    let acceleration = new THREE.Vector3(0, -0.00015, 0);
+    let velocity = new THREE.Vector3((Math.random() - 0.5) * 0.005, 0, -0.15 + Math.random() * -0.4);
+    let acceleration = new THREE.Vector3(0, -0.00025, 0);
     let rotationMult = Math.random() > 0.5 ? 1 : -1;
     let rotationalVelocity = new THREE.Vector3(Math.random() * rotationMult * 0.02 + rotationMult * 0.02, 0, 0);
     let length = 3.5 + Math.random() * 6;
@@ -487,7 +487,7 @@ export class GetTheMinion extends ShaneScene {
   }
 
   showClawMachineInstructions() {
-    var div = $('<div class="track-instruction-box" style="right: 10px; top: 10px;">Work the Machine to Get the Minion. Use the Arrows to move the Claw. Press Enter to Submit the Claw.</div>');
+    var div = $('<div class="track-instruction-box" style="right: 10px; top: 10px;">You\'re Here. Work the Machine to Get the Minion. Use the Arrows to move the Claw. Press Enter to Submit the Claw.</div>');
     this.domContainer.append(div);
     this.$clawMachineInstructions = div;
   }
