@@ -770,6 +770,8 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
           });
         }
 
+        this.camera.rotation.x += 0.05;
+
         this.makeLights();
         this.makeWhiteGround();
       }
@@ -781,7 +783,7 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
         _get(Object.getPrototypeOf(GetTheMinion.prototype), "doTimedWork", this).call(this);
 
         if (!this.isLive) {
-          var silentTime = 5000;
+          var silentTime = 1000;
           this.addTimeout(function () {
             _this.audio.play();
           }, silentTime);
@@ -791,11 +793,11 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
         this.showArticleText(function () {
           _this.addTimeout(function () {
             _this.performBoyCardFlyingAnimation();
-          }, 666);
+          }, 333);
         });
 
         // part 2
-        var part2Onset = 48 * 1000;
+        var part2Onset = 36 * 1000;
         this.addTimeout(function () {
           fadeSceneOverlay(1500, function () {
             _this.removePart1Portions();
@@ -810,20 +812,24 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
             }, 3000);
           });
 
-          var beginShowingMyselfOffset = 58 * 1000;
+          var beginShowingMyselfOffset = 65 * 1000;
           _this.addTimeout(function () {
             _this.setupWebcamStream();
           }, beginShowingMyselfOffset);
 
-          var makeTheMinionsMeOffset = 108 * 1000;
+          var makeTheMinionsMeOffset = 110 * 1000;
           _this.addTimeout(function () {
             _this.stopFlashingText = true;
             _this.makeTheMinionsMe();
           }, makeTheMinionsMeOffset);
         }, part2Onset);
 
+        this.addTimeout(function () {
+          _this.showMinionStatusMessage("YOU GOT IT. THE MINION IS YOURS", 2000);
+        }, 167 * 1000);
+
         // end it
-        var trackDuration = 178 * 1000;
+        var trackDuration = 171.5 * 1000;
         this.addTimeout(this.iWantOut.bind(this), trackDuration);
       }
     },
@@ -952,7 +958,7 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
 
           var articlePosition = { top: 0 };
           var articlePositionTarget = { top: -$articleDiv.height() - window.innerHeight };
-          var scrollDuration = 36 * 1000;
+          var scrollDuration = 25 * 1000;
           var tween = new TWEEN.Tween(articlePosition).to(articlePositionTarget, scrollDuration);
           tween.onUpdate(function () {
             $articleDiv.css("transform", "translate(0px, " + articlePosition.top + "px)");
@@ -979,17 +985,21 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
         this.flyingCards = [];
 
         var currentTimeout = 0;
-        for (var i = 0; i < 15; i++) {
+        for (var i = 0; i < 16; i++) {
           this.addTimeout(this.makeFlyingCard.bind(this), currentTimeout);
-          currentTimeout += Math.random() * 999 + 888;
+          currentTimeout += Math.random() * 700 + 444;
         }
       }
     },
     makeFlyingCard: {
       value: function makeFlyingCard() {
+        if (!this.flyingCards) {
+          return;
+        }
+
         var textures = ["/media/textures/minionboy1.jpg", "/media/textures/minionboy2.jpg", "/media/textures/minionboy3.jpg"];
         var position = new THREE.Vector3((Math.random() - 0.5) * 28, -2 + Math.random() * 10, 3);
-        var velocity = new THREE.Vector3((Math.random() - 0.5) * 0.005, 0, -0.15 + Math.random() * -0.4);
+        var velocity = new THREE.Vector3((Math.random() - 0.5) * 0.005, 0, -0.2 + Math.random() * -0.4);
         var acceleration = new THREE.Vector3(0, -0.00025, 0);
         var rotationMult = Math.random() > 0.5 ? 1 : -1;
         var rotationalVelocity = new THREE.Vector3(Math.random() * rotationMult * 0.02 + rotationMult * 0.02, 0, 0);
@@ -1193,7 +1203,7 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
           return;
         }
 
-        var textOptions = ["GET THE MINION", "SUBMIT THE CLAW", "USE THE MACHINE", "GRAB THE MINION", "TAKE IT", "EARN IT", "GET IT", "KEEP IT", "MOVE THE CLAW", "FIND YOUR MINION", "WORK", "PROGRESS", "PERSEVERE", "IT IS YOURS"];
+        var textOptions = ["GET THE MINION", "SUBMIT THE CLAW", "USE THE MACHINE", "GRAB THE MINION", "TAKE IT", "EARN IT", "GET IT", "KEEP IT", "MOVE THE CLAW", "FIND YOUR MINION", "WORK", "PROGRESS", "PERSEVERE", "IT CAN BE YOURS"];
 
         var text = kt.choice(textOptions);
         var div = $("<div class=\"text-popup\" style=\"position: absolute;\">" + text + "</div>");
@@ -1309,7 +1319,7 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
             _this.clawMesh.position.y -= 0.01;
             if (_this.clawMesh.position.y <= -2.75) {
               movingClawDown = false;
-              _this.showMinionStatusMessage(kt.choice(["CLOSE", "NICE TRY", "NEXT TIME", "ALMOST!", "ATTEMPT THWARTED", "SHIT", "PLEASE", "ONE MORE INCH", "JUST.ONE.MORE."]));
+              _this.showMinionStatusMessage(kt.choice(["CLOSE", "GOOD ATTEMPT", "NEXT TIME", "ALMOST", "ATTEMPT THWARTED", "I FELT IT SLIP", "PLEASE", "ONE MORE INCH", "JUST ONE MORE", "IT JUMPED FREE", "IT WIGGLED LOOSE"]));
             }
           } else {
             _this.clawMesh.position.y += 0.015;
@@ -1323,7 +1333,7 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
     showMinionStatusMessage: {
       value: function showMinionStatusMessage(message, dur) {
         if (!dur) dur = 490;
-        var div = $("<div style=\"position: fixed; left: 0; width: 100%; text-align: center; height: 100px; top: 50%; margin-top: -100px; font-size: 100px; color: white;\"></div>");
+        var div = $("<div style=\"position: fixed; left: 0; width: 100%; text-align: center; height: 140px; top: 50%; margin-top: -140px; font-size: 140px; color: white;\"></div>");
         div.text(message);
         this.domContainer.append(div);
         setTimeout(function () {
@@ -1407,8 +1417,6 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
     },
     makeTheMinionsMe: {
       value: function makeTheMinionsMe() {
-        var _this = this;
-
         if (!this.mirrorVideoMesh) {
           return;
         }
@@ -1446,9 +1454,6 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
           if (scale < 10) {
             scale *= 1.0025;
             meMinionMesh.scale.set(scale, scale, scale);
-          } else if (!_this.hasShowedSpecialMessage) {
-            _this.showMinionStatusMessage("YOU GOT IT. THE MINION", 1000);
-            _this.hasShowedSpecialMessage = true;
           }
         };
       }
@@ -1500,7 +1505,7 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
               }
 
               if (self.mirrorVideoMesh.videoMaterial.opacity < 0.48) {
-                self.mirrorVideoMesh.videoMaterial.opacity += 0.0012;
+                self.mirrorVideoMesh.videoMaterial.opacity += 0.0008;
               } else {
                 self.mirrorUpdate = null;
               }

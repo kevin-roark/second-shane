@@ -90,6 +90,8 @@ export class GetTheMinion extends ShaneScene {
       });
     }
 
+    this.camera.rotation.x += 0.05;
+
     this.makeLights();
     this.makeWhiteGround();
   }
@@ -98,7 +100,7 @@ export class GetTheMinion extends ShaneScene {
     super.doTimedWork();
 
     if (!this.isLive) {
-      let silentTime = 5000;
+      let silentTime = 1000;
       this.addTimeout(() => {
         this.audio.play();
       }, silentTime);
@@ -108,11 +110,11 @@ export class GetTheMinion extends ShaneScene {
     this.showArticleText(() => {
       this.addTimeout(() => {
         this.performBoyCardFlyingAnimation();
-      }, 666);
+      }, 333);
     });
 
     // part 2
-    let part2Onset = 48 * 1000;
+    let part2Onset = 36 * 1000;
     this.addTimeout(() => {
       fadeSceneOverlay(
         1500,
@@ -130,20 +132,24 @@ export class GetTheMinion extends ShaneScene {
         }
       );
 
-      var beginShowingMyselfOffset = 58 * 1000;
+      var beginShowingMyselfOffset = 65 * 1000;
       this.addTimeout(() => {
         this.setupWebcamStream();
       }, beginShowingMyselfOffset);
 
-      var makeTheMinionsMeOffset = 108 * 1000;
+      var makeTheMinionsMeOffset = 110 * 1000;
       this.addTimeout(() => {
         this.stopFlashingText = true;
         this.makeTheMinionsMe();
       }, makeTheMinionsMeOffset);
     }, part2Onset);
 
+    this.addTimeout(() => {
+      this.showMinionStatusMessage('YOU GOT IT. THE MINION IS YOURS', 2000);
+    }, 167 * 1000);
+
     // end it
-    let trackDuration = 178 * 1000;
+    let trackDuration = 171.5 * 1000;
     this.addTimeout(this.iWantOut.bind(this), trackDuration);
   }
 
@@ -264,7 +270,7 @@ export class GetTheMinion extends ShaneScene {
 
       var articlePosition = {top: 0};
       var articlePositionTarget = {top: -$articleDiv.height() - window.innerHeight};
-      let scrollDuration = 36 * 1000;
+      let scrollDuration = 25 * 1000;
       var tween = new TWEEN.Tween(articlePosition).to(articlePositionTarget, scrollDuration);
       tween.onUpdate(() => {
         $articleDiv.css('transform', 'translate(0px, ' + articlePosition.top + 'px)');
@@ -290,16 +296,20 @@ export class GetTheMinion extends ShaneScene {
     this.flyingCards = [];
 
     var currentTimeout = 0;
-    for (var i = 0; i < 15; i++) {
+    for (var i = 0; i < 16; i++) {
       this.addTimeout(this.makeFlyingCard.bind(this), currentTimeout);
-      currentTimeout += Math.random() * 999 + 888;
+      currentTimeout += Math.random() * 700 + 444;
     }
   }
 
   makeFlyingCard() {
+    if (!this.flyingCards) {
+      return;
+    }
+
     let textures = ['/media/textures/minionboy1.jpg', '/media/textures/minionboy2.jpg', '/media/textures/minionboy3.jpg'];
     let position = new THREE.Vector3((Math.random() - 0.5) * 28, -2 + Math.random() * 10, 3);
-    let velocity = new THREE.Vector3((Math.random() - 0.5) * 0.005, 0, -0.15 + Math.random() * -0.4);
+    let velocity = new THREE.Vector3((Math.random() - 0.5) * 0.005, 0, -0.2 + Math.random() * -0.4);
     let acceleration = new THREE.Vector3(0, -0.00025, 0);
     let rotationMult = Math.random() > 0.5 ? 1 : -1;
     let rotationalVelocity = new THREE.Vector3(Math.random() * rotationMult * 0.02 + rotationMult * 0.02, 0, 0);
@@ -511,7 +521,7 @@ export class GetTheMinion extends ShaneScene {
       'WORK',
       'PROGRESS',
       'PERSEVERE',
-      "IT IS YOURS"
+      "IT CAN BE YOURS"
     ];
 
     var text = kt.choice(textOptions);
@@ -623,7 +633,7 @@ export class GetTheMinion extends ShaneScene {
         this.clawMesh.position.y -= 0.01;
         if (this.clawMesh.position.y <= -2.75) {
           movingClawDown = false;
-          this.showMinionStatusMessage(kt.choice(['CLOSE', 'NICE TRY', 'NEXT TIME', 'ALMOST!', 'ATTEMPT THWARTED', 'SHIT', 'PLEASE', 'ONE MORE INCH', 'JUST.ONE.MORE.']));
+          this.showMinionStatusMessage(kt.choice(['CLOSE', 'GOOD ATTEMPT', 'NEXT TIME', 'ALMOST', 'ATTEMPT THWARTED', 'I FELT IT SLIP', 'PLEASE', 'ONE MORE INCH', 'JUST ONE MORE', 'IT JUMPED FREE', 'IT WIGGLED LOOSE']));
         }
       }
       else {
@@ -637,7 +647,7 @@ export class GetTheMinion extends ShaneScene {
 
   showMinionStatusMessage(message, dur) {
     if (!dur) dur = 490;
-    var div = $('<div style="position: fixed; left: 0; width: 100%; text-align: center; height: 100px; top: 50%; margin-top: -100px; font-size: 100px; color: white;"></div>');
+    var div = $('<div style="position: fixed; left: 0; width: 100%; text-align: center; height: 140px; top: 50%; margin-top: -140px; font-size: 140px; color: white;"></div>');
     div.text(message);
     this.domContainer.append(div);
     setTimeout(function() {
@@ -752,10 +762,6 @@ export class GetTheMinion extends ShaneScene {
         scale *= 1.0025;
         meMinionMesh.scale.set(scale, scale, scale);
       }
-      else if (!this.hasShowedSpecialMessage) {
-        this.showMinionStatusMessage('YOU GOT IT. THE MINION', 1000);
-        this.hasShowedSpecialMessage = true;
-      }
     };
   }
 
@@ -803,7 +809,7 @@ export class GetTheMinion extends ShaneScene {
           }
 
           if (self.mirrorVideoMesh.videoMaterial.opacity < 0.48) {
-            self.mirrorVideoMesh.videoMaterial.opacity += 0.0012;
+            self.mirrorVideoMesh.videoMaterial.opacity += 0.0008;
           }
           else {
             self.mirrorUpdate = null;
