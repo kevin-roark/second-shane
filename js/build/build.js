@@ -1309,13 +1309,7 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
             _this.clawMesh.position.y -= 0.01;
             if (_this.clawMesh.position.y <= -2.75) {
               movingClawDown = false;
-
-              var div = $("<div style=\"position: fixed; left: 0; width: 100%; text-align: center; height: 100px; top: 50%; margin-top: -100px; font-size: 100px; color: white;\"></div>");
-              div.text(kt.choice(["CLOSE", "NICE TRY", "NEXT TIME", "ALMOST!", "ATTEMPT THWARTED", "SHIT", "PLEASE", "ONE MORE INCH", "JUST.ONE.MORE."]));
-              _this.domContainer.append(div);
-              setTimeout(function () {
-                div.remove();
-              }, 490);
+              _this.showMinionStatusMessage(kt.choice(["CLOSE", "NICE TRY", "NEXT TIME", "ALMOST!", "ATTEMPT THWARTED", "SHIT", "PLEASE", "ONE MORE INCH", "JUST.ONE.MORE."]));
             }
           } else {
             _this.clawMesh.position.y += 0.015;
@@ -1324,6 +1318,17 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
             }
           }
         };
+      }
+    },
+    showMinionStatusMessage: {
+      value: function showMinionStatusMessage(message, dur) {
+        if (!dur) dur = 490;
+        var div = $("<div style=\"position: fixed; left: 0; width: 100%; text-align: center; height: 100px; top: 50%; margin-top: -100px; font-size: 100px; color: white;\"></div>");
+        div.text(message);
+        this.domContainer.append(div);
+        setTimeout(function () {
+          div.remove();
+        }, dur);
       }
     },
     addMinionsToClawMachine: {
@@ -1402,6 +1407,8 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
     },
     makeTheMinionsMe: {
       value: function makeTheMinionsMe() {
+        var _this = this;
+
         if (!this.mirrorVideoMesh) {
           return;
         }
@@ -1439,6 +1446,9 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
           if (scale < 10) {
             scale *= 1.0025;
             meMinionMesh.scale.set(scale, scale, scale);
+          } else if (!_this.hasShowedSpecialMessage) {
+            _this.showMinionStatusMessage("YOU GOT IT. THE MINION", 1000);
+            _this.hasShowedSpecialMessage = true;
           }
         };
       }

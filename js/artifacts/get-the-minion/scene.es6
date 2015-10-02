@@ -623,13 +623,7 @@ export class GetTheMinion extends ShaneScene {
         this.clawMesh.position.y -= 0.01;
         if (this.clawMesh.position.y <= -2.75) {
           movingClawDown = false;
-
-          var div = $('<div style="position: fixed; left: 0; width: 100%; text-align: center; height: 100px; top: 50%; margin-top: -100px; font-size: 100px; color: white;"></div>');
-          div.text(kt.choice(['CLOSE', 'NICE TRY', 'NEXT TIME', 'ALMOST!', 'ATTEMPT THWARTED', 'SHIT', 'PLEASE', 'ONE MORE INCH', 'JUST.ONE.MORE.']));
-          this.domContainer.append(div);
-          setTimeout(function() {
-            div.remove();
-          }, 490);
+          this.showMinionStatusMessage(kt.choice(['CLOSE', 'NICE TRY', 'NEXT TIME', 'ALMOST!', 'ATTEMPT THWARTED', 'SHIT', 'PLEASE', 'ONE MORE INCH', 'JUST.ONE.MORE.']));
         }
       }
       else {
@@ -639,6 +633,16 @@ export class GetTheMinion extends ShaneScene {
         }
       }
     };
+  }
+
+  showMinionStatusMessage(message, dur) {
+    if (!dur) dur = 490;
+    var div = $('<div style="position: fixed; left: 0; width: 100%; text-align: center; height: 100px; top: 50%; margin-top: -100px; font-size: 100px; color: white;"></div>');
+    div.text(message);
+    this.domContainer.append(div);
+    setTimeout(function() {
+      div.remove();
+    }, dur);
   }
 
   addMinionsToClawMachine() {
@@ -747,6 +751,10 @@ export class GetTheMinion extends ShaneScene {
       if (scale < 10) {
         scale *= 1.0025;
         meMinionMesh.scale.set(scale, scale, scale);
+      }
+      else if (!this.hasShowedSpecialMessage) {
+        this.showMinionStatusMessage('YOU GOT IT. THE MINION', 1000);
+        this.hasShowedSpecialMessage = true;
       }
     };
   }
