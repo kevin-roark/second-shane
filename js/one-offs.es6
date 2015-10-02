@@ -132,6 +132,43 @@ class RotatingMan extends MeshedOneOff {
   }
 }
 
+class Billboard extends MeshedOneOff {
+  constructor(options) {
+    options.meshCreator = function(callback) {
+      var baseMesh = new THREE.Mesh(
+        new THREE.CylinderGeometry(1, 1, 20),
+        new THREE.MeshBasicMaterial({color: 0xffffff})
+      );
+
+      var adTexture = new THREE.ImageUtils.loadTexture(options.adName);
+      adTexture.wrapS = adTexture.wrapT = THREE.ClampToEdgeWrapping;
+      adTexture.minFilter = THREE.NearestFilter;
+      var width = options.width || 24;
+      var height = width * 9/16;
+      var adMesh = new THREE.Mesh(
+        new THREE.PlaneBufferGeometry(width, height),
+        new THREE.MeshBasicMaterial({map: adTexture, side: THREE.DoubleSide})
+      );
+
+      adMesh.position.set(0, 10 + height / 2, 0);
+      baseMesh.add(adMesh);
+
+      callback(baseMesh.geometry, baseMesh.material, baseMesh);
+    };
+
+    options.postLoadRotation = {x: 0, y: Math.random() * Math.PI * 2, z: 0};
+
+    if (!options.symbolName) {
+      options.symbolName = '/media/symbols/billboard.png';
+    }
+    if (!options.symbolLength) {
+      options.symbolLength = 16;
+    }
+
+    super(options);
+  }
+}
+
 /** BEACON OFFS */
 
 function makeStyledGeometry(geometryStyle, geometrySize) {
@@ -1099,5 +1136,32 @@ export var oneOffs = [
     name: 'Google Eats Itself',
     videoName: 'media/videos/google_eats_itself',
     position: new THREE.Vector3(-194, -2, 220)
+  }),
+
+  // Billboards
+  new Billboard({
+    name: "Welcome to Shane's Home",
+    adName: 'media/billboard-images/welcome.jpg',
+    position: new THREE.Vector3(30, 5, -75)
+  }),
+  new Billboard({
+    name: "So Glad You Are Here",
+    adName: 'media/billboard-images/glad.jpg',
+    position: new THREE.Vector3(-18, 5, -157)
+  }),
+  new Billboard({
+    name: "Everything You See, I Made for You",
+    adName: 'media/billboard-images/everything_you_see.jpg',
+    position: new THREE.Vector3(-245, 5, -100)
+  }),
+  new Billboard({
+    name: "When I Die My Work Will Live",
+    adName: 'media/billboard-images/when_i_die.jpg',
+    position: new THREE.Vector3(-80, 5, 120)
+  }),
+  new Billboard({
+    name: "Papa John's Pizza Football",
+    adName: 'media/billboard-images/papa_johns_football.jpg',
+    position: new THREE.Vector3(140, 5, 92)
   })
 ];
