@@ -58,6 +58,7 @@ export class GetTheMinion extends ShaneScene {
     this.symbolName = '/media/symbols/minion.png';
 
     this.host = (this.isLive? urls.getTheMinion.live : urls.getTheMinion.web);
+    this.audioBase = this.host + 'audio/';
 
     window.addEventListener('keydown', (ev) => {
       this.clawKeyDown(ev);
@@ -81,12 +82,27 @@ export class GetTheMinion extends ShaneScene {
   enter() {
     super.enter();
 
+    if (!this.isLive) {
+      this.numMediaToLoad += 1;
+      this.audio = this.dahmer.makeAudio(this.audioBase + 'get_the_minion');
+      this.audio.addEventListener('canplaythrough', () => {
+        this.didLoadMedia();
+      });
+    }
+
     this.makeLights();
     this.makeWhiteGround();
   }
 
   doTimedWork() {
     super.doTimedWork();
+
+    if (!this.isLive) {
+      let silentTime = 5000;
+      this.addTimeout(() => {
+        this.audio.play();
+      }, silentTime);
+    }
 
     // part 1
     this.showArticleText(() => {
@@ -127,7 +143,7 @@ export class GetTheMinion extends ShaneScene {
     }, part2Onset);
 
     // end it
-    let trackDuration = 180 * 1000;
+    let trackDuration = 178 * 1000;
     this.addTimeout(this.iWantOut.bind(this), trackDuration);
   }
 
@@ -138,6 +154,12 @@ export class GetTheMinion extends ShaneScene {
     this.scene.remove(this.hemiLight);
     this.scene.remove(this.dirLight);
     this.scene.remove(this.ambientLight);
+
+    if (!this.isLive) {
+      this.audio.src = '';
+      $(this.audio).remove();
+      this.audio = null;
+    }
 
     super.exit();
   }

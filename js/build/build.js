@@ -730,6 +730,7 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
     this.symbolName = "/media/symbols/minion.png";
 
     this.host = this.isLive ? urls.getTheMinion.live : urls.getTheMinion.web;
+    this.audioBase = this.host + "audio/";
 
     window.addEventListener("keydown", function (ev) {
       _this.clawKeyDown(ev);
@@ -757,7 +758,17 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
       /// Shane System
 
       value: function enter() {
+        var _this = this;
+
         _get(Object.getPrototypeOf(GetTheMinion.prototype), "enter", this).call(this);
+
+        if (!this.isLive) {
+          this.numMediaToLoad += 1;
+          this.audio = this.dahmer.makeAudio(this.audioBase + "get_the_minion");
+          this.audio.addEventListener("canplaythrough", function () {
+            _this.didLoadMedia();
+          });
+        }
 
         this.makeLights();
         this.makeWhiteGround();
@@ -768,6 +779,13 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
         var _this = this;
 
         _get(Object.getPrototypeOf(GetTheMinion.prototype), "doTimedWork", this).call(this);
+
+        if (!this.isLive) {
+          var silentTime = 5000;
+          this.addTimeout(function () {
+            _this.audio.play();
+          }, silentTime);
+        }
 
         // part 1
         this.showArticleText(function () {
@@ -805,7 +823,7 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
         }, part2Onset);
 
         // end it
-        var trackDuration = 180 * 1000;
+        var trackDuration = 178 * 1000;
         this.addTimeout(this.iWantOut.bind(this), trackDuration);
       }
     },
@@ -817,6 +835,12 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
         this.scene.remove(this.hemiLight);
         this.scene.remove(this.dirLight);
         this.scene.remove(this.ambientLight);
+
+        if (!this.isLive) {
+          this.audio.src = "";
+          $(this.audio).remove();
+          this.audio = null;
+        }
 
         _get(Object.getPrototypeOf(GetTheMinion.prototype), "exit", this).call(this);
       }
