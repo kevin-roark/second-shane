@@ -334,3 +334,10 @@ canvas, video, img {
   padding: 6px;
   box-shadow: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.23);
 }
+
+.text-popup {
+  padding: 12px;
+  font-family: 'Times New Roman', serif;
+  background-color: white;
+  box-shadow: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.23);
+}

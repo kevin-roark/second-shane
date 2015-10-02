@@ -485,17 +485,20 @@ export class GetTheMinion extends ShaneScene {
       'GET IT',
       'KEEP IT',
       'MOVE THE CLAW',
-      'FIND YOUR MINION'
+      'FIND YOUR MINION',
+      'WORK',
+      'PROGRESS',
+      'PERSEVERE',
+      "IT IS YOURS"
     ];
 
     var text = kt.choice(textOptions);
-    var div = $('<div style="position: absolute; font-family: Times New Roman;">' + text + '</div>');
+    var div = $('<div class="text-popup" style="position: absolute;">' + text + '</div>');
     div.css('right', (Math.random() * 120 + 5) + 'px');
     div.css('top', ((Math.random() - 0.5) * 450 + window.innerHeight / 2) + 'px');
     div.css('color', kt.randColor());
-    div.css('font-size', kt.randInt(28, 56) + 'px');
+    div.css('font-size', kt.randInt(28, 44) + 'px');
     if (Math.random() > 0.5) div.css('font-style', 'italic');
-    if (Math.random() > 0.25) div.css('text-decoration', 'underline');
 
     this.domContainer.append(div);
 

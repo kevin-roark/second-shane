@@ -9,6 +9,10 @@ var _inherits = function (subClass, superClass) { if (typeof superClass !== "fun
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var THREE = require("three");
 var $ = require("jquery");
 var kt = require("kutility");
@@ -301,9 +305,6 @@ var ASMR = exports.ASMR = (function (_ShaneScene) {
 function rectangle(x, y, w, h) {
   return { x: x, y: y, width: w, height: h };
 }
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
 
 },{"../../shane-mesh":23,"../../shane-scene.es6":24,"../../talisman.es6":25,"../../urls":28,"jquery":33,"kutility":34,"three":36}],2:[function(require,module,exports){
 "use strict";
@@ -315,6 +316,10 @@ var _get = function get(object, property, receiver) { var desc = Object.getOwnPr
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 var THREE = require("three");
 var $ = require("jquery");
@@ -619,10 +624,6 @@ var Bruno = exports.Bruno = (function (_ShaneScene) {
   return Bruno;
 })(ShaneScene);
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
 },{"../../shane-mesh":23,"../../shane-scene.es6":24,"../../talisman.es6":25,"../../urls":28,"./static-canvas":3,"jquery":33,"three":36}],3:[function(require,module,exports){
 "use strict";
 
@@ -658,6 +659,10 @@ var _get = function get(object, property, receiver) { var desc = Object.getOwnPr
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 var THREE = require("three");
 var $ = require("jquery");
@@ -1164,16 +1169,15 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
           return;
         }
 
-        var textOptions = ["GET THE MINION", "SUBMIT THE CLAW", "USE THE MACHINE", "GRAB THE MINION", "TAKE IT", "EARN IT", "GET IT", "KEEP IT", "MOVE THE CLAW", "FIND YOUR MINION"];
+        var textOptions = ["GET THE MINION", "SUBMIT THE CLAW", "USE THE MACHINE", "GRAB THE MINION", "TAKE IT", "EARN IT", "GET IT", "KEEP IT", "MOVE THE CLAW", "FIND YOUR MINION", "WORK", "PROGRESS", "PERSEVERE", "IT IS YOURS"];
 
         var text = kt.choice(textOptions);
-        var div = $("<div style=\"position: absolute; font-family: Times New Roman;\">" + text + "</div>");
+        var div = $("<div class=\"text-popup\" style=\"position: absolute;\">" + text + "</div>");
         div.css("right", Math.random() * 120 + 5 + "px");
         div.css("top", (Math.random() - 0.5) * 450 + window.innerHeight / 2 + "px");
         div.css("color", kt.randColor());
-        div.css("font-size", kt.randInt(28, 56) + "px");
+        div.css("font-size", kt.randInt(28, 44) + "px");
         if (Math.random() > 0.5) div.css("font-style", "italic");
-        if (Math.random() > 0.25) div.css("text-decoration", "underline");
 
         this.domContainer.append(div);
 
@@ -1532,16 +1536,16 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
   return GetTheMinion;
 })(ShaneScene);
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
 },{"../../overlay":21,"../../shane-mesh":23,"../../shane-scene.es6":24,"../../talisman.es6":25,"../../urls":28,"../../util/video-mesh":32,"jquery":33,"kutility":34,"three":36,"tween.js":37}],5:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 var $ = require("jquery");
 
@@ -1625,12 +1629,13 @@ function markerDiv(imageName) {
 
   return marker;
 }
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
 
 },{"jquery":33}],6:[function(require,module,exports){
 "use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 var $ = require("jquery");
 var kt = require("kutility");
@@ -1828,9 +1833,6 @@ var doKaraoke = function (domContainer, marker, timeoutSetter) {
   }
 };
 exports.doKaraoke = doKaraoke;
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
 // chorus
 
 },{"jquery":33,"kutility":34}],7:[function(require,module,exports){
@@ -1843,6 +1845,10 @@ var _get = function get(object, property, receiver) { var desc = Object.getOwnPr
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 var THREE = require("three");
 var $ = require("jquery");
@@ -2490,10 +2496,6 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
   return GodIsAMan;
 })(ShaneScene);
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
 },{"../../shane-scene.es6":24,"../../talisman.es6":25,"../../urls":28,"./basketball.es6":5,"./karaoke.es6":6,"jquery":33,"kutility":34,"three":36}],8:[function(require,module,exports){
 "use strict";
 
@@ -2504,6 +2506,10 @@ var _get = function get(object, property, receiver) { var desc = Object.getOwnPr
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 var THREE = require("three");
 var $ = require("jquery");
@@ -3126,10 +3132,6 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
   return iFeltTheFoot;
 })(ShaneScene);
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
 },{"../../shane-mesh":23,"../../shane-scene.es6":24,"../../talisman.es6":25,"../../urls":28,"jquery":33,"kutility":34,"three":36}],9:[function(require,module,exports){
 "use strict";
 
@@ -3140,6 +3142,10 @@ var _get = function get(object, property, receiver) { var desc = Object.getOwnPr
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 var THREE = require("three");
 var $ = require("jquery");
@@ -3415,10 +3421,6 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
   return LiveAtJJs;
 })(ShaneScene);
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
 },{"../../shane-mesh":23,"../../shane-scene.es6":24,"../../talisman.es6":25,"../../urls":28,"jquery":33,"three":36}],10:[function(require,module,exports){
 "use strict";
 
@@ -3429,6 +3431,10 @@ var _get = function get(object, property, receiver) { var desc = Object.getOwnPr
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 var THREE = require("three");
 var $ = require("jquery");
@@ -3647,10 +3653,6 @@ var MyJobMyHomeMyWife = exports.MyJobMyHomeMyWife = (function (_ShaneScene) {
   return MyJobMyHomeMyWife;
 })(ShaneScene);
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
 },{"../../shane-mesh":23,"../../shane-scene.es6":24,"../../talisman.es6":25,"../../urls":28,"jquery":33,"three":36}],11:[function(require,module,exports){
 "use strict";
 
@@ -3661,6 +3663,10 @@ var _get = function get(object, property, receiver) { var desc = Object.getOwnPr
 var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 var THREE = require("three");
 var $ = require("jquery");
@@ -4079,17 +4085,13 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
   return PapaJohn;
 })(ShaneScene);
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
 },{"../../lib/three.terrain":16,"../../shane-mesh":23,"../../shane-scene.es6":24,"../../talisman.es6":25,"../../urls":28,"../../util/video-mesh":32,"jquery":33,"kutility":34,"three":36,"tween.js":37}],12:[function(require,module,exports){
-"use strict";
-
 /**
  * Originally by James Baicoianu / http://www.baicoianu.com/
  * Modified by Kevin Roark (porkf.at) to meld with pointerlock controls
  */
+
+"use strict";
 
 var THREE = require("three");
 var Pointerlocker = require("./pointerlocker");
@@ -4644,6 +4646,10 @@ var _createClass = (function () { function defineProperties(target, props) { for
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var $ = require("jquery");
 
 var Dahmer = exports.Dahmer = (function () {
@@ -4737,13 +4743,7 @@ var Dahmer = exports.Dahmer = (function () {
   return Dahmer;
 })();
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
 },{"jquery":33}],16:[function(require,module,exports){
-"use strict";
-
 /**
  * THREE.Terrain.js 1.2.0-20150217
  *
@@ -4759,6 +4759,8 @@ Object.defineProperty(exports, "__esModule", {
 * optimizations by Peter Eastman (peastman@drizzle.stanford.edu) and converted
 * to JavaScript by Joseph Gentle.
 */
+
+"use strict";
 
 var noise = {};
 
@@ -7582,6 +7584,10 @@ var _createClass = (function () { function defineProperties(target, props) { for
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var THREE = require("three");
 var $ = require("jquery");
 var ShaneMesh = require("./shane-mesh");
@@ -8618,9 +8624,6 @@ new VideoBeacon({
   position: new THREE.Vector3(-194, -2, 220)
 })];
 exports.oneOffs = oneOffs;
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
 
 },{"./dahmer.es6":15,"./shane-mesh":23,"jquery":33,"kutility":34,"three":36}],21:[function(require,module,exports){
 "use strict";
@@ -8641,6 +8644,10 @@ module.exports = function fadeSceneOverlay(duration, behavior, callback) {
 
 },{"jquery":33}],22:[function(require,module,exports){
 "use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 var ASMR = require("./artifacts/asmr/scene.es6").ASMR;
 
@@ -8668,9 +8675,6 @@ var createShaneScenes = function (exitCallback, renderer, camera, scene) {
   return scenes;
 };
 exports.createShaneScenes = createShaneScenes;
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
 
 },{"./artifacts/asmr/scene.es6":1,"./artifacts/bruno/scene.es6":2,"./artifacts/get-the-minion/scene.es6":4,"./artifacts/god-is-a-man/scene.es6":7,"./artifacts/i-felt-the-foot/scene.es6":8,"./artifacts/live-at-jjs/scene.es6":9,"./artifacts/my-job-my-home-my-wife/scene.es6":10,"./artifacts/papa-john/scene.es6":11}],23:[function(require,module,exports){
 "use strict";
@@ -8915,6 +8919,10 @@ var _createClass = (function () { function defineProperties(target, props) { for
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var THREE = require("three");
 var $ = require("jquery");
 
@@ -9061,16 +9069,16 @@ var ShaneScene = exports.ShaneScene = (function () {
   return ShaneScene;
 })();
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
 },{"./dahmer.es6":15,"./talisman.es6":25,"jquery":33,"three":36}],25:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 var THREE = require("three");
 
@@ -9190,16 +9198,16 @@ var Talisman = exports.Talisman = (function () {
   return Talisman;
 })();
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
 },{"three":36}],26:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 var $ = require("jquery");
 
@@ -9302,9 +9310,6 @@ $(".theme-button").click(function () {
     }
   }
 });
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
 
 },{"./util/skybox":31,"jquery":33}],27:[function(require,module,exports){
 "use strict";
@@ -9312,6 +9317,10 @@ Object.defineProperty(exports, "__esModule", {
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 var $ = require("jquery");
 var THREE = require("three");
@@ -9424,9 +9433,6 @@ THREE.typeface_js = window._typeface_js;
     clearTimeout(id);
   };
 })();
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
 
 },{"jquery":33,"three":36}],28:[function(require,module,exports){
 "use strict";
@@ -9473,6 +9479,10 @@ module.exports.myJobMyHomeMyWife = {
 
 },{}],29:[function(require,module,exports){
 "use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 var $ = require("jquery");
 
@@ -9552,9 +9562,6 @@ var createCursor = function ($container) {
   $container.append(cursor);
   return cursor;
 };
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
 
 },{"jquery":33}],30:[function(require,module,exports){
 "use strict";
