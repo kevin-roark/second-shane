@@ -7880,6 +7880,32 @@ var Plant = (function (_MeshedOneOff3) {
   return Plant;
 })(MeshedOneOff);
 
+var Skyscraper = (function (_MeshedOneOff4) {
+  function Skyscraper(options) {
+    _classCallCheck(this, Skyscraper);
+
+    options.meshCreator = function (callback) {
+      var texture = new THREE.ImageUtils.loadTexture(options.texturePath);
+      texture.wrapS = texture.wrapT = THREE.ClampToEdgeWrapping;texture.minFilter = THREE.NearestFilter;
+      var mesh = new THREE.Mesh(new THREE.BoxGeometry(8, 80, 8), new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide }));
+      callback(mesh.geometry, mesh.material, mesh);
+    };
+
+    if (!options.symbolName) {
+      options.symbolName = "/media/symbols/building.png";
+    }
+    if (!options.symbolLength) {
+      options.symbolLength = 16;
+    }
+
+    _get(Object.getPrototypeOf(Skyscraper.prototype), "constructor", this).call(this, options);
+  }
+
+  _inherits(Skyscraper, _MeshedOneOff4);
+
+  return Skyscraper;
+})(MeshedOneOff);
+
 /** BEACON OFFS */
 
 function makeStyledGeometry(geometryStyle, geometrySize) {
@@ -7900,7 +7926,7 @@ function makeStyledGeometry(geometryStyle, geometrySize) {
   }
 }
 
-var BeaconOneOff = (function (_MeshedOneOff4) {
+var BeaconOneOff = (function (_MeshedOneOff5) {
   function BeaconOneOff(options) {
     _classCallCheck(this, BeaconOneOff);
 
@@ -7929,7 +7955,7 @@ var BeaconOneOff = (function (_MeshedOneOff4) {
     this.nearDistance = options.nearDistance || 20;
   }
 
-  _inherits(BeaconOneOff, _MeshedOneOff4);
+  _inherits(BeaconOneOff, _MeshedOneOff5);
 
   _createClass(BeaconOneOff, {
     deactivate: {
@@ -8765,7 +8791,25 @@ new Billboard({
 }),
 
 // Plants
-new Plant({ position: new THREE.Vector3(0, 0, -50) }), new Plant({ position: new THREE.Vector3(188, 0, 177) }), new Plant({ position: new THREE.Vector3(308, 0, 255) }), new Plant({ position: new THREE.Vector3(-162, 0, -349) }), new Plant({ position: new THREE.Vector3(-140, 0, -197) }), new Plant({ position: new THREE.Vector3(313, 0, -259) }), new Plant({ position: new THREE.Vector3(-143, 0, 274) }), new Plant({ position: new THREE.Vector3(229, 0, 209) }), new Plant({ position: new THREE.Vector3(320, 0, -2) }), new Plant({ position: new THREE.Vector3(-221, 0, -347) }), new Plant({ position: new THREE.Vector3(214, 0, -305) }), new Plant({ position: new THREE.Vector3(-312, 0, 125) }), new Plant({ position: new THREE.Vector3(-267, 0, 199) }), new Plant({ position: new THREE.Vector3(-194, 0, 107) }), new Plant({ position: new THREE.Vector3(-200, 0, 70) }), new Plant({ position: new THREE.Vector3(13, 0, -218) }), new Plant({ position: new THREE.Vector3(-5, 0, 293) }), new Plant({ position: new THREE.Vector3(227, 0, -139) }), new Plant({ position: new THREE.Vector3(-175, 0, -298) }), new Plant({ position: new THREE.Vector3(262, 0, 116) }), new Plant({ position: new THREE.Vector3(-308, 0, -201) }), new Plant({ position: new THREE.Vector3(-187, 0, 157) }), new Plant({ position: new THREE.Vector3(-332, 0, -242) }), new Plant({ position: new THREE.Vector3(325, 0, -344) }), new Plant({ position: new THREE.Vector3(-123, 0, -101) }), new Plant({ position: new THREE.Vector3(-206, 0, -263) }), new Plant({ position: new THREE.Vector3(27, 0, -90) }), new Plant({ position: new THREE.Vector3(263, 0, -16) }), new Plant({ position: new THREE.Vector3(66, 0, 185) }), new Plant({ position: new THREE.Vector3(290, 0, -106) }), new Plant({ position: new THREE.Vector3(-185, 0, 110) }), new Plant({ position: new THREE.Vector3(336, 0, 271) }), new Plant({ position: new THREE.Vector3(341, 0, -16) }), new Plant({ position: new THREE.Vector3(317, 0, -13) }), new Plant({ position: new THREE.Vector3(-273, 0, 116) }), new Plant({ position: new THREE.Vector3(249, 0, -85) }), new Plant({ position: new THREE.Vector3(258, 0, -115) }), new Plant({ position: new THREE.Vector3(-140, 0, 304) }), new Plant({ position: new THREE.Vector3(-36, 0, 315) }), new Plant({ position: new THREE.Vector3(-137, 0, 278) }), new Plant({ position: new THREE.Vector3(-91, 0, 66) })];
+new Plant({ position: new THREE.Vector3(0, 0, -50) }), new Plant({ position: new THREE.Vector3(188, 0, 177) }), new Plant({ position: new THREE.Vector3(308, 0, 255) }), new Plant({ position: new THREE.Vector3(-162, 0, -349) }), new Plant({ position: new THREE.Vector3(-140, 0, -197) }), new Plant({ position: new THREE.Vector3(313, 0, -259) }), new Plant({ position: new THREE.Vector3(-143, 0, 274) }), new Plant({ position: new THREE.Vector3(229, 0, 209) }), new Plant({ position: new THREE.Vector3(320, 0, -2) }), new Plant({ position: new THREE.Vector3(-221, 0, -347) }), new Plant({ position: new THREE.Vector3(214, 0, -305) }), new Plant({ position: new THREE.Vector3(-312, 0, 125) }), new Plant({ position: new THREE.Vector3(-267, 0, 199) }), new Plant({ position: new THREE.Vector3(-194, 0, 107) }), new Plant({ position: new THREE.Vector3(-200, 0, 70) }), new Plant({ position: new THREE.Vector3(13, 0, -218) }), new Plant({ position: new THREE.Vector3(-5, 0, 293) }), new Plant({ position: new THREE.Vector3(227, 0, -139) }), new Plant({ position: new THREE.Vector3(-175, 0, -298) }), new Plant({ position: new THREE.Vector3(262, 0, 116) }), new Plant({ position: new THREE.Vector3(-308, 0, -201) }), new Plant({ position: new THREE.Vector3(-187, 0, 157) }), new Plant({ position: new THREE.Vector3(-332, 0, -242) }), new Plant({ position: new THREE.Vector3(325, 0, -344) }), new Plant({ position: new THREE.Vector3(-123, 0, -101) }), new Plant({ position: new THREE.Vector3(-206, 0, -263) }), new Plant({ position: new THREE.Vector3(27, 0, -90) }), new Plant({ position: new THREE.Vector3(263, 0, -16) }), new Plant({ position: new THREE.Vector3(66, 0, 185) }), new Plant({ position: new THREE.Vector3(290, 0, -106) }), new Plant({ position: new THREE.Vector3(-185, 0, 110) }), new Plant({ position: new THREE.Vector3(336, 0, 271) }), new Plant({ position: new THREE.Vector3(341, 0, -16) }), new Plant({ position: new THREE.Vector3(317, 0, -13) }), new Plant({ position: new THREE.Vector3(-273, 0, 116) }), new Plant({ position: new THREE.Vector3(249, 0, -85) }), new Plant({ position: new THREE.Vector3(258, 0, -115) }), new Plant({ position: new THREE.Vector3(-140, 0, 304) }), new Plant({ position: new THREE.Vector3(-36, 0, 315) }), new Plant({ position: new THREE.Vector3(-137, 0, 278) }), new Plant({ position: new THREE.Vector3(-91, 0, 66) }),
+
+// Architecture
+new Skyscraper({
+  texturePath: "/media/architecture-textures/skyscraper-1.jpg",
+  position: new THREE.Vector3(0, 30, 175)
+}), new Skyscraper({
+  texturePath: "/media/architecture-textures/skyscraper-2.jpg",
+  position: new THREE.Vector3(312, 30, -282)
+}), new Skyscraper({
+  texturePath: "/media/architecture-textures/skyscraper-3.jpg",
+  position: new THREE.Vector3(-173, 30, 60)
+}), new Skyscraper({
+  texturePath: "/media/architecture-textures/skyscraper-4.jpg",
+  position: new THREE.Vector3(185, 30, -333)
+}), new Skyscraper({
+  texturePath: "/media/architecture-textures/skyscraper-5.jpg",
+  position: new THREE.Vector3(-262, 30, 288)
+})];
 exports.oneOffs = oneOffs;
 Object.defineProperty(exports, "__esModule", {
   value: true

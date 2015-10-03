@@ -204,6 +204,29 @@ class Plant extends MeshedOneOff {
   }
 }
 
+class Skyscraper extends MeshedOneOff {
+  constructor(options) {
+    options.meshCreator = (callback) => {
+      var texture = new THREE.ImageUtils.loadTexture(options.texturePath);
+      texture.wrapS = texture.wrapT = THREE.ClampToEdgeWrapping; texture.minFilter = THREE.NearestFilter;
+      var mesh = new THREE.Mesh(
+        new THREE.BoxGeometry(8, 80, 8),
+        new THREE.MeshBasicMaterial({map: texture, side: THREE.DoubleSide})
+      );
+      callback(mesh.geometry, mesh.material, mesh);
+    };
+
+    if (!options.symbolName) {
+      options.symbolName = '/media/symbols/building.png';
+    }
+    if (!options.symbolLength) {
+      options.symbolLength = 16;
+    }
+
+    super(options);
+  }
+}
+
 /** BEACON OFFS */
 
 function makeStyledGeometry(geometryStyle, geometrySize) {
@@ -1236,5 +1259,28 @@ export var oneOffs = [
   new Plant({position: new THREE.Vector3(-140, 0, 304)}),
   new Plant({position: new THREE.Vector3(-36, 0, 315)}),
   new Plant({position: new THREE.Vector3(-137, 0, 278)}),
-  new Plant({position: new THREE.Vector3(-91, 0, 66)})
+  new Plant({position: new THREE.Vector3(-91, 0, 66)}),
+
+  // Architecture
+  new Skyscraper({
+    texturePath: '/media/architecture-textures/skyscraper-1.jpg',
+    position: new THREE.Vector3(0, 30, 175)
+  }),
+  new Skyscraper({
+    texturePath: '/media/architecture-textures/skyscraper-2.jpg',
+    position: new THREE.Vector3(312, 30, -282)
+  }),
+  new Skyscraper({
+    texturePath: '/media/architecture-textures/skyscraper-3.jpg',
+    position: new THREE.Vector3(-173, 30, 60)
+  }),
+  new Skyscraper({
+    texturePath: '/media/architecture-textures/skyscraper-4.jpg',
+    position: new THREE.Vector3(185, 30, -333)
+  }),
+  new Skyscraper({
+    texturePath: '/media/architecture-textures/skyscraper-5.jpg',
+    position: new THREE.Vector3(-262, 30, 288)
+  })
+
 ];
