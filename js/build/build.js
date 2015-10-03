@@ -3770,6 +3770,7 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
           });
         }
 
+        this.oldFog = this.scene.fog;
         this.scene.fog = new THREE.Fog(16777215, 1, 6000);
         this.scene.fog.color.setHSL(0.6, 0, 1);
 
@@ -3837,7 +3838,8 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
       value: function exit() {
         _get(Object.getPrototypeOf(PapaJohn.prototype), "exit", this).call(this);
 
-        this.scene.fog = null;
+        this.scene.fog = this.oldFog;
+        this.oldFog = null;
 
         this.scene.remove(this.terrainScene);
         this.scene.remove(this.sky);

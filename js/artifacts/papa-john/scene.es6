@@ -50,8 +50,9 @@ export class PapaJohn extends ShaneScene {
       });
     }
 
-    this.scene.fog = new THREE.Fog( 0xffffff, 1, 6000);
-		this.scene.fog.color.setHSL( 0.6, 0, 1 );
+    this.oldFog = this.scene.fog;
+    this.scene.fog = new THREE.Fog(0xffffff, 1, 6000);
+		this.scene.fog.color.setHSL(0.6, 0, 1);
 
     this.camera.position.set(0, -10, 0);
     this.camera.rotation.x += 0.125;
@@ -113,7 +114,8 @@ export class PapaJohn extends ShaneScene {
   exit() {
     super.exit();
 
-    this.scene.fog = null;
+    this.scene.fog = this.oldFog;
+    this.oldFog = null;
 
     this.scene.remove(this.terrainScene);
     this.scene.remove(this.sky);
