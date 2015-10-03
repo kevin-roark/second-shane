@@ -169,6 +169,41 @@ class Billboard extends MeshedOneOff {
   }
 }
 
+class Plant extends MeshedOneOff {
+  constructor(options) {
+    if (!options.modelName) {
+      options.modelName = kt.choice(['/js/models/tree.json']);
+    }
+
+    if (options.modelName === '/js/models/tree.json') {
+      options.scale = Math.random() * 2 + 0.3;
+    }
+
+    if (!options.symbolName) {
+      options.symbolName = '/media/symbols/plant.png';
+    }
+    if (!options.symbolLength) {
+      options.symbolLength = 16;
+    }
+
+    super(options);
+  }
+
+  meshWasLoaded() {
+    super.meshWasLoaded();
+
+    // shiny random plant colors
+    var materials = this.shaneMesh.mesh.material.materials;
+    for (var i = 0; i < materials.length; i++) {
+      var material = materials[i];
+      material.color = new THREE.Color(parseInt(Math.random() * 16777215));
+      material.emissive = new THREE.Color(parseInt(Math.random() * 16777215));
+      material.ambient = new THREE.Color(parseInt(Math.random() * 16777215));
+      material.needsUpdate = true;
+    }
+  }
+}
+
 /** BEACON OFFS */
 
 function makeStyledGeometry(geometryStyle, geometrySize) {
@@ -1140,28 +1175,46 @@ export var oneOffs = [
 
   // Billboards
   new Billboard({
-    name: "Welcome to Shane's Home",
     adName: 'media/billboard-images/welcome.jpg',
     position: new THREE.Vector3(30, 5, -75)
   }),
   new Billboard({
-    name: "So Glad You Are Here",
     adName: 'media/billboard-images/glad.jpg',
     position: new THREE.Vector3(-18, 5, -157)
   }),
   new Billboard({
-    name: "Everything You See, I Made for You",
     adName: 'media/billboard-images/everything_you_see.jpg',
     position: new THREE.Vector3(-245, 5, -100)
   }),
   new Billboard({
-    name: "When I Die My Work Will Live",
     adName: 'media/billboard-images/when_i_die.jpg',
     position: new THREE.Vector3(-80, 5, 120)
   }),
   new Billboard({
-    name: "Papa John's Pizza Football",
     adName: 'media/billboard-images/papa_johns_football.jpg',
     position: new THREE.Vector3(140, 5, 92)
-  })
+  }),
+
+  // Plants
+  new Plant({position: new THREE.Vector3(0, 0, -50)}),
+  new Plant({position: new THREE.Vector3(188, 0, 177)}),
+  new Plant({position: new THREE.Vector3(308, 0, 255)}),
+  new Plant({position: new THREE.Vector3(-162, 0, -349)}),
+  new Plant({position: new THREE.Vector3(-140, 0, -197)}),
+  new Plant({position: new THREE.Vector3(313, 0, -259)}),
+  new Plant({position: new THREE.Vector3(-143, 0, 274)}),
+  new Plant({position: new THREE.Vector3(229, 0, 209)}),
+  new Plant({position: new THREE.Vector3(320, 0, -2)}),
+  new Plant({position: new THREE.Vector3(-221, 0, -347)}),
+  new Plant({position: new THREE.Vector3(214, 0, -305)}),
+  new Plant({position: new THREE.Vector3(-312, 0, 125)}),
+  new Plant({position: new THREE.Vector3(-267, 0, 199)}),
+  new Plant({position: new THREE.Vector3(-194, 0, 107)}),
+  new Plant({position: new THREE.Vector3(-200, 0, 70)}),
+  new Plant({position: new THREE.Vector3(13, 0, -218)}),
+  new Plant({position: new THREE.Vector3(-5, 0, 293)}),
+  new Plant({position: new THREE.Vector3(227, 0, -139)}),
+  new Plant({position: new THREE.Vector3(-175, 0, -298)}),
+  new Plant({position: new THREE.Vector3(262, 0, 116)}),
+  new Plant({position: new THREE.Vector3(-308, 0, -201)})
 ];
