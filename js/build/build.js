@@ -3216,7 +3216,7 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
 
     this.name = "Mister Shane Live at JJ's";
     this.slug = "live-at-jjs-place";
-    this.symbolName = "/media/symbols/curtain.png";
+    this.symbolName = "/media/symbols/projector.png";
 
     var host = this.isLive ? urls.liveAtJJs.live : urls.liveAtJJs.web;
     this.videoBase = host + "video/";
@@ -3290,9 +3290,8 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
 
         this.addTimeout(this.popcornTimer.bind(this), 9666);
 
-        this.addTimeout(this.makeDVDFullScreen.bind(this), 8 * 60 * 1000);
-
         var videoLength = this.isLive ? (9 * 60 + 16) * 1000 : (17 * 60 + 41) * 1000;
+        this.addTimeout(this.makeDVDFullScreen.bind(this), videoLength - 76 * 1000);
         this.addTimeout(this.iWantOut.bind(this), videoLength);
       }
     },
