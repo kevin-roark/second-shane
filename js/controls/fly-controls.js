@@ -166,6 +166,7 @@ module.exports = function (camera, options) {
 	};
 
 	this.mousedown = function( event ) {
+		if (!this.enabled) return;
 		if (this.locker.canEverHavePointerLock() && !this.locker.currentlyHasPointerlock) return;
 
 		if ( this.domElement !== document ) {
@@ -188,6 +189,7 @@ module.exports = function (camera, options) {
 	};
 
 	this.mousemove = function( event ) {
+		if (!this.enabled) return;
 		if (this.locker.canEverHavePointerLock() && !this.locker.currentlyHasPointerlock) return;
 
 		if ( !this.dragToLook || this.mouseStatus > 0 ) {
@@ -216,6 +218,7 @@ module.exports = function (camera, options) {
 	};
 
 	this.mouseup = function( event ) {
+		if (!this.enabled) return;
 		if (this.locker.canEverHavePointerLock() && !this.locker.currentlyHasPointerlock) return;
 
 		event.preventDefault();
