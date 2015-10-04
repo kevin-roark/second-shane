@@ -34,6 +34,13 @@
         Welcome. Click to Begin <em>Second Shane</em>.
       </div>
     </div>
+    <div id="mobile-error-overlay">
+      <p>
+        Second Shane is Not Available on the Cell Phone due to Technical Difficulties.
+        Please visit Second Shane on your Big Computer. Thank You for Understanding.
+        Learn more about Mister Shane at <a href="http://www.mistershane.com/">www.mistershane.com</a>
+      </p>
+    </div>
 
     <div class="error">plz upgrade browser</div>
 
@@ -172,6 +179,11 @@
 
     <!-- scripts -->
 
+    <script type='text/javascript'>
+      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        document.querySelector('#mobile-error-overlay').style.display = 'block';
+      }
+    </script>
     <script src="js/build/build.js"></script>
     <script src="js/typeface/helvetiker_regular.typeface.js"></script>
     <script>

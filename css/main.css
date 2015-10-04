@@ -21,6 +21,26 @@ body {
   z-index: 1000;
 }
 
+#mobile-error-overlay {
+  z-index: 2000;
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  display: none;
+  background-color: #ec4a84;
+  font-size: 39px;
+  color: rgba(0, 0, 0, 0.87);
+}
+  #mobile-error-overlay p {
+    padding: 140px 50px 50px 50px;
+  }
+  #mobile-error-overlay a {
+    color: rgba(0, 125, 255, 0.87);
+    text-decoration: none;
+  }
+    #mobile-error-overlay a:hover, #mobile-error-overlay a:focus {
+      text-decoration: underline;
+      font-style: italic;
+    }
+
 canvas, video, img {
   cursor: none;
 }

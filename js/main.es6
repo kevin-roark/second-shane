@@ -31,11 +31,15 @@ var $spacebarTip = $('#spacebar-tip');
 var $menuTip = $('#menu-tip');
 
 let IS_LIVE = false;
-let SCRATCH_PAD = true;
+let SCRATCH_PAD = false;
 let SceneFadeDuration = IS_LIVE? 3000 : 1000;
 
 class SecondShane extends ThreeBoiler {
   constructor() {
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+      return;
+    }
+
     super({
       antialias: true,
       alpha: true

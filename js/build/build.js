@@ -6888,6 +6888,10 @@ var SecondShane = (function (_ThreeBoiler) {
 
     _classCallCheck(this, SecondShane);
 
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+      return;
+    }
+
     _get(Object.getPrototypeOf(SecondShane.prototype), "constructor", this).call(this, {
       antialias: true,
       alpha: true
