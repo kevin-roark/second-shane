@@ -15,7 +15,7 @@ export class iFeltTheFoot extends ShaneScene {
   constructor(renderer, camera, scene, options) {
     super(renderer, camera, scene, options);
 
-    this.name = 'i felt the foot';
+    this.name = 'I Felt the Foot';
     this.slug = 'i-felt-the-foot';
     this.symbolName = '/media/symbols/foot.png';
 

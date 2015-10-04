@@ -22,7 +22,8 @@
     "kutility": "0.5.0",
     "odometer": "^0.4.7",
     "querystring": "^0.2.0",
-    "three": "0.71.0"
+    "three": "0.71.0",
+    "tween.js": "^16.3.1"
   },
   "devDependencies": {
     "babelify": "^5.0.4"

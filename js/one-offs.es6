@@ -132,6 +132,101 @@ class RotatingMan extends MeshedOneOff {
   }
 }
 
+class Billboard extends MeshedOneOff {
+  constructor(options) {
+    options.meshCreator = function(callback) {
+      var baseMesh = new THREE.Mesh(
+        new THREE.CylinderGeometry(1, 1, 20),
+        new THREE.MeshBasicMaterial({color: 0xffffff})
+      );
+
+      var adTexture = new THREE.ImageUtils.loadTexture(options.adName);
+      adTexture.wrapS = adTexture.wrapT = THREE.ClampToEdgeWrapping;
+      adTexture.minFilter = THREE.NearestFilter;
+      var width = options.width || 24;
+      var height = width * 9/16;
+      var adMesh = new THREE.Mesh(
+        new THREE.PlaneBufferGeometry(width, height),
+        new THREE.MeshBasicMaterial({map: adTexture, side: THREE.DoubleSide})
+      );
+
+      adMesh.position.set(0, 10 + height / 2, 0);
+      baseMesh.add(adMesh);
+
+      callback(baseMesh.geometry, baseMesh.material, baseMesh);
+    };
+
+    options.postLoadRotation = {x: 0, y: Math.random() * Math.PI * 2, z: 0};
+
+    if (!options.symbolName) {
+      options.symbolName = '/media/symbols/billboard.png';
+    }
+    if (!options.symbolLength) {
+      options.symbolLength = 16;
+    }
+
+    super(options);
+  }
+}
+
+class Plant extends MeshedOneOff {
+  constructor(options) {
+    if (!options.modelName) {
+      options.modelName = kt.choice(['/js/models/tree.json']);
+    }
+
+    if (options.modelName === '/js/models/tree.json') {
+      options.scale = Math.random() * 2 + 0.3;
+    }
+
+    if (!options.symbolName) {
+      options.symbolName = '/media/symbols/plant.png';
+    }
+    if (!options.symbolLength) {
+      options.symbolLength = 16;
+    }
+
+    super(options);
+  }
+
+  meshWasLoaded() {
+    super.meshWasLoaded();
+
+    // shiny random plant colors
+    var materials = this.shaneMesh.mesh.material.materials;
+    for (var i = 0; i < materials.length; i++) {
+      var material = materials[i];
+      material.color = new THREE.Color(parseInt(Math.random() * 16777215));
+      material.emissive = new THREE.Color(parseInt(Math.random() * 16777215));
+      material.ambient = new THREE.Color(parseInt(Math.random() * 16777215));
+      material.needsUpdate = true;
+    }
+  }
+}
+
+class Skyscraper extends MeshedOneOff {
+  constructor(options) {
+    options.meshCreator = (callback) => {
+      var texture = new THREE.ImageUtils.loadTexture(options.texturePath);
+      texture.wrapS = texture.wrapT = THREE.ClampToEdgeWrapping; texture.minFilter = THREE.NearestFilter;
+      var mesh = new THREE.Mesh(
+        new THREE.BoxGeometry(8, 80, 8),
+        new THREE.MeshBasicMaterial({map: texture, side: THREE.DoubleSide})
+      );
+      callback(mesh.geometry, mesh.material, mesh);
+    };
+
+    if (!options.symbolName) {
+      options.symbolName = '/media/symbols/building.png';
+    }
+    if (!options.symbolLength) {
+      options.symbolLength = 16;
+    }
+
+    super(options);
+  }
+}
+
 /** BEACON OFFS */
 
 function makeStyledGeometry(geometryStyle, geometrySize) {
@@ -276,6 +371,10 @@ class ImageBeacon extends BeaconOneOff {
     };
 
     options.postLoadRotation = {x: 0, y: Math.random() * Math.PI * 2, z: 0};
+
+    if (options.position && options.position.y === 0) {
+      options.position.y = 2;
+    }
 
     if (!options.symbolName) {
       options.symbolName = '/media/symbols/lens.png';
@@ -971,6 +1070,151 @@ export var oneOffs = [
     imageName: 'media/beacon-images/window_dog.jpg',
     position: new THREE.Vector3(279, 0, -202)
   }),
+  new ImageBeacon({
+    name: 'Absolute Power Fitness',
+    imageName: 'media/beacon-images/absolute_power_fitness.jpg',
+    position: new THREE.Vector3(-377, 0, -8)
+  }),
+  new ImageBeacon({
+    name: "He's Talking...",
+    imageName: 'media/beacon-images/are_you_listening.jpg',
+    position: new THREE.Vector3(228, 0, -52)
+  }),
+  new ImageBeacon({
+    name: 'One Bending Body',
+    imageName: 'media/beacon-images/bending_body.jpg',
+    position: new THREE.Vector3(414, 0, -403)
+  }),
+  new ImageBeacon({
+    name: 'Dancing Foot I.',
+    imageName: 'media/beacon-images/club_feet_1.jpg',
+    position: new THREE.Vector3(-416, 0, 222)
+  }),
+  new ImageBeacon({
+    name: 'Dancing Foot II.',
+    imageName: 'media/beacon-images/club_feet_2.jpg',
+    position: new THREE.Vector3(286, 0, 178)
+  }),
+  new ImageBeacon({
+    name: 'Dancing Foot III.',
+    imageName: 'media/beacon-images/club_feet_3.jpg',
+    position: new THREE.Vector3(-252, 0, 48)
+  }),
+  new ImageBeacon({
+    name: 'Dancing Foot IV.',
+    imageName: 'media/beacon-images/club_feet_4.jpg',
+    position: new THREE.Vector3(-59, 0, 249)
+  }),
+  new ImageBeacon({
+    name: 'Dancing Foot V.',
+    imageName: 'media/beacon-images/club_feet_5.jpg',
+    position: new THREE.Vector3(268, 0, -298)
+  }),
+  new ImageBeacon({
+    name: 'Dancing Foot VI.',
+    imageName: 'media/beacon-images/club_feet_6.jpg',
+    position: new THREE.Vector3(371, 0, 350)
+  }),
+  new ImageBeacon({
+    name: 'Dominos Demons',
+    imageName: 'media/beacon-images/dominos_demons.jpg',
+    position: new THREE.Vector3(68, 0, -45)
+  }),
+  new ImageBeacon({
+    name: 'Trump, Donna',
+    imageName: 'media/beacon-images/donna_trump.jpg',
+    position: new THREE.Vector3(-45, 0, -9)
+  }),
+  new ImageBeacon({
+    name: 'For TV',
+    imageName: 'media/beacon-images/dress_to_impress_for_tv.jpg',
+    position: new THREE.Vector3(93, 0, 482)
+  }),
+  new ImageBeacon({
+    name: 'Father Demo Square',
+    imageName: 'media/beacon-images/father_demo_square.jpg',
+    position: new THREE.Vector3(-328, 0, -275)
+  }),
+  new ImageBeacon({
+    name: "God's Flag",
+    imageName: 'media/beacon-images/gods_flag.jpg',
+    position: new THREE.Vector3(277, 0, -199)
+  }),
+  new ImageBeacon({
+    name: "One Man's Neck",
+    imageName: 'media/beacon-images/man_neck.jpg',
+    position: new THREE.Vector3(-397, 0, 154)
+  }),
+  new ImageBeacon({
+    name: 'Me, Love, Rambo',
+    imageName: 'media/beacon-images/me_love_rambo.jpg',
+    position: new THREE.Vector3(-437, 0, -303)
+  }),
+  new ImageBeacon({
+    name: 'One Gold Watch',
+    imageName: 'media/beacon-images/one_gold_watch.jpg',
+    position: new THREE.Vector3(-328, 0, 361)
+  }),
+  new ImageBeacon({
+    name: 'The Papal Stream',
+    imageName: 'media/beacon-images/papal_livestream_1.jpg',
+    position: new THREE.Vector3(-47, 0, -240)
+  }),
+  new ImageBeacon({
+    name: 'Pope In Central Park',
+    imageName: 'media/beacon-images/pope_in_the_park.jpg',
+    position: new THREE.Vector3(410, 0, -295)
+  }),
+  new ImageBeacon({
+    name: 'Tuesdays',
+    imageName: 'media/beacon-images/pray_tuesdays.jpg',
+    position: new THREE.Vector3(12, 0, 328)
+  }),
+  new ImageBeacon({
+    name: 'Man Named Drew',
+    imageName: 'media/beacon-images/projected_drew.jpg',
+    position: new THREE.Vector3(346, 0, -92)
+  }),
+  new ImageBeacon({
+    name: 'Protect Them All',
+    imageName: 'media/beacon-images/protect_all.jpg',
+    position: new THREE.Vector3(400, 0, -307)
+  }),
+  new ImageBeacon({
+    name: 'Sell It From Hell',
+    imageName: 'media/beacon-images/sell_from_hell.jpg',
+    position: new THREE.Vector3(-261, 0, -151)
+  }),
+  new ImageBeacon({
+    name: 'Did Love The World',
+    imageName: 'media/beacon-images/so_loved_the_world.jpg',
+    position: new THREE.Vector3(-483, 0, 14)
+  }),
+  new ImageBeacon({
+    name: 'Welcome, Pope Frances',
+    imageName: 'media/beacon-images/soho_room_welcomes_pope_frances.jpg',
+    position: new THREE.Vector3(426, 0, 482)
+  }),
+  new ImageBeacon({
+    name: 'Man and His Trumpet',
+    imageName: 'media/beacon-images/trumpet_man.jpg',
+    position: new THREE.Vector3(400, 0, -177)
+  }),
+  new ImageBeacon({
+    name: 'View From The Highest Peak',
+    imageName: 'media/beacon-images/view_from_the_ladder.jpg',
+    position: new THREE.Vector3(144, 0, -389)
+  }),
+  new ImageBeacon({
+    name: 'When I Say Weak Ass',
+    imageName: 'media/beacon-images/you_live_the_perfect_life.jpg',
+    position: new THREE.Vector3(335, 0, 426)
+  }),
+  new ImageBeacon({
+    name: 'You Live The Perfect Life',
+    imageName: 'media/beacon-images/you_live_the_perfect_life.jpg',
+    position: new THREE.Vector3(-310, 0, 325)
+  }),
 
   // vids
   new VideoBeacon({
@@ -1078,6 +1322,11 @@ export var oneOffs = [
     videoName: 'media/videos/loves_no_fun',
     position: new THREE.Vector3(109, 0, 365)
   }),
+  new VideoBeacon({
+    name: "Marble Projection",
+    videoName: 'media/videos/marble_at_the_club',
+    position: new THREE.Vector3(-77, 0, -278)
+  }),
 
   // Google Photos Content
   new VideoBeacon({
@@ -1099,5 +1348,93 @@ export var oneOffs = [
     name: 'Google Eats Itself',
     videoName: 'media/videos/google_eats_itself',
     position: new THREE.Vector3(-194, -2, 220)
+  }),
+
+  // Billboards
+  new Billboard({
+    adName: 'media/billboard-images/welcome.jpg',
+    position: new THREE.Vector3(30, 5, -75)
+  }),
+  new Billboard({
+    adName: 'media/billboard-images/glad.jpg',
+    position: new THREE.Vector3(-18, 5, -157)
+  }),
+  new Billboard({
+    adName: 'media/billboard-images/everything_you_see.jpg',
+    position: new THREE.Vector3(-245, 5, -100)
+  }),
+  new Billboard({
+    adName: 'media/billboard-images/when_i_die.jpg',
+    position: new THREE.Vector3(-80, 5, 120)
+  }),
+  new Billboard({
+    adName: 'media/billboard-images/papa_johns_football.jpg',
+    position: new THREE.Vector3(140, 5, 92)
+  }),
+
+  // Plants
+  new Plant({position: new THREE.Vector3(0, 0, -50)}),
+  new Plant({position: new THREE.Vector3(188, 0, 177)}),
+  new Plant({position: new THREE.Vector3(308, 0, 255)}),
+  new Plant({position: new THREE.Vector3(-162, 0, -349)}),
+  new Plant({position: new THREE.Vector3(-140, 0, -197)}),
+  new Plant({position: new THREE.Vector3(313, 0, -259)}),
+  new Plant({position: new THREE.Vector3(-143, 0, 274)}),
+  new Plant({position: new THREE.Vector3(229, 0, 209)}),
+  new Plant({position: new THREE.Vector3(320, 0, -2)}),
+  new Plant({position: new THREE.Vector3(-221, 0, -347)}),
+  new Plant({position: new THREE.Vector3(214, 0, -305)}),
+  new Plant({position: new THREE.Vector3(-312, 0, 125)}),
+  new Plant({position: new THREE.Vector3(-267, 0, 199)}),
+  new Plant({position: new THREE.Vector3(-194, 0, 107)}),
+  new Plant({position: new THREE.Vector3(-200, 0, 70)}),
+  new Plant({position: new THREE.Vector3(13, 0, -218)}),
+  new Plant({position: new THREE.Vector3(-5, 0, 293)}),
+  new Plant({position: new THREE.Vector3(227, 0, -139)}),
+  new Plant({position: new THREE.Vector3(-175, 0, -298)}),
+  new Plant({position: new THREE.Vector3(262, 0, 116)}),
+  new Plant({position: new THREE.Vector3(-308, 0, -201)}),
+  new Plant({position: new THREE.Vector3(-187, 0, 157)}),
+  new Plant({position: new THREE.Vector3(-332, 0, -242)}),
+  new Plant({position: new THREE.Vector3(325, 0, -344)}),
+  new Plant({position: new THREE.Vector3(-123, 0, -101)}),
+  new Plant({position: new THREE.Vector3(-206, 0, -263)}),
+  new Plant({position: new THREE.Vector3(27, 0, -90)}),
+  new Plant({position: new THREE.Vector3(263, 0, -16)}),
+  new Plant({position: new THREE.Vector3(66, 0, 185)}),
+  new Plant({position: new THREE.Vector3(290, 0, -106)}),
+  new Plant({position: new THREE.Vector3(-185, 0, 110)}),
+  new Plant({position: new THREE.Vector3(336, 0, 271)}),
+  new Plant({position: new THREE.Vector3(341, 0, -16)}),
+  new Plant({position: new THREE.Vector3(317, 0, -13)}),
+  new Plant({position: new THREE.Vector3(-273, 0, 116)}),
+  new Plant({position: new THREE.Vector3(249, 0, -85)}),
+  new Plant({position: new THREE.Vector3(258, 0, -115)}),
+  new Plant({position: new THREE.Vector3(-140, 0, 304)}),
+  new Plant({position: new THREE.Vector3(-36, 0, 315)}),
+  new Plant({position: new THREE.Vector3(-137, 0, 278)}),
+  new Plant({position: new THREE.Vector3(-91, 0, 66)}),
+
+  // Architecture
+  new Skyscraper({
+    texturePath: '/media/architecture-textures/skyscraper-1.jpg',
+    position: new THREE.Vector3(0, 30, 175)
+  }),
+  new Skyscraper({
+    texturePath: '/media/architecture-textures/skyscraper-2.jpg',
+    position: new THREE.Vector3(312, 30, -282)
+  }),
+  new Skyscraper({
+    texturePath: '/media/architecture-textures/skyscraper-3.jpg',
+    position: new THREE.Vector3(-173, 30, 60)
+  }),
+  new Skyscraper({
+    texturePath: '/media/architecture-textures/skyscraper-4.jpg',
+    position: new THREE.Vector3(185, 30, -333)
+  }),
+  new Skyscraper({
+    texturePath: '/media/architecture-textures/skyscraper-5.jpg',
+    position: new THREE.Vector3(-262, 30, 288)
   })
+
 ];

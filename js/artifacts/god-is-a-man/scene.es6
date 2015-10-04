@@ -20,7 +20,7 @@ export class GodIsAMan extends ShaneScene {
   constructor(renderer, camera, scene, options) {
     super(renderer, camera, scene, options);
 
-    this.name = 'God Is A Man';
+    this.name = 'God Is a Man';
     this.slug = 'god-is-a-man';
     this.symbolName = '/media/symbols/cross.png';
 

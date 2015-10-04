@@ -28,3 +28,4 @@
 ~/code/art/shane/mistershane/webm.sh media/videos/fifth_avenue.mp4 media/videos/fifth_avenue.webm
 ~/code/art/shane/mistershane/webm.sh media/videos/keg_tapping.mp4 media/videos/keg_tapping.webm
 ~/code/art/shane/mistershane/webm.sh media/videos/loves_no_fun.mp4 media/videos/loves_no_fun.webm
+~/code/art/shane/mistershane/webm.sh media/videos/marble_at_the_club.mp4 media/videos/marble_at_the_club.webm

@@ -29,13 +29,17 @@ module.exports.addMoney = function(increment) {
   setMoney(money + increment);
 };
 
-module.exports.setMoneyReason = function(moneyReason) {
+module.exports.setMoneyReason = function(moneyReason, duration) {
+  if (!duration) {
+    duration = 3333;
+  }
+
   $moneyReason.hide();
   $moneyReason.text(moneyReason);
   $moneyReason.fadeIn(400, function() {
     setTimeout(function() {
       $moneyReason.fadeOut(400);
-    }, 3333);
+    }, duration);
   });
 };
 

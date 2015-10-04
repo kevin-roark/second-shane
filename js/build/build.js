@@ -32,8 +32,8 @@ var ASMR = exports.ASMR = (function (_ShaneScene) {
 
     _get(Object.getPrototypeOf(ASMR.prototype), "constructor", this).call(this, renderer, camera, scene, options);
 
-    this.name = "shane's ASMR treat";
-    this.slug = "asmr-treat";
+    this.name = "Shane's Whisper";
+    this.slug = "shanes-whisper";
     this.symbolName = "/media/symbols/ear.png";
 
     var host = this.isLive ? urls.asmr.live : urls.asmr.web;
@@ -305,7 +305,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../shane-mesh":22,"../../shane-scene.es6":23,"../../talisman.es6":24,"../../urls":27,"jquery":32,"kutility":33,"three":35}],2:[function(require,module,exports){
+},{"../../shane-mesh":23,"../../shane-scene.es6":24,"../../talisman.es6":25,"../../urls":28,"jquery":33,"kutility":34,"three":36}],2:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -623,7 +623,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../shane-mesh":22,"../../shane-scene.es6":23,"../../talisman.es6":24,"../../urls":27,"./static-canvas":3,"jquery":32,"three":35}],3:[function(require,module,exports){
+},{"../../shane-mesh":23,"../../shane-scene.es6":24,"../../talisman.es6":25,"../../urls":28,"./static-canvas":3,"jquery":33,"three":36}],3:[function(require,module,exports){
 "use strict";
 
 module.exports.fuzz = function (canvas) {
@@ -662,6 +662,7 @@ var _classCallCheck = function (instance, Constructor) { if (!(instance instance
 var THREE = require("three");
 var $ = require("jquery");
 var kt = require("kutility");
+var TWEEN = require("tween.js");
 
 var urls = require("../../urls");
 
@@ -724,6 +725,7 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
     this.symbolName = "/media/symbols/minion.png";
 
     this.host = this.isLive ? urls.getTheMinion.live : urls.getTheMinion.web;
+    this.audioBase = this.host + "audio/";
 
     window.addEventListener("keydown", function (ev) {
       _this.clawKeyDown(ev);
@@ -751,7 +753,19 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
       /// Shane System
 
       value: function enter() {
+        var _this = this;
+
         _get(Object.getPrototypeOf(GetTheMinion.prototype), "enter", this).call(this);
+
+        if (!this.isLive) {
+          this.numMediaToLoad += 1;
+          this.audio = this.dahmer.makeAudio(this.audioBase + "get_the_minion");
+          this.audio.addEventListener("canplaythrough", function () {
+            _this.didLoadMedia();
+          });
+        }
+
+        this.camera.rotation.x += 0.05;
 
         this.makeLights();
         this.makeWhiteGround();
@@ -763,15 +777,22 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
 
         _get(Object.getPrototypeOf(GetTheMinion.prototype), "doTimedWork", this).call(this);
 
+        if (!this.isLive) {
+          var silentTime = 1000;
+          this.addTimeout(function () {
+            _this.audio.play();
+          }, silentTime);
+        }
+
         // part 1
         this.showArticleText(function () {
           _this.addTimeout(function () {
             _this.performBoyCardFlyingAnimation();
-          }, 3333);
+          }, 333);
         });
 
         // part 2
-        var part2Onset = 75 * 1000;
+        var part2Onset = 36 * 1000;
         this.addTimeout(function () {
           fadeSceneOverlay(1500, function () {
             _this.removePart1Portions();
@@ -786,20 +807,24 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
             }, 3000);
           });
 
-          var beginShowingMyselfOffset = 35 * 1000;
+          var beginShowingMyselfOffset = 65 * 1000;
           _this.addTimeout(function () {
             _this.setupWebcamStream();
           }, beginShowingMyselfOffset);
 
-          var makeTheMinionsMeOffset = 65 * 1000;
+          var makeTheMinionsMeOffset = 110 * 1000;
           _this.addTimeout(function () {
             _this.stopFlashingText = true;
             _this.makeTheMinionsMe();
           }, makeTheMinionsMeOffset);
         }, part2Onset);
 
+        this.addTimeout(function () {
+          _this.showMinionStatusMessage("YOU GOT IT. THE MINION IS YOURS", 2000);
+        }, 167 * 1000);
+
         // end it
-        var trackDuration = 180 * 1000;
+        var trackDuration = 171.5 * 1000;
         this.addTimeout(this.iWantOut.bind(this), trackDuration);
       }
     },
@@ -811,6 +836,12 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
         this.scene.remove(this.hemiLight);
         this.scene.remove(this.dirLight);
         this.scene.remove(this.ambientLight);
+
+        if (!this.isLive) {
+          this.audio.src = "";
+          $(this.audio).remove();
+          this.audio = null;
+        }
 
         _get(Object.getPrototypeOf(GetTheMinion.prototype), "exit", this).call(this);
       }
@@ -920,9 +951,14 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
         this.addTimeout(function () {
           if (!_this.$articleDiv) return;
 
-          var scrollDuration = 36 * 1000;
-          var height = $articleDiv.height() + window.innerHeight;
-          $articleDiv.animate({ top: -height + "px" }, scrollDuration, "linear", function () {
+          var articlePosition = { top: 0 };
+          var articlePositionTarget = { top: -$articleDiv.height() - window.innerHeight };
+          var scrollDuration = 25 * 1000;
+          var tween = new TWEEN.Tween(articlePosition).to(articlePositionTarget, scrollDuration);
+          tween.onUpdate(function () {
+            $articleDiv.css("transform", "translate(0px, " + articlePosition.top + "px)");
+          });
+          tween.onComplete(function () {
             if (_this.$articleDiv) {
               _this.$articleDiv.remove();
               _this.$articleDiv = null;
@@ -931,6 +967,9 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
               callback();
             }
           });
+          tween.start();
+
+          _this.articleTween = tween;
         }, 1000);
 
         this.$articleDiv = $articleDiv;
@@ -941,18 +980,22 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
         this.flyingCards = [];
 
         var currentTimeout = 0;
-        for (var i = 0; i < 13; i++) {
+        for (var i = 0; i < 16; i++) {
           this.addTimeout(this.makeFlyingCard.bind(this), currentTimeout);
-          currentTimeout += Math.random() * 2222 + 1111;
+          currentTimeout += Math.random() * 700 + 444;
         }
       }
     },
     makeFlyingCard: {
       value: function makeFlyingCard() {
+        if (!this.flyingCards) {
+          return;
+        }
+
         var textures = ["/media/textures/minionboy1.jpg", "/media/textures/minionboy2.jpg", "/media/textures/minionboy3.jpg"];
         var position = new THREE.Vector3((Math.random() - 0.5) * 28, -2 + Math.random() * 10, 3);
-        var velocity = new THREE.Vector3((Math.random() - 0.5) * 0.005, 0, -0.08 + Math.random() * -0.2);
-        var acceleration = new THREE.Vector3(0, -0.00015, 0);
+        var velocity = new THREE.Vector3((Math.random() - 0.5) * 0.005, 0, -0.2 + Math.random() * -0.4);
+        var acceleration = new THREE.Vector3(0, -0.00025, 0);
         var rotationMult = Math.random() > 0.5 ? 1 : -1;
         var rotationalVelocity = new THREE.Vector3(Math.random() * rotationMult * 0.02 + rotationMult * 0.02, 0, 0);
         var length = 3.5 + Math.random() * 6;
@@ -993,6 +1036,11 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
         if (this.$articleDiv) {
           this.$articleDiv.remove();
           this.$articleDiv = null;
+        }
+
+        if (this.articleTween) {
+          this.articleTween.stop();
+          this.articleTween = null;
         }
 
         this.flyingCards = null;
@@ -1137,7 +1185,7 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
     },
     showClawMachineInstructions: {
       value: function showClawMachineInstructions() {
-        var div = $("<div class=\"track-instruction-box\" style=\"right: 10px; top: 10px;\">Work the Machine to Get the Minion. Use the Arrows to move the Claw. Press Enter to Submit the Claw.</div>");
+        var div = $("<div class=\"track-instruction-box\" style=\"right: 10px; top: 10px;\">You're Here. Work the Machine to Get the Minion. Use the Arrows to move the Claw. Press Enter to Submit the Claw.</div>");
         this.domContainer.append(div);
         this.$clawMachineInstructions = div;
       }
@@ -1150,16 +1198,15 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
           return;
         }
 
-        var textOptions = ["GET THE MINION", "SUBMIT THE CLAW", "USE THE MACHINE", "GRAB THE MINION", "TAKE IT", "EARN IT", "GET IT", "KEEP IT", "MOVE THE CLAW", "FIND YOUR MINION"];
+        var textOptions = ["GET THE MINION", "SUBMIT THE CLAW", "USE THE MACHINE", "GRAB THE MINION", "TAKE IT", "EARN IT", "GET IT", "KEEP IT", "MOVE THE CLAW", "FIND YOUR MINION", "WORK", "PROGRESS", "PERSEVERE", "IT CAN BE YOURS"];
 
         var text = kt.choice(textOptions);
-        var div = $("<div style=\"position: absolute; font-family: Times New Roman;\">" + text + "</div>");
-        div.css("right", Math.random() * 175 + 5 + "px");
+        var div = $("<div class=\"text-popup\" style=\"position: absolute;\">" + text + "</div>");
+        div.css("right", Math.random() * 120 + 5 + "px");
         div.css("top", (Math.random() - 0.5) * 450 + window.innerHeight / 2 + "px");
         div.css("color", kt.randColor());
-        div.css("font-size", kt.randInt(28, 56) + "px");
+        div.css("font-size", kt.randInt(28, 44) + "px");
         if (Math.random() > 0.5) div.css("font-style", "italic");
-        if (Math.random() > 0.5) div.css("text-decoration", "underline");
 
         this.domContainer.append(div);
 
@@ -1171,7 +1218,7 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
         // call myself again
         this.addTimeout(function () {
           _this.flashGetTheMinionText();
-        }, Math.random() * 6000 + 666);
+        }, Math.random() * 5666 + 666);
       }
     },
     clawKeyDown: {
@@ -1267,6 +1314,7 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
             _this.clawMesh.position.y -= 0.01;
             if (_this.clawMesh.position.y <= -2.75) {
               movingClawDown = false;
+              _this.showMinionStatusMessage(kt.choice(["CLOSE", "GOOD ATTEMPT", "NEXT TIME", "ALMOST", "ATTEMPT THWARTED", "I FELT IT SLIP", "PLEASE", "ONE MORE INCH", "JUST ONE MORE", "IT JUMPED FREE", "IT WIGGLED LOOSE"]));
             }
           } else {
             _this.clawMesh.position.y += 0.015;
@@ -1275,6 +1323,17 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
             }
           }
         };
+      }
+    },
+    showMinionStatusMessage: {
+      value: function showMinionStatusMessage(message, dur) {
+        if (!dur) dur = 490;
+        var div = $("<div style=\"position: fixed; left: 0; width: 100%; text-align: center; height: 140px; top: 50%; margin-top: -140px; font-size: 140px; color: white;\"></div>");
+        div.text(message);
+        this.domContainer.append(div);
+        setTimeout(function () {
+          div.remove();
+        }, dur);
       }
     },
     addMinionsToClawMachine: {
@@ -1385,7 +1444,7 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
             meTexture.needsUpdate = true;
           }
 
-          meMinionMesh.rotation.y -= 0.05;
+          meMinionMesh.rotation.y -= 0.08;
 
           if (scale < 10) {
             scale *= 1.0025;
@@ -1397,10 +1456,6 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
     setupWebcamStream: {
       value: function setupWebcamStream() {
         var _this = this;
-
-        if (!navigator.getUserMedia) {
-          return;
-        }
 
         var onSuccess = function (stream) {
           var video = document.createElement("video");
@@ -1441,7 +1496,7 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
               }
 
               if (self.mirrorVideoMesh.videoMaterial.opacity < 0.48) {
-                self.mirrorVideoMesh.videoMaterial.opacity += 0.0012;
+                self.mirrorVideoMesh.videoMaterial.opacity += 0.0008;
               } else {
                 self.mirrorUpdate = null;
               }
@@ -1451,10 +1506,22 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
 
         var onError = function (error) {
           console.log("navigator.getUserMedia error: ", error);
+
+          var div = $("<div class=\"text-popup\" style=\"position: absolute; left: 20px; width: 200px; top: 20px; font-size: 36px; color: rgba(0, 0, 0, 0.87);\">You could have become something More. Could have obtained the Minion, and, even, Became the Minion. But you made a Choice...</div>");
+          _this.domContainer.append(div);
+
+          // set timeout intentional here so div is always removed
+          setTimeout(function () {
+            div.remove();
+          }, 30000);
         };
 
-        var mediaConstraints = { audio: false, video: true };
-        navigator.getUserMedia(mediaConstraints, onSuccess, onError);
+        if (navigator.getUserMedia) {
+          var mediaConstraints = { audio: false, video: true };
+          navigator.getUserMedia(mediaConstraints, onSuccess, onError);
+        } else {
+          onError();
+        }
       }
     },
     removePart2Portions: {
@@ -1522,7 +1589,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../overlay":20,"../../shane-mesh":22,"../../shane-scene.es6":23,"../../talisman.es6":24,"../../urls":27,"../../util/video-mesh":31,"jquery":32,"kutility":33,"three":35}],5:[function(require,module,exports){
+},{"../../overlay":21,"../../shane-mesh":23,"../../shane-scene.es6":24,"../../talisman.es6":25,"../../urls":28,"../../util/video-mesh":32,"jquery":33,"kutility":34,"three":36,"tween.js":37}],5:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1615,7 +1682,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"jquery":32}],6:[function(require,module,exports){
+},{"jquery":33}],6:[function(require,module,exports){
 "use strict";
 
 var $ = require("jquery");
@@ -1819,7 +1886,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 // chorus
 
-},{"jquery":32,"kutility":33}],7:[function(require,module,exports){
+},{"jquery":33,"kutility":34}],7:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1855,7 +1922,7 @@ var GodIsAMan = exports.GodIsAMan = (function (_ShaneScene) {
 
     _get(Object.getPrototypeOf(GodIsAMan.prototype), "constructor", this).call(this, renderer, camera, scene, options);
 
-    this.name = "God Is A Man";
+    this.name = "God Is a Man";
     this.slug = "god-is-a-man";
     this.symbolName = "/media/symbols/cross.png";
 
@@ -2480,7 +2547,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../shane-scene.es6":23,"../../talisman.es6":24,"../../urls":27,"./basketball.es6":5,"./karaoke.es6":6,"jquery":32,"kutility":33,"three":35}],8:[function(require,module,exports){
+},{"../../shane-scene.es6":24,"../../talisman.es6":25,"../../urls":28,"./basketball.es6":5,"./karaoke.es6":6,"jquery":33,"kutility":34,"three":36}],8:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -2512,7 +2579,7 @@ var iFeltTheFoot = exports.iFeltTheFoot = (function (_ShaneScene) {
 
     _get(Object.getPrototypeOf(iFeltTheFoot.prototype), "constructor", this).call(this, renderer, camera, scene, options);
 
-    this.name = "i felt the foot";
+    this.name = "I Felt the Foot";
     this.slug = "i-felt-the-foot";
     this.symbolName = "/media/symbols/foot.png";
 
@@ -3116,7 +3183,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../shane-mesh":22,"../../shane-scene.es6":23,"../../talisman.es6":24,"../../urls":27,"jquery":32,"kutility":33,"three":35}],9:[function(require,module,exports){
+},{"../../shane-mesh":23,"../../shane-scene.es6":24,"../../talisman.es6":25,"../../urls":28,"jquery":33,"kutility":34,"three":36}],9:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -3147,7 +3214,7 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
 
     _get(Object.getPrototypeOf(LiveAtJJs.prototype), "constructor", this).call(this, renderer, camera, scene, options);
 
-    this.name = "Mister Shane Live At JJ's";
+    this.name = "Mister Shane Live at JJ's";
     this.slug = "live-at-jjs-place";
     this.symbolName = "/media/symbols/curtain.png";
 
@@ -3225,7 +3292,7 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
 
         this.addTimeout(this.makeDVDFullScreen.bind(this), 8 * 60 * 1000);
 
-        var videoLength = (9 * 60 + 16) * 1000;
+        var videoLength = this.isLive ? (9 * 60 + 16) * 1000 : (17 * 60 + 41) * 1000;
         this.addTimeout(this.iWantOut.bind(this), videoLength);
       }
     },
@@ -3306,7 +3373,6 @@ var LiveAtJJs = exports.LiveAtJJs = (function (_ShaneScene) {
           _this.resize();
 
           if (currentTop + currentHeight >= window.innerHeight) {
-            console.log("clearing growth interval");
             clearInterval(growthInterval);
           }
         }, 25);
@@ -3405,7 +3471,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../shane-mesh":22,"../../shane-scene.es6":23,"../../talisman.es6":24,"../../urls":27,"jquery":32,"three":35}],10:[function(require,module,exports){
+},{"../../shane-mesh":23,"../../shane-scene.es6":24,"../../talisman.es6":25,"../../urls":28,"jquery":33,"three":36}],10:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -3637,7 +3703,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../shane-mesh":22,"../../shane-scene.es6":23,"../../talisman.es6":24,"../../urls":27,"jquery":32,"three":35}],11:[function(require,module,exports){
+},{"../../shane-mesh":23,"../../shane-scene.es6":24,"../../talisman.es6":25,"../../urls":28,"jquery":33,"three":36}],11:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -3652,6 +3718,7 @@ var THREE = require("three");
 var $ = require("jquery");
 var kt = require("kutility");
 var Terrain = require("../../lib/three.terrain");
+var TWEEN = require("tween.js");
 
 var urls = require("../../urls");
 
@@ -3662,6 +3729,8 @@ var ShaneScene = require("../../shane-scene.es6").ShaneScene;
 var ShaneMesh = require("../../shane-mesh");
 var VideoMesh = require("../../util/video-mesh");
 
+var TerrainLength = 1024;
+
 var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
 
   /// Init
@@ -3671,8 +3740,8 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
 
     _get(Object.getPrototypeOf(PapaJohn.prototype), "constructor", this).call(this, renderer, camera, scene, options);
 
-    this.name = "Shane's Papa John";
-    this.slug = "papa-john-revalation";
+    this.name = "Shane's Papa John Revelation";
+    this.slug = "papa-john-revelation";
     this.symbolName = "/media/symbols/papa.png";
 
     var host = this.isLive ? urls.papaJohn.live : urls.papaJohn.web;
@@ -3709,6 +3778,7 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
           });
         }
 
+        this.oldFog = this.scene.fog;
         this.scene.fog = new THREE.Fog(16777215, 1, 6000);
         this.scene.fog.color.setHSL(0.6, 0, 1);
 
@@ -3738,35 +3808,57 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
           this.audio.play();
         }
 
+        this.addTimeout(function () {
+          _this.tweenToNewCameraPosition();
+        }, 5666);
+
         var videoOffset = 123 * 1000;
-        setTimeout(function () {
+        this.addTimeout(function () {
           _this.papaJohnVideo.play();
 
           _this.makePapaJohnMesh();
 
-          var fadeInterval = setInterval(function () {
+          _this.fadeInterval = setInterval(function () {
+            if (!_this.papaJohnVideoMesh) {
+              clearInterval(_this.fadeInterval);
+              return;
+            }
+
             _this.papaJohnVideoMesh.videoMaterial.opacity += 0.00125;
             if (_this.papaJohnVideoMesh.videoMaterial.opacity >= 1) {
-              clearInterval(fadeInterval);
+              clearInterval(_this.fadeInterval);
             }
           }, 30);
+
+          setTimeout(function () {
+            if (_this.currentTween) {
+              _this.currentTween.stop();
+            }
+            _this.pleaseStopMovingCamera = true;
+          }, 1500);
         }, videoOffset);
 
         var trackDuration = videoOffset + 175 * 1000;
-        setTimeout(this.goHome.bind(this), trackDuration);
+        this.addTimeout(this.goHome.bind(this), trackDuration);
       }
     },
     exit: {
       value: function exit() {
         _get(Object.getPrototypeOf(PapaJohn.prototype), "exit", this).call(this);
 
-        this.scene.fog = null;
+        this.scene.fog = this.oldFog;
+        this.oldFog = null;
 
         this.scene.remove(this.terrainScene);
         this.scene.remove(this.sky);
 
         this.scene.remove(this.hemiLight);
-        this.scene.remove(this.dirLight);
+        this.camera.remove(this.dirLight);
+
+        this.terrainScene = null;
+        this.sky = null;
+        this.hemiLight = null;
+        this.dirLight = null;
 
         if (!this.isLive) {
           this.audio.src = "";
@@ -3781,8 +3873,18 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
         }
 
         if (this.papaJohnVideoMesh) {
-          this.scene.remove(this.papaJohnVideoMesh.mesh);
+          this.camera.remove(this.papaJohnVideoMesh.mesh);
           this.papaJohnVideoMesh = null;
+        }
+
+        if (this.fadeInterval) {
+          clearInterval(this.fadeInterval);
+          this.fadeInterval = null;
+        }
+
+        if (this.currentTween) {
+          this.currentTween.stop();
+          this.currentTween = null;
         }
       }
     },
@@ -3818,9 +3920,9 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
           steps: 1,
           useBufferGeometry: false,
           xSegments: 63,
-          xSize: 1024,
+          xSize: TerrainLength,
           ySegments: 63,
-          ySize: 1024 });
+          ySize: TerrainLength });
         this.scene.add(this.terrainScene);
 
         this.terrainScene.receiveShadow = true;
@@ -3891,7 +3993,7 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
 
         var dirLight = new THREE.DirectionalLight(16777215, 1);
         dirLight.color.setHSL(0.1, 1, 0.95);
-        dirLight.position.set(0, 372, 400);
+        dirLight.position.set(0, 382, 400);
 
         dirLight.castShadow = true;
         dirLight.shadowMapWidth = 2048;
@@ -3902,7 +4004,7 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
         dirLight.shadowDarkness = 0.35;
 
         this.dirLight = dirLight;
-        this.scene.add(dirLight);
+        this.camera.add(dirLight);
       }
     },
     makeSky: {
@@ -3953,22 +4055,73 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
         this.papaJohnVideoMesh.mesh.receiveShadow = true;
         this.papaJohnVideoMesh.videoMaterial.opacity = 0;
 
-        this.papaJohnVideoMesh.moveTo(0, -8, -135);
+        this.papaJohnVideoMesh.moveTo(0, 2, -135);
         this.papaJohnVideoMesh.rotateTo(0.1, 0, 0);
-        this.papaJohnVideoMesh.addTo(this.scene);
+        this.papaJohnVideoMesh.addTo(this.camera);
+      }
+    },
+    tweenToNewCameraPosition: {
+
+      /// Behavior
+
+      value: function tweenToNewCameraPosition() {
+        var _this = this;
+
+        if (!this.active || this.pleaseStopMovingCamera) {
+          return;
+        }
+
+        var camera = this.camera;
+        var tweenModel = {
+          px: camera.position.x,
+          pz: camera.position.z,
+          rx: camera.rotation.x,
+          ry: camera.rotation.y,
+          rz: camera.rotation.z
+        };
+        var tweenTarget = {
+          px: (Math.random() - 0.5) * TerrainLength * 0.67,
+          pz: (Math.random() - 0.5) * TerrainLength * 0.67,
+          rx: (Math.random() - 0.5) * 0.4,
+          ry: (Math.random() - 0.5) * Math.PI * 3,
+          rz: (Math.random() - 0.5) * 0.2
+        };
+        var duration = Math.round(Math.random() * 11666) + 9666;
+        var tween = new TWEEN.Tween(tweenModel).to(tweenTarget, duration);
+
+        tween.onUpdate(function () {
+          camera.position.x = tweenModel.px;
+          camera.position.z = tweenModel.pz;
+          camera.rotation.x = tweenModel.rx;
+          camera.rotation.y = tweenModel.ry;
+          camera.rotation.z = tweenModel.rz;
+        });
+        tween.onComplete(function () {
+          var nextTweenTime = kt.randInt(4666, 13666);
+          _this.addTimeout(_this.tweenToNewCameraPosition.bind(_this), nextTweenTime);
+        });
+        tween.start();
+
+        this.currentTween = tween;
       }
     },
     goHome: {
-
-      /// Going Home
-
       value: function goHome() {
         var _this = this;
 
-        var fadeInterval = setInterval(function () {
+        if (this.fadeInterval) {
+          clearInterval(this.fadeInterval);
+        }
+
+        this.fadeInterval = setInterval(function () {
+          if (!_this.papaJohnVideoMesh) {
+            clearInterval(_this.fadeInterval);
+            return;
+          }
+
           _this.papaJohnVideoMesh.videoMaterial.opacity -= 0.0025;
           if (_this.papaJohnVideoMesh.videoMaterial.opacity <= 0) {
-            clearInterval(fadeInterval);
+            clearInterval(_this.fadeInterval);
 
             _this.iWantOut();
           }
@@ -3984,7 +4137,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../lib/three.terrain":15,"../../shane-mesh":22,"../../shane-scene.es6":23,"../../talisman.es6":24,"../../urls":27,"../../util/video-mesh":31,"jquery":32,"kutility":33,"three":35}],12:[function(require,module,exports){
+},{"../../lib/three.terrain":16,"../../shane-mesh":23,"../../shane-scene.es6":24,"../../talisman.es6":25,"../../urls":28,"../../util/video-mesh":32,"jquery":33,"kutility":34,"three":36,"tween.js":37}],12:[function(require,module,exports){
 "use strict";
 
 /**
@@ -4182,7 +4335,8 @@ module.exports = function (camera, options) {
 	};
 
 	this.mousedown = function (event) {
-		if (!this.locker.currentlyHasPointerlock) return;
+		if (!this.enabled) return;
+		if (this.locker.canEverHavePointerLock() && !this.locker.currentlyHasPointerlock) return;
 
 		if (this.domElement !== document) {
 			this.domElement.focus();
@@ -4206,11 +4360,12 @@ module.exports = function (camera, options) {
 	};
 
 	this.mousemove = function (event) {
-		if (!this.locker.currentlyHasPointerlock) return;
+		if (!this.enabled) return;
+		if (this.locker.canEverHavePointerLock() && !this.locker.currentlyHasPointerlock) return;
 
 		if (!this.dragToLook || this.mouseStatus > 0) {
-			var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
-			var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
+			var movementX = event.movementX || event.mozMovementX || event.webkitMovementX;
+			var movementY = event.movementY || event.mozMovementY || event.webkitMovementY;
 
 			// fallback for browsers with no movement
 			if (movementX === undefined) {
@@ -4221,6 +4376,8 @@ module.exports = function (camera, options) {
 					movementX = 0;
 					movementY = 0;
 				}
+
+				this.lastClientX = event.clientX;this.lastClientY = event.clientY;
 			}
 
 			yawObject.rotation.y -= movementX * 0.002;
@@ -4231,7 +4388,8 @@ module.exports = function (camera, options) {
 	};
 
 	this.mouseup = function (event) {
-		if (!this.locker.currentlyHasPointerlock) return;
+		if (!this.enabled) return;
+		if (this.locker.canEverHavePointerLock() && !this.locker.currentlyHasPointerlock) return;
 
 		event.preventDefault();
 		event.stopPropagation();
@@ -4325,7 +4483,7 @@ module.exports = function (camera, options) {
 	this.updateRotationVector();
 };
 
-},{"./pointerlocker":13,"three":35}],13:[function(require,module,exports){
+},{"./pointerlocker":13,"three":36}],13:[function(require,module,exports){
 "use strict";
 
 module.exports = function () {
@@ -4342,45 +4500,18 @@ module.exports = function () {
   this.requestPointerlock = function () {
     scope.canRequestPointerlock = true;
 
-    if (/Firefox/i.test(navigator.userAgent)) {
-      var fullscreenchange = (function (_fullscreenchange) {
-        var _fullscreenchangeWrapper = function fullscreenchange() {
-          return _fullscreenchange.apply(this, arguments);
-        };
+    pointerlockElement.requestPointerLock = pointerlockElement.requestPointerLock || pointerlockElement.mozRequestPointerLock || pointerlockElement.webkitRequestPointerLock;
 
-        _fullscreenchangeWrapper.toString = function () {
-          return _fullscreenchange.toString();
-        };
-
-        return _fullscreenchangeWrapper;
-      })(function () {
-        if (document.fullscreenElement === pointerlockElement || document.mozFullscreenElement === pointerlockElement || document.mozFullScreenElement === pointerlockElement) {
-          document.removeEventListener("fullscreenchange", fullscreenchange);
-          document.removeEventListener("mozfullscreenchange", fullscreenchange);
-
-          pointerlockElement.requestPointerLock();
-        }
-      });
-
-      document.addEventListener("fullscreenchange", fullscreenchange, false);
-      document.addEventListener("mozfullscreenchange", fullscreenchange, false);
-
-      pointerlockElement.requestFullscreen = pointerlockElement.requestFullscreen || pointerlockElement.mozRequestFullScreen || pointerlockElement.webkitRequestFullscreen;
-      pointerlockElement.requestFullscreen();
-    } else {
-      pointerlockElement.requestPointerLock = pointerlockElement.requestPointerLock || pointerlockElement.mozRequestPointerLock || pointerlockElement.webkitRequestPointerLock;
-
-      if (pointerlockElement.requestPointerLock) {
-        pointerlockElement.requestPointerLock();
-      }
+    if (pointerlockElement.requestPointerLock) {
+      pointerlockElement.requestPointerLock();
     }
   };
 
   this.exitPointerlock = function () {
-    pointerlockElement.exitPointerLock = pointerlockElement.exitPointerLock || pointerlockElement.mozExitPointerLock || pointerlockElement.webkitExitPointerLock;
+    document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock || document.webkitExitPointerLock;
 
-    if (pointerlockElement.exitPointerLock) {
-      pointerlockElement.exitPointerLock();
+    if (document.exitPointerLock) {
+      document.exitPointerLock();
     }
 
     scope.canRequestPointerlock = false;
@@ -4434,6 +4565,111 @@ module.exports = function () {
 };
 
 },{}],14:[function(require,module,exports){
+"use strict";
+
+var $ = require("jquery");
+var moneyMan = require("./new-money");
+
+var $couponError = $("#coupon-error");
+var $couponInput = $("#shane-coupon-input");
+var $submitCouponButton = $("#shane-coupon-submit-button");
+var $themePicker = $("#theme-picker");
+
+var SmallCoupon = "Get What You Earned";
+var LargeCoupon = "The Money You Paid Will Have An Impact On Shane";
+var validCoupons = [SmallCoupon, LargeCoupon];
+
+module.exports.init = function (didFullfillCallback) {
+  setupNewCouponHandler(didFullfillCallback);
+  activateExistingRewards();
+};
+
+module.exports.reset = function () {
+  $couponInput.val("");
+  setErrorMessage("");
+};
+
+function setupNewCouponHandler(didFullfillCallback) {
+  $submitCouponButton.click(function () {
+    var enteredCoupon = $couponInput.val();
+    if (!enteredCoupon.length) {
+      // nothing entered
+      setErrorMessage("enter a Shane Coupon!");
+    } else if (validCoupons.indexOf(enteredCoupon) >= 0) {
+      // valid coupon entered
+      if (hasCouponBeenUsed(enteredCoupon)) {
+        setErrorMessage("Nice Try! Shane Coupon Already Used");
+      } else {
+        fulfillCoupon(enteredCoupon);
+        module.exports.reset();
+        if (didFullfillCallback) {
+          didFullfillCallback();
+        }
+      }
+    } else {
+      // invalid coupon entered
+      setErrorMessage("bad Shane Coupon!");
+    }
+  });
+}
+
+function setErrorMessage(message) {
+  $couponError.text(message);
+
+  setTimeout(function () {
+    $couponError.text("");
+  }, 4000);
+}
+
+function activateExistingRewards() {
+  if (!window.localStorage) {
+    return;
+  }
+
+  // only persisting behavior reward currently is theme picker from large coupon
+  if (hasCouponBeenUsed(LargeCoupon)) {
+    activateLargeCouponReward();
+  }
+}
+
+function activateLargeCouponReward() {
+  $themePicker.show();
+}
+
+function hasCouponBeenUsed(coupon) {
+  if (window.localStorage) {
+    return !!window.localStorage.getItem("_hasUsed" + coupon);
+  }
+
+  return false;
+}
+
+function setCouponAsUsed(coupon) {
+  if (window.localStorage) {
+    window.localStorage.setItem("_hasUsed" + coupon, "true");
+  }
+}
+
+function fulfillCoupon(coupon) {
+  setCouponAsUsed(coupon);
+  var message;
+
+  if (coupon === LargeCoupon) {
+    moneyMan.addMoney(96000000); // $96,000,000 New Money
+    message = "Injected with $96,000,000 New Money For An OUTSTANDING PLEDGE. SHANE IS ETERNALLY GREATFUL. " + "You have a surprise reward waiting in the site map!";
+    activateLargeCouponReward();
+  } else {
+    // for now assume small coupon
+    moneyMan.addMoney(4000000); // $4,000,000 New Money
+    message = "Injected with $4,000,000 New Money For A Delightful Shane Pledge. Shane Says Thank You!";
+  }
+
+  if (message) {
+    moneyMan.setMoneyReason(message, 8666);
+  }
+}
+
+},{"./new-money":19,"jquery":33}],15:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -4537,7 +4773,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"jquery":32}],15:[function(require,module,exports){
+},{"jquery":33}],16:[function(require,module,exports){
 "use strict";
 
 /**
@@ -6577,7 +6813,7 @@ THREE.Terrain.Influence = function (g, options, f, x, y, r, h, t, e) {
 
 module.exports = THREE.Terrain;
 
-},{"three":35}],16:[function(require,module,exports){
+},{"three":36}],17:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -6591,12 +6827,14 @@ var _classCallCheck = function (instance, Constructor) { if (!(instance instance
 var $ = require("jquery");
 var THREE = require("three");
 var queryString = require("querystring");
+var TWEEN = require("tween.js");
 
 var ThreeBoiler = require("./three-boiler.es6").ThreeBoiler;
 
 var FlyControls = require("./controls/fly-controls");
 var moneyMan = require("./new-money");
 var minimap = require("./minimap");
+var couponLeader = require("./coupon-leader");
 var fadeSceneOverlay = require("./overlay");
 
 var _oneOffsEs6 = require("./one-offs.es6");
@@ -6606,7 +6844,10 @@ var setDidFindBeaconCallback = _oneOffsEs6.setDidFindBeaconCallback;
 
 var createShaneScenes = require("./scenes.es6").createShaneScenes;
 
-var currentTheme = require("./theme.es6").currentTheme;
+var _themeEs6 = require("./theme.es6");
+
+var applyCurrentTheme = _themeEs6.applyCurrentTheme;
+var removeCurrentTheme = _themeEs6.removeCurrentTheme;
 
 var chatter = require("./util/chatterbox.es6").chatter;
 
@@ -6620,9 +6861,11 @@ var $chatterBoxContainer = $("#chatter-box");
 var $hud = $("#hud");
 var $pointerLockTip = $("#pointer-lock-tip");
 var $siteMap = $("#site-map");
+var $spacebarTip = $("#spacebar-tip");
+var $menuTip = $("#menu-tip");
 
 var IS_LIVE = false;
-var SCRATCH_PAD = true;
+var SCRATCH_PAD = false;
 var SceneFadeDuration = IS_LIVE ? 3000 : 1000;
 
 var SecondShane = (function (_ThreeBoiler) {
@@ -6630,6 +6873,10 @@ var SecondShane = (function (_ThreeBoiler) {
     var _this = this;
 
     _classCallCheck(this, SecondShane);
+
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+      return;
+    }
 
     _get(Object.getPrototypeOf(SecondShane.prototype), "constructor", this).call(this, {
       antialias: true,
@@ -6645,11 +6892,17 @@ var SecondShane = (function (_ThreeBoiler) {
 
     this.waitBeforeAddingMoney = true;
 
+    var isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+    if (!isChrome) {
+      $("#please-use-chrome").show();
+    }
+
     this.controls = new FlyControls(this.camera);
     this.scene.add(this.controls.getObject());
     this.controls.locker.pointerLockChangeCallback = function (hasPointerLock) {
       _this.reactToPointerLock(hasPointerLock);
     };
+    this.reactToPointerLock(false);
 
     $("#hot-links a").click(function (ev) {
       var href = event.target.href;
@@ -6687,8 +6940,7 @@ var SecondShane = (function (_ThreeBoiler) {
 
     this.shaneScenes = createShaneScenes(this.transitionFromScene.bind(this), this.renderer, this.camera, this.scene);
 
-    this.theme = currentTheme;
-    this.theme.applyTo(this.scene);
+    applyCurrentTheme(this.scene);
 
     this.sharedWorldLight = new THREE.HemisphereLight(16777215, 16777215, 0.5);
     this.sharedWorldLight.position.set(0, 500, 0);
@@ -6699,6 +6951,10 @@ var SecondShane = (function (_ThreeBoiler) {
     this.activeScene = null;
     this.nearestTalismanScene = null;
     this.isShowingSiteMap = false;
+
+    couponLeader.init(function () {
+      _this.toggleSiteMap();
+    });
 
     if (SCRATCH_PAD) {
       this.oneOffs = [];
@@ -6737,6 +6993,8 @@ var SecondShane = (function (_ThreeBoiler) {
     render: {
       value: function render() {
         _get(Object.getPrototypeOf(SecondShane.prototype), "render", this).call(this);
+
+        TWEEN.update();
 
         if (this.activeScene) {
           this.activeScene.update();
@@ -6816,9 +7074,15 @@ var SecondShane = (function (_ThreeBoiler) {
           moneyMan.setMoneyReason("Keep an eye on your New Money accumulation!");
 
           setTimeout(function () {
-            if (!_this.activeScene) {
+            if (!_this.activeScene && !_this.transitioning) {
               _this.showIntroChatter();
             }
+
+            setTimeout(function () {
+              if (!_this.activeScene && !_this.transitioning) {
+                moneyMan.setMoneyReason("Remember... Press \"M\" to learn more about Second Shane!");
+              }
+            }, 30666);
           }, 3333);
         }, 3333);
       }
@@ -6878,19 +7142,35 @@ var SecondShane = (function (_ThreeBoiler) {
       /// Behavior
 
       value: function showIntroChatter() {
-        setTimeout(function () {
-          var words = ["Hello... Welcome to Second Shane... The ever-present and evolving realm of Mister Shane's sounds, sights, and feelings. I, the Red Bull™ Goblin, will be your trusted guide and companion.", "First thing's first... Second Shane is a self-driven experience. Explore the infinite universe and Hunt For Shane's Treasures. Move your eyes and body with the instructions to the left...", "You will find portals to other worlds along the way. Press the Spacebar to enter them. Fear not for within those worlds lies the reality of Second Shane. This realm is a shell.", "Thank you, and enjoy your time here. Come back soon... Shane is always changing."];
+        var hasVisited = this.userHasVisitedBefore();
 
-          $introBox.fadeIn();
-          chatter($chatterBoxContainer, words, {}, function () {
-            $introBox.fadeOut();
-          });
-        }, 2000);
+        var words;
+        if (!hasVisited) {
+          words = ["Hello... Welcome to Second Shane... The perpetual and evolving realm of Mister Shane, full of Visions Sound Media Money and Art. I, the Red Bull™ Goblin, will be your trusted guide and companion.", "First thing's first... Second Shane is a self-driven experience. No Tour Guides, Haha. Explore the infinite universe and Hunt For Shane's Treasures. Follow the instructions to the left...", "You will find portals to other worlds along the way. Press the Spacebar to enter them. Fear not for within those worlds lies the reality of Second Shane. This realm is a shell.", "Thank you, and enjoy your time here. Come back soon... Shane is always changing."];
+        } else {
+          words = ["Welcome back to Second Shane... You know what to do...", "Remember... Press 'M' at any time to see a site map with useful link portals...", "Shane always wants You to have the most fun. Have fun while you're here...", "Goodbye..."];
+        }
+
+        $introBox.fadeIn();
+        chatter($chatterBoxContainer, words, {}, function () {
+          $introBox.fadeOut();
+        });
+      }
+    },
+    userHasVisitedBefore: {
+      value: function userHasVisitedBefore() {
+        if (window.localStorage) {
+          var hasVisited = window.localStorage.getItem("hasVisited");
+          return !!hasVisited;
+        } else {
+          return false;
+        }
       }
     },
     reactToPointerLock: {
       value: function reactToPointerLock(hasPointerlock) {
         if (!this.controls.locker.canEverHavePointerLock()) {
+          $pointerLockTip.hide();
           return;
         }
 
@@ -6940,8 +7220,16 @@ var SecondShane = (function (_ThreeBoiler) {
         if (keycode === 32) {
           // space
           this.spacebarPressed();
-        } else if (keycode === 112) {
-          // p
+        } else if (keycode === 109) {
+          // m
+          if (!this.hasQuitLoadingScreen || this.transitioning || this.activeScene) {
+            return;
+          }
+
+          if (!this.hasHiddenMenuTip) {
+            $menuTip.fadeOut();
+            this.hasHiddenMenuTip = true;
+          }
           this.toggleSiteMap();
         }
       }
@@ -6963,6 +7251,14 @@ var SecondShane = (function (_ThreeBoiler) {
       value: function toggleSiteMap() {
         this.isShowingSiteMap = !this.isShowingSiteMap;
         $siteMap.toggle();
+
+        if (this.isShowingSiteMap) {
+          this.controls.exitPointerlock();
+        } else {
+          if (this.controls.requestPointerlock) {
+            this.controls.requestPointerlock();
+          }
+        }
       }
     },
     talismans: {
@@ -7001,7 +7297,15 @@ var SecondShane = (function (_ThreeBoiler) {
       value: function attemptToEnterScene() {
         var scene = this.nearestTalismanScene;
         if (scene) {
-          console.log(scene);
+          if (!this.hasHiddenSpacebarTip) {
+            $spacebarTip.fadeOut();
+            this.hasHiddenSpacebarTip = true;
+          }
+
+          if (window.localStorage) {
+            window.localStorage.setItem("hasVisited", true);
+          }
+
           this.transitionToScene(scene);
         }
       }
@@ -7024,6 +7328,11 @@ var SecondShane = (function (_ThreeBoiler) {
           $hud.show();
 
           _this.controls.reset();
+
+          if (_this.controls.requestPointerlock) {
+            _this.controls.requestPointerlock();
+          }
+          _this.reactToPointerLock(_this.controls.locker.currentlyHasPointerlock);
 
           _this.addSharedObjects();
           _this.controls.getObject().position.copy(_this.sharedCameraPosition);
@@ -7072,7 +7381,9 @@ var SecondShane = (function (_ThreeBoiler) {
         }
         this.controls.exitPointerlock();
         this.sharedCameraPosition.copy(this.controls.getObject().position);
-        $siteMap.hide();
+        if (this.isShowingSiteMap) {
+          this.toggleSiteMap();
+        }
         this.isShowingSiteMap = false;
 
         fadeSceneOverlay(SceneFadeDuration, function () {
@@ -7103,7 +7414,7 @@ var SecondShane = (function (_ThreeBoiler) {
           oneOff.activate(_this.scene);
         });
 
-        this.theme.applyTo(this.scene);
+        applyCurrentTheme(this.scene);
 
         this.scene.add(this.sharedWorldLight);
       }
@@ -7121,7 +7432,7 @@ var SecondShane = (function (_ThreeBoiler) {
           oneOff.deactivate(_this.scene);
         });
 
-        this.theme.removeFrom(this.scene);
+        removeCurrentTheme(this.scene);
 
         this.scene.remove(this.sharedWorldLight);
       }
@@ -7136,7 +7447,7 @@ $(function () {
   shane.activate();
 });
 
-},{"./controls/fly-controls":12,"./minimap":17,"./new-money":18,"./one-offs.es6":19,"./overlay":20,"./scenes.es6":21,"./theme.es6":25,"./three-boiler.es6":26,"./util/chatterbox.es6":28,"jquery":32,"querystring":38,"three":35}],17:[function(require,module,exports){
+},{"./controls/fly-controls":12,"./coupon-leader":14,"./minimap":18,"./new-money":19,"./one-offs.es6":20,"./overlay":21,"./scenes.es6":22,"./theme.es6":26,"./three-boiler.es6":27,"./util/chatterbox.es6":29,"jquery":33,"querystring":40,"three":36,"tween.js":37}],18:[function(require,module,exports){
 "use strict";
 
 var canvas = document.querySelector("#minimap-canvas");
@@ -7227,7 +7538,7 @@ function drawRotatedImage(context, image, x, y, width, height, rotation) {
   context.restore();
 }
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 "use strict";
 
 var $ = require("jquery");
@@ -7260,13 +7571,17 @@ module.exports.addMoney = function (increment) {
   setMoney(money + increment);
 };
 
-module.exports.setMoneyReason = function (moneyReason) {
+module.exports.setMoneyReason = function (moneyReason, duration) {
+  if (!duration) {
+    duration = 3333;
+  }
+
   $moneyReason.hide();
   $moneyReason.text(moneyReason);
   $moneyReason.fadeIn(400, function () {
     setTimeout(function () {
       $moneyReason.fadeOut(400);
-    }, 3333);
+    }, duration);
   });
 };
 
@@ -7299,7 +7614,7 @@ function setMoney(money) {
   }
 }
 
-},{"jquery":32,"odometer":34}],19:[function(require,module,exports){
+},{"jquery":33,"odometer":35}],20:[function(require,module,exports){
 "use strict";
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
@@ -7480,6 +7795,114 @@ var RotatingMan = (function (_MeshedOneOff) {
   return RotatingMan;
 })(MeshedOneOff);
 
+var Billboard = (function (_MeshedOneOff2) {
+  function Billboard(options) {
+    _classCallCheck(this, Billboard);
+
+    options.meshCreator = function (callback) {
+      var baseMesh = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 20), new THREE.MeshBasicMaterial({ color: 16777215 }));
+
+      var adTexture = new THREE.ImageUtils.loadTexture(options.adName);
+      adTexture.wrapS = adTexture.wrapT = THREE.ClampToEdgeWrapping;
+      adTexture.minFilter = THREE.NearestFilter;
+      var width = options.width || 24;
+      var height = width * 9 / 16;
+      var adMesh = new THREE.Mesh(new THREE.PlaneBufferGeometry(width, height), new THREE.MeshBasicMaterial({ map: adTexture, side: THREE.DoubleSide }));
+
+      adMesh.position.set(0, 10 + height / 2, 0);
+      baseMesh.add(adMesh);
+
+      callback(baseMesh.geometry, baseMesh.material, baseMesh);
+    };
+
+    options.postLoadRotation = { x: 0, y: Math.random() * Math.PI * 2, z: 0 };
+
+    if (!options.symbolName) {
+      options.symbolName = "/media/symbols/billboard.png";
+    }
+    if (!options.symbolLength) {
+      options.symbolLength = 16;
+    }
+
+    _get(Object.getPrototypeOf(Billboard.prototype), "constructor", this).call(this, options);
+  }
+
+  _inherits(Billboard, _MeshedOneOff2);
+
+  return Billboard;
+})(MeshedOneOff);
+
+var Plant = (function (_MeshedOneOff3) {
+  function Plant(options) {
+    _classCallCheck(this, Plant);
+
+    if (!options.modelName) {
+      options.modelName = kt.choice(["/js/models/tree.json"]);
+    }
+
+    if (options.modelName === "/js/models/tree.json") {
+      options.scale = Math.random() * 2 + 0.3;
+    }
+
+    if (!options.symbolName) {
+      options.symbolName = "/media/symbols/plant.png";
+    }
+    if (!options.symbolLength) {
+      options.symbolLength = 16;
+    }
+
+    _get(Object.getPrototypeOf(Plant.prototype), "constructor", this).call(this, options);
+  }
+
+  _inherits(Plant, _MeshedOneOff3);
+
+  _createClass(Plant, {
+    meshWasLoaded: {
+      value: function meshWasLoaded() {
+        _get(Object.getPrototypeOf(Plant.prototype), "meshWasLoaded", this).call(this);
+
+        // shiny random plant colors
+        var materials = this.shaneMesh.mesh.material.materials;
+        for (var i = 0; i < materials.length; i++) {
+          var material = materials[i];
+          material.color = new THREE.Color(parseInt(Math.random() * 16777215));
+          material.emissive = new THREE.Color(parseInt(Math.random() * 16777215));
+          material.ambient = new THREE.Color(parseInt(Math.random() * 16777215));
+          material.needsUpdate = true;
+        }
+      }
+    }
+  });
+
+  return Plant;
+})(MeshedOneOff);
+
+var Skyscraper = (function (_MeshedOneOff4) {
+  function Skyscraper(options) {
+    _classCallCheck(this, Skyscraper);
+
+    options.meshCreator = function (callback) {
+      var texture = new THREE.ImageUtils.loadTexture(options.texturePath);
+      texture.wrapS = texture.wrapT = THREE.ClampToEdgeWrapping;texture.minFilter = THREE.NearestFilter;
+      var mesh = new THREE.Mesh(new THREE.BoxGeometry(8, 80, 8), new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide }));
+      callback(mesh.geometry, mesh.material, mesh);
+    };
+
+    if (!options.symbolName) {
+      options.symbolName = "/media/symbols/building.png";
+    }
+    if (!options.symbolLength) {
+      options.symbolLength = 16;
+    }
+
+    _get(Object.getPrototypeOf(Skyscraper.prototype), "constructor", this).call(this, options);
+  }
+
+  _inherits(Skyscraper, _MeshedOneOff4);
+
+  return Skyscraper;
+})(MeshedOneOff);
+
 /** BEACON OFFS */
 
 function makeStyledGeometry(geometryStyle, geometrySize) {
@@ -7500,7 +7923,7 @@ function makeStyledGeometry(geometryStyle, geometrySize) {
   }
 }
 
-var BeaconOneOff = (function (_MeshedOneOff2) {
+var BeaconOneOff = (function (_MeshedOneOff5) {
   function BeaconOneOff(options) {
     _classCallCheck(this, BeaconOneOff);
 
@@ -7529,7 +7952,7 @@ var BeaconOneOff = (function (_MeshedOneOff2) {
     this.nearDistance = options.nearDistance || 20;
   }
 
-  _inherits(BeaconOneOff, _MeshedOneOff2);
+  _inherits(BeaconOneOff, _MeshedOneOff5);
 
   _createClass(BeaconOneOff, {
     deactivate: {
@@ -7647,6 +8070,10 @@ var ImageBeacon = (function (_BeaconOneOff2) {
     };
 
     options.postLoadRotation = { x: 0, y: Math.random() * Math.PI * 2, z: 0 };
+
+    if (options.position && options.position.y === 0) {
+      options.position.y = 2;
+    }
 
     if (!options.symbolName) {
       options.symbolName = "/media/symbols/lens.png";
@@ -8238,6 +8665,122 @@ new ImageBeacon({
   name: "A Dog Looking Through the Window",
   imageName: "media/beacon-images/window_dog.jpg",
   position: new THREE.Vector3(279, 0, -202)
+}), new ImageBeacon({
+  name: "Absolute Power Fitness",
+  imageName: "media/beacon-images/absolute_power_fitness.jpg",
+  position: new THREE.Vector3(-377, 0, -8)
+}), new ImageBeacon({
+  name: "He's Talking...",
+  imageName: "media/beacon-images/are_you_listening.jpg",
+  position: new THREE.Vector3(228, 0, -52)
+}), new ImageBeacon({
+  name: "One Bending Body",
+  imageName: "media/beacon-images/bending_body.jpg",
+  position: new THREE.Vector3(414, 0, -403)
+}), new ImageBeacon({
+  name: "Dancing Foot I.",
+  imageName: "media/beacon-images/club_feet_1.jpg",
+  position: new THREE.Vector3(-416, 0, 222)
+}), new ImageBeacon({
+  name: "Dancing Foot II.",
+  imageName: "media/beacon-images/club_feet_2.jpg",
+  position: new THREE.Vector3(286, 0, 178)
+}), new ImageBeacon({
+  name: "Dancing Foot III.",
+  imageName: "media/beacon-images/club_feet_3.jpg",
+  position: new THREE.Vector3(-252, 0, 48)
+}), new ImageBeacon({
+  name: "Dancing Foot IV.",
+  imageName: "media/beacon-images/club_feet_4.jpg",
+  position: new THREE.Vector3(-59, 0, 249)
+}), new ImageBeacon({
+  name: "Dancing Foot V.",
+  imageName: "media/beacon-images/club_feet_5.jpg",
+  position: new THREE.Vector3(268, 0, -298)
+}), new ImageBeacon({
+  name: "Dancing Foot VI.",
+  imageName: "media/beacon-images/club_feet_6.jpg",
+  position: new THREE.Vector3(371, 0, 350)
+}), new ImageBeacon({
+  name: "Dominos Demons",
+  imageName: "media/beacon-images/dominos_demons.jpg",
+  position: new THREE.Vector3(68, 0, -45)
+}), new ImageBeacon({
+  name: "Trump, Donna",
+  imageName: "media/beacon-images/donna_trump.jpg",
+  position: new THREE.Vector3(-45, 0, -9)
+}), new ImageBeacon({
+  name: "For TV",
+  imageName: "media/beacon-images/dress_to_impress_for_tv.jpg",
+  position: new THREE.Vector3(93, 0, 482)
+}), new ImageBeacon({
+  name: "Father Demo Square",
+  imageName: "media/beacon-images/father_demo_square.jpg",
+  position: new THREE.Vector3(-328, 0, -275)
+}), new ImageBeacon({
+  name: "God's Flag",
+  imageName: "media/beacon-images/gods_flag.jpg",
+  position: new THREE.Vector3(277, 0, -199)
+}), new ImageBeacon({
+  name: "One Man's Neck",
+  imageName: "media/beacon-images/man_neck.jpg",
+  position: new THREE.Vector3(-397, 0, 154)
+}), new ImageBeacon({
+  name: "Me, Love, Rambo",
+  imageName: "media/beacon-images/me_love_rambo.jpg",
+  position: new THREE.Vector3(-437, 0, -303)
+}), new ImageBeacon({
+  name: "One Gold Watch",
+  imageName: "media/beacon-images/one_gold_watch.jpg",
+  position: new THREE.Vector3(-328, 0, 361)
+}), new ImageBeacon({
+  name: "The Papal Stream",
+  imageName: "media/beacon-images/papal_livestream_1.jpg",
+  position: new THREE.Vector3(-47, 0, -240)
+}), new ImageBeacon({
+  name: "Pope In Central Park",
+  imageName: "media/beacon-images/pope_in_the_park.jpg",
+  position: new THREE.Vector3(410, 0, -295)
+}), new ImageBeacon({
+  name: "Tuesdays",
+  imageName: "media/beacon-images/pray_tuesdays.jpg",
+  position: new THREE.Vector3(12, 0, 328)
+}), new ImageBeacon({
+  name: "Man Named Drew",
+  imageName: "media/beacon-images/projected_drew.jpg",
+  position: new THREE.Vector3(346, 0, -92)
+}), new ImageBeacon({
+  name: "Protect Them All",
+  imageName: "media/beacon-images/protect_all.jpg",
+  position: new THREE.Vector3(400, 0, -307)
+}), new ImageBeacon({
+  name: "Sell It From Hell",
+  imageName: "media/beacon-images/sell_from_hell.jpg",
+  position: new THREE.Vector3(-261, 0, -151)
+}), new ImageBeacon({
+  name: "Did Love The World",
+  imageName: "media/beacon-images/so_loved_the_world.jpg",
+  position: new THREE.Vector3(-483, 0, 14)
+}), new ImageBeacon({
+  name: "Welcome, Pope Frances",
+  imageName: "media/beacon-images/soho_room_welcomes_pope_frances.jpg",
+  position: new THREE.Vector3(426, 0, 482)
+}), new ImageBeacon({
+  name: "Man and His Trumpet",
+  imageName: "media/beacon-images/trumpet_man.jpg",
+  position: new THREE.Vector3(400, 0, -177)
+}), new ImageBeacon({
+  name: "View From The Highest Peak",
+  imageName: "media/beacon-images/view_from_the_ladder.jpg",
+  position: new THREE.Vector3(144, 0, -389)
+}), new ImageBeacon({
+  name: "When I Say Weak Ass",
+  imageName: "media/beacon-images/you_live_the_perfect_life.jpg",
+  position: new THREE.Vector3(335, 0, 426)
+}), new ImageBeacon({
+  name: "You Live The Perfect Life",
+  imageName: "media/beacon-images/you_live_the_perfect_life.jpg",
+  position: new THREE.Vector3(-310, 0, 325)
 }),
 
 // vids
@@ -8325,6 +8868,10 @@ new VideoBeacon({
   name: "Love's No Fun",
   videoName: "media/videos/loves_no_fun",
   position: new THREE.Vector3(109, 0, 365)
+}), new VideoBeacon({
+  name: "Marble Projection",
+  videoName: "media/videos/marble_at_the_club",
+  position: new THREE.Vector3(-77, 0, -278)
 }),
 
 // Google Photos Content
@@ -8344,13 +8891,52 @@ new VideoBeacon({
   name: "Google Eats Itself",
   videoName: "media/videos/google_eats_itself",
   position: new THREE.Vector3(-194, -2, 220)
+}),
+
+// Billboards
+new Billboard({
+  adName: "media/billboard-images/welcome.jpg",
+  position: new THREE.Vector3(30, 5, -75)
+}), new Billboard({
+  adName: "media/billboard-images/glad.jpg",
+  position: new THREE.Vector3(-18, 5, -157)
+}), new Billboard({
+  adName: "media/billboard-images/everything_you_see.jpg",
+  position: new THREE.Vector3(-245, 5, -100)
+}), new Billboard({
+  adName: "media/billboard-images/when_i_die.jpg",
+  position: new THREE.Vector3(-80, 5, 120)
+}), new Billboard({
+  adName: "media/billboard-images/papa_johns_football.jpg",
+  position: new THREE.Vector3(140, 5, 92)
+}),
+
+// Plants
+new Plant({ position: new THREE.Vector3(0, 0, -50) }), new Plant({ position: new THREE.Vector3(188, 0, 177) }), new Plant({ position: new THREE.Vector3(308, 0, 255) }), new Plant({ position: new THREE.Vector3(-162, 0, -349) }), new Plant({ position: new THREE.Vector3(-140, 0, -197) }), new Plant({ position: new THREE.Vector3(313, 0, -259) }), new Plant({ position: new THREE.Vector3(-143, 0, 274) }), new Plant({ position: new THREE.Vector3(229, 0, 209) }), new Plant({ position: new THREE.Vector3(320, 0, -2) }), new Plant({ position: new THREE.Vector3(-221, 0, -347) }), new Plant({ position: new THREE.Vector3(214, 0, -305) }), new Plant({ position: new THREE.Vector3(-312, 0, 125) }), new Plant({ position: new THREE.Vector3(-267, 0, 199) }), new Plant({ position: new THREE.Vector3(-194, 0, 107) }), new Plant({ position: new THREE.Vector3(-200, 0, 70) }), new Plant({ position: new THREE.Vector3(13, 0, -218) }), new Plant({ position: new THREE.Vector3(-5, 0, 293) }), new Plant({ position: new THREE.Vector3(227, 0, -139) }), new Plant({ position: new THREE.Vector3(-175, 0, -298) }), new Plant({ position: new THREE.Vector3(262, 0, 116) }), new Plant({ position: new THREE.Vector3(-308, 0, -201) }), new Plant({ position: new THREE.Vector3(-187, 0, 157) }), new Plant({ position: new THREE.Vector3(-332, 0, -242) }), new Plant({ position: new THREE.Vector3(325, 0, -344) }), new Plant({ position: new THREE.Vector3(-123, 0, -101) }), new Plant({ position: new THREE.Vector3(-206, 0, -263) }), new Plant({ position: new THREE.Vector3(27, 0, -90) }), new Plant({ position: new THREE.Vector3(263, 0, -16) }), new Plant({ position: new THREE.Vector3(66, 0, 185) }), new Plant({ position: new THREE.Vector3(290, 0, -106) }), new Plant({ position: new THREE.Vector3(-185, 0, 110) }), new Plant({ position: new THREE.Vector3(336, 0, 271) }), new Plant({ position: new THREE.Vector3(341, 0, -16) }), new Plant({ position: new THREE.Vector3(317, 0, -13) }), new Plant({ position: new THREE.Vector3(-273, 0, 116) }), new Plant({ position: new THREE.Vector3(249, 0, -85) }), new Plant({ position: new THREE.Vector3(258, 0, -115) }), new Plant({ position: new THREE.Vector3(-140, 0, 304) }), new Plant({ position: new THREE.Vector3(-36, 0, 315) }), new Plant({ position: new THREE.Vector3(-137, 0, 278) }), new Plant({ position: new THREE.Vector3(-91, 0, 66) }),
+
+// Architecture
+new Skyscraper({
+  texturePath: "/media/architecture-textures/skyscraper-1.jpg",
+  position: new THREE.Vector3(0, 30, 175)
+}), new Skyscraper({
+  texturePath: "/media/architecture-textures/skyscraper-2.jpg",
+  position: new THREE.Vector3(312, 30, -282)
+}), new Skyscraper({
+  texturePath: "/media/architecture-textures/skyscraper-3.jpg",
+  position: new THREE.Vector3(-173, 30, 60)
+}), new Skyscraper({
+  texturePath: "/media/architecture-textures/skyscraper-4.jpg",
+  position: new THREE.Vector3(185, 30, -333)
+}), new Skyscraper({
+  texturePath: "/media/architecture-textures/skyscraper-5.jpg",
+  position: new THREE.Vector3(-262, 30, 288)
 })];
 exports.oneOffs = oneOffs;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"./dahmer.es6":14,"./shane-mesh":22,"jquery":32,"kutility":33,"three":35}],20:[function(require,module,exports){
+},{"./dahmer.es6":15,"./shane-mesh":23,"jquery":33,"kutility":34,"three":36}],21:[function(require,module,exports){
 "use strict";
 
 var $ = require("jquery");
@@ -8367,7 +8953,7 @@ module.exports = function fadeSceneOverlay(duration, behavior, callback) {
   });
 };
 
-},{"jquery":32}],21:[function(require,module,exports){
+},{"jquery":33}],22:[function(require,module,exports){
 "use strict";
 
 var ASMR = require("./artifacts/asmr/scene.es6").ASMR;
@@ -8400,7 +8986,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"./artifacts/asmr/scene.es6":1,"./artifacts/bruno/scene.es6":2,"./artifacts/get-the-minion/scene.es6":4,"./artifacts/god-is-a-man/scene.es6":7,"./artifacts/i-felt-the-foot/scene.es6":8,"./artifacts/live-at-jjs/scene.es6":9,"./artifacts/my-job-my-home-my-wife/scene.es6":10,"./artifacts/papa-john/scene.es6":11}],22:[function(require,module,exports){
+},{"./artifacts/asmr/scene.es6":1,"./artifacts/bruno/scene.es6":2,"./artifacts/get-the-minion/scene.es6":4,"./artifacts/god-is-a-man/scene.es6":7,"./artifacts/i-felt-the-foot/scene.es6":8,"./artifacts/live-at-jjs/scene.es6":9,"./artifacts/my-job-my-home-my-wife/scene.es6":10,"./artifacts/papa-john/scene.es6":11}],23:[function(require,module,exports){
 "use strict";
 
 var THREE = require("three");
@@ -8636,7 +9222,7 @@ ShaneMesh.prototype.fallToFloor = function (threshold, speed) {
 ShaneMesh.prototype.additionalInit = function () {};
 ShaneMesh.prototype.additionalRender = function () {};
 
-},{"./util/model-loader":29,"kutility":33,"three":35}],23:[function(require,module,exports){
+},{"./util/model-loader":30,"kutility":34,"three":36}],24:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -8793,7 +9379,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"./dahmer.es6":14,"./talisman.es6":24,"jquery":32,"three":35}],24:[function(require,module,exports){
+},{"./dahmer.es6":15,"./talisman.es6":25,"jquery":33,"three":36}],25:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -8922,12 +9508,14 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"three":35}],25:[function(require,module,exports){
+},{"three":36}],26:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+var $ = require("jquery");
 
 var createSkybox = require("./util/skybox").create;
 
@@ -8961,17 +9549,78 @@ var ShaneTheme = (function () {
   return ShaneTheme;
 })();
 
-var universeTheme = new ShaneTheme({
-  skyboxURL: "/media/theme-images/universe/main.jpg"
-});
+var themeCache = {};
+var _lastScene;
 
-var currentTheme = universeTheme;
-exports.currentTheme = currentTheme;
+var themeCreator = function (url) {
+  return function () {
+    if (!themeCache[url]) {
+      themeCache[url] = new ShaneTheme({
+        skyboxURL: url
+      });
+    }
+    return themeCache[url];
+  };
+};
+
+var universeTheme = themeCreator("/media/theme-images/universe/pure.jpg");
+var basketballTheme = themeCreator("/media/theme-images/basketball_court.jpg");
+var grassyTheme = themeCreator("/media/theme-images/grassy_field.jpg");
+var papaTheme = themeCreator("/media/theme-images/papa_johns_interior.jpg");
+var marbleTheme = themeCreator("/media/theme-images/marble_walls.jpg");
+
+var idToThemeMap = {
+  "space-theme": universeTheme,
+  "basketball-theme": basketballTheme,
+  "grass-theme": grassyTheme,
+  "papa-theme": papaTheme,
+  "marble-theme": marbleTheme
+};
+
+var currentTheme = universeTheme(); // default theme
+
+// if another theme was used in the most recent session, use it now!
+if (window.localStorage) {
+  var lastUsedThemeID = window.localStorage.getItem("lastUsedThemeID");
+  if (lastUsedThemeID) {
+    var themeFunction = idToThemeMap[lastUsedThemeID];
+    if (themeFunction) {
+      currentTheme = themeFunction();
+    }
+  }
+}
+
+var applyCurrentTheme = function (scene) {
+  _lastScene = scene;
+  currentTheme.applyTo(scene);
+};
+
+exports.applyCurrentTheme = applyCurrentTheme;
+var removeCurrentTheme = function (scene) {
+  _lastScene = scene;
+  currentTheme.removeFrom(scene);
+};
+
+exports.removeCurrentTheme = removeCurrentTheme;
+$(".theme-button").click(function () {
+  var $button = $(this);
+  var id = $button.attr("id");
+  var themeFunction = idToThemeMap[id];
+  if (themeFunction && _lastScene) {
+    removeCurrentTheme(_lastScene);
+    currentTheme = themeFunction();
+    applyCurrentTheme(_lastScene);
+
+    if (window.localStorage) {
+      window.localStorage.setItem("lastUsedThemeID", id);
+    }
+  }
+});
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"./util/skybox":30}],26:[function(require,module,exports){
+},{"./util/skybox":31,"jquery":33}],27:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -9093,7 +9742,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"jquery":32,"three":35}],27:[function(require,module,exports){
+},{"jquery":33,"three":36}],28:[function(require,module,exports){
 "use strict";
 
 module.exports.asmr = {
@@ -9136,7 +9785,7 @@ module.exports.myJobMyHomeMyWife = {
   live: "http://localhost:5562/"
 };
 
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 "use strict";
 
 var $ = require("jquery");
@@ -9221,7 +9870,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"jquery":32}],29:[function(require,module,exports){
+},{"jquery":33}],30:[function(require,module,exports){
 "use strict";
 
 var THREE = require("three");
@@ -9271,7 +9920,7 @@ function fetch(name, callback) {
   callback(geometry, materials);
 }
 
-},{"three":35}],30:[function(require,module,exports){
+},{"three":36}],31:[function(require,module,exports){
 "use strict";
 
 var THREE = require("three");
@@ -9347,7 +9996,7 @@ module.exports.blocker = function (size) {
   return new THREE.Mesh(geometry, material);
 };
 
-},{"three":35}],31:[function(require,module,exports){
+},{"three":36}],32:[function(require,module,exports){
 "use strict";
 
 var THREE = require("three");
@@ -9410,7 +10059,7 @@ VideoMesh.prototype.rotateTo = function (rx, ry, rz) {
   this.mesh.rotation.set(rx, ry, rz);
 };
 
-},{"jquery":32,"three":35}],32:[function(require,module,exports){
+},{"jquery":33,"three":36}],33:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.3
  * http://jquery.com/
@@ -18617,7 +19266,7 @@ return jQuery;
 
 }));
 
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 
 /* export something */
 module.exports = new Kutility();
@@ -19191,7 +19840,7 @@ Kutility.prototype.blur = function(el, x) {
   this.setFilter(el, cf + f);
 };
 
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 (function() {
   var COUNT_FRAMERATE, COUNT_MS_PER_FRAME, DIGIT_FORMAT, DIGIT_HTML, DIGIT_SPEEDBOOST, DURATION, FORMAT_MARK_HTML, FORMAT_PARSER, FRAMERATE, FRAMES_PER_VALUE, MS_PER_FRAME, MutationObserver, Odometer, RIBBON_HTML, TRANSITION_END_EVENTS, TRANSITION_SUPPORT, VALUE_HTML, addClass, createFromHTML, fractionalPart, now, removeClass, requestAnimationFrame, round, transitionCheckStyles, trigger, truncate, wrapJQuery, _jQueryWrapped, _old, _ref, _ref1,
     __slice = [].slice;
@@ -19846,7 +20495,7 @@ Kutility.prototype.blur = function(el, x) {
 
 }).call(this);
 
-},{}],35:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 var self = self || {};// File:src/Three.js
 
 /**
@@ -54994,7 +55643,883 @@ if (typeof exports !== 'undefined') {
   this['THREE'] = THREE;
 }
 
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
+/**
+ * Tween.js - Licensed under the MIT license
+ * https://github.com/tweenjs/tween.js
+ * ----------------------------------------------
+ *
+ * See https://github.com/tweenjs/tween.js/graphs/contributors for the full list of contributors.
+ * Thank you all, you're awesome!
+ */
+
+// Include a performance.now polyfill
+(function () {
+
+	if ('performance' in window === false) {
+		window.performance = {};
+	}
+
+	// IE 8
+	Date.now = (Date.now || function () {
+		return new Date().getTime();
+	});
+
+	if ('now' in window.performance === false) {
+		var offset = window.performance.timing && window.performance.timing.navigationStart ? window.performance.timing.navigationStart
+		                                                                                    : Date.now();
+
+		window.performance.now = function () {
+			return Date.now() - offset;
+		};
+	}
+
+})();
+
+var TWEEN = TWEEN || (function () {
+
+	var _tweens = [];
+
+	return {
+
+		getAll: function () {
+
+			return _tweens;
+
+		},
+
+		removeAll: function () {
+
+			_tweens = [];
+
+		},
+
+		add: function (tween) {
+
+			_tweens.push(tween);
+
+		},
+
+		remove: function (tween) {
+
+			var i = _tweens.indexOf(tween);
+
+			if (i !== -1) {
+				_tweens.splice(i, 1);
+			}
+
+		},
+
+		update: function (time) {
+
+			if (_tweens.length === 0) {
+				return false;
+			}
+
+			var i = 0;
+
+			time = time !== undefined ? time : window.performance.now();
+
+			while (i < _tweens.length) {
+
+				if (_tweens[i].update(time)) {
+					i++;
+				} else {
+					_tweens.splice(i, 1);
+				}
+
+			}
+
+			return true;
+
+		}
+	};
+
+})();
+
+TWEEN.Tween = function (object) {
+
+	var _object = object;
+	var _valuesStart = {};
+	var _valuesEnd = {};
+	var _valuesStartRepeat = {};
+	var _duration = 1000;
+	var _repeat = 0;
+	var _yoyo = false;
+	var _isPlaying = false;
+	var _reversed = false;
+	var _delayTime = 0;
+	var _startTime = null;
+	var _easingFunction = TWEEN.Easing.Linear.None;
+	var _interpolationFunction = TWEEN.Interpolation.Linear;
+	var _chainedTweens = [];
+	var _onStartCallback = null;
+	var _onStartCallbackFired = false;
+	var _onUpdateCallback = null;
+	var _onCompleteCallback = null;
+	var _onStopCallback = null;
+
+	// Set all starting values present on the target object
+	for (var field in object) {
+		_valuesStart[field] = parseFloat(object[field], 10);
+	}
+
+	this.to = function (properties, duration) {
+
+		if (duration !== undefined) {
+			_duration = duration;
+		}
+
+		_valuesEnd = properties;
+
+		return this;
+
+	};
+
+	this.start = function (time) {
+
+		TWEEN.add(this);
+
+		_isPlaying = true;
+
+		_onStartCallbackFired = false;
+
+		_startTime = time !== undefined ? time : window.performance.now();
+		_startTime += _delayTime;
+
+		for (var property in _valuesEnd) {
+
+			// Check if an Array was provided as property value
+			if (_valuesEnd[property] instanceof Array) {
+
+				if (_valuesEnd[property].length === 0) {
+					continue;
+				}
+
+				// Create a local copy of the Array with the start value at the front
+				_valuesEnd[property] = [_object[property]].concat(_valuesEnd[property]);
+
+			}
+
+			_valuesStart[property] = _object[property];
+
+			if ((_valuesStart[property] instanceof Array) === false) {
+				_valuesStart[property] *= 1.0; // Ensures we're using numbers, not strings
+			}
+
+			_valuesStartRepeat[property] = _valuesStart[property] || 0;
+
+		}
+
+		return this;
+
+	};
+
+	this.stop = function () {
+
+		if (!_isPlaying) {
+			return this;
+		}
+
+		TWEEN.remove(this);
+		_isPlaying = false;
+
+		if (_onStopCallback !== null) {
+			_onStopCallback.call(_object);
+		}
+
+		this.stopChainedTweens();
+		return this;
+
+	};
+
+	this.stopChainedTweens = function () {
+
+		for (var i = 0, numChainedTweens = _chainedTweens.length; i < numChainedTweens; i++) {
+			_chainedTweens[i].stop();
+		}
+
+	};
+
+	this.delay = function (amount) {
+
+		_delayTime = amount;
+		return this;
+
+	};
+
+	this.repeat = function (times) {
+
+		_repeat = times;
+		return this;
+
+	};
+
+	this.yoyo = function (yoyo) {
+
+		_yoyo = yoyo;
+		return this;
+
+	};
+
+
+	this.easing = function (easing) {
+
+		_easingFunction = easing;
+		return this;
+
+	};
+
+	this.interpolation = function (interpolation) {
+
+		_interpolationFunction = interpolation;
+		return this;
+
+	};
+
+	this.chain = function () {
+
+		_chainedTweens = arguments;
+		return this;
+
+	};
+
+	this.onStart = function (callback) {
+
+		_onStartCallback = callback;
+		return this;
+
+	};
+
+	this.onUpdate = function (callback) {
+
+		_onUpdateCallback = callback;
+		return this;
+
+	};
+
+	this.onComplete = function (callback) {
+
+		_onCompleteCallback = callback;
+		return this;
+
+	};
+
+	this.onStop = function (callback) {
+
+		_onStopCallback = callback;
+		return this;
+
+	};
+
+	this.update = function (time) {
+
+		var property;
+		var elapsed;
+		var value;
+
+		if (time < _startTime) {
+			return true;
+		}
+
+		if (_onStartCallbackFired === false) {
+
+			if (_onStartCallback !== null) {
+				_onStartCallback.call(_object);
+			}
+
+			_onStartCallbackFired = true;
+
+		}
+
+		elapsed = (time - _startTime) / _duration;
+		elapsed = elapsed > 1 ? 1 : elapsed;
+
+		value = _easingFunction(elapsed);
+
+		for (property in _valuesEnd) {
+
+			var start = _valuesStart[property] || 0;
+			var end = _valuesEnd[property];
+
+			if (end instanceof Array) {
+
+				_object[property] = _interpolationFunction(end, value);
+
+			} else {
+
+				// Parses relative end values with start as base (e.g.: +10, -3)
+				if (typeof (end) === 'string') {
+					end = start + parseFloat(end, 10);
+				}
+
+				// Protect against non numeric properties.
+				if (typeof (end) === 'number') {
+					_object[property] = start + (end - start) * value;
+				}
+
+			}
+
+		}
+
+		if (_onUpdateCallback !== null) {
+			_onUpdateCallback.call(_object, value);
+		}
+
+		if (elapsed === 1) {
+
+			if (_repeat > 0) {
+
+				if (isFinite(_repeat)) {
+					_repeat--;
+				}
+
+				// Reassign starting values, restart by making startTime = now
+				for (property in _valuesStartRepeat) {
+
+					if (typeof (_valuesEnd[property]) === 'string') {
+						_valuesStartRepeat[property] = _valuesStartRepeat[property] + parseFloat(_valuesEnd[property], 10);
+					}
+
+					if (_yoyo) {
+						var tmp = _valuesStartRepeat[property];
+
+						_valuesStartRepeat[property] = _valuesEnd[property];
+						_valuesEnd[property] = tmp;
+					}
+
+					_valuesStart[property] = _valuesStartRepeat[property];
+
+				}
+
+				if (_yoyo) {
+					_reversed = !_reversed;
+				}
+
+				_startTime = time + _delayTime;
+
+				return true;
+
+			} else {
+
+				if (_onCompleteCallback !== null) {
+					_onCompleteCallback.call(_object);
+				}
+
+				for (var i = 0, numChainedTweens = _chainedTweens.length; i < numChainedTweens; i++) {
+					// Make the chained tweens start exactly at the time they should,
+					// even if the `update()` method was called way past the duration of the tween
+					_chainedTweens[i].start(_startTime + _duration);
+				}
+
+				return false;
+
+			}
+
+		}
+
+		return true;
+
+	};
+
+};
+
+
+TWEEN.Easing = {
+
+	Linear: {
+
+		None: function (k) {
+
+			return k;
+
+		}
+
+	},
+
+	Quadratic: {
+
+		In: function (k) {
+
+			return k * k;
+
+		},
+
+		Out: function (k) {
+
+			return k * (2 - k);
+
+		},
+
+		InOut: function (k) {
+
+			if ((k *= 2) < 1) {
+				return 0.5 * k * k;
+			}
+
+			return - 0.5 * (--k * (k - 2) - 1);
+
+		}
+
+	},
+
+	Cubic: {
+
+		In: function (k) {
+
+			return k * k * k;
+
+		},
+
+		Out: function (k) {
+
+			return --k * k * k + 1;
+
+		},
+
+		InOut: function (k) {
+
+			if ((k *= 2) < 1) {
+				return 0.5 * k * k * k;
+			}
+
+			return 0.5 * ((k -= 2) * k * k + 2);
+
+		}
+
+	},
+
+	Quartic: {
+
+		In: function (k) {
+
+			return k * k * k * k;
+
+		},
+
+		Out: function (k) {
+
+			return 1 - (--k * k * k * k);
+
+		},
+
+		InOut: function (k) {
+
+			if ((k *= 2) < 1) {
+				return 0.5 * k * k * k * k;
+			}
+
+			return - 0.5 * ((k -= 2) * k * k * k - 2);
+
+		}
+
+	},
+
+	Quintic: {
+
+		In: function (k) {
+
+			return k * k * k * k * k;
+
+		},
+
+		Out: function (k) {
+
+			return --k * k * k * k * k + 1;
+
+		},
+
+		InOut: function (k) {
+
+			if ((k *= 2) < 1) {
+				return 0.5 * k * k * k * k * k;
+			}
+
+			return 0.5 * ((k -= 2) * k * k * k * k + 2);
+
+		}
+
+	},
+
+	Sinusoidal: {
+
+		In: function (k) {
+
+			return 1 - Math.cos(k * Math.PI / 2);
+
+		},
+
+		Out: function (k) {
+
+			return Math.sin(k * Math.PI / 2);
+
+		},
+
+		InOut: function (k) {
+
+			return 0.5 * (1 - Math.cos(Math.PI * k));
+
+		}
+
+	},
+
+	Exponential: {
+
+		In: function (k) {
+
+			return k === 0 ? 0 : Math.pow(1024, k - 1);
+
+		},
+
+		Out: function (k) {
+
+			return k === 1 ? 1 : 1 - Math.pow(2, - 10 * k);
+
+		},
+
+		InOut: function (k) {
+
+			if (k === 0) {
+				return 0;
+			}
+
+			if (k === 1) {
+				return 1;
+			}
+
+			if ((k *= 2) < 1) {
+				return 0.5 * Math.pow(1024, k - 1);
+			}
+
+			return 0.5 * (- Math.pow(2, - 10 * (k - 1)) + 2);
+
+		}
+
+	},
+
+	Circular: {
+
+		In: function (k) {
+
+			return 1 - Math.sqrt(1 - k * k);
+
+		},
+
+		Out: function (k) {
+
+			return Math.sqrt(1 - (--k * k));
+
+		},
+
+		InOut: function (k) {
+
+			if ((k *= 2) < 1) {
+				return - 0.5 * (Math.sqrt(1 - k * k) - 1);
+			}
+
+			return 0.5 * (Math.sqrt(1 - (k -= 2) * k) + 1);
+
+		}
+
+	},
+
+	Elastic: {
+
+		In: function (k) {
+
+			var s;
+			var a = 0.1;
+			var p = 0.4;
+
+			if (k === 0) {
+				return 0;
+			}
+
+			if (k === 1) {
+				return 1;
+			}
+
+			if (!a || a < 1) {
+				a = 1;
+				s = p / 4;
+			} else {
+				s = p * Math.asin(1 / a) / (2 * Math.PI);
+			}
+
+			return - (a * Math.pow(2, 10 * (k -= 1)) * Math.sin((k - s) * (2 * Math.PI) / p));
+
+		},
+
+		Out: function (k) {
+
+			var s;
+			var a = 0.1;
+			var p = 0.4;
+
+			if (k === 0) {
+				return 0;
+			}
+
+			if (k === 1) {
+				return 1;
+			}
+
+			if (!a || a < 1) {
+				a = 1;
+				s = p / 4;
+			} else {
+				s = p * Math.asin(1 / a) / (2 * Math.PI);
+			}
+
+			return (a * Math.pow(2, - 10 * k) * Math.sin((k - s) * (2 * Math.PI) / p) + 1);
+
+		},
+
+		InOut: function (k) {
+
+			var s;
+			var a = 0.1;
+			var p = 0.4;
+
+			if (k === 0) {
+				return 0;
+			}
+
+			if (k === 1) {
+				return 1;
+			}
+
+			if (!a || a < 1) {
+				a = 1;
+				s = p / 4;
+			} else {
+				s = p * Math.asin(1 / a) / (2 * Math.PI);
+			}
+
+			if ((k *= 2) < 1) {
+				return - 0.5 * (a * Math.pow(2, 10 * (k -= 1)) * Math.sin((k - s) * (2 * Math.PI) / p));
+			}
+
+			return a * Math.pow(2, -10 * (k -= 1)) * Math.sin((k - s) * (2 * Math.PI) / p) * 0.5 + 1;
+
+		}
+
+	},
+
+	Back: {
+
+		In: function (k) {
+
+			var s = 1.70158;
+
+			return k * k * ((s + 1) * k - s);
+
+		},
+
+		Out: function (k) {
+
+			var s = 1.70158;
+
+			return --k * k * ((s + 1) * k + s) + 1;
+
+		},
+
+		InOut: function (k) {
+
+			var s = 1.70158 * 1.525;
+
+			if ((k *= 2) < 1) {
+				return 0.5 * (k * k * ((s + 1) * k - s));
+			}
+
+			return 0.5 * ((k -= 2) * k * ((s + 1) * k + s) + 2);
+
+		}
+
+	},
+
+	Bounce: {
+
+		In: function (k) {
+
+			return 1 - TWEEN.Easing.Bounce.Out(1 - k);
+
+		},
+
+		Out: function (k) {
+
+			if (k < (1 / 2.75)) {
+				return 7.5625 * k * k;
+			} else if (k < (2 / 2.75)) {
+				return 7.5625 * (k -= (1.5 / 2.75)) * k + 0.75;
+			} else if (k < (2.5 / 2.75)) {
+				return 7.5625 * (k -= (2.25 / 2.75)) * k + 0.9375;
+			} else {
+				return 7.5625 * (k -= (2.625 / 2.75)) * k + 0.984375;
+			}
+
+		},
+
+		InOut: function (k) {
+
+			if (k < 0.5) {
+				return TWEEN.Easing.Bounce.In(k * 2) * 0.5;
+			}
+
+			return TWEEN.Easing.Bounce.Out(k * 2 - 1) * 0.5 + 0.5;
+
+		}
+
+	}
+
+};
+
+TWEEN.Interpolation = {
+
+	Linear: function (v, k) {
+
+		var m = v.length - 1;
+		var f = m * k;
+		var i = Math.floor(f);
+		var fn = TWEEN.Interpolation.Utils.Linear;
+
+		if (k < 0) {
+			return fn(v[0], v[1], f);
+		}
+
+		if (k > 1) {
+			return fn(v[m], v[m - 1], m - f);
+		}
+
+		return fn(v[i], v[i + 1 > m ? m : i + 1], f - i);
+
+	},
+
+	Bezier: function (v, k) {
+
+		var b = 0;
+		var n = v.length - 1;
+		var pw = Math.pow;
+		var bn = TWEEN.Interpolation.Utils.Bernstein;
+
+		for (var i = 0; i <= n; i++) {
+			b += pw(1 - k, n - i) * pw(k, i) * v[i] * bn(n, i);
+		}
+
+		return b;
+
+	},
+
+	CatmullRom: function (v, k) {
+
+		var m = v.length - 1;
+		var f = m * k;
+		var i = Math.floor(f);
+		var fn = TWEEN.Interpolation.Utils.CatmullRom;
+
+		if (v[0] === v[m]) {
+
+			if (k < 0) {
+				i = Math.floor(f = m * (1 + k));
+			}
+
+			return fn(v[(i - 1 + m) % m], v[i], v[(i + 1) % m], v[(i + 2) % m], f - i);
+
+		} else {
+
+			if (k < 0) {
+				return v[0] - (fn(v[0], v[0], v[1], v[1], -f) - v[0]);
+			}
+
+			if (k > 1) {
+				return v[m] - (fn(v[m], v[m], v[m - 1], v[m - 1], f - m) - v[m]);
+			}
+
+			return fn(v[i ? i - 1 : 0], v[i], v[m < i + 1 ? m : i + 1], v[m < i + 2 ? m : i + 2], f - i);
+
+		}
+
+	},
+
+	Utils: {
+
+		Linear: function (p0, p1, t) {
+
+			return (p1 - p0) * t + p0;
+
+		},
+
+		Bernstein: function (n, i) {
+
+			var fc = TWEEN.Interpolation.Utils.Factorial;
+
+			return fc(n) / fc(i) / fc(n - i);
+
+		},
+
+		Factorial: (function () {
+
+			var a = [1];
+
+			return function (n) {
+
+				var s = 1;
+
+				if (a[n]) {
+					return a[n];
+				}
+
+				for (var i = n; i > 1; i--) {
+					s *= i;
+				}
+
+				a[n] = s;
+				return s;
+
+			};
+
+		})(),
+
+		CatmullRom: function (p0, p1, p2, p3, t) {
+
+			var v0 = (p2 - p0) * 0.5;
+			var v1 = (p3 - p1) * 0.5;
+			var t2 = t * t;
+			var t3 = t * t2;
+
+			return (2 * p1 - 2 * p2 + v0 + v1) * t3 + (- 3 * p1 + 3 * p2 - 2 * v0 - v1) * t2 + v0 * t + p1;
+
+		}
+
+	}
+
+};
+
+// UMD (Universal Module Definition)
+(function (root) {
+
+	if (typeof define === 'function' && define.amd) {
+
+		// AMD
+		define([], function () {
+			return TWEEN;
+		});
+
+	} else if (typeof exports === 'object') {
+
+		// Node.js
+		module.exports = TWEEN;
+
+	} else {
+
+		// Global variable
+		root.TWEEN = TWEEN;
+
+	}
+
+})(this);
+
+},{}],38:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -55080,7 +56605,7 @@ var isArray = Array.isArray || function (xs) {
   return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{}],37:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -55167,10 +56692,10 @@ var objectKeys = Object.keys || function (obj) {
   return res;
 };
 
-},{}],38:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 'use strict';
 
 exports.decode = exports.parse = require('./decode');
 exports.encode = exports.stringify = require('./encode');
 
-},{"./decode":36,"./encode":37}]},{},[16]);
+},{"./decode":38,"./encode":39}]},{},[17]);

@@ -1,18 +1,20 @@
 
-let $ = require('jquery');
-let THREE = require('three');
-let queryString = require('querystring');
+var $ = require('jquery');
+var THREE = require('three');
+var queryString = require('querystring');
+var TWEEN = require('tween.js');
 
 import {ThreeBoiler} from './three-boiler.es6';
 
 let FlyControls = require('./controls/fly-controls');
 let moneyMan = require('./new-money');
 let minimap = require('./minimap');
+let couponLeader = require('./coupon-leader');
 let fadeSceneOverlay = require('./overlay');
 
 import {oneOffs, setDidFindBeaconCallback} from './one-offs.es6';
 import {createShaneScenes} from './scenes.es6';
-import {currentTheme} from './theme.es6';
+import {applyCurrentTheme, removeCurrentTheme} from './theme.es6';
 import {chatter} from './util/chatterbox.es6';
 
 var $loadingOverlay = $('#loading-overlay');
@@ -25,13 +27,19 @@ var $chatterBoxContainer = $('#chatter-box');
 var $hud = $('#hud');
 var $pointerLockTip = $('#pointer-lock-tip');
 var $siteMap = $('#site-map');
+var $spacebarTip = $('#spacebar-tip');
+var $menuTip = $('#menu-tip');
 
 let IS_LIVE = false;
-let SCRATCH_PAD = true;
+let SCRATCH_PAD = false;
 let SceneFadeDuration = IS_LIVE? 3000 : 1000;
 
 class SecondShane extends ThreeBoiler {
   constructor() {
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+      return;
+    }
+
     super({
       antialias: true,
       alpha: true
@@ -46,11 +54,17 @@ class SecondShane extends ThreeBoiler {
 
     this.waitBeforeAddingMoney = true;
 
+    var isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+    if (!isChrome) {
+      $('#please-use-chrome').show();
+    }
+
     this.controls = new FlyControls(this.camera);
     this.scene.add(this.controls.getObject());
     this.controls.locker.pointerLockChangeCallback = (hasPointerLock) => {
       this.reactToPointerLock(hasPointerLock);
     };
+    this.reactToPointerLock(false);
 
     $('#hot-links a').click((ev) => {
       var href = event.target.href;
@@ -88,8 +102,7 @@ class SecondShane extends ThreeBoiler {
 
     this.shaneScenes = createShaneScenes(this.transitionFromScene.bind(this), this.renderer, this.camera, this.scene);
 
-    this.theme = currentTheme;
-    this.theme.applyTo(this.scene);
+    applyCurrentTheme(this.scene);
 
     this.sharedWorldLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.5);
     this.sharedWorldLight.position.set(0, 500, 0);
@@ -100,6 +113,10 @@ class SecondShane extends ThreeBoiler {
     this.activeScene = null;
     this.nearestTalismanScene = null;
     this.isShowingSiteMap = false;
+
+    couponLeader.init(() => {
+      this.toggleSiteMap();
+    });
 
     if (SCRATCH_PAD) {
       this.oneOffs = [];
@@ -134,6 +151,8 @@ class SecondShane extends ThreeBoiler {
 
   render() {
     super.render();
+
+    TWEEN.update();
 
     if (this.activeScene) {
       this.activeScene.update();
@@ -208,9 +227,15 @@ class SecondShane extends ThreeBoiler {
       moneyMan.setMoneyReason('Keep an eye on your New Money accumulation!');
 
       setTimeout(() => {
-        if (!this.activeScene) {
+        if (!this.activeScene && !this.transitioning) {
           this.showIntroChatter();
         }
+
+        setTimeout(() => {
+          if (!this.activeScene && !this.transitioning) {
+            moneyMan.setMoneyReason('Remember... Press "M" to learn more about Second Shane!');
+          }
+        }, 30666);
       }, 3333);
     }, 3333);
   }
@@ -264,21 +289,45 @@ class SecondShane extends ThreeBoiler {
   /// Behavior
 
   showIntroChatter() {
-    setTimeout(() => {
-      let words = ["Hello... Welcome to Second Shane... The ever-present and evolving realm of Mister Shane's sounds, sights, and feelings. I, the Red Bull™ Goblin, will be your trusted guide and companion.",
-                   "First thing's first... Second Shane is a self-driven experience. Explore the infinite universe and Hunt For Shane's Treasures. Move your eyes and body with the instructions to the left...",
-                   "You will find portals to other worlds along the way. Press the Spacebar to enter them. Fear not for within those worlds lies the reality of Second Shane. This realm is a shell.",
-                   "Thank you, and enjoy your time here. Come back soon... Shane is always changing."];
+    var hasVisited = this.userHasVisitedBefore();
 
-      $introBox.fadeIn();
-      chatter($chatterBoxContainer, words, {}, () => {
-        $introBox.fadeOut();
-      });
-    }, 2000);
+    var words;
+    if (!hasVisited) {
+      words = [
+        "Hello... Welcome to Second Shane... The perpetual and evolving realm of Mister Shane, full of Visions Sound Media Money and Art. I, the Red Bull™ Goblin, will be your trusted guide and companion.",
+        "First thing's first... Second Shane is a self-driven experience. No Tour Guides, Haha. Explore the infinite universe and Hunt For Shane's Treasures. Follow the instructions to the left...",
+        "You will find portals to other worlds along the way. Press the Spacebar to enter them. Fear not for within those worlds lies the reality of Second Shane. This realm is a shell.",
+        "Thank you, and enjoy your time here. Come back soon... Shane is always changing."
+      ];
+    }
+    else {
+      words = [
+        "Welcome back to Second Shane... You know what to do...",
+        "Remember... Press 'M' at any time to see a site map with useful link portals...",
+        "Shane always wants You to have the most fun. Have fun while you're here...",
+        "Goodbye..."
+      ];
+    }
+
+    $introBox.fadeIn();
+    chatter($chatterBoxContainer, words, {}, () => {
+      $introBox.fadeOut();
+    });
+  }
+
+  userHasVisitedBefore() {
+    if (window.localStorage) {
+      var hasVisited = window.localStorage.getItem('hasVisited');
+      return !!hasVisited;
+    }
+    else {
+      return false;
+    }
   }
 
   reactToPointerLock(hasPointerlock) {
     if (!this.controls.locker.canEverHavePointerLock()) {
+      $pointerLockTip.hide();
       return;
     }
 
@@ -326,7 +375,15 @@ class SecondShane extends ThreeBoiler {
     if (keycode === 32) { // space
       this.spacebarPressed();
     }
-    else if (keycode === 112) { // p
+    else if (keycode === 109) { // m
+      if (!this.hasQuitLoadingScreen || this.transitioning || this.activeScene) {
+        return;
+      }
+
+      if (!this.hasHiddenMenuTip) {
+        $menuTip.fadeOut();
+        this.hasHiddenMenuTip = true;
+      }
       this.toggleSiteMap();
     }
   }
@@ -346,6 +403,15 @@ class SecondShane extends ThreeBoiler {
   toggleSiteMap() {
     this.isShowingSiteMap = !this.isShowingSiteMap;
     $siteMap.toggle();
+
+    if (this.isShowingSiteMap) {
+      this.controls.exitPointerlock();
+    }
+    else {
+      if (this.controls.requestPointerlock) {
+        this.controls.requestPointerlock();
+      }
+    }
   }
 
   /// Talismans
@@ -377,7 +443,15 @@ class SecondShane extends ThreeBoiler {
   attemptToEnterScene() {
     var scene = this.nearestTalismanScene;
     if (scene) {
-      console.log(scene);
+      if (!this.hasHiddenSpacebarTip) {
+        $spacebarTip.fadeOut();
+        this.hasHiddenSpacebarTip = true;
+      }
+
+      if (window.localStorage) {
+        window.localStorage.setItem('hasVisited', true);
+      }
+
       this.transitionToScene(scene);
     }
   }
@@ -397,6 +471,11 @@ class SecondShane extends ThreeBoiler {
       $hud.show();
 
       this.controls.reset();
+
+      if (this.controls.requestPointerlock) {
+        this.controls.requestPointerlock();
+      }
+      this.reactToPointerLock(this.controls.locker.currentlyHasPointerlock);
 
       this.addSharedObjects();
       this.controls.getObject().position.copy(this.sharedCameraPosition);
@@ -442,7 +521,9 @@ class SecondShane extends ThreeBoiler {
     }
     this.controls.exitPointerlock();
     this.sharedCameraPosition.copy(this.controls.getObject().position);
-    $siteMap.hide();
+    if (this.isShowingSiteMap) {
+      this.toggleSiteMap();
+    }
     this.isShowingSiteMap = false;
 
     fadeSceneOverlay(SceneFadeDuration, () => {
@@ -470,7 +551,7 @@ class SecondShane extends ThreeBoiler {
       oneOff.activate(this.scene);
     });
 
-    this.theme.applyTo(this.scene);
+    applyCurrentTheme(this.scene);
 
     this.scene.add(this.sharedWorldLight);
   }
@@ -485,7 +566,7 @@ class SecondShane extends ThreeBoiler {
       oneOff.deactivate(this.scene);
     });
 
-    this.theme.removeFrom(this.scene);
+    removeCurrentTheme(this.scene);
 
     this.scene.remove(this.sharedWorldLight);
   }

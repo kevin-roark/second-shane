@@ -13,39 +13,22 @@ module.exports = function() {
   this.requestPointerlock = function() {
     scope.canRequestPointerlock = true;
 
-    if (/Firefox/i.test( navigator.userAgent)) {
-      var fullscreenchange = function() {
-        if ( document.fullscreenElement === pointerlockElement || document.mozFullscreenElement === pointerlockElement || document.mozFullScreenElement === pointerlockElement ) {
-          document.removeEventListener( 'fullscreenchange', fullscreenchange );
-          document.removeEventListener( 'mozfullscreenchange', fullscreenchange );
+    pointerlockElement.requestPointerLock = pointerlockElement.requestPointerLock ||
+                                            pointerlockElement.mozRequestPointerLock ||
+                                            pointerlockElement.webkitRequestPointerLock;
 
-          pointerlockElement.requestPointerLock();
-        }
-      };
-
-      document.addEventListener('fullscreenchange', fullscreenchange, false);
-      document.addEventListener('mozfullscreenchange', fullscreenchange, false);
-
-      pointerlockElement.requestFullscreen = pointerlockElement.requestFullscreen || pointerlockElement.mozRequestFullScreen || pointerlockElement.webkitRequestFullscreen;
-      pointerlockElement.requestFullscreen();
-    } else {
-      pointerlockElement.requestPointerLock = pointerlockElement.requestPointerLock ||
-                                              pointerlockElement.mozRequestPointerLock ||
-                                              pointerlockElement.webkitRequestPointerLock;
-
-      if (pointerlockElement.requestPointerLock) {
-        pointerlockElement.requestPointerLock();
-      }
+    if (pointerlockElement.requestPointerLock) {
+      pointerlockElement.requestPointerLock();
     }
   };
 
   this.exitPointerlock = function() {
-    pointerlockElement.exitPointerLock =  pointerlockElement.exitPointerLock    ||
-                                          pointerlockElement.mozExitPointerLock ||
-                                          pointerlockElement.webkitExitPointerLock;
+    document.exitPointerLock =  document.exitPointerLock    ||
+                                document.mozExitPointerLock ||
+                                document.webkitExitPointerLock;
 
-    if (pointerlockElement.exitPointerLock) {
-      pointerlockElement.exitPointerLock();
+    if (document.exitPointerLock) {
+      document.exitPointerLock();
     }
 
     scope.canRequestPointerlock = false;
@@ -58,7 +41,8 @@ module.exports = function() {
   function pointerlockchange() {
     if (document.pointerLockElement === pointerlockElement || document.mozPointerLockElement === pointerlockElement || document.webkitPointerLockElement === pointerlockElement ) {
       scope.currentlyHasPointerlock = true;
-    } else {
+    }
+    else {
       scope.currentlyHasPointerlock = false;
     }
 

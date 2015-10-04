@@ -21,6 +21,30 @@ body {
   z-index: 1000;
 }
 
+#mobile-error-overlay {
+  z-index: 2000;
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  display: none;
+  background-color: #ec4a84;
+  font-size: 39px;
+  color: rgba(0, 0, 0, 0.87);
+}
+  #mobile-error-overlay p {
+    padding: 140px 50px 50px 50px;
+  }
+  #mobile-error-overlay a {
+    color: rgba(0, 125, 255, 0.87);
+    text-decoration: none;
+  }
+    #mobile-error-overlay a:hover, #mobile-error-overlay a:focus {
+      text-decoration: underline;
+      font-style: italic;
+    }
+
+canvas, video, img {
+  cursor: none;
+}
+
 #scene-overlay {
   display: none;
   position: absolute;
@@ -53,6 +77,15 @@ body {
   color: rgb(15, 143, 249);
 }
 
+#please-use-chrome {
+  display: none;
+  position: absolute; top: 60px; left: 10%; width: 50%;
+  padding: 10px;
+  font-size: 32px;
+  color: rgba(0, 0, 0, 0.87);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+}
+
 /** SITE MAP */
 
 #site-map {
@@ -61,9 +94,9 @@ body {
   z-index: 1000;
   position: fixed; left: 0px; top: 0px; bottom: 0px; right: 0px;
   overflow: auto;
-  margin: 60px 10%;
-  width: 80%;
-  max-width: 666px;
+  margin: 30px 5%;
+  width: 90%;
+  max-width: 840px;
   padding: 20px;
   box-shadow: 0 19px 38px rgba(255, 255, 255, 0.30), 0 15px 12px rgba(255, 255, 255, 0.23);
   background-color: rgb(250, 248, 235);
@@ -88,10 +121,28 @@ body {
   margin-bottom: 8px;
 }
 
+.site-map-button {
+  display: block;
+  max-width: 450px;
+  padding: 15px;
+  color: rgba(48, 143, 255, 0.9);
+  font-weight: bold;
+  border: 3px solid rgba(0, 0, 0, 0.77);
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  text-align: center;
+  -webkit-transition: all 250ms;
+  -moz-transition: all 250ms;
+  transition: all 250ms;
+}
+  .site-map-button:hover {
+    background-color: rgb(250, 250, 250);
+  }
+
 #second-shane-info {}
   #second-shane-info a {
     text-decoration: none;
-    color: rgb(224, 22, 228);
+    color: rgb(228, 22, 59);
   }
     #second-shane-info a:hover {
       text-decoration: underline;
@@ -100,27 +151,41 @@ body {
 
 #payment-zone {}
   #payment-zone-purchase-button {
-    display: block;
     text-decoration: none;
-    max-width: 450px;
-    padding: 15px;
     margin: 15px 0px 20px 0px;
-    text-align: center;
-    background-color: rgb(22, 22, 22);
-    color: rgba(255, 48, 73, 0.9);
-    font-weight: bold;
-    border: 3px solid rgba(0, 0, 0, 0.8);
+  }
+
+#shane-coupon-input {
+  margin: 20px 0px;
+  padding: 5px;
+  font-family: 'Times New Roman', serif;
+  font-size: 18px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  outline: none;
+  border: solid 2px #202020;
+  width: 240px;
+  -webkit-transition: all 250ms;
+  -moz-transition: all 250ms;
+  transition: all 250ms;
+}
+  #shane-coupon-input:focus {
+    outline: none;
+    border: solid 2px #0157ff;
+  }
+  #shane-coupon-input:focus, #shane-coupon-input:hover {
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
-    -webkit-transition: all 250ms;
-    -moz-transition: all 250ms;
-    transition: all 250ms;
   }
-    #payment-zone-purchase-button:hover {
-      background-color: rgb(250, 250, 250);
-    }
-  #shane-coupons {
-    margin-top: 5px;
-  }
+
+#shane-coupon-submit-button {
+  max-width: 330px;
+}
+
+#coupon-error {
+  margin: 20px;
+  font-style: italic;
+  text-decoration: underline;
+  color: rgba(250, 35, 35, 0.9);
+}
 
 #hot-links {
   font-size: 18px;
@@ -135,6 +200,16 @@ body {
       text-decoration: underline;
       font-style: italic;
     }
+
+#theme-picker {
+  display: none;
+}
+.theme-button {
+  display: inline-block;
+  padding: 5px;
+  border: 1px solid black;
+  cursor: pointer;
+}
 
 /** HUD */
 
@@ -286,5 +361,12 @@ body {
   font-family: 'Roboto Mono', monospace;
   max-width: 160px;
   padding: 6px;
+  box-shadow: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.23);
+}
+
+.text-popup {
+  padding: 12px;
+  font-family: 'Times New Roman', serif;
+  background-color: white;
   box-shadow: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.23);
 }
