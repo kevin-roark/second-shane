@@ -4327,7 +4327,7 @@ module.exports = function (camera, options) {
 	};
 
 	this.mousedown = function (event) {
-		if (!this.locker.currentlyHasPointerlock) return;
+		if (this.locker.canEverHavePointerLock() && !this.locker.currentlyHasPointerlock) return;
 
 		if (this.domElement !== document) {
 			this.domElement.focus();
@@ -4351,11 +4351,11 @@ module.exports = function (camera, options) {
 	};
 
 	this.mousemove = function (event) {
-		if (!this.locker.currentlyHasPointerlock) return;
+		if (this.locker.canEverHavePointerLock() && !this.locker.currentlyHasPointerlock) return;
 
 		if (!this.dragToLook || this.mouseStatus > 0) {
-			var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
-			var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
+			var movementX = event.movementX || event.mozMovementX || event.webkitMovementX;
+			var movementY = event.movementY || event.mozMovementY || event.webkitMovementY;
 
 			// fallback for browsers with no movement
 			if (movementX === undefined) {
@@ -4366,6 +4366,8 @@ module.exports = function (camera, options) {
 					movementX = 0;
 					movementY = 0;
 				}
+
+				this.lastClientX = event.clientX;this.lastClientY = event.clientY;
 			}
 
 			yawObject.rotation.y -= movementX * 0.002;
@@ -4376,7 +4378,7 @@ module.exports = function (camera, options) {
 	};
 
 	this.mouseup = function (event) {
-		if (!this.locker.currentlyHasPointerlock) return;
+		if (this.locker.canEverHavePointerLock() && !this.locker.currentlyHasPointerlock) return;
 
 		event.preventDefault();
 		event.stopPropagation();
@@ -4487,37 +4489,10 @@ module.exports = function () {
   this.requestPointerlock = function () {
     scope.canRequestPointerlock = true;
 
-    if (/Firefox/i.test(navigator.userAgent)) {
-      var fullscreenchange = (function (_fullscreenchange) {
-        var _fullscreenchangeWrapper = function fullscreenchange() {
-          return _fullscreenchange.apply(this, arguments);
-        };
+    pointerlockElement.requestPointerLock = pointerlockElement.requestPointerLock || pointerlockElement.mozRequestPointerLock || pointerlockElement.webkitRequestPointerLock;
 
-        _fullscreenchangeWrapper.toString = function () {
-          return _fullscreenchange.toString();
-        };
-
-        return _fullscreenchangeWrapper;
-      })(function () {
-        if (document.fullscreenElement === pointerlockElement || document.mozFullscreenElement === pointerlockElement || document.mozFullScreenElement === pointerlockElement) {
-          document.removeEventListener("fullscreenchange", fullscreenchange);
-          document.removeEventListener("mozfullscreenchange", fullscreenchange);
-
-          pointerlockElement.requestPointerLock();
-        }
-      });
-
-      document.addEventListener("fullscreenchange", fullscreenchange, false);
-      document.addEventListener("mozfullscreenchange", fullscreenchange, false);
-
-      pointerlockElement.requestFullscreen = pointerlockElement.requestFullscreen || pointerlockElement.mozRequestFullScreen || pointerlockElement.webkitRequestFullscreen;
-      pointerlockElement.requestFullscreen();
-    } else {
-      pointerlockElement.requestPointerLock = pointerlockElement.requestPointerLock || pointerlockElement.mozRequestPointerLock || pointerlockElement.webkitRequestPointerLock;
-
-      if (pointerlockElement.requestPointerLock) {
-        pointerlockElement.requestPointerLock();
-      }
+    if (pointerlockElement.requestPointerLock) {
+      pointerlockElement.requestPointerLock();
     }
   };
 
@@ -6911,6 +6886,7 @@ var SecondShane = (function (_ThreeBoiler) {
     this.controls.locker.pointerLockChangeCallback = function (hasPointerLock) {
       _this.reactToPointerLock(hasPointerLock);
     };
+    this.reactToPointerLock(false);
 
     $("#hot-links a").click(function (ev) {
       var href = event.target.href;
@@ -7178,6 +7154,8 @@ var SecondShane = (function (_ThreeBoiler) {
     reactToPointerLock: {
       value: function reactToPointerLock(hasPointerlock) {
         if (!this.controls.locker.canEverHavePointerLock()) {
+          console.log("hello!!!!!");
+          $pointerLockTip.hide();
           return;
         }
 

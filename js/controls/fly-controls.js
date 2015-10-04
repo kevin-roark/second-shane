@@ -166,7 +166,7 @@ module.exports = function (camera, options) {
 	};
 
 	this.mousedown = function( event ) {
-		if (!this.locker.currentlyHasPointerlock) return;
+		if (this.locker.canEverHavePointerLock() && !this.locker.currentlyHasPointerlock) return;
 
 		if ( this.domElement !== document ) {
 			this.domElement.focus();
@@ -188,11 +188,11 @@ module.exports = function (camera, options) {
 	};
 
 	this.mousemove = function( event ) {
-		if (!this.locker.currentlyHasPointerlock) return;
+		if (this.locker.canEverHavePointerLock() && !this.locker.currentlyHasPointerlock) return;
 
 		if ( !this.dragToLook || this.mouseStatus > 0 ) {
-			var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
-			var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
+			var movementX = event.movementX || event.mozMovementX || event.webkitMovementX;
+			var movementY = event.movementY || event.mozMovementY || event.webkitMovementY;
 
 			// fallback for browsers with no movement
 		  if (movementX === undefined) {
@@ -204,6 +204,8 @@ module.exports = function (camera, options) {
 		      movementX = 0;
 		      movementY = 0;
 		    }
+
+				this.lastClientX = event.clientX; this.lastClientY = event.clientY;
 			}
 
 			yawObject.rotation.y -= movementX * 0.002;
@@ -214,7 +216,7 @@ module.exports = function (camera, options) {
 	};
 
 	this.mouseup = function( event ) {
-		if (!this.locker.currentlyHasPointerlock) return;
+		if (this.locker.canEverHavePointerLock() && !this.locker.currentlyHasPointerlock) return;
 
 		event.preventDefault();
 		event.stopPropagation();

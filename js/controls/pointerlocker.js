@@ -13,29 +13,12 @@ module.exports = function() {
   this.requestPointerlock = function() {
     scope.canRequestPointerlock = true;
 
-    if (/Firefox/i.test( navigator.userAgent)) {
-      var fullscreenchange = function() {
-        if ( document.fullscreenElement === pointerlockElement || document.mozFullscreenElement === pointerlockElement || document.mozFullScreenElement === pointerlockElement ) {
-          document.removeEventListener( 'fullscreenchange', fullscreenchange );
-          document.removeEventListener( 'mozfullscreenchange', fullscreenchange );
+    pointerlockElement.requestPointerLock = pointerlockElement.requestPointerLock ||
+                                            pointerlockElement.mozRequestPointerLock ||
+                                            pointerlockElement.webkitRequestPointerLock;
 
-          pointerlockElement.requestPointerLock();
-        }
-      };
-
-      document.addEventListener('fullscreenchange', fullscreenchange, false);
-      document.addEventListener('mozfullscreenchange', fullscreenchange, false);
-
-      pointerlockElement.requestFullscreen = pointerlockElement.requestFullscreen || pointerlockElement.mozRequestFullScreen || pointerlockElement.webkitRequestFullscreen;
-      pointerlockElement.requestFullscreen();
-    } else {
-      pointerlockElement.requestPointerLock = pointerlockElement.requestPointerLock ||
-                                              pointerlockElement.mozRequestPointerLock ||
-                                              pointerlockElement.webkitRequestPointerLock;
-
-      if (pointerlockElement.requestPointerLock) {
-        pointerlockElement.requestPointerLock();
-      }
+    if (pointerlockElement.requestPointerLock) {
+      pointerlockElement.requestPointerLock();
     }
   };
 

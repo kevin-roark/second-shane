@@ -59,6 +59,7 @@ class SecondShane extends ThreeBoiler {
     this.controls.locker.pointerLockChangeCallback = (hasPointerLock) => {
       this.reactToPointerLock(hasPointerLock);
     };
+    this.reactToPointerLock(false);
 
     $('#hot-links a').click((ev) => {
       var href = event.target.href;
@@ -321,6 +322,7 @@ class SecondShane extends ThreeBoiler {
 
   reactToPointerLock(hasPointerlock) {
     if (!this.controls.locker.canEverHavePointerLock()) {
+      $pointerLockTip.hide();
       return;
     }
 
