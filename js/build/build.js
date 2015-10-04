@@ -1457,10 +1457,6 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
       value: function setupWebcamStream() {
         var _this = this;
 
-        if (!navigator.getUserMedia) {
-          return;
-        }
-
         var onSuccess = function (stream) {
           var video = document.createElement("video");
           video.autoplay = true;
@@ -1510,10 +1506,22 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
 
         var onError = function (error) {
           console.log("navigator.getUserMedia error: ", error);
+
+          var div = $("<div class=\"text-popup\" style=\"position: absolute; left: 20px; width: 200px; top: 20px; font-size: 36px; color: rgba(0, 0, 0, 0.87);\">You could have become something More. Could have obtained the Minion, and, even, Became the Minion. But you made a Choice...</div>");
+          _this.domContainer.append(div);
+
+          // set timeout intentional here so div is always removed
+          setTimeout(function () {
+            div.remove();
+          }, 30000);
         };
 
-        var mediaConstraints = { audio: false, video: true };
-        navigator.getUserMedia(mediaConstraints, onSuccess, onError);
+        if (navigator.getUserMedia) {
+          var mediaConstraints = { audio: false, video: true };
+          navigator.getUserMedia(mediaConstraints, onSuccess, onError);
+        } else {
+          onError();
+        }
       }
     },
     removePart2Portions: {

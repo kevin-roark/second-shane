@@ -766,10 +766,6 @@ export class GetTheMinion extends ShaneScene {
   }
 
   setupWebcamStream() {
-    if (!navigator.getUserMedia) {
-      return;
-    }
-
     var onSuccess = (stream) => {
       var video = document.createElement('video');
       video.autoplay = true;
@@ -820,10 +816,23 @@ export class GetTheMinion extends ShaneScene {
 
     var onError = (error) => {
       console.log('navigator.getUserMedia error: ', error);
+
+      var div = $('<div class="text-popup" style="position: absolute; left: 20px; width: 200px; top: 20px; font-size: 36px; color: rgba(0, 0, 0, 0.87);">You could have become something More. Could have obtained the Minion, and, even, Became the Minion. But you made a Choice...</div>');
+      this.domContainer.append(div);
+
+      // set timeout intentional here so div is always removed
+      setTimeout(() => {
+        div.remove();
+      }, 30000);
     };
 
-    var mediaConstraints = {audio: false, video: true};
-    navigator.getUserMedia(mediaConstraints, onSuccess, onError);
+    if (navigator.getUserMedia) {
+      var mediaConstraints = {audio: false, video: true};
+      navigator.getUserMedia(mediaConstraints, onSuccess, onError);
+    }
+    else {
+      onError();
+    }
   }
 
   removePart2Portions() {
