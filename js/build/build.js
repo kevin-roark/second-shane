@@ -6881,6 +6881,11 @@ var SecondShane = (function (_ThreeBoiler) {
 
     this.waitBeforeAddingMoney = true;
 
+    var isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+    if (!isChrome) {
+      $("#please-use-chrome").show();
+    }
+
     this.controls = new FlyControls(this.camera);
     this.scene.add(this.controls.getObject());
     this.controls.locker.pointerLockChangeCallback = function (hasPointerLock) {
@@ -7154,7 +7159,6 @@ var SecondShane = (function (_ThreeBoiler) {
     reactToPointerLock: {
       value: function reactToPointerLock(hasPointerlock) {
         if (!this.controls.locker.canEverHavePointerLock()) {
-          console.log("hello!!!!!");
           $pointerLockTip.hide();
           return;
         }

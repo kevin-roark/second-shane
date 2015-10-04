@@ -77,6 +77,15 @@ canvas, video, img {
   color: rgb(15, 143, 249);
 }
 
+#please-use-chrome {
+  display: none;
+  position: absolute; top: 60px; left: 10%; width: 50%;
+  padding: 10px;
+  font-size: 32px;
+  color: rgba(0, 0, 0, 0.87);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+}
+
 /** SITE MAP */
 
 #site-map {
