@@ -545,6 +545,68 @@ export var oneOffs = [
     position: new THREE.Vector3(175, 0, 175)
   }),
 
+  // drop shadow
+  new RotatingMan({
+    name: 'origin of painting',
+    text: 'The origin of painting is obscure... All, however, agree that painting began with the outlining of the shadow of a man.',
+    textColor: 0x66FF66,
+    position: new THREE.Vector3(203, 0, 63)
+  }),
+  new RotatingMan({
+    name: 'animal is a higher being',
+    text: 'The animal is a higher being, as the integrity of its animal nature makes it a much more gifted creature than man, its weaker counterpart.',
+    textColor: 0x47A3FF,
+    position: new THREE.Vector3(-492, 0, 367)
+  }),
+  new RotatingMan({
+    name: 'Man can only DO in part',
+    text: 'Man can only DO in part what what the animal IS, totally.',
+    textColor: 0xE6B85C,
+    position: new THREE.Vector3(-370, 0, 484)
+  }),
+  new RotatingMan({
+    name: 'Early art',
+    text: 'Early art represented not the manner in which a man appears to us, but what he is; not a view of his body, but an outline of his shadow.',
+    textColor: 0x19A347,
+    position: new THREE.Vector3(-258, 0, -262)
+  }),
+  new RotatingMan({
+    name: 'Decaying art',
+    text: 'I have said enough concerning the dignity of a decaying art.',
+    textColor: 0xFFA3A3,
+    position: new THREE.Vector3(-89, 0, -15)
+  }),
+  new RotatingMan({
+    name: 'Excavation',
+    text: 'Excavation is an inherently destructive process.',
+    textColor: 0x8AB800,
+    position: new THREE.Vector3(-497, 0, -244)
+  }),
+  new RotatingMan({
+    name: 'a bronze dog',
+    text: 'As an example of technique I shall mention a figure representing neither god nor man... a bronze dog, licking its wound.',
+    textColor: 0xCC9900,
+    position: new THREE.Vector3(-259, 0, 401)
+  }),
+  new RotatingMan({
+    name: 'Solitude',
+    text: 'Solitude is the profoundest fact of the human condition. Man is the only being who knows he is alone.',
+    textColor: 0xE1E1E1,
+    position: new THREE.Vector3(-144, 0, 366)
+  }),
+  new RotatingMan({
+    name: 'everything but my dog',
+    text: 'I lost everything but my dog.',
+    textColor: 0xFF99FF,
+    position: new THREE.Vector3(16, 0, 141)
+  }),
+  new RotatingMan({
+    name: 'man renders science',
+    text: 'Man is the one who renders science moral or immoral.',
+    textColor: 0x009933,
+    position: new THREE.Vector3(227, 0, 126)
+  }),
+
   // dog as god
   new RotatingMan({
     name: 'dog as god I',
@@ -1313,6 +1375,7 @@ export var oneOffs = [
   new ImageBeacon({
     name: 'Justin in Chains',
     imageName: 'media/beacon-images/justin_in_chains.jpg',
+    portrait: true,
     position: new THREE.Vector3(-130, 0, 109)
   }),
   new ImageBeacon({
@@ -1333,21 +1396,25 @@ export var oneOffs = [
   new ImageBeacon({
     name: 'Tonys Dog',
     imageName: 'media/beacon-images/tonys_dog.jpg',
+    portrait: true,
     position: new THREE.Vector3(-161, 0, 98)
   }),
   new ImageBeacon({
     name: 'Starbucks Man',
     imageName: 'media/beacon-images/starbucks_man.jpg',
+    portrait: true,
     position: new THREE.Vector3(163, 0, 314)
   }),
   new ImageBeacon({
     name: 'Six Flags Minion Game',
     imageName: 'media/beacon-images/six_flags_minion.jpg',
+    portrait: true,
     position: new THREE.Vector3(-360, 0, -35)
   }),
   new ImageBeacon({
     name: 'Wrigley Field',
     imageName: 'media/beacon-images/wrigley_field.jpg',
+    portrait: true,
     position: new THREE.Vector3(205, 0, -411)
   }),
   new ImageBeacon({
@@ -1363,6 +1430,7 @@ export var oneOffs = [
   new ImageBeacon({
     name: 'Cactus Mannequin',
     imageName: 'media/beacon-images/mannequin_cactus.jpg',
+    portrait: true,
     position: new THREE.Vector3(249, 0, 491)
   }),
   new ImageBeacon({
@@ -1373,11 +1441,13 @@ export var oneOffs = [
   new ImageBeacon({
     name: 'Mary Cameron Berlin Man',
     imageName: 'media/beacon-images/mary_cameron_berlin_man.jpg',
+    portrait: true,
     position: new THREE.Vector3(-466, 0, -342)
   }),
   new ImageBeacon({
     name: 'Guoshi Eats Meat and Peppers',
     imageName: 'media/beacon-images/guoshi_meat_peppers.jpg',
+    portrait: true,
     position: new THREE.Vector3(374, 0, 344)
   }),
   new ImageBeacon({
@@ -1448,6 +1518,7 @@ export var oneOffs = [
   new ImageBeacon({
     name: 'Man on Screen',
     imageName: 'media/beacon-images/man_on_screen.jpg',
+    portrait: true,
     position: new THREE.Vector3(-26, 0, 297)
   }),
   new ImageBeacon({
@@ -1460,7 +1531,7 @@ export var oneOffs = [
     imageName: 'media/beacon-images/peter_tv.jpg',
     position: new THREE.Vector3(189, 0, -237)
   }),
-  
+
   // vids
   new VideoBeacon({
     name: 'I Watched the Woods',
