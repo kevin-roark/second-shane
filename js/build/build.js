@@ -8227,6 +8227,59 @@ new RotatingMan({
   position: new THREE.Vector3(175, 0, 175)
 }),
 
+// drop shadow
+new RotatingMan({
+  name: "origin of painting",
+  text: "The origin of painting is obscure... All, however, agree that painting began with the outlining of the shadow of a man.",
+  textColor: 6750054,
+  position: new THREE.Vector3(203, 0, 63)
+}), new RotatingMan({
+  name: "animal is a higher being",
+  text: "The animal is a higher being, as the integrity of its animal nature makes it a much more gifted creature than man, its weaker counterpart.",
+  textColor: 4695039,
+  position: new THREE.Vector3(-492, 0, 367)
+}), new RotatingMan({
+  name: "Man can only DO in part",
+  text: "Man can only DO in part what what the animal IS, totally.",
+  textColor: 15120476,
+  position: new THREE.Vector3(-370, 0, 484)
+}), new RotatingMan({
+  name: "Early art",
+  text: "Early art represented not the manner in which a man appears to us, but what he is; not a view of his body, but an outline of his shadow.",
+  textColor: 1680199,
+  position: new THREE.Vector3(-258, 0, -262)
+}), new RotatingMan({
+  name: "Decaying art",
+  text: "I have said enough concerning the dignity of a decaying art.",
+  textColor: 16753571,
+  position: new THREE.Vector3(-89, 0, -15)
+}), new RotatingMan({
+  name: "Excavation",
+  text: "Excavation is an inherently destructive process.",
+  textColor: 9091072,
+  position: new THREE.Vector3(-497, 0, -244)
+}), new RotatingMan({
+  name: "a bronze dog",
+  text: "As an example of technique I shall mention a figure representing neither god nor man... a bronze dog, licking its wound.",
+  textColor: 13408512,
+  position: new THREE.Vector3(-259, 0, 401)
+}), new RotatingMan({
+  name: "Solitude",
+  text: "Solitude is the profoundest fact of the human condition. Man is the only being who knows he is alone.",
+  textColor: 14803425,
+  position: new THREE.Vector3(-144, 0, 366)
+}), new RotatingMan({
+  name: "everything but my dog",
+  text: "I lost everything but my dog.",
+  textColor: 16751103,
+  position: new THREE.Vector3(16, 0, 141)
+}), new RotatingMan({
+  name: "man renders science",
+  text: "Man is the one who renders science moral or immoral.",
+  textColor: 39219,
+  position: new THREE.Vector3(227, 0, 126)
+}),
+
 // dog as god
 new RotatingMan({
   name: "dog as god I",
@@ -8780,6 +8833,211 @@ new ImageBeacon({
   name: "You Live The Perfect Life",
   imageName: "media/beacon-images/you_live_the_perfect_life.jpg",
   position: new THREE.Vector3(-310, 0, 325)
+}), new ImageBeacon({
+  name: "You Live The Perfect Life",
+  imageName: "media/beacon-images/you_live_the_perfect_life.jpg",
+  position: new THREE.Vector3(-310, 0, 325)
+}), new ImageBeacon({
+  name: "Emotional Technologists",
+  imageName: "media/beacon-images/emotional_technologists.jpg",
+  position: new THREE.Vector3(-187, 0, -222)
+}), new ImageBeacon({
+  name: "Car in a Cage",
+  imageName: "media/beacon-images/car_in_a_cage.jpg",
+  position: new THREE.Vector3(-165, 0, -153)
+}), new ImageBeacon({
+  name: "Italian Marble",
+  imageName: "media/beacon-images/italy_marble.jpg",
+  position: new THREE.Vector3(260, 0, 121)
+}), new ImageBeacon({
+  name: "Venus",
+  imageName: "media/beacon-images/hadrians_venus.jpg",
+  position: new THREE.Vector3(-436, 0, 157)
+}), new ImageBeacon({
+  name: "Passionate Perfectionists",
+  imageName: "media/beacon-images/passionate_perfectionists.jpg",
+  position: new THREE.Vector3(327, 0, 99)
+}), new ImageBeacon({
+  name: "Autostadt Tree",
+  imageName: "media/beacon-images/autostadt_tree.jpg",
+  position: new THREE.Vector3(-117, 0, 165)
+}), new ImageBeacon({
+  name: "Audi Screen",
+  imageName: "media/beacon-images/audi_screen.jpg",
+  position: new THREE.Vector3(174, 0, 383)
+}), new ImageBeacon({
+  name: "A to Beyond",
+  imageName: "media/beacon-images/a_to_beyond.jpg",
+  position: new THREE.Vector3(-103, 0, 252)
+}), new ImageBeacon({
+  name: "Autostadt Grass",
+  imageName: "media/beacon-images/autostadt_grass.jpg",
+  position: new THREE.Vector3(184, 0, 123)
+}), new ImageBeacon({
+  name: "Autostadt Hill",
+  imageName: "media/beacon-images/autostadt_hill.jpg",
+  position: new THREE.Vector3(-95, 0, 283)
+}), new ImageBeacon({
+  name: "Car in a Cage 2",
+  imageName: "media/beacon-images/car_in_a_cage_2.jpg",
+  position: new THREE.Vector3(103, 0, 78)
+}), new ImageBeacon({
+  name: "Everything we know, is everything you feel",
+  imageName: "media/beacon-images/everything_we_know.jpg",
+  position: new THREE.Vector3(256, 0, 345)
+}), new ImageBeacon({
+  name: "FlowerEarth Texture",
+  imageName: "media/beacon-images/flower_earth.jpg",
+  position: new THREE.Vector3(-217, 0, -52)
+}), new ImageBeacon({
+  name: "Its a new dawn",
+  imageName: "media/beacon-images/its_a_new_dawn.jpg",
+  position: new THREE.Vector3(-402, 0, -66)
+}), new ImageBeacon({
+  name: "Passion Is Our Driving Force",
+  imageName: "media/beacon-images/passion_is_our_driving_force.jpg",
+  position: new THREE.Vector3(487, 0, 304)
+}), new ImageBeacon({
+  name: "PowerShot Rock",
+  imageName: "media/beacon-images/rock.jpg",
+  position: new THREE.Vector3(417, 0, 413)
+}), new ImageBeacon({
+  name: "Technology to Enjoy",
+  imageName: "media/beacon-images/technology_to_enjoy.jpg",
+  position: new THREE.Vector3(-425, 0, -384)
+}), new ImageBeacon({
+  name: "Turning the Ordinary into Extraordinary",
+  imageName: "media/beacon-images/turning_the_ordinary.jpg",
+  position: new THREE.Vector3(486, 0, -447)
+}), new ImageBeacon({
+  name: "Justin in Chains",
+  imageName: "media/beacon-images/justin_in_chains.jpg",
+  portrait: true,
+  position: new THREE.Vector3(-130, 0, 109)
+}), new ImageBeacon({
+  name: "Moneymaker Shades",
+  imageName: "media/beacon-images/moneymaker_shades.jpg",
+  position: new THREE.Vector3(-65, 0, 428)
+}), new ImageBeacon({
+  name: "A Dog",
+  imageName: "media/beacon-images/a_dog.jpg",
+  position: new THREE.Vector3(428, 0, 431)
+}), new ImageBeacon({
+  name: "Camera Men",
+  imageName: "media/beacon-images/camera_men.jpg",
+  position: new THREE.Vector3(446, 0, 80)
+}), new ImageBeacon({
+  name: "Tonys Dog",
+  imageName: "media/beacon-images/tonys_dog.jpg",
+  portrait: true,
+  position: new THREE.Vector3(-161, 0, 98)
+}), new ImageBeacon({
+  name: "Starbucks Man",
+  imageName: "media/beacon-images/starbucks_man.jpg",
+  portrait: true,
+  position: new THREE.Vector3(163, 0, 314)
+}), new ImageBeacon({
+  name: "Six Flags Minion Game",
+  imageName: "media/beacon-images/six_flags_minion.jpg",
+  portrait: true,
+  position: new THREE.Vector3(-360, 0, -35)
+}), new ImageBeacon({
+  name: "Wrigley Field",
+  imageName: "media/beacon-images/wrigley_field.jpg",
+  portrait: true,
+  position: new THREE.Vector3(205, 0, -411)
+}), new ImageBeacon({
+  name: "Eat Death",
+  imageName: "media/beacon-images/eat_death.jpg",
+  position: new THREE.Vector3(-69, 0, -173)
+}), new ImageBeacon({
+  name: "Marble Mannequin",
+  imageName: "media/beacon-images/marble_mannequin.jpg",
+  position: new THREE.Vector3(-463, 0, 47)
+}), new ImageBeacon({
+  name: "Cactus Mannequin",
+  imageName: "media/beacon-images/mannequin_cactus.jpg",
+  portrait: true,
+  position: new THREE.Vector3(249, 0, 491)
+}), new ImageBeacon({
+  name: "Hamburg Mannequins",
+  imageName: "media/beacon-images/hamburg_mannequins.jpg",
+  position: new THREE.Vector3(299, 0, 176)
+}), new ImageBeacon({
+  name: "Mary Cameron Berlin Man",
+  imageName: "media/beacon-images/mary_cameron_berlin_man.jpg",
+  portrait: true,
+  position: new THREE.Vector3(-466, 0, -342)
+}), new ImageBeacon({
+  name: "Guoshi Eats Meat and Peppers",
+  imageName: "media/beacon-images/guoshi_meat_peppers.jpg",
+  portrait: true,
+  position: new THREE.Vector3(374, 0, 344)
+}), new ImageBeacon({
+  name: "Italy Wedding Photos",
+  imageName: "media/beacon-images/italy_wedding_photos.jpg",
+  position: new THREE.Vector3(-461, 0, 476)
+}), new ImageBeacon({
+  name: "Low Steps Typing",
+  imageName: "media/beacon-images/low_steps_typing.jpg",
+  position: new THREE.Vector3(152, 0, 108)
+}), new ImageBeacon({
+  name: "Jerry Bus Typing",
+  imageName: "media/beacon-images/jerry_bus_typing.jpg",
+  position: new THREE.Vector3(273, 0, -422)
+}), new ImageBeacon({
+  name: "Kevin Mannequins 2",
+  imageName: "media/beacon-images/kevin_mannequins_2.jpg",
+  position: new THREE.Vector3(323, 0, 232)
+}), new ImageBeacon({
+  name: "Kevin Mannequins",
+  imageName: "media/beacon-images/kevin_mannequins.jpg",
+  position: new THREE.Vector3(304, 0, 145)
+}), new ImageBeacon({
+  name: "Dodge Mannequins",
+  imageName: "media/beacon-images/dodge_mannequins.jpg",
+  position: new THREE.Vector3(474, 0, 25)
+}), new ImageBeacon({
+  name: "Inspiration",
+  imageName: "media/beacon-images/inspiration.jpg",
+  position: new THREE.Vector3(379, 0, -244)
+}), new ImageBeacon({
+  name: "Ron Smiles",
+  imageName: "media/beacon-images/ron_smiles.jpg",
+  position: new THREE.Vector3(324, 0, 416)
+}), new ImageBeacon({
+  name: "Ron and Wife",
+  imageName: "media/beacon-images/ron_smiles.jpg",
+  position: new THREE.Vector3(343, 0, -112)
+}), new ImageBeacon({
+  name: "Open Mouthed Man",
+  imageName: "media/beacon-images/open_mouthed_man.jpg",
+  position: new THREE.Vector3(312, 0, -145)
+}), new ImageBeacon({
+  name: "Money Bag",
+  imageName: "media/beacon-images/money_bag.jpg",
+  position: new THREE.Vector3(-110, 0, -202)
+}), new ImageBeacon({
+  name: "Cop Shades",
+  imageName: "media/beacon-images/cop_shades.jpg",
+  position: new THREE.Vector3(414, 0, 17)
+}), new ImageBeacon({
+  name: "Man Wife and Dog",
+  imageName: "media/beacon-images/man_wife_dog.jpg",
+  position: new THREE.Vector3(-337, 0, -431)
+}), new ImageBeacon({
+  name: "Man on Screen",
+  imageName: "media/beacon-images/man_on_screen.jpg",
+  portrait: true,
+  position: new THREE.Vector3(-26, 0, 297)
+}), new ImageBeacon({
+  name: "Lake Zurich Tools",
+  imageName: "media/beacon-images/lake_zurich_tools.jpg",
+  position: new THREE.Vector3(-312, 0, -120)
+}), new ImageBeacon({
+  name: "Peters TV",
+  imageName: "media/beacon-images/peter_tv.jpg",
+  position: new THREE.Vector3(189, 0, -237)
 }),
 
 // vids
@@ -9782,6 +10040,11 @@ module.exports.getTheMinion = {
 module.exports.myJobMyHomeMyWife = {
   web: "http://kevin-roark.github.io/second-shane-mjmhmw/",
   live: "http://localhost:5562/"
+};
+
+module.exports.huntMe = {
+  web: "http://kevin-roark.github.io/second-shane-hunt-me/",
+  live: "http://localhost:5563/"
 };
 
 },{}],29:[function(require,module,exports){
