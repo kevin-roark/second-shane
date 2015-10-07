@@ -38,3 +38,8 @@ module.exports.myJobMyHomeMyWife = {
   web: 'http://kevin-roark.github.io/second-shane-mjmhmw/',
   live: 'http://localhost:5562/'
 };
+
+module.exports.huntMe = {
+  web: 'http://kevin-roark.github.io/second-shane-hunt-me/',
+  live: 'http://localhost:5563/'
+};
