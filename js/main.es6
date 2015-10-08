@@ -69,11 +69,11 @@ class SecondShane extends ThreeBoiler {
     $('#hot-links a').click((ev) => {
       var href = event.target.href;
       var query = queryString.parse(href.substring(href.indexOf('?') + 1));
-      if (query && query.shaneScene) {
+      if (query && query.portal) {
         ev.preventDefault();
         $siteMap.hide();
         this.isShowingSiteMap = false;
-        this.transitionToSceneWithSlug(query.shaneScene);
+        this.transitionToSceneWithSlug(query.portal);
       }
     });
 
@@ -245,10 +245,10 @@ class SecondShane extends ThreeBoiler {
   renderCurrentURL() {
     var currentQuery = queryString.parse(window.location.search.substring(1));
 
-    if (currentQuery.shaneScene) {
+    if (currentQuery.portal) {
       if (!this.activeScene) {
         this.transitioning = false;
-        this.transitionToSceneWithSlug(currentQuery.shaneScene);
+        this.transitionToSceneWithSlug(currentQuery.portal);
       }
     }
     else {
@@ -262,14 +262,14 @@ class SecondShane extends ThreeBoiler {
   updateHistoryForScene(scene) {
     var currentQuery = queryString.parse(window.location.search.substring(1));
 
-    currentQuery.shaneScene = scene.slug;
+    currentQuery.portal = scene.slug;
 
     this.updateHistoryWithQuery(currentQuery);
   }
 
   updateHistoryForEarth() {
     var currentQuery = queryString.parse(window.location.search.substring(1));
-    delete currentQuery.shaneScene;
+    delete currentQuery.portal;
 
     this.updateHistoryWithQuery(currentQuery);
   }
@@ -282,7 +282,7 @@ class SecondShane extends ThreeBoiler {
       if (newQueryString.length > 0) {
           newURL += '?' + newQueryString;
       }
-      window.history.pushState({shaneScene: query.shaneScene}, '', newURL);
+      window.history.pushState({portal: query.portal}, '', newURL);
     }
   }
 
