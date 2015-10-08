@@ -7357,12 +7357,20 @@ var SecondShane = (function (_ThreeBoiler) {
     },
     transitionToSceneWithSlug: {
       value: function transitionToSceneWithSlug(slug) {
+        var _this = this;
+
         for (var i = 0; i < this.shaneScenes.length; i++) {
           var scene = this.shaneScenes[i];
           if (scene.slug === slug) {
-            //this.controls.getObject().position.set()
-
-            this.transitionToScene(scene);
+            var talismanPosition = scene.talisman.position;
+            var controlPosition = this.controls.getObject().position;
+            var controlPositionTarget = { x: talismanPosition.x + (Math.random() - 0.5) * 15, z: talismanPosition.z + (Math.random() - 0.5) * 15 };
+            var tween = new TWEEN.Tween(controlPosition).to(controlPositionTarget, 1666);
+            tween.onComplete(function () {
+              _this.transitionToScene(scene);
+              tween = null;
+            });
+            tween.start();
             return;
           }
         }
