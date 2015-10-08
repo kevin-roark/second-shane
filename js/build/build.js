@@ -8278,6 +8278,11 @@ new RotatingMan({
   text: "Man is the one who renders science moral or immoral.",
   textColor: 39219,
   position: new THREE.Vector3(227, 0, 126)
+}), new RotatingMan({
+  name: "Art And Compromise",
+  text: "All Art Requires Compromise",
+  textColor: 39219,
+  position: new THREE.Vector3(233, 0, -244)
 }),
 
 // dog as god
