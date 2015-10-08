@@ -24,7 +24,7 @@ var $nearbyArtifactContainer = $('#nearby-artifact-container');
 var $nearbyArtifactName = $('#nearby-artifact-name');
 var $introBox = $('#intro-box');
 var $chatterBoxContainer = $('#chatter-box');
-var $hud = $('#hud');
+var $sharedSpaceHudElements = $('#top-left-hud, #bottom-left-hud, #nearby-artifact-container');
 var $pointerLockTip = $('#pointer-lock-tip');
 var $siteMap = $('#site-map');
 var $spacebarTip = $('#spacebar-tip');
@@ -468,7 +468,8 @@ class SecondShane extends ThreeBoiler {
       this.activeScene = null;
 
       this.updateHistoryForEarth();
-      $hud.show();
+      $sharedSpaceHudElements.show();
+      moneyMan.show();
 
       this.controls.reset();
 
@@ -537,7 +538,8 @@ class SecondShane extends ThreeBoiler {
     fadeSceneOverlay(SceneFadeDuration, () => {
       this.removeSharedObjects();
       $introBox.fadeOut();
-      $hud.hide();
+      $sharedSpaceHudElements.hide();
+      moneyMan.hide();
 
       this.controls.reset();
 

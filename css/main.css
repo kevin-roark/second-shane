@@ -255,11 +255,13 @@ canvas, video, img {
   font-size: 15px;
   color: rgb(255, 253, 18);
   text-shadow: 3px 3px 3px rgba(255, 253, 18, 0.88);
+  padding: 2px;
 }
   #new-money-reason {
     display: none;
     font-size: 32px;
     font-style: italic;
+    padding-right: 2px;
   }
 
 #nearby-artifact-container {

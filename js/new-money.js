@@ -29,7 +29,7 @@ module.exports.addMoney = function(increment) {
   setMoney(money + increment);
 };
 
-module.exports.setMoneyReason = function(moneyReason, duration) {
+module.exports.setMoneyReason = function(moneyReason, duration, callback) {
   if (!duration) {
     duration = 3333;
   }
@@ -38,13 +38,34 @@ module.exports.setMoneyReason = function(moneyReason, duration) {
   $moneyReason.text(moneyReason);
   $moneyReason.fadeIn(400, function() {
     setTimeout(function() {
-      $moneyReason.fadeOut(400);
+      $moneyReason.fadeOut(400, function() {
+        if (callback) {
+          callback();
+        }
+      });
     }, duration);
   });
 };
 
 module.exports.drain = function() {
   setMoney(0);
+};
+
+module.exports.show = function() {
+  $moneyZone.show();
+};
+
+module.exports.hide = function() {
+  $moneyZone.hide();
+};
+
+module.exports.setBackground = function(color) {
+  if (!color) {
+    $moneyZone.css('background-color', 'transparent');
+  }
+  else {
+    $moneyZone.css('background-color', color);
+  }
 };
 
 function getMoney() {

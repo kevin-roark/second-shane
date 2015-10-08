@@ -1308,6 +1308,15 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
           return;
         }
 
+        moneyMan.setBackground("black");
+        moneyMan.show();
+        var amount = -kt.randInt(25, 50);
+        moneyMan.addMoney(amount);
+        var message = kt.choice(["NO GAME IS FREE", "PAY TO USE THE CLAW", "THE MINION IS WORTH IT", "PAY TO EARN", "THIS IS OUR PYRAMID", "FEED IT WHAT YOU HAVE", "WATCH THE GOLD LEAK"]);
+        moneyMan.setMoneyReason(message, 3600, function () {
+          moneyMan.hide();
+        });
+
         var movingClawDown = true;
         this.clawDownUpdate = function () {
           if (movingClawDown) {
@@ -1579,6 +1588,8 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
         this.mirrorUpdate = null;
         this.clawDownUpdate = null;
         this.meMinionUpdate = null;
+
+        moneyMan.setBackground(null);
       }
     }
   });
@@ -6858,7 +6869,7 @@ var $nearbyArtifactContainer = $("#nearby-artifact-container");
 var $nearbyArtifactName = $("#nearby-artifact-name");
 var $introBox = $("#intro-box");
 var $chatterBoxContainer = $("#chatter-box");
-var $hud = $("#hud");
+var $sharedSpaceHudElements = $("#top-left-hud, #bottom-left-hud, #nearby-artifact-container");
 var $pointerLockTip = $("#pointer-lock-tip");
 var $siteMap = $("#site-map");
 var $spacebarTip = $("#spacebar-tip");
@@ -7325,7 +7336,8 @@ var SecondShane = (function (_ThreeBoiler) {
           _this.activeScene = null;
 
           _this.updateHistoryForEarth();
-          $hud.show();
+          $sharedSpaceHudElements.show();
+          moneyMan.show();
 
           _this.controls.reset();
 
@@ -7399,7 +7411,8 @@ var SecondShane = (function (_ThreeBoiler) {
         fadeSceneOverlay(SceneFadeDuration, function () {
           _this.removeSharedObjects();
           $introBox.fadeOut();
-          $hud.hide();
+          $sharedSpaceHudElements.hide();
+          moneyMan.hide();
 
           _this.controls.reset();
 
@@ -7581,7 +7594,7 @@ module.exports.addMoney = function (increment) {
   setMoney(money + increment);
 };
 
-module.exports.setMoneyReason = function (moneyReason, duration) {
+module.exports.setMoneyReason = function (moneyReason, duration, callback) {
   if (!duration) {
     duration = 3333;
   }
@@ -7590,13 +7603,33 @@ module.exports.setMoneyReason = function (moneyReason, duration) {
   $moneyReason.text(moneyReason);
   $moneyReason.fadeIn(400, function () {
     setTimeout(function () {
-      $moneyReason.fadeOut(400);
+      $moneyReason.fadeOut(400, function () {
+        if (callback) {
+          callback();
+        }
+      });
     }, duration);
   });
 };
 
 module.exports.drain = function () {
   setMoney(0);
+};
+
+module.exports.show = function () {
+  $moneyZone.show();
+};
+
+module.exports.hide = function () {
+  $moneyZone.hide();
+};
+
+module.exports.setBackground = function (color) {
+  if (!color) {
+    $moneyZone.css("background-color", "transparent");
+  } else {
+    $moneyZone.css("background-color", color);
+  }
 };
 
 function getMoney() {
