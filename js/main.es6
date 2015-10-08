@@ -102,7 +102,7 @@ class SecondShane extends ThreeBoiler {
 
     this.shaneScenes = createShaneScenes(this.transitionFromScene.bind(this), this.renderer, this.camera, this.scene);
 
-    applyCurrentTheme(this.scene);
+    applyCurrentTheme(this.camera);
 
     this.sharedWorldLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.5);
     this.sharedWorldLight.position.set(0, 500, 0);
@@ -219,7 +219,7 @@ class SecondShane extends ThreeBoiler {
       window.addEventListener('popstate', () => {
         this.renderCurrentURL();
       });
-    }, 2666);
+    }, 1333);
 
     setTimeout(() => {
       this.waitBeforeAddingMoney = false;
@@ -551,7 +551,7 @@ class SecondShane extends ThreeBoiler {
       oneOff.activate(this.scene);
     });
 
-    applyCurrentTheme(this.scene);
+    applyCurrentTheme(this.camera);
 
     this.scene.add(this.sharedWorldLight);
   }
@@ -566,7 +566,7 @@ class SecondShane extends ThreeBoiler {
       oneOff.deactivate(this.scene);
     });
 
-    removeCurrentTheme(this.scene);
+    removeCurrentTheme(this.camera);
 
     this.scene.remove(this.sharedWorldLight);
   }

@@ -33,7 +33,7 @@ export class ThreeBoiler {
   }
 
   createCamera() {
-    return new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 1, 5000);
+    return new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 1, 500);
   }
 
   createAmbientLight() {

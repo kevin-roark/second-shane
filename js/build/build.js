@@ -673,6 +673,7 @@ var ShaneScene = require("../../shane-scene.es6").ShaneScene;
 var ShaneMesh = require("../../shane-mesh");
 var VideoMesh = require("../../util/video-mesh");
 var fadeSceneOverlay = require("../../overlay");
+var moneyMan = require("../../new-money");
 
 var GroundYPosition = -10;
 var PI_OVER_2 = Math.PI / 2;
@@ -1589,7 +1590,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../overlay":21,"../../shane-mesh":23,"../../shane-scene.es6":24,"../../talisman.es6":25,"../../urls":28,"../../util/video-mesh":32,"jquery":33,"kutility":34,"three":36,"tween.js":37}],5:[function(require,module,exports){
+},{"../../new-money":19,"../../overlay":21,"../../shane-mesh":23,"../../shane-scene.es6":24,"../../talisman.es6":25,"../../urls":28,"../../util/video-mesh":32,"jquery":33,"kutility":34,"three":36,"tween.js":37}],5:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -3849,7 +3850,7 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
         this.oldFog = null;
 
         this.scene.remove(this.terrainScene);
-        this.scene.remove(this.sky);
+        this.camera.remove(this.sky);
 
         this.scene.remove(this.hemiLight);
         this.camera.remove(this.dirLight);
@@ -4023,7 +4024,7 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
 
         this.scene.fog.color.copy(uniforms.bottomColor.value);
 
-        var skyGeo = new THREE.SphereGeometry(4000, 32, 24);
+        var skyGeo = new THREE.SphereGeometry(480, 32, 24);
         var skyMat = new THREE.ShaderMaterial({
           vertexShader: vertexShader,
           fragmentShader: fragmentShader,
@@ -4032,7 +4033,7 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
         });
 
         this.sky = new THREE.Mesh(skyGeo, skyMat);
-        this.scene.add(this.sky);
+        this.camera.add(this.sky);
       }
     },
     makePapaJohn: {
@@ -6939,7 +6940,7 @@ var SecondShane = (function (_ThreeBoiler) {
 
     this.shaneScenes = createShaneScenes(this.transitionFromScene.bind(this), this.renderer, this.camera, this.scene);
 
-    applyCurrentTheme(this.scene);
+    applyCurrentTheme(this.camera);
 
     this.sharedWorldLight = new THREE.HemisphereLight(16777215, 16777215, 0.5);
     this.sharedWorldLight.position.set(0, 500, 0);
@@ -7065,7 +7066,7 @@ var SecondShane = (function (_ThreeBoiler) {
           window.addEventListener("popstate", function () {
             _this.renderCurrentURL();
           });
-        }, 2666);
+        }, 1333);
 
         setTimeout(function () {
           _this.waitBeforeAddingMoney = false;
@@ -7359,6 +7360,8 @@ var SecondShane = (function (_ThreeBoiler) {
         for (var i = 0; i < this.shaneScenes.length; i++) {
           var scene = this.shaneScenes[i];
           if (scene.slug === slug) {
+            //this.controls.getObject().position.set()
+
             this.transitionToScene(scene);
             return;
           }
@@ -7413,7 +7416,7 @@ var SecondShane = (function (_ThreeBoiler) {
           oneOff.activate(_this.scene);
         });
 
-        applyCurrentTheme(this.scene);
+        applyCurrentTheme(this.camera);
 
         this.scene.add(this.sharedWorldLight);
       }
@@ -7431,7 +7434,7 @@ var SecondShane = (function (_ThreeBoiler) {
           oneOff.deactivate(_this.scene);
         });
 
-        removeCurrentTheme(this.scene);
+        removeCurrentTheme(this.camera);
 
         this.scene.remove(this.sharedWorldLight);
       }
@@ -9942,7 +9945,7 @@ var ThreeBoiler = exports.ThreeBoiler = (function () {
   _createClass(ThreeBoiler, {
     createCamera: {
       value: function createCamera() {
-        return new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 1, 5000);
+        return new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 1, 500);
       }
     },
     createAmbientLight: {
@@ -10247,7 +10250,7 @@ function skyboxMaterial(textureURL) {
 }
 
 module.exports.create = function (options) {
-  var size = options.size || { x: 6000, y: 6000, z: 6000 };
+  var size = options.size || { x: 300, y: 300, z: 300 };
   var textureURL = options.textureURL || girlRoomPath;
 
   var geometry = new THREE.BoxGeometry(size.x, size.y, size.z);

@@ -118,7 +118,7 @@ export class PapaJohn extends ShaneScene {
     this.oldFog = null;
 
     this.scene.remove(this.terrainScene);
-    this.scene.remove(this.sky);
+    this.camera.remove(this.sky);
 
     this.scene.remove(this.hemiLight);
     this.camera.remove(this.dirLight);
@@ -282,7 +282,7 @@ export class PapaJohn extends ShaneScene {
 
 		this.scene.fog.color.copy(uniforms.bottomColor.value);
 
-		var skyGeo = new THREE.SphereGeometry(4000, 32, 24);
+		var skyGeo = new THREE.SphereGeometry(480, 32, 24);
 		var skyMat = new THREE.ShaderMaterial({
       vertexShader: vertexShader,
       fragmentShader: fragmentShader,
@@ -291,7 +291,7 @@ export class PapaJohn extends ShaneScene {
     });
 
 		this.sky = new THREE.Mesh(skyGeo, skyMat);
-		this.scene.add(this.sky);
+		this.camera.add(this.sky);
   }
 
   makePapaJohn() {
