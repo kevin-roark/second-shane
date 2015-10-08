@@ -673,6 +673,7 @@ var ShaneScene = require("../../shane-scene.es6").ShaneScene;
 var ShaneMesh = require("../../shane-mesh");
 var VideoMesh = require("../../util/video-mesh");
 var fadeSceneOverlay = require("../../overlay");
+var moneyMan = require("../../new-money");
 
 var GroundYPosition = -10;
 var PI_OVER_2 = Math.PI / 2;
@@ -1307,6 +1308,15 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
           return;
         }
 
+        moneyMan.setBackground("black");
+        moneyMan.show();
+        var amount = -kt.randInt(25, 50);
+        moneyMan.addMoney(amount);
+        var message = kt.choice(["NO GAME IS FREE", "PAY TO USE THE CLAW", "THE MINION IS WORTH IT", "PAY TO EARN", "THIS IS OUR PYRAMID", "FEED IT WHAT YOU HAVE", "WATCH THE GOLD LEAK"]);
+        moneyMan.setMoneyReason(message, 3600, function () {
+          moneyMan.hide();
+        });
+
         var movingClawDown = true;
         this.clawDownUpdate = function () {
           if (movingClawDown) {
@@ -1578,6 +1588,8 @@ var GetTheMinion = exports.GetTheMinion = (function (_ShaneScene) {
         this.mirrorUpdate = null;
         this.clawDownUpdate = null;
         this.meMinionUpdate = null;
+
+        moneyMan.setBackground(null);
       }
     }
   });
@@ -1589,7 +1601,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-},{"../../overlay":21,"../../shane-mesh":23,"../../shane-scene.es6":24,"../../talisman.es6":25,"../../urls":28,"../../util/video-mesh":32,"jquery":33,"kutility":34,"three":36,"tween.js":37}],5:[function(require,module,exports){
+},{"../../new-money":19,"../../overlay":21,"../../shane-mesh":23,"../../shane-scene.es6":24,"../../talisman.es6":25,"../../urls":28,"../../util/video-mesh":32,"jquery":33,"kutility":34,"three":36,"tween.js":37}],5:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -3849,7 +3861,7 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
         this.oldFog = null;
 
         this.scene.remove(this.terrainScene);
-        this.scene.remove(this.sky);
+        this.camera.remove(this.sky);
 
         this.scene.remove(this.hemiLight);
         this.camera.remove(this.dirLight);
@@ -4023,7 +4035,7 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
 
         this.scene.fog.color.copy(uniforms.bottomColor.value);
 
-        var skyGeo = new THREE.SphereGeometry(4000, 32, 24);
+        var skyGeo = new THREE.SphereGeometry(480, 32, 24);
         var skyMat = new THREE.ShaderMaterial({
           vertexShader: vertexShader,
           fragmentShader: fragmentShader,
@@ -4032,7 +4044,7 @@ var PapaJohn = exports.PapaJohn = (function (_ShaneScene) {
         });
 
         this.sky = new THREE.Mesh(skyGeo, skyMat);
-        this.scene.add(this.sky);
+        this.camera.add(this.sky);
       }
     },
     makePapaJohn: {
@@ -6857,7 +6869,7 @@ var $nearbyArtifactContainer = $("#nearby-artifact-container");
 var $nearbyArtifactName = $("#nearby-artifact-name");
 var $introBox = $("#intro-box");
 var $chatterBoxContainer = $("#chatter-box");
-var $hud = $("#hud");
+var $sharedSpaceHudElements = $("#top-left-hud, #bottom-left-hud, #nearby-artifact-container");
 var $pointerLockTip = $("#pointer-lock-tip");
 var $siteMap = $("#site-map");
 var $spacebarTip = $("#spacebar-tip");
@@ -6906,11 +6918,11 @@ var SecondShane = (function (_ThreeBoiler) {
     $("#hot-links a").click(function (ev) {
       var href = event.target.href;
       var query = queryString.parse(href.substring(href.indexOf("?") + 1));
-      if (query && query.shaneScene) {
+      if (query && query.portal) {
         ev.preventDefault();
         $siteMap.hide();
         _this.isShowingSiteMap = false;
-        _this.transitionToSceneWithSlug(query.shaneScene);
+        _this.transitionToSceneWithSlug(query.portal);
       }
     });
 
@@ -6939,7 +6951,7 @@ var SecondShane = (function (_ThreeBoiler) {
 
     this.shaneScenes = createShaneScenes(this.transitionFromScene.bind(this), this.renderer, this.camera, this.scene);
 
-    applyCurrentTheme(this.scene);
+    applyCurrentTheme(this.camera);
 
     this.sharedWorldLight = new THREE.HemisphereLight(16777215, 16777215, 0.5);
     this.sharedWorldLight.position.set(0, 500, 0);
@@ -7065,7 +7077,7 @@ var SecondShane = (function (_ThreeBoiler) {
           window.addEventListener("popstate", function () {
             _this.renderCurrentURL();
           });
-        }, 2666);
+        }, 1333);
 
         setTimeout(function () {
           _this.waitBeforeAddingMoney = false;
@@ -7093,10 +7105,10 @@ var SecondShane = (function (_ThreeBoiler) {
       value: function renderCurrentURL() {
         var currentQuery = queryString.parse(window.location.search.substring(1));
 
-        if (currentQuery.shaneScene) {
+        if (currentQuery.portal) {
           if (!this.activeScene) {
             this.transitioning = false;
-            this.transitionToSceneWithSlug(currentQuery.shaneScene);
+            this.transitionToSceneWithSlug(currentQuery.portal);
           }
         } else {
           if (this.activeScene) {
@@ -7110,7 +7122,7 @@ var SecondShane = (function (_ThreeBoiler) {
       value: function updateHistoryForScene(scene) {
         var currentQuery = queryString.parse(window.location.search.substring(1));
 
-        currentQuery.shaneScene = scene.slug;
+        currentQuery.portal = scene.slug;
 
         this.updateHistoryWithQuery(currentQuery);
       }
@@ -7118,7 +7130,7 @@ var SecondShane = (function (_ThreeBoiler) {
     updateHistoryForEarth: {
       value: function updateHistoryForEarth() {
         var currentQuery = queryString.parse(window.location.search.substring(1));
-        delete currentQuery.shaneScene;
+        delete currentQuery.portal;
 
         this.updateHistoryWithQuery(currentQuery);
       }
@@ -7132,7 +7144,7 @@ var SecondShane = (function (_ThreeBoiler) {
           if (newQueryString.length > 0) {
             newURL += "?" + newQueryString;
           }
-          window.history.pushState({ shaneScene: query.shaneScene }, "", newURL);
+          window.history.pushState({ portal: query.portal }, "", newURL);
         }
       }
     },
@@ -7324,7 +7336,8 @@ var SecondShane = (function (_ThreeBoiler) {
           _this.activeScene = null;
 
           _this.updateHistoryForEarth();
-          $hud.show();
+          $sharedSpaceHudElements.show();
+          moneyMan.show();
 
           _this.controls.reset();
 
@@ -7356,10 +7369,20 @@ var SecondShane = (function (_ThreeBoiler) {
     },
     transitionToSceneWithSlug: {
       value: function transitionToSceneWithSlug(slug) {
+        var _this = this;
+
         for (var i = 0; i < this.shaneScenes.length; i++) {
           var scene = this.shaneScenes[i];
           if (scene.slug === slug) {
-            this.transitionToScene(scene);
+            var talismanPosition = scene.talisman.position;
+            var controlPosition = this.controls.getObject().position;
+            var controlPositionTarget = { x: talismanPosition.x + (Math.random() - 0.5) * 15, z: talismanPosition.z + (Math.random() - 0.5) * 15 };
+            var tween = new TWEEN.Tween(controlPosition).to(controlPositionTarget, 1666);
+            tween.onComplete(function () {
+              _this.transitionToScene(scene);
+              tween = null;
+            });
+            tween.start();
             return;
           }
         }
@@ -7388,7 +7411,8 @@ var SecondShane = (function (_ThreeBoiler) {
         fadeSceneOverlay(SceneFadeDuration, function () {
           _this.removeSharedObjects();
           $introBox.fadeOut();
-          $hud.hide();
+          $sharedSpaceHudElements.hide();
+          moneyMan.hide();
 
           _this.controls.reset();
 
@@ -7413,7 +7437,7 @@ var SecondShane = (function (_ThreeBoiler) {
           oneOff.activate(_this.scene);
         });
 
-        applyCurrentTheme(this.scene);
+        applyCurrentTheme(this.camera);
 
         this.scene.add(this.sharedWorldLight);
       }
@@ -7431,7 +7455,7 @@ var SecondShane = (function (_ThreeBoiler) {
           oneOff.deactivate(_this.scene);
         });
 
-        removeCurrentTheme(this.scene);
+        removeCurrentTheme(this.camera);
 
         this.scene.remove(this.sharedWorldLight);
       }
@@ -7570,7 +7594,7 @@ module.exports.addMoney = function (increment) {
   setMoney(money + increment);
 };
 
-module.exports.setMoneyReason = function (moneyReason, duration) {
+module.exports.setMoneyReason = function (moneyReason, duration, callback) {
   if (!duration) {
     duration = 3333;
   }
@@ -7579,13 +7603,33 @@ module.exports.setMoneyReason = function (moneyReason, duration) {
   $moneyReason.text(moneyReason);
   $moneyReason.fadeIn(400, function () {
     setTimeout(function () {
-      $moneyReason.fadeOut(400);
+      $moneyReason.fadeOut(400, function () {
+        if (callback) {
+          callback();
+        }
+      });
     }, duration);
   });
 };
 
 module.exports.drain = function () {
   setMoney(0);
+};
+
+module.exports.show = function () {
+  $moneyZone.show();
+};
+
+module.exports.hide = function () {
+  $moneyZone.hide();
+};
+
+module.exports.setBackground = function (color) {
+  if (!color) {
+    $moneyZone.css("background-color", "transparent");
+  } else {
+    $moneyZone.css("background-color", color);
+  }
 };
 
 function getMoney() {
@@ -7691,7 +7735,10 @@ var MeshedOneOff = (function (_OneOff) {
         _get(Object.getPrototypeOf(MeshedOneOff.prototype), "activate", this).call(this, scene);
 
         this.shaneMesh.addTo(scene, function () {
-          _this.meshWasLoaded();
+          if (!_this.hasLoadedBefore) {
+            _this.meshWasLoaded();
+          }
+          _this.hasLoadedBefore = true;
         });
       }
     },
@@ -8278,6 +8325,11 @@ new RotatingMan({
   text: "Man is the one who renders science moral or immoral.",
   textColor: 39219,
   position: new THREE.Vector3(227, 0, 126)
+}), new RotatingMan({
+  name: "Art And Compromise",
+  text: "All Art Requires Compromise",
+  textColor: 39219,
+  position: new THREE.Vector3(233, 0, -244)
 }),
 
 // dog as god
@@ -9687,10 +9739,16 @@ var Talisman = exports.Talisman = (function () {
       value: function addTo(scene) {
         var _this = this;
 
-        this.createMesh(function () {
+        var add = function () {
           _this.mesh.position.copy(_this.position);
           scene.add(_this.mesh);
-        });
+        };
+
+        if (this.hasMesh) {
+          add();
+        } else {
+          this.createMesh(add);
+        }
       }
     },
     removeFrom: {
@@ -9928,7 +9986,7 @@ var ThreeBoiler = exports.ThreeBoiler = (function () {
   _createClass(ThreeBoiler, {
     createCamera: {
       value: function createCamera() {
-        return new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 1, 5000);
+        return new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 1, 500);
       }
     },
     createAmbientLight: {
@@ -10233,7 +10291,7 @@ function skyboxMaterial(textureURL) {
 }
 
 module.exports.create = function (options) {
-  var size = options.size || { x: 6000, y: 6000, z: 6000 };
+  var size = options.size || { x: 300, y: 300, z: 300 };
   var textureURL = options.textureURL || girlRoomPath;
 
   var geometry = new THREE.BoxGeometry(size.x, size.y, size.z);

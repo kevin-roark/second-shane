@@ -24,7 +24,7 @@ var $nearbyArtifactContainer = $('#nearby-artifact-container');
 var $nearbyArtifactName = $('#nearby-artifact-name');
 var $introBox = $('#intro-box');
 var $chatterBoxContainer = $('#chatter-box');
-var $hud = $('#hud');
+var $sharedSpaceHudElements = $('#top-left-hud, #bottom-left-hud, #nearby-artifact-container');
 var $pointerLockTip = $('#pointer-lock-tip');
 var $siteMap = $('#site-map');
 var $spacebarTip = $('#spacebar-tip');
@@ -69,11 +69,11 @@ class SecondShane extends ThreeBoiler {
     $('#hot-links a').click((ev) => {
       var href = event.target.href;
       var query = queryString.parse(href.substring(href.indexOf('?') + 1));
-      if (query && query.shaneScene) {
+      if (query && query.portal) {
         ev.preventDefault();
         $siteMap.hide();
         this.isShowingSiteMap = false;
-        this.transitionToSceneWithSlug(query.shaneScene);
+        this.transitionToSceneWithSlug(query.portal);
       }
     });
 
@@ -102,7 +102,7 @@ class SecondShane extends ThreeBoiler {
 
     this.shaneScenes = createShaneScenes(this.transitionFromScene.bind(this), this.renderer, this.camera, this.scene);
 
-    applyCurrentTheme(this.scene);
+    applyCurrentTheme(this.camera);
 
     this.sharedWorldLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.5);
     this.sharedWorldLight.position.set(0, 500, 0);
@@ -219,7 +219,7 @@ class SecondShane extends ThreeBoiler {
       window.addEventListener('popstate', () => {
         this.renderCurrentURL();
       });
-    }, 2666);
+    }, 1333);
 
     setTimeout(() => {
       this.waitBeforeAddingMoney = false;
@@ -245,10 +245,10 @@ class SecondShane extends ThreeBoiler {
   renderCurrentURL() {
     var currentQuery = queryString.parse(window.location.search.substring(1));
 
-    if (currentQuery.shaneScene) {
+    if (currentQuery.portal) {
       if (!this.activeScene) {
         this.transitioning = false;
-        this.transitionToSceneWithSlug(currentQuery.shaneScene);
+        this.transitionToSceneWithSlug(currentQuery.portal);
       }
     }
     else {
@@ -262,14 +262,14 @@ class SecondShane extends ThreeBoiler {
   updateHistoryForScene(scene) {
     var currentQuery = queryString.parse(window.location.search.substring(1));
 
-    currentQuery.shaneScene = scene.slug;
+    currentQuery.portal = scene.slug;
 
     this.updateHistoryWithQuery(currentQuery);
   }
 
   updateHistoryForEarth() {
     var currentQuery = queryString.parse(window.location.search.substring(1));
-    delete currentQuery.shaneScene;
+    delete currentQuery.portal;
 
     this.updateHistoryWithQuery(currentQuery);
   }
@@ -282,7 +282,7 @@ class SecondShane extends ThreeBoiler {
       if (newQueryString.length > 0) {
           newURL += '?' + newQueryString;
       }
-      window.history.pushState({shaneScene: query.shaneScene}, '', newURL);
+      window.history.pushState({portal: query.portal}, '', newURL);
     }
   }
 
@@ -468,7 +468,8 @@ class SecondShane extends ThreeBoiler {
       this.activeScene = null;
 
       this.updateHistoryForEarth();
-      $hud.show();
+      $sharedSpaceHudElements.show();
+      moneyMan.show();
 
       this.controls.reset();
 
@@ -503,7 +504,15 @@ class SecondShane extends ThreeBoiler {
     for (var i = 0; i < this.shaneScenes.length; i++) {
       var scene = this.shaneScenes[i];
       if (scene.slug === slug) {
-        this.transitionToScene(scene);
+        var talismanPosition = scene.talisman.position;
+        var controlPosition = this.controls.getObject().position;
+        var controlPositionTarget = {x: talismanPosition.x + (Math.random() - 0.5) * 15, z: talismanPosition.z + (Math.random() - 0.5) * 15};
+        var tween = new TWEEN.Tween(controlPosition).to(controlPositionTarget, 1666);
+        tween.onComplete(() => {
+          this.transitionToScene(scene);
+          tween = null;
+        });
+        tween.start();
         return;
       }
     }
@@ -529,7 +538,8 @@ class SecondShane extends ThreeBoiler {
     fadeSceneOverlay(SceneFadeDuration, () => {
       this.removeSharedObjects();
       $introBox.fadeOut();
-      $hud.hide();
+      $sharedSpaceHudElements.hide();
+      moneyMan.hide();
 
       this.controls.reset();
 
@@ -551,7 +561,7 @@ class SecondShane extends ThreeBoiler {
       oneOff.activate(this.scene);
     });
 
-    applyCurrentTheme(this.scene);
+    applyCurrentTheme(this.camera);
 
     this.scene.add(this.sharedWorldLight);
   }
@@ -566,7 +576,7 @@ class SecondShane extends ThreeBoiler {
       oneOff.deactivate(this.scene);
     });
 
-    removeCurrentTheme(this.scene);
+    removeCurrentTheme(this.camera);
 
     this.scene.remove(this.sharedWorldLight);
   }

@@ -46,7 +46,10 @@ class MeshedOneOff extends OneOff {
     super.activate(scene);
 
     this.shaneMesh.addTo(scene, () => {
-      this.meshWasLoaded();
+      if (!this.hasLoadedBefore) {
+        this.meshWasLoaded();
+      }
+      this.hasLoadedBefore = true;
     });
   }
 
@@ -605,6 +608,12 @@ export var oneOffs = [
     text: 'Man is the one who renders science moral or immoral.',
     textColor: 0x009933,
     position: new THREE.Vector3(227, 0, 126)
+  }),
+  new RotatingMan({
+    name: 'Art And Compromise',
+    text: 'All Art Requires Compromise',
+    textColor: 0x009933,
+    position: new THREE.Vector3(233, 0, -244)
   }),
 
   // dog as god

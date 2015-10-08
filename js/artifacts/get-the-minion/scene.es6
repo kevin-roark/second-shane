@@ -10,6 +10,7 @@ import {ShaneScene} from '../../shane-scene.es6';
 let ShaneMesh = require('../../shane-mesh');
 let VideoMesh = require('../../util/video-mesh');
 let fadeSceneOverlay = require('../../overlay');
+let moneyMan = require('../../new-money');
 
 var GroundYPosition = -10;
 var PI_OVER_2 = Math.PI / 2;
@@ -626,6 +627,15 @@ export class GetTheMinion extends ShaneScene {
       return;
     }
 
+    moneyMan.setBackground('black');
+    moneyMan.show();
+    var amount = -kt.randInt(25, 50);
+    moneyMan.addMoney(amount);
+    var message = kt.choice(['NO GAME IS FREE', 'PAY TO USE THE CLAW', 'THE MINION IS WORTH IT', 'PAY TO EARN', 'THIS IS OUR PYRAMID', 'FEED IT WHAT YOU HAVE', 'WATCH THE GOLD LEAK']);
+    moneyMan.setMoneyReason(message, 3600, function() {
+      moneyMan.hide();
+    });
+
     var movingClawDown = true;
     this.clawDownUpdate = () => {
       if (movingClawDown) {
@@ -888,6 +898,8 @@ export class GetTheMinion extends ShaneScene {
     this.mirrorUpdate = null;
     this.clawDownUpdate = null;
     this.meMinionUpdate = null;
+
+    moneyMan.setBackground(null);
   }
 
 }

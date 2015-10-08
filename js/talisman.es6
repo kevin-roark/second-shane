@@ -36,10 +36,17 @@ export class Talisman {
   }
 
   addTo(scene) {
-    this.createMesh(() => {
+    var add = () => {
       this.mesh.position.copy(this.position);
       scene.add(this.mesh);
-    });
+    };
+
+    if (this.hasMesh) {
+      add();
+    }
+    else {
+      this.createMesh(add);
+    }
   }
 
   removeFrom(scene) {
