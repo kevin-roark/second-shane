@@ -46,7 +46,10 @@ class MeshedOneOff extends OneOff {
     super.activate(scene);
 
     this.shaneMesh.addTo(scene, () => {
-      this.meshWasLoaded();
+      if (!this.hasLoadedBefore) {
+        this.meshWasLoaded();
+      }
+      this.hasLoadedBefore = true;
     });
   }
 

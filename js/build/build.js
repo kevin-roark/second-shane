@@ -6906,11 +6906,11 @@ var SecondShane = (function (_ThreeBoiler) {
     $("#hot-links a").click(function (ev) {
       var href = event.target.href;
       var query = queryString.parse(href.substring(href.indexOf("?") + 1));
-      if (query && query.shaneScene) {
+      if (query && query.portal) {
         ev.preventDefault();
         $siteMap.hide();
         _this.isShowingSiteMap = false;
-        _this.transitionToSceneWithSlug(query.shaneScene);
+        _this.transitionToSceneWithSlug(query.portal);
       }
     });
 
@@ -7093,10 +7093,10 @@ var SecondShane = (function (_ThreeBoiler) {
       value: function renderCurrentURL() {
         var currentQuery = queryString.parse(window.location.search.substring(1));
 
-        if (currentQuery.shaneScene) {
+        if (currentQuery.portal) {
           if (!this.activeScene) {
             this.transitioning = false;
-            this.transitionToSceneWithSlug(currentQuery.shaneScene);
+            this.transitionToSceneWithSlug(currentQuery.portal);
           }
         } else {
           if (this.activeScene) {
@@ -7110,7 +7110,7 @@ var SecondShane = (function (_ThreeBoiler) {
       value: function updateHistoryForScene(scene) {
         var currentQuery = queryString.parse(window.location.search.substring(1));
 
-        currentQuery.shaneScene = scene.slug;
+        currentQuery.portal = scene.slug;
 
         this.updateHistoryWithQuery(currentQuery);
       }
@@ -7118,7 +7118,7 @@ var SecondShane = (function (_ThreeBoiler) {
     updateHistoryForEarth: {
       value: function updateHistoryForEarth() {
         var currentQuery = queryString.parse(window.location.search.substring(1));
-        delete currentQuery.shaneScene;
+        delete currentQuery.portal;
 
         this.updateHistoryWithQuery(currentQuery);
       }
@@ -7132,7 +7132,7 @@ var SecondShane = (function (_ThreeBoiler) {
           if (newQueryString.length > 0) {
             newURL += "?" + newQueryString;
           }
-          window.history.pushState({ shaneScene: query.shaneScene }, "", newURL);
+          window.history.pushState({ portal: query.portal }, "", newURL);
         }
       }
     },
@@ -7691,7 +7691,10 @@ var MeshedOneOff = (function (_OneOff) {
         _get(Object.getPrototypeOf(MeshedOneOff.prototype), "activate", this).call(this, scene);
 
         this.shaneMesh.addTo(scene, function () {
-          _this.meshWasLoaded();
+          if (!_this.hasLoadedBefore) {
+            _this.meshWasLoaded();
+          }
+          _this.hasLoadedBefore = true;
         });
       }
     },
@@ -9692,10 +9695,16 @@ var Talisman = exports.Talisman = (function () {
       value: function addTo(scene) {
         var _this = this;
 
-        this.createMesh(function () {
+        var add = function () {
           _this.mesh.position.copy(_this.position);
           scene.add(_this.mesh);
-        });
+        };
+
+        if (this.hasMesh) {
+          add();
+        } else {
+          this.createMesh(add);
+        }
       }
     },
     removeFrom: {
