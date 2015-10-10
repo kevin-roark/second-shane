@@ -1540,6 +1540,12 @@ export var oneOffs = [
     imageName: 'media/beacon-images/peter_tv.jpg',
     position: new THREE.Vector3(189, 0, -237)
   }),
+  new ImageBeacon({
+    name: 'Daido Moriyama Dog',
+    imageName: 'media/beacon-images/moriyama_dog.jpg',
+    portrait: true,
+    position: new THREE.Vector3(-110, 0, -411)
+  }),
 
   // vids
   new VideoBeacon({
