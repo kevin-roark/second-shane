@@ -32,7 +32,7 @@ module.exports = function (camera, options) {
 	this.autoForward = options.autoForward || false;
 	this.keysAsRotation = options.keysAsRotation || false;
 
-	this.allowYMovement = options.allowYMovement || false;
+	this.allowYMovement = options.allowYMovement || true;
 
 	this.enabled = false;
 
