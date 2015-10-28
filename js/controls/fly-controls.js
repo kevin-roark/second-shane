@@ -32,12 +32,18 @@ module.exports = function (camera, options) {
 	this.autoForward = options.autoForward || false;
 	this.keysAsRotation = options.keysAsRotation || false;
 
+	this.allowYMovement = options.allowYMovement || true;
+
 	this.enabled = false;
 
 	this.locker = new Pointerlocker();
 
 	this.getObject = function() {
 		return yawObject;
+	};
+
+	this.pitchObject = function() {
+		return pitchObject;
 	};
 
 	this.setEnabled = function(enabled) {
@@ -59,7 +65,7 @@ module.exports = function (camera, options) {
 
 	// internals
 
-	this.prevTime = performance.now();
+	this.prevTime = window.performance ? window.performance.now() : new Date();
 
 	this.mouseStatus = 0;
 
@@ -197,7 +203,7 @@ module.exports = function (camera, options) {
 			var movementY = event.movementY || event.mozMovementY || event.webkitMovementY;
 
 			// fallback for browsers with no movement
-		  if (movementX === undefined) {
+		  if (movementX === undefined || movementY === undefined) {
 		    if (this.lastClientX !== undefined) {
 		      movementX = event.clientX - this.lastClientX;
 		      movementY = event.clientY - this.lastClientY;
@@ -240,7 +246,7 @@ module.exports = function (camera, options) {
 	};
 
 	this.update = function() {
-		var time = performance.now();
+		var time = window.performance ? window.performance.now() : new Date();
 		var delta = ( time - this.prevTime ) / 1000;
 
 		if (this.enabled) {
@@ -248,7 +254,11 @@ module.exports = function (camera, options) {
 			var rotMult = delta * this.rollSpeed;
 
 			yawObject.translateX( this.moveVector.x * moveMult );
-			yawObject.translateY( this.moveVector.y * moveMult );
+
+			if (this.allowYMovement) {
+				yawObject.translateY( this.moveVector.y * moveMult );
+			}
+
 			yawObject.translateZ( this.moveVector.z * moveMult );
 
 			if (this.keysAsRotation) {
